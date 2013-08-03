@@ -5,8 +5,14 @@
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/utils/prefutils.js" />
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/overlay.js" />
 
+  <menupopup id="menu_ToolsPopup">
+    <menuitem id="kancolletimer-tools-popup-menu" label="艦これタイマー" oncommand="KanColleTimerOverlay.open();" />
+  </menupopup>
+
+<!--
   <popup id="contentAreaContextMenu">
     <menuitem id="kancolletimer-popup-menu" label="艦これタイマー" oncommand="KanColleTimerOverlay.open();" />
   </popup>
+-->
 
 </overlay>

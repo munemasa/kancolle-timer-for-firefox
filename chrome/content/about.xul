@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+
+<dialog id="votewindow" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml"
+	title="About (KanColle Timer)"
+	buttons="accept" ondialogaccept="return true;">
+
+  <vbox>
+    <hbox>
+      <vbox>
+	<label id="id-version" value="KanColle Timer"/>
+	<label value="Developed by amano."/>
+      </vbox>
+    </hbox>
+  </vbox>
+
+</dialog>

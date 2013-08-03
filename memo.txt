@@ -1,7 +1,78 @@
-遠征
-POST http://203.104.105.167/kcsapi/api_reg_mission/start
+= 遠征
+POST http://203.104.105.167/kcsapi/api_req_mission/start
 api_deck_id     艦隊No.
 api_mission_id  遠征No.
+api_verno
+api_token
 
 レスポンス
 svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":{"api_complatetime":1375503047977,"api_complatetime_str":"2013-08-03 13:10:47"}}
+
+= 入渠
+POST http://203.104.105.167/kcsapi/api_req_nyukyo/start
+api_ship_id
+api_ndock_id
+api_verno
+api_token
+
+レスポンス
+svdata={"api_result":1,"api_result_msg":"\u6210\u529f"}
+
+= 入渠ドック
+POST http://203.104.105.167/kcsapi/api_get_member/ndock
+api_verno
+api_token
+
+レスポンス
+svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":[{"api_member_id":67767,"api_id":1,"api_state":0,"api_ship_id":0,"api_complete_time":0,"api_complete_time_str":"0","api_item1":0,"api_item2":0,"api_item3":0,"api_item4":0},{"api_member_id":67767,"api_id":2,"api_state":1,"api_ship_id":82,"api_complete_time":1375510472295,"api_complete_time_str":"2013-08-03 15:14:32","api_item1":31,"api_item2":0,"api_item3":58,"api_item4":0},{"api_member_id":67767,"api_id":3,"api_state":1,"api_ship_id":610,"api_complete_time":1375507008543,"api_complete_time_str":"2013-08-03 14:16:48","api_item1":2,"api_item2":0,"api_item3":4,"api_item4":0},{"api_member_id":67767,"api_id":4,"api_state":1,"api_ship_id":529,"api_complete_time":1375508951253,"api_complete_time_str":"2013-08-03 14:49:11","api_item1":28,"api_item2":0,"api_item3":54,"api_item4":0}]}
+
+= 建造ドック
+POST http://203.104.105.167/kcsapi/api_get_member/kdock
+api_verno
+api_token
+
+レスポンス
+svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":[{"api_member_id":67767,"api_id":1,"api_state":0,"api_created_ship_id":0,"api_complete_time":0,"api_complete_time_str":"0","api_item1":0,"api_item2":0,"api_item3":0,"api_item4":0,"api_item5":1},{"api_member_id":67767,"api_id":2,"api_state":2,"api_created_ship_id":10,"api_complete_time":1375513798057,"api_complete_time_str":"2013-08-03 16:09:58","api_item1":30,"api_item2":30,"api_item3":30,"api_item4":30,"api_item5":1},{"api_member_id":67767,"api_id":3,"api_state":-1,"api_created_ship_id":0,"api_complete_time":0,"api_complete_time_str":"0","api_item1":0,"api_item2":0,"api_item3":0,"api_item4":0,"api_item5":0},{"api_member_id":67767,"api_id":4,"api_state":-1,"api_created_ship_id":0,"api_complete_time":0,"api_complete_time_str":"0","api_item1":0,"api_item2":0,"api_item3":0,"api_item4":0,"api_item5":0}]}
+
+= 装備
+POST http://203.104.105.167/kcsapi/api_get_member/slotitem
+
+所持装備全リストっぽい
+
+= 戦績
+POST http://203.104.105.167/kcsapi/api_get_member/record
+
+所有資源など。
+
+レスポンス
+svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":{"api_member_id":67767,"api_nickname":"\u3042\u307e\u306e","api_nickname_id":"62846631","api_cmt":"\u3088\u308d\u3057\u304f\u304a\u9858\u3044\u3057\u307e\u3059\u3002","api_cmt_id":"66964630","api_photo_url":"","api_level":43,"api_rank":4,"api_experience":[90839,94600],"api_war":{"api_win":"832","api_lose":"99","api_rate":"0.89"},"api_mission":{"api_count":"185","api_success":"174","api_rate":"94.05"},"api_practice":{"api_win":"82","api_lose":"64","api_rate":"56.16"},"api_friend":0,"api_deck":4,"api_kdoc":2,"api_ndoc":4,"api_ship":[100,110],"api_slotitem":[413,537],"api_furniture":16,"api_complate":["0.0","0.0"],"api_material_max":11500}}
+
+= 遠征のリスト
+POST http://203.104.105.167/kcsapi/api_get_master/mission
+
+api_maparea_id 1,2,3,...
+api_verno
+api_token
+
+= 所有艦艇リスト
+POST http://203.104.105.167/kcsapi/api_get_member/ship
+
+= 艦隊の状態
+POST http://203.104.105.167/kcsapi/api_get_member/deck_port
+
+api_name	艦隊名
+api_mission	遠征先	[1,12,1375536843237,0]	エリアID, ミッションID, 終了時刻
+
+レスポンス
+svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":[{"api_member_id":67767,"api_id":1,"api_name":"\u7b2c\u4e00\u8266\u968a","api_name_id":"82694076","api_mission":[0,0,0,0],"api_flagship":"0","api_ship":[171,542,25,499,610,1]},{"api_member_id":67767,"api_id":2,"api_name":"\u7b2c\u4e00\u9060\u5f81\u8266\u968a","api_name_id":"82692194","api_mission":[0,0,0,0],"api_flagship":"0","api_ship":[368,36,45,4,18,44]},{"api_member_id":67767,"api_id":3,"api_name":"\u7b2c\u4e8c\u9060\u5f81\u8266\u968a","api_name_id":"82692307","api_mission":[1,13,1375523082095,0],"api_flagship":"0","api_ship":[440,71,32,30,15,11]},{"api_member_id":67767,"api_id":4,"api_name":"\u7b2c\u4e09\u9060\u5f81\u8266\u968a","api_name_id":"82694584","api_mission":[1,12,1375536843237,0],"api_flagship":"0","api_ship":[29,13,241,572,14,353]}]}
+
+= 艦隊の状態(deck_portと同じっぽい)
+POST http://203.104.105.167/kcsapi/api_get_member/deck
+api_verno
+api_token
+
+api_name	艦隊名
+api_mission	遠征先	[1,12,1375536843237,0]	エリアID, ミッションID, 終了時刻
+
+レスポンス
+svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":[{"api_member_id":67767,"api_id":1,"api_name":"\u7b2c\u4e00\u8266\u968a","api_name_id":"82694076","api_mission":[0,0,0,0],"api_flagship":"0","api_ship":[171,77,82,93,72,90]},{"api_member_id":67767,"api_id":2,"api_name":"\u7b2c\u4e00\u9060\u5f81\u8266\u968a","api_name_id":"82692194","api_mission":[1,12,1375566823211,0],"api_flagship":"0","api_ship":[368,36,45,4,18,44]},{"api_member_id":67767,"api_id":3,"api_name":"\u7b2c\u4e8c\u9060\u5f81\u8266\u968a","api_name_id":"82692307","api_mission":[1,3,1375539354984,0],"api_flagship":"0","api_ship":[440,71,32,30,15,11]},{"api_member_id":67767,"api_id":4,"api_name":"\u7b2c\u4e09\u9060\u5f81\u8266\u968a","api_name_id":"82694584","api_mission":[1,5,1375543758972,0],"api_flagship":"0","api_ship":[29,13,241,572,14,353]}]}

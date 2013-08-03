@@ -13,45 +13,6 @@ const Ci = Components.interfaces;
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
-const MAIN = 0;
-const SUB = 1;
-
-const ARENA = 0;
-const STAND_A = 1;
-const STAND_B = 2;
-const STAND_C = 3;
-const ROOM_NAME = ["アリーナ", "立ち見A列", "立ち見B列", "立ち見C列" ];
-
-const PLAY_SEQUENTIAL = 0;
-const PLAY_RANDOM = 1;
-const PLAY_CONSUMPTION = 2;
-const PLAY_REPEAT = 3;
-
-// リクエストを受け付けない理由コード
-const REASON_NOT_ACCEPT = 1;            // リクエストを受け付けていない
-const REASON_NO_LIVE_PLAY = 2;          // 生放送で引用できない
-const REASON_ALREADY_REQUESTED = 3;     // すでにリクエスト済み
-const REASON_ALREADY_PLAYED = 4;        // すでに再生済み
-const REASON_DISABLE_NEWMOVIE = 5;      // 新着動画の禁止
-const REASON_MAX_NUMBER_OF_REQUEST = 6; // リクエスト数が多い
-const REASON_NG_VIDEO = 7;              // NG動画
-const REASON_REQUEST_CONDITION = 8;     // リクエスト制限にかかった
-const REASON_USER_SCRIPT = 9;           // ユーザーカスタムスクリプトによる
-const REASON_NO_REMAINTIME = 10;        // 枠の残り時間がない
-
-const COMMENT_STATE_NONE = 0;              // 動画情報を送信する前
-const COMMENT_STATE_MOVIEINFO_BEGIN = 1;   // 動画情報を送信中
-const COMMENT_STATE_MOVIEINFO_DONE = 2;    // 動画情報の送信が終わった
-
-// コメント表示状態.
-const COMMENT_VIEW_NORMAL = 0;      // 上コメに表示できる.
-const COMMENT_VIEW_HIDDEN_PERM = 1; // 上コメに表示できない(表示するには/clsが必要).
-
-// 送信する主コメの種別.
-const COMMENT_MSG_TYPE_AUTOREPLY = 0; // 0というか実際はundefined,nullになる.
-const COMMENT_MSG_TYPE_MOVIEINFO = 1; // 動画情報の主コメのとき.
-const COMMENT_MSG_TYPE_NORMAL    = 2; // 普通の主コメをするとき.
-
 
 function $(tag){
     return document.getElementById(tag);
@@ -89,92 +50,17 @@ function ShuffleArray( list ){
     }
 }
 
-/**
- * Firefox extensionならtrueを返す.
- */
-function OnFirefox(){
-    if( navigator.userAgent.match(/NicoLiveHelper/) ) return false;
-    return true;
-}
-
-/**
- * 生主ならtrueを返す
- */
-function IsCaster()
-{
-    return NicoLiveHelper.iscaster;
-}
-
-/**
- * 生放送に接続しているかどうかを返す
- * @return オフラインならtrueを返す
- */
-function IsOffline()
-{
-    return NicoLiveHelper.liveinfo.request_id=='lv0';
-}
-
-/**
- * 生放送IDを返す
- */
-function GetRequestId(){
-    return NicoLiveHelper.liveinfo.request_id;
-}
-
-/**
- * 生放送の残り時間を返す
- * @return 枠の残り時間(秒)
- */
-function GetLiveRemainTime(){
-    return NicoLiveHelper.liveinfo.end_time - GetCurrentTime();
-}
-
-var LibUserSessionCookie = "";
-var LibUserAgent = "";
-function SetUserAgent(s)
-{
-    LibUserAgent = s;
-}
-function SetUserSessionCookie(s)
-{
-    LibUserSessionCookie = s;
-}
-
-/**
- * @param method GET or POST
- * @param uri URI
- * @param substitution 使用するセッションクッキーを指定(任意)
- */
-function CreateXHR(method,uri, substitution)
-{
-    let req = new XMLHttpRequest();
-    if( !req ) return null;
-    req.open(method,uri);
-    if( LibUserAgent ){
-	req.setRequestHeader("User-Agent", LibUserAgent );
-    }
-    if( LibUserSessionCookie ){
-	if( substitution ){
-	    new CookieMonster(req, substitution);
-	}else{
-	    new CookieMonster(req, LibUserSessionCookie );
-	}
-    }
-
-    req.timeout = 30*1000; // 30sec timeout for Gecko 12.0+
-    return req;
-}
 
 function GetAddonVersion()
 {
     let version;
     try{
 	let em = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager);
-	let addon = em.getItemForID("nicolivehelperadvance@miku39.jp");
+	let addon = em.getItemForID("kancolletimer@miku39.jp");
 	version = addon.version;
     } catch (x) {
 	// Fx4
-	AddonManager.getAddonByID("nicolivehelperadvance@miku39.jp",
+	AddonManager.getAddonByID("kancolletimer@miku39.jp",
 				  function(addon) {
 				      version = addon.version;
 				  });
@@ -305,7 +191,7 @@ function OpenFile(path){
 
 // NicoLiveHelperのインストールパスを返す.
 function GetExtensionPath(){
-    let id = "nicolivehelperadvance@miku39.jp";
+    let id = "kancolletimer@miku39.jp";
     let ext;
     try{
 	ext = Components.classes["@mozilla.org/extensions/manager;1"]
@@ -314,7 +200,7 @@ function GetExtensionPath(){
             .getItemLocation(id);
     } catch (x) {
 	let _addon;
-	AddonManager.getAddonByID("nicolivehelperadvance@miku39.jp",
+	AddonManager.getAddonByID("kancolletimer@miku39.jp",
 				  function(addon) {
 				      _addon = addon;
 				  });
@@ -448,21 +334,6 @@ function FindParentElement(elem,tag){
     return elem;
 }
 
-// NicoLive Helperのウィンドウをリストアップする.
-function WindowEnumerator(){
-    let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-    let enumerator = wm.getEnumerator("");
-    let windowlist = new Array();
-    while(enumerator.hasMoreElements()) {
-	let win = enumerator.getNext();
-	// win is [Object ChromeWindow] (just like window), do something with it
-	//debugprint("window:"+win.name);
-	if(win.name.match(/^NLHADV_lv\d+$/)){
-	    windowlist.push(win);
-	}
-    }
-    return windowlist;
-}
 
 /**
  * クリップボードにテキストをコピーする.
@@ -502,9 +373,11 @@ function syslog(txt){
 }
 
 function debugprint(txt){
+    /*
     if( $('debug-textbox') )
 	$('debug-textbox').value += txt + "\n";
-    //Application.console.log(txt);
+     */
+    Application.console.log(txt);
 }
 
 function debugconsole(txt){
@@ -513,21 +386,6 @@ function debugconsole(txt){
 
 function debugalert(txt){
     AlertPrompt(txt,'');
-}
-
-
-var noticeid;
-function ShowNotice(txt, dontclear){
-    debugprint(txt);
-    $('noticewin').removeAllNotifications(false);
-    $('noticewin').appendNotification(txt,null,null,
-				      $('noticewin').PRIORITY_WARNING_LOW,null);
-    clearInterval(noticeid);
-    if( dontclear ) return;
-    noticeid = setInterval( function(){
-				$('noticewin').removeAllNotifications(false);
-				clearInterval(noticeid);
-			    }, 15*1000 );
 }
 
 function ShowPopupNotification(imageURL,title,text,request_id){
@@ -560,22 +418,6 @@ function ShowPopupNotification(imageURL,title,text,request_id){
     }
 }
 
-/**
- * ウィンドウを最前面に持ってくる.
- * @param w ウィンドウ
- * @param b 最前面に持ってくるかどうか
- */
-function SetWindowTopMost(w,b){
-    let Ci = Components.interfaces;
-    let XULWindow = w
-	.QueryInterface(Ci.nsIInterfaceRequestor)
-	.getInterface(Ci.nsIWebNavigation)
-	.QueryInterface(Ci.nsIDocShellTreeItem)
-	.treeOwner
-	.QueryInterface(Ci.nsIInterfaceRequestor)
-	.getInterface(Ci.nsIXULWindow);
-    XULWindow.zLevel = b ? Ci.nsIXULWindow.highestZ : Ci.nsIXULWindow.normalZ;
-}
 
 function GetUTF8ConverterInputStream(istream)
 {
@@ -602,92 +444,12 @@ function GetCurrentTime(){
 
 function GetDateString(ms){
     let d = new Date(ms);
-    return d.toLocaleFormat("%Y/%m/%d %H:%M:%S");
+    return d.toLocaleFormat("%Y-%m-%d %H:%M:%S");
 }
 
 function GetFormattedDateString(format,ms){
     let d = new Date(ms);
     return d.toLocaleFormat(format);
-}
-
-// レート数値をスターの個数の文字列にする.
-function GetFavRateString(rate){
-    let tmp;
-    let str = "";
-    let i;
-    tmp = rate / 10;
-    for(i=0;i<tmp;i++){
-	str += "★";
-    }
-    if(!str) str="なし";
-    return str;
-}
-
-
-function GetSelectedTag(tags,selection,color){
-    let r = new Array();
-    let i,tag;
-    for(i=0; tag=tags[i]; i++){
-	for(let j=0,sel;sel=selection[j]; j++){
-	    let reg = new RegExp(sel,"i");
-	    if(tag.match(reg)){
-		r.push(tag);
-		break;
-	    }
-	}
-    }
-    // 正規表現でうまく色付きに置換できなかったので強引に.
-    let s = "";
-    let len = 0;
-    for(i=0; tag=r[i]; i++){
-	let l = tag.length;
-	for(let j=0,sel;sel=selection[j]; j++){
-	    let reg = new RegExp(sel,"i");
-	    if( tag.match(reg) ){
-		if(color[j]){
-		    tag = "<font color=\""+color[j]+"\">"+tag+"</font>";
-		}
-		break;
-	    }
-	}
-	s += tag;
-	len += l;
-	if(len>=35 && r[i+1]){
-	    s += "<br>";
-	    len = 0;
-	}else if( r[i+1] ){
-	    s+="　";
-	    len++;
-	}
-    }
-    return s;
-}
-
-function GetColoredTag(tags,selection,color){
-    let s = "";
-    let len = 0;
-    for(let i=0,tag; tag=tags[i]; i++){
-	let l = tag.length;
-	for(let j=0,sel;sel=selection[j]; j++){
-	    let reg = new RegExp(sel,"i");
-	    if( tag.match(reg) ){
-		if(color[j]){
-		    tag = "<font color=\""+color[j]+"\">"+tag+"</font>";
-		}
-		break;
-	    }
-	}
-	s += tag;
-	len += l;
-	if(len>=35 && tags[i+1]){
-	    s += "<br>";
-	    len = 0;
-	}else if( tags[i+1] ){
-	    s+="　";
-	    len++;
-	}
-    }
-    return s;
 }
 
 // string bundleから文字列を読みこむ.
@@ -698,13 +460,19 @@ function LoadFormattedString(name,array){
     return $('string-bundle').getFormattedString(name,array);
 }
 
-// min:sec の文字列を返す.
+// hour:min:sec の文字列を返す.
 function GetTimeString(sec){
-    let str = "";
-    if(sec<0) str = "-";
     sec = Math.abs(sec);
-    str += parseInt(sec/60) + ":";
-    str += (sec%60)<10?"0"+parseInt(sec%60):parseInt(sec%60);
+
+    let hour = parseInt( sec / 60 / 60 );
+    let min = parseInt( sec / 60 ) - hour*60;
+    let s = sec % 60;
+
+    let str = hour<10?"0"+hour:hour;
+    str += ":";
+    str += min<10?"0"+min:min;
+    str += ":";
+    str += s<10?"0"+s:s;
     return str;
 }
 
