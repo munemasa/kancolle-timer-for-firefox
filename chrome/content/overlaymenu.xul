@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<overlay id="NicoLiveHelperAdvance" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/utils/prefutils.js" />
+  <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/overlay.js" />
+
+  <popup id="contentAreaContextMenu">
+    <menuitem id="kancolletimer-popup-menu" label="艦これタイマー" oncommand="KanColleTimerOverlay.open();" />
+  </popup>
+
+</overlay>

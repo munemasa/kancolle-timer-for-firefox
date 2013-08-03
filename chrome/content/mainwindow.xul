@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://nicolivehelperadvance/content/mainwindow.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://nicolivehelperadvance/locale/nicolivehelper.dtd">
+
+<window id="kancolletimermainwindow"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	persist="screenX screenY width height sizemode"
+	_persist="screenX screenY sizemode"
+	width="640" height="480"
+	windowtype="KanColleTimerMainWindow"
+	title="艦これタイマー">
+
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/utils/prefutils.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://nicolivehelperadvance/content/libs.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://nicolivehelperadvance/content/storage.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://nicolivehelperadvance/content/config.js" />
+
+</window>

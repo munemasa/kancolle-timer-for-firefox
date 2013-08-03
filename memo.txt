@@ -1,0 +1,7 @@
+遠征
+POST http://203.104.105.167/kcsapi/api_reg_mission/start
+api_deck_id     艦隊No.
+api_mission_id  遠征No.
+
+レスポンス
+svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":{"api_complatetime":1375503047977,"api_complatetime_str":"2013-08-03 13:10:47"}}

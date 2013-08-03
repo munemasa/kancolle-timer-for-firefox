@@ -1,0 +1,2 @@
+content	kancolletimer	chrome/content/
+overlay chrome://browser/content/browser.xul chrome://kancolletimer/content/overlaymenu.xul
