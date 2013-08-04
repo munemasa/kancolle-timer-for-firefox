@@ -201,6 +201,7 @@ var KanColleTimer = {
 	//sound.playEventSound(0);
     },
 
+    // 完了の通知
     noticeRepairFinished: function(){
 	let path = Config.getUnichar('sound.ndock');
 	this.playSound(path);
@@ -214,17 +215,43 @@ var KanColleTimer = {
 	this.playSound(path);
     },
 
+    // 1分前の通知
+    noticeRepair1min: function(){
+	let path = Config.getUnichar('sound.1min.ndock');
+	this.playSound(path);
+    },
+    noticeConstruction1min: function(){
+	let path = Config.getUnichar('sound.1min.kdock');
+	this.playSound(path);
+    },
+    noticeMission1min: function(){
+	let path = Config.getUnichar('sound.1min.mission');
+	this.playSound(path);
+    },
+
     update: function(){
 	let i;
 	let now = GetCurrentTime();
 	let fleetremain = evaluateXPath(document,"//*[@class='fleetremain']");
 	let ndockremain = evaluateXPath(document,"//*[@class='ndockremain']");
 	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
+	let fleet_time = evaluateXPath(document,"//*[@class='fleet-time']");
+	let ndock_time = evaluateXPath(document,"//*[@class='ndock-time']");
+	let kdock_time = evaluateXPath(document,"//*[@class='kdock-time']");
 
+	// 遠征
 	for(i in this.fleet){
 	    i = parseInt(i);
 	    if( this.fleet[i].mission_finishedtime ){
 		let d = this.fleet[i].mission_finishedtime - now;
+
+		if( fleet_time[i].style.color=="black" ){
+		    if( d<60 ){
+			this.noticeMission1min();
+		    }
+		}
+		fleet_time[i].style.color = d<60?"red":"black";
+
 		if( d<0 ){
 		    AddLog(this.fleet[i].fleet_name+"が遠征から帰還しました。\n");
 		    this.fleet[i].mission_finishedtime = 0;
@@ -237,10 +264,18 @@ var KanColleTimer = {
 	    }
 	}
 
+	// 入渠ドック
 	for(i in this.ndock){
 	    i = parseInt(i);
 	    if( this.ndock[i].finishedtime ){
 		let d = this.ndock[i].finishedtime - now;
+
+		if( ndock_time[i].style.color=="black" ){
+		    if( d<60 ){
+			this.noticeRepair1min();
+		    }
+		}
+		ndock_time[i].style.color = d<60?"red":"black";
 		if( d<0 ){
 		    AddLog("ドック"+(i+1)+"の修理が完了しました。\n");
 		    this.ndock[i].finishedtime = 0;
@@ -253,10 +288,18 @@ var KanColleTimer = {
 	    }
 	}
 
+	// 建造ドック
 	for(i in this.kdock){
 	    i = parseInt(i);
 	    if( this.kdock[i].finishedtime ){
 		let d = this.kdock[i].finishedtime - now;
+
+		if( kdock_time[i].style.color=="black" ){
+		    if( d<60 ){
+			this.noticeConstruction1min();
+		    }
+		}
+		kdock_time[i].style.color = d<60?"red":"black";
 		if( d<0 ){
 		    AddLog("ドック"+(i+1)+"の建造が完了しました。\n");
 		    this.kdock[i].finishedtime = 0;
@@ -273,7 +316,6 @@ var KanColleTimer = {
     init: function(){
 	this.observerService = Components.classes["@mozilla.org/observer-service;1"]
 	    .getService(Components.interfaces.nsIObserverService);
-	this.observerService.addObserver(httpRequestObserver, "http-on-modify-request", false);
 	this.observerService.addObserver(httpRequestObserver, "http-on-examine-response", false);
 
 	setInterval( function(){
@@ -282,7 +324,6 @@ var KanColleTimer = {
     },
 
     destroy: function(){
-	this.observerService.removeObserver(httpRequestObserver, "http-on-modify-request");
 	this.observerService.removeObserver(httpRequestObserver, "http-on-examine-response");
     }
 };

@@ -44,22 +44,22 @@
     <caption>遠征</caption>
     <hbox>
       <label id="fleetname1" value="第1艦隊"/>
-      <label id="fleet1" value=""/>
+      <label id="fleet1" class="fleet-time" value=""/>
       <label id="fleetremain1" class="fleetremain" value=""/>
     </hbox>
     <hbox>
       <label id="fleetname2" value="第2艦隊"/>
-      <label id="fleet2" value=""/>
+      <label id="fleet2" class="fleet-time" value=""/>
       <label id="fleetremain2" class="fleetremain" value=""/>
     </hbox>
     <hbox>
       <label id="fleetname3" value="第3艦隊"/>
-      <label id="fleet3" value=""/>
+      <label id="fleet3" class="fleet-time" value=""/>
       <label id="fleetremain3" class="fleetremain" value=""/>
     </hbox>
     <hbox>
       <label id="fleetname4" value="第4艦隊"/>
-      <label id="fleet4" value=""/>
+      <label id="fleet4" class="fleet-time" value=""/>
       <label id="fleetremain4" class="fleetremain" value=""/>
     </hbox>
   </groupbox>
@@ -68,22 +68,22 @@
     <caption>入渠ドック</caption>
     <hbox>
       <label value="No.1"/>
-      <label id="ndock1" value=""/>
+      <label id="ndock1" class="ndock-time" value=""/>
       <label id="ndockremain1" class="ndockremain" value=""/>
     </hbox>
     <hbox>
       <label value="No.2"/>
-      <label id="ndock2" value=""/>
+      <label id="ndock2" class="ndock-time" value=""/>
       <label id="ndockremain2" class="ndockremain" value=""/>
     </hbox>
     <hbox>
       <label value="No.3"/>
-      <label id="ndock3" value=""/>
+      <label id="ndock3" class="ndock-time" value=""/>
       <label id="ndockremain3" class="ndockremain" value=""/>
     </hbox>
     <hbox>
       <label value="No.4"/>
-      <label id="ndock4" value=""/>
+      <label id="ndock4" class="ndock-time" value=""/>
       <label id="ndockremain4" class="ndockremain" value=""/>
     </hbox>
   </groupbox>
@@ -92,22 +92,22 @@
     <caption>建造ドック</caption>
     <hbox>
       <label value="No.1"/>
-      <label id="kdock1" value=""/>
+      <label id="kdock1" class="kdock-time" value=""/>
       <label id="kdockremain1" class="kdockremain" value=""/>
     </hbox>
     <hbox>
       <label value="No.2"/>
-      <label id="kdock2" value=""/>
+      <label id="kdock2" class="kdock-time" value=""/>
       <label id="kdockremain2" class="kdockremain" value=""/>
     </hbox>
     <hbox>
       <label value="No.3"/>
-      <label id="kdock3" value=""/>
+      <label id="kdock3" class="kdock-time" value=""/>
       <label id="kdockremain3" class="kdockremain" value=""/>
     </hbox>
     <hbox>
       <label value="No.4"/>
-      <label id="kdock4" value=""/>
+      <label id="kdock4" class="kdock-time" value=""/>
       <label id="kdockremain4" class="kdockremain" value=""/>
     </hbox>
   </groupbox>

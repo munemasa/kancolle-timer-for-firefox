@@ -48,14 +48,42 @@
 
   </prefpane>
 
-  <prefpane id="prefpane-test" label="テスト" image="">
+  <prefpane id="prefpane-1min-sound" label="1分前通知" image="chrome://kancolletimer/content/data/sound.png">
     <preferences>
-      <preference id="pref-sound-mission-completed"
-		  name="extensions.kancolletimer.test" type="bool"/>
+      <preference id="pref-sound-mission-1min"
+		  name="extensions.kancolletimer.sound.1min.mission" type="string"/>
+      <preference id="pref-sound-ndock-1min"
+		  name="extensions.kancolletimer.sound.1min.ndock" type="string"/>
+      <preference id="pref-sound-kdock-1min"
+		  name="extensions.kancolletimer.sound.1min.kdock" type="string"/>
     </preferences>
 
     <vbox>
-      <label value="test"/>
+      <label value="※現在は WAV ファイルのみ"/>
+      <groupbox>
+	<caption>遠征終了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-mission-1min"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-1min');"/>
+	</hbox>
+      </groupbox>
+      <groupbox>
+	<caption>修理完了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-ndock-1min"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-1min');"/>
+	</hbox>
+      </groupbox>
+      <groupbox>
+	<caption>建造完了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-kdock-1min"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-1min');"/>
+	</hbox>
+      </groupbox>
     </vbox>
 
   </prefpane>
