@@ -192,7 +192,7 @@ var KanColleTimer = {
     fleet: [],
 
     playSound: function(path){
-	debugprint(path);
+	//debugprint(path);
 	let IOService = Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService);
 	let localFile = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsILocalFile);
 	let sound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
@@ -222,6 +222,7 @@ var KanColleTimer = {
 	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
 
 	for(i in this.fleet){
+	    i = parseInt(i);
 	    if( this.fleet[i].mission_finishedtime ){
 		let d = this.fleet[i].mission_finishedtime - now;
 		if( d<0 ){
@@ -237,6 +238,7 @@ var KanColleTimer = {
 	}
 
 	for(i in this.ndock){
+	    i = parseInt(i);
 	    if( this.ndock[i].finishedtime ){
 		let d = this.ndock[i].finishedtime - now;
 		if( d<0 ){
@@ -252,6 +254,7 @@ var KanColleTimer = {
 	}
 
 	for(i in this.kdock){
+	    i = parseInt(i);
 	    if( this.kdock[i].finishedtime ){
 		let d = this.kdock[i].finishedtime - now;
 		if( d<0 ){
