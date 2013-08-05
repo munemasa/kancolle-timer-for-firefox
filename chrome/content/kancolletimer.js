@@ -187,6 +187,8 @@ var httpRequestObserver =
 };
 
 var KanColleTimer = {
+    imageURL: "http://pics.dmm.com/freegame/app/854854/200.jpg",
+
     ndock: [],
     kdock: [],
     fleet: [],
@@ -202,29 +204,39 @@ var KanColleTimer = {
     },
 
     // 完了の通知
-    noticeRepairFinished: function(){
+    noticeRepairFinished: function(i,str){
 	let path = Config.getUnichar('sound.ndock');
 	this.playSound(path);
+
+	if( Config.getBool('popup.ndock') ){
+	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
+	}
     },
-    noticeConstructionFinished: function(){
+    noticeConstructionFinished: function(i,str){
 	let path = Config.getUnichar('sound.kdock');
 	this.playSound(path);
+	if( Config.getBool('popup.kdock') ){
+	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
+	}
     },
-    noticeMissionFinished: function(){
+    noticeMissionFinished: function(i,str){
 	let path = Config.getUnichar('sound.mission');
 	this.playSound(path);
+	if( Config.getBool('popup.mission') ){
+	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
+	}
     },
 
     // 1分前の通知
-    noticeRepair1min: function(){
+    noticeRepair1min: function(i){
 	let path = Config.getUnichar('sound.1min.ndock');
 	this.playSound(path);
     },
-    noticeConstruction1min: function(){
+    noticeConstruction1min: function(i){
 	let path = Config.getUnichar('sound.1min.kdock');
 	this.playSound(path);
     },
-    noticeMission1min: function(){
+    noticeMission1min: function(i){
 	let path = Config.getUnichar('sound.1min.mission');
 	this.playSound(path);
     },
@@ -247,15 +259,16 @@ var KanColleTimer = {
 
 		if( fleet_time[i].style.color=="black" ){
 		    if( d<60 ){
-			this.noticeMission1min();
+			this.noticeMission1min(i);
 		    }
 		}
 		fleet_time[i].style.color = d<60?"red":"black";
 
 		if( d<0 ){
-		    AddLog(this.fleet[i].fleet_name+"が遠征から帰還しました。\n");
+		    let str = this.fleet[i].fleet_name+"が遠征から帰還しました。\n";
+		    AddLog(str);
 		    this.fleet[i].mission_finishedtime = 0;
-		    this.noticeMissionFinished();
+		    this.noticeMissionFinished(i, str);
 		}else{
 		    fleetremain[i].value = GetTimeString( d );
 		}
@@ -272,14 +285,15 @@ var KanColleTimer = {
 
 		if( ndock_time[i].style.color=="black" ){
 		    if( d<60 ){
-			this.noticeRepair1min();
+			this.noticeRepair1min(i);
 		    }
 		}
 		ndock_time[i].style.color = d<60?"red":"black";
 		if( d<0 ){
-		    AddLog("ドック"+(i+1)+"の修理が完了しました。\n");
+		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
+		    AddLog(str);
 		    this.ndock[i].finishedtime = 0;
-		    this.noticeRepairFinished();
+		    this.noticeRepairFinished(i,str);
 		}else{
 		    ndockremain[i].value = GetTimeString( d );
 		}
@@ -296,14 +310,15 @@ var KanColleTimer = {
 
 		if( kdock_time[i].style.color=="black" ){
 		    if( d<60 ){
-			this.noticeConstruction1min();
+			this.noticeConstruction1min(i);
 		    }
 		}
 		kdock_time[i].style.color = d<60?"red":"black";
 		if( d<0 ){
-		    AddLog("ドック"+(i+1)+"の建造が完了しました。\n");
+		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
+		    AddLog(str);
 		    this.kdock[i].finishedtime = 0;
-		    this.noticeConstructionFinished();
+		    this.noticeConstructionFinished(i,str);
 		}else{
 		    kdockremain[i].value = GetTimeString( d );
 		}

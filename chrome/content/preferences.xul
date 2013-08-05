@@ -88,6 +88,24 @@
 
   </prefpane>
 
+  <prefpane id="prefpane-popup" label="ポップアップ通知" image="chrome://kancolletimer/content/data/popupnotification.png">
+    <preferences>
+      <preference id="pref-popup-mission-completed"
+		  name="extensions.kancolletimer.popup.mission" type="bool"/>
+      <preference id="pref-popup-ndock-completed"
+		  name="extensions.kancolletimer.popup.ndock" type="bool"/>
+      <preference id="pref-popup-kdock-completed"
+		  name="extensions.kancolletimer.popup.kdock" type="bool"/>
+    </preferences>
+
+    <vbox>
+      <checkbox preference="pref-popup-mission-completed" label="遠征完了"/>
+      <checkbox preference="pref-popup-ndock-completed" label="修理完了"/>
+      <checkbox preference="pref-popup-kdock-completed" label="建造完了"/>
+    </vbox>
+
+  </prefpane>
+
   <script type="application/x-javascript" src="chrome://mozapps/content/preferences/fontbuilder.js"/>
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/libs.js" />
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/preferences.js" />

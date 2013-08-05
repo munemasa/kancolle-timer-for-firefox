@@ -388,23 +388,9 @@ function debugalert(txt){
     AlertPrompt(txt,'');
 }
 
-function ShowPopupNotification(imageURL,title,text,request_id){
-    // request_id: lvXXXXXX
+function ShowPopupNotification(imageURL,title,text,cookie){
     let listener = null;
-    /*
-    {
-	observe: function(subject, topic, data) {
-	    if(topic=='alertclickcallback'){
-		let url = 'http://live.nicovideo.jp/watch/'+data;
-		Application.console.log('open:'+url);
-		gBrowser.addTab(url);
-	    }
-	}
-    };
-     */
-
     let clickable = false;
-    let cookie = request_id;
     try {
 	let alertserv = Components.classes['@mozilla.org/alerts-service;1'].getService(Components.interfaces.nsIAlertsService);
 	//	    alertserv.showAlertNotification(imageURL, title, text, clickable, cookie, listener, 'NicoLiveAlertExtension');
