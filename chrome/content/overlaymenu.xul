@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<overlay id="NicoLiveHelperAdvance" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="KanColleTimerOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/utils/prefutils.js" />
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/overlay.js" />
@@ -8,6 +8,25 @@
   <menupopup id="menu_ToolsPopup">
     <menuitem id="kancolletimer-tools-popup-menu" label="艦これタイマー" oncommand="KanColleTimerOverlay.open();" />
   </menupopup>
+
+
+  <menupopup id="viewSidebarMenu">
+    <menuitem key="key_openKanColleTimerSidebar" observes="viewKanColleTimerSidebar"  />
+  </menupopup>
+  <keyset id="mainKeyset">
+    <key id="key_openKanColleTimerSidebar" command="viewKanColleTimerSidebar" key="k" modifiers="accel,alt" />
+  </keyset>
+
+  <broadcasterset id="mainBroadcasterSet"> 
+    <broadcaster id="viewKanColleTimerSidebar" 
+                 label="艦これタイマー"
+                 autoCheck="false"
+                 type="checkbox"
+                 group="sidebar"
+                 sidebarurl="chrome://kancolletimer/content/sidebar.xul"
+                 sidebartitle="艦これタイマー"
+                 oncommand="toggleSidebar('viewKanColleTimerSidebar');" />
+  </broadcasterset>
 
 <!--
   <popup id="contentAreaContextMenu">
