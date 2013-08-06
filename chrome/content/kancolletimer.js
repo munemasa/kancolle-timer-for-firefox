@@ -179,7 +179,7 @@ var KanColleTimer = {
 		fleet_time[i].style.color = d<60?"red":"black";
 
 		if( d<0 ){
-		    let str = KanColleRemainInfo.fleet[i].fleet_name+"が遠征から帰還しました。\n";
+		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.fleet[i].mission_finishedtime = 0;
 		    this.noticeMissionFinished(i, str);
