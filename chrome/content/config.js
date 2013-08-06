@@ -1,4 +1,4 @@
-var Config = {
+var KanColleTimerConfig = {
     getBranch:function(){
 	var prefs = new PrefsWrapper1("extensions.kancolletimer.");
 	return prefs;
@@ -51,5 +51,5 @@ var Config = {
     }
 };
 
-window.addEventListener("load", function(e){ Config.init(); }, false);
-window.addEventListener("unload", function(e){ Config.destroy(); }, false);
+window.addEventListener("load", function(e){ KanColleTimerConfig.init(); }, false);
+window.addEventListener("unload", function(e){ KanColleTimerConfig.destroy(); }, false);

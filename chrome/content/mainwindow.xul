@@ -43,22 +43,22 @@
   <groupbox>
     <caption>遠征</caption>
     <hbox>
-      <label id="fleetname1" value="第1艦隊"/>
+      <label id="fleetname1" class="fleetname" value="第1艦隊"/>
       <label id="fleet1" class="fleet-time" value=""/>
       <label id="fleetremain1" class="fleetremain" value=""/>
     </hbox>
     <hbox>
-      <label id="fleetname2" value="第2艦隊"/>
+      <label id="fleetname2" class="fleetname" value="第2艦隊"/>
       <label id="fleet2" class="fleet-time" value=""/>
       <label id="fleetremain2" class="fleetremain" value=""/>
     </hbox>
     <hbox>
-      <label id="fleetname3" value="第3艦隊"/>
+      <label id="fleetname3" class="fleetname" value="第3艦隊"/>
       <label id="fleet3" class="fleet-time" value=""/>
       <label id="fleetremain3" class="fleetremain" value=""/>
     </hbox>
     <hbox>
-      <label id="fleetname4" value="第4艦隊"/>
+      <label id="fleetname4" class="fleetname" value="第4艦隊"/>
       <label id="fleet4" class="fleet-time" value=""/>
       <label id="fleetremain4" class="fleetremain" value=""/>
     </hbox>

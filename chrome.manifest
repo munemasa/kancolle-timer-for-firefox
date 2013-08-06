@@ -1,2 +1,4 @@
+locale kancolletimer ja-JP chrome/locale/ja-JP/
 content	kancolletimer	chrome/content/
 overlay chrome://browser/content/browser.xul chrome://kancolletimer/content/overlaymenu.xul
+resource kancolletimermodules modules/

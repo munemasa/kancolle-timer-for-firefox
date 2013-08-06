@@ -16,7 +16,7 @@ function OpenSettingsDialog(){
     w.focus();
 }
 
-function callback(request,s){
+function KanColleTimerSidebarCallback(request,s){
     var now = GetCurrentTime();
     var url = request.name;
 
@@ -37,7 +37,7 @@ function callback(request,s){
 		var d = data.api_data[i];
 		KanColleRemainInfo.fleet[i] = new Object();
 		KanColleRemainInfo.fleet_name[i] = d.api_name;
-		$(nameid).value = d.api_name; // 艦隊名
+		//$(nameid).value = d.api_name; // 艦隊名
 		if( d.api_mission[0] ){
 		    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
 		    KanColleRemainInfo.fleet_time[i] = ftime;
@@ -100,7 +100,7 @@ function callback(request,s){
     }    
 }
 
-var KanColleTimer = {
+var KanColleTimerSidebar = {
     imageURL: "http://pics.dmm.com/freegame/app/854854/200.jpg",
 
     ndock: [],
@@ -136,7 +136,7 @@ var KanColleTimer = {
     noticeMissionFinished: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.mission');
 	this.playSound(path);
-	if( KanColleTimerConfig.getBool('popup.mission') ){
+	if( KanColleTimerConfig.getBool('popup.missionk') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
 	}
     },
@@ -161,9 +161,6 @@ var KanColleTimer = {
 	let fleetremain = evaluateXPath(document,"//*[@class='fleetremain']");
 	let ndockremain = evaluateXPath(document,"//*[@class='ndockremain']");
 	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
-	let fleet_time = evaluateXPath(document,"//*[@class='fleet-time']");
-	let ndock_time = evaluateXPath(document,"//*[@class='ndock-time']");
-	let kdock_time = evaluateXPath(document,"//*[@class='kdock-time']");
 
 	// 遠征
 	for(i in KanColleRemainInfo.fleet){
@@ -171,12 +168,13 @@ var KanColleTimer = {
 	    let t = KanColleRemainInfo.fleet[i].mission_finishedtime;
 	    if( t > 0 ){
 		let d = t - now;
-		if( fleet_time[i].style.color=="black" ){
+
+		if( fleetremain[i].style.color=="black" ){
 		    if( d<60 ){
 			this.noticeMission1min(i);
 		    }
 		}
-		fleet_time[i].style.color = d<60?"red":"black";
+		fleetremain[i].style.color = d<60?"red":"black";
 
 		if( d<0 ){
 		    let str = KanColleRemainInfo.fleet[i].fleet_name+"が遠征から帰還しました。\n";
@@ -187,7 +185,7 @@ var KanColleTimer = {
 		    fleetremain[i].value = GetTimeString( d );
 		}
 	    }else{
-		fleetremain[i].value = "";
+		fleetremain[i].value = t==0?"00:00:00":"";
 	    }
 	}
 
@@ -196,14 +194,14 @@ var KanColleTimer = {
 	    i = parseInt(i);
 	    let t = KanColleRemainInfo.ndock[i].finishedtime;
 	    if( t > 0 ){
-		let d = KanColleRemainInfo.ndock[i].finishedtime - now;
+		let d = t - now;
 
-		if( ndock_time[i].style.color=="black" ){
+		if( ndockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			this.noticeRepair1min(i);
 		    }
 		}
-		ndock_time[i].style.color = d<60?"red":"black";
+		ndockremain[i].style.color = d<60?"red":"black";
 		if( d<0 ){
 		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
 		    AddLog(str);
@@ -213,7 +211,7 @@ var KanColleTimer = {
 		    ndockremain[i].value = GetTimeString( d );
 		}
 	    }else{
-		ndockremain[i].value = "";
+		ndockremain[i].value = t==0?"00:00:00":"";
 	    }
 	}
 
@@ -222,14 +220,14 @@ var KanColleTimer = {
 	    i = parseInt(i);
 	    let t = KanColleRemainInfo.kdock[i].finishedtime;
 	    if( t > 0 ){
-		let d = KanColleRemainInfo.kdock[i].finishedtime - now;
+		let d = t - now;
 
-		if( kdock_time[i].style.color=="black" ){
+		if( kdockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			this.noticeConstruction1min(i);
 		    }
 		}
-		kdock_time[i].style.color = d<60?"red":"black";
+		kdockremain[i].style.color = d<60?"red":"black";
 		if( d<0 ){
 		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
 		    AddLog(str);
@@ -239,45 +237,27 @@ var KanColleTimer = {
 		    kdockremain[i].value = GetTimeString( d );
 		}
 	    }else{
-		kdockremain[i].value = "";
+		kdockremain[i].value = t==0?"00:00:00":"";
 	    }
 	}
     },
 
     init: function(){
+	Application.console.log('KanColle Timer sidebar init.');
 	KanColleHttpRequestObserver.init();
-	KanColleHttpRequestObserver.addCallback( callback );
-
+	KanColleHttpRequestObserver.addCallback( KanColleTimerSidebarCallback );
 	setInterval( function(){
-			 KanColleTimer.update();
+			 KanColleTimerSidebar.update();
 		     }, 1000 );
-
-	try{
-	    for(let i=0; i<4; i++){
-		let k = i+1;
-		if( KanColleRemainInfo.fleet_name[i] ){
-		    $('fleetname'+k).value = KanColleRemainInfo.fleet_name[i];
-		}
-		if( KanColleRemainInfo.fleet_time[i] ){
-		    $('fleet'+k).value = KanColleRemainInfo.fleet_time[i];
-		}
-		if( KanColleRemainInfo.ndock_time[i] ){
-		    $('ndock'+k).value = KanColleRemainInfo.ndock_time[i];
-		}
-		if( KanColleRemainInfo.kdock_time[i] ){
-		    $('kdock'+k).value = KanColleRemainInfo.kdock_time[i];
-		}
-	    }
-	} catch (x) {
-	}
     },
 
     destroy: function(){
-	KanColleHttpRequestObserver.removeCallback( callback );
+	Application.console.log('KanColle Timer sidebar destroy.');
+	KanColleHttpRequestObserver.removeCallback( KanColleTimerSidebarCallback );
 	KanColleHttpRequestObserver.destroy();
     }
 };
 
 
-window.addEventListener("load", function(e){ KanColleTimer.init(); }, false);
-window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);
+window.addEventListener("load", function(e){ KanColleTimerSidebar.init(); }, false);
+window.addEventListener("unload", function(e){ KanColleTimerSidebar.destroy(); }, false);

@@ -6,27 +6,47 @@
 <page id="sbKanColleTimerSidebar" title="艦これタイマー"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" >
 
-  <label value="作りかけ"/>
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/utils/prefutils.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/libs.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/config.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/sidebar.js" />
+
+  <toolbox>
+    <menubar>
+      <menu label="ツール">
+	<menupopup>
+	  <menuitem label="設定..." oncommand="OpenSettingsDialog();"/>
+	  <menuseparator/>
+	  <menuitem label="About" oncommand="OpenAboutDialog();"/>
+	</menupopup>
+      </menu>
+    </menubar>
+  </toolbox>
+
   <groupbox>
     <caption>遠征</caption>
     <hbox>
-      <label id="fleetname1" value="#1"/>
-      <label id="fleet1" class="fleet-time" value=""/>
+      <label id="fleetname1" class="fleetname" value="第1艦隊"/>
+      <label id="fleet1" class="fleet-time" value="" style="display:none;"/>
       <label id="fleetremain1" class="fleetremain" value=""/>
     </hbox>
     <hbox>
-      <label id="fleetname2" value="#2"/>
-      <label id="fleet2" class="fleet-time" value=""/>
+      <label id="fleetname2" class="fleetname" value="第2艦隊"/>
+      <label id="fleet2" class="fleet-time" value="" style="display:none;"/>
       <label id="fleetremain2" class="fleetremain" value=""/>
     </hbox>
     <hbox>
-      <label id="fleetname3" value="#3"/>
-      <label id="fleet3" class="fleet-time" value=""/>
+      <label id="fleetname3" class="fleetname" value="第3艦隊"/>
+      <label id="fleet3" class="fleet-time" value="" style="display:none;"/>
       <label id="fleetremain3" class="fleetremain" value=""/>
     </hbox>
     <hbox>
-      <label id="fleetname4" value="#4"/>
-      <label id="fleet4" class="fleet-time" value=""/>
+      <label id="fleetname4" class="fleetname" value="第4艦隊"/>
+      <label id="fleet4" class="fleet-time" value="" style="display:none;"/>
       <label id="fleetremain4" class="fleetremain" value=""/>
     </hbox>
   </groupbox>
@@ -34,23 +54,23 @@
   <groupbox>
     <caption>入渠ドック</caption>
     <hbox>
-      <label value="#1"/>
-      <label id="ndock1" class="ndock-time" value=""/>
+      <label value="No.1"/>
+      <label id="ndock1" class="ndock-time" value="" style="display:none;"/>
       <label id="ndockremain1" class="ndockremain" value=""/>
     </hbox>
     <hbox>
-      <label value="#2"/>
-      <label id="ndock2" class="ndock-time" value=""/>
+      <label value="No.2"/>
+      <label id="ndock2" class="ndock-time" value="" style="display:none;"/>
       <label id="ndockremain2" class="ndockremain" value=""/>
     </hbox>
     <hbox>
-      <label value="#3"/>
-      <label id="ndock3" class="ndock-time" value=""/>
+      <label value="No.3"/>
+      <label id="ndock3" class="ndock-time" value="" style="display:none;"/>
       <label id="ndockremain3" class="ndockremain" value=""/>
     </hbox>
     <hbox>
-      <label value="#4"/>
-      <label id="ndock4" class="ndock-time" value=""/>
+      <label value="No.4"/>
+      <label id="ndock4" class="ndock-time" value="" style="display:none;"/>
       <label id="ndockremain4" class="ndockremain" value=""/>
     </hbox>
   </groupbox>
@@ -58,23 +78,23 @@
   <groupbox>
     <caption>建造ドック</caption>
     <hbox>
-      <label value="#1"/>
-      <label id="kdock1" class="kdock-time" value=""/>
+      <label value="No.1"/>
+      <label id="kdock1" class="kdock-time" value="" style="display:none;"/>
       <label id="kdockremain1" class="kdockremain" value=""/>
     </hbox>
     <hbox>
-      <label value="#2"/>
-      <label id="kdock2" class="kdock-time" value=""/>
+      <label value="No.2"/>
+      <label id="kdock2" class="kdock-time" value="" style="display:none;"/>
       <label id="kdockremain2" class="kdockremain" value=""/>
     </hbox>
     <hbox>
-      <label value="#3"/>
-      <label id="kdock3" class="kdock-time" value=""/>
+      <label value="No.3"/>
+      <label id="kdock3" class="kdock-time" value="" style="display:none;"/>
       <label id="kdockremain3" class="kdockremain" value=""/>
     </hbox>
     <hbox>
-      <label value="#4"/>
-      <label id="kdock4" class="kdock-time" value=""/>
+      <label value="No.4"/>
+      <label id="kdock4" class="kdock-time" value="" style="display:none;"/>
       <label id="kdockremain4" class="kdockremain" value=""/>
     </hbox>
   </groupbox>
