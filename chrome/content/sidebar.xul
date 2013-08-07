@@ -99,5 +99,6 @@
     </hbox>
   </groupbox>
   <textbox id="log" placeholder="" multiline="true" flex="1" />
+  <button label="ウィンドウを開く" oncommand="KanColleTimerSidebar.open();"/>
 
 </page>
