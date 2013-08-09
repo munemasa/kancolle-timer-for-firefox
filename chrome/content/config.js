@@ -8,6 +8,21 @@ var KanColleTimerConfig = {
 	return prefs;
     },
 
+    getInt:function(path){
+	var branch = this.getBranch();
+	var b;
+	try{
+	    b = branch.getIntPref(path);	    
+	} catch (x) {
+	    b = 0;
+	}
+	return b;
+    },
+    setInt:function(path, value){
+	var branch = this.getBranch();
+	branch.setIntPref(path, value);
+    },
+
     getBool:function(path){
 	var branch = this.getBranch();
 	var b;

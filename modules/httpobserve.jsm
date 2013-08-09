@@ -7,6 +7,8 @@ var KanColleRemainInfo = {
     mission_name:[],// 遠征名
     construction_shipname:[], // 建造艦種
 
+    ndock_memo: [], // 入渠ドック用のメモ
+
     // 終了時刻文字列
     fleet_time: [],
     ndock_time: [],

@@ -96,17 +96,25 @@ function KanColleTimerSidebarCallback(request,s){
 		    
 		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
 		    if( now<finishedtime ){
+			// 建造予定艦をツールチップで表示
+			let created_time = KanColleTimerConfig.getInt("kdock-created-time"+i);
+			if( !created_time ){
+			    // ブラウザを起動して初回タイマー起動時に
+			    // 建造開始時刻を復元するため
+			    created_time = now;
+			    KanColleTimerConfig.setInt( "kdock-created-time"+k, now );
+			}
+			let name = GetConstructionShipName(created_time,finishedtime);
+			KanColleRemainInfo.construction_shipname[i] = name;
+			$('kdock-box'+k).setAttribute('tooltiptext',name);
+
 			KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
 		    }
-
-		    // 建造予定艦をツールチップで表示
-		    let name = GetConstructionShipName(now,finishedtime);
-		    KanColleRemainInfo.construction_shipname[i] = name;
-		    $('kdock-box'+k).setAttribute('tooltiptext',name);
 		}else{
 		    $(id).value = "";
 		    KanColleRemainInfo.kdock[i].finishedtime = -1;
 		    $('kdock-box'+k).setAttribute('tooltiptext','');
+		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
 		}
 	    }
 	}

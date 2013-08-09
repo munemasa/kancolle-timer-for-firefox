@@ -93,23 +93,34 @@ function callback(request,s){
 		KanColleRemainInfo.kdock[i] = new Object();
 		var id = 'kdock'+k;
 		if( data.api_data[i].api_complete_time ){
+		    // 建造完了時刻の表示
 		    var finishedtime_str = data.api_data[i].api_complete_time_str;
 		    $(id).value = finishedtime_str;
 		    KanColleRemainInfo.kdock_time[i] = finishedtime_str;
 
+		    // 残り時間とツールチップの設定
 		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
-		    if( now<finishedtime ){
+		    if( now < finishedtime ){
+			// 建造予定艦をツールチップで表示
+			let created_time = KanColleTimerConfig.getInt("kdock-created-time"+i);
+			if( !created_time ){
+			    // ブラウザを起動して初回タイマー起動時に
+			    // 建造開始時刻を復元するため
+			    created_time = now;
+			    KanColleTimerConfig.setInt( "kdock-created-time"+k, now );
+			}
+			let name = GetConstructionShipName(created_time,finishedtime);
+			KanColleRemainInfo.construction_shipname[i] = name;
+			$('kdock-box'+k).setAttribute('tooltiptext',name);
+
 			KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
 		    }
-
-		    // 建造予定艦をツールチップで表示
-		    let name = GetConstructionShipName(now,finishedtime);
-		    KanColleRemainInfo.construction_shipname[i] = name;
-		    $('kdock-box'+k).setAttribute('tooltiptext',name);
 		}else{
+		    // 建造していない
 		    $(id).value = "";
 		    KanColleRemainInfo.kdock[i].finishedtime = -1;
 		    $('kdock-box'+k).setAttribute('tooltiptext','');
+		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
 		}
 	    }
 	}
@@ -122,6 +133,11 @@ var KanColleTimer = {
     ndock: [],
     kdock: [],
     fleet: [],
+
+    // 入渠ドックのメモ作成
+    createRepairMemo: function(){
+	alert( $('popup-ndock-memo').triggerNode.tagName );
+    },
 
     playSound: function(path){
 	//debugprint(path);
