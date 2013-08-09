@@ -86,8 +86,9 @@ function KanColleTimerSidebarCallback(request,s){
 	if( data.api_result==1 ){
 	    for( let i in data.api_data ){
 		i = parseInt(i);
+		var k = i+1;
 		KanColleRemainInfo.kdock[i] = new Object();
-		var id = 'kdock'+(i+1);
+		var id = 'kdock'+k;
 		if( data.api_data[i].api_complete_time ){
 		    var finishedtime_str = data.api_data[i].api_complete_time_str;
 		    $(id).value = finishedtime_str;
@@ -97,9 +98,15 @@ function KanColleTimerSidebarCallback(request,s){
 		    if( now<finishedtime ){
 			KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
 		    }
+
+		    // 建造予定艦をツールチップで表示
+		    let name = GetConstructionShipName(now,finishedtime);
+		    KanColleRemainInfo.construction_shipname[i] = name;
+		    $('kdock-box'+k).setAttribute('tooltiptext',name);
 		}else{
 		    $(id).value = "";
 		    KanColleRemainInfo.kdock[i].finishedtime = -1;
+		    $('kdock-box'+k).setAttribute('tooltiptext','');
 		}
 	    }
 	}
@@ -283,6 +290,10 @@ var KanColleTimerSidebar = {
 		    let mission_name = KanColleRemainInfo.mission_name[i];
 		    $('fleetremain'+k).setAttribute('tooltiptext',mission_name);
 		    $('mission_name'+k).value=mission_name;
+		}
+		if( KanColleRemainInfo.construction_shipname[i] ){
+		    $('kdock-box'+k).setAttribute('tooltiptext',
+						  KanColleRemainInfo.construction_shipname[i]);
 		}
 	    }
 	}catch(e){

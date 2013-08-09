@@ -43,9 +43,9 @@ function callback(request,s){
 		$(nameid).value = d.api_name; // 艦隊名
 		if( d.api_mission[0] ){
 		    let mission_id = d.api_mission[1]; // 遠征ID
+		    // 遠征名を表示
 		    let mission_name = KanColleData.mission_name[mission_id];
 		    KanColleRemainInfo.mission_name[i] = mission_name;
-		    $(statusid).setAttribute('tooltiptext',mission_name);
 		    $('mission_name'+k).value = mission_name;
 
 		    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
@@ -89,20 +89,27 @@ function callback(request,s){
 	if( data.api_result==1 ){
 	    for( let i in data.api_data ){
 		i = parseInt(i);
+		var k = i+1;
 		KanColleRemainInfo.kdock[i] = new Object();
-		var id = 'kdock'+(i+1);
+		var id = 'kdock'+k;
 		if( data.api_data[i].api_complete_time ){
 		    var finishedtime_str = data.api_data[i].api_complete_time_str;
 		    $(id).value = finishedtime_str;
 		    KanColleRemainInfo.kdock_time[i] = finishedtime_str;
-		    
+
 		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
 		    if( now<finishedtime ){
 			KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
 		    }
+
+		    // 建造予定艦をツールチップで表示
+		    let name = GetConstructionShipName(now,finishedtime);
+		    KanColleRemainInfo.construction_shipname[i] = name;
+		    $('kdock-box'+k).setAttribute('tooltiptext',name);
 		}else{
 		    $(id).value = "";
 		    KanColleRemainInfo.kdock[i].finishedtime = -1;
+		    $('kdock-box'+k).setAttribute('tooltiptext','');
 		}
 	    }
 	}
@@ -269,7 +276,6 @@ var KanColleTimer = {
 		}
 		if( KanColleRemainInfo.mission_name[i] ){
 		    let mission_name = KanColleRemainInfo.mission_name[i];
-		    $('fleet'+k).setAttribute('tooltiptext',mission_name);
 		    $('mission_name'+k).value=mission_name;
 		}
 		if( KanColleRemainInfo.fleet_time[i] ){
@@ -280,6 +286,9 @@ var KanColleTimer = {
 		}
 		if( KanColleRemainInfo.kdock_time[i] ){
 		    $('kdock'+k).value = KanColleRemainInfo.kdock_time[i];
+		}
+		if( KanColleRemainInfo.construction_shipname[i] ){
+		    $('kdock-box'+k).setAttribute('tooltiptext',KanColleRemainInfo.construction_shipname[i]);
 		}
 	    }
 	} catch (x) {
