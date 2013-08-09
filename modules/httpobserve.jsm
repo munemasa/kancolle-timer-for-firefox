@@ -4,6 +4,8 @@ var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo"];
 
 var KanColleRemainInfo = {
     fleet_name: [], // 艦隊名
+    mission_name:[],// 遠征名
+
     // 終了時刻文字列
     fleet_time: [],
     ndock_time: [],

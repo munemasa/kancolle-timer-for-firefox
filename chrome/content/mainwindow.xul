@@ -26,6 +26,8 @@
 	  src="chrome://kancolletimer/content/config.js" />
 
   <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/data.js" />
+  <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/kancolletimer.js" />
 
   <toolbox>
@@ -42,26 +44,55 @@
 
   <groupbox>
     <caption>遠征</caption>
-    <hbox>
-      <label id="fleetname1" class="fleetname" value="第1艦隊"/>
-      <label id="fleet1" class="fleet-time" value=""/>
-      <label id="fleetremain1" class="fleetremain" value=""/>
-    </hbox>
-    <hbox>
-      <label id="fleetname2" class="fleetname" value="第2艦隊"/>
-      <label id="fleet2" class="fleet-time" value=""/>
-      <label id="fleetremain2" class="fleetremain" value=""/>
-    </hbox>
-    <hbox>
-      <label id="fleetname3" class="fleetname" value="第3艦隊"/>
-      <label id="fleet3" class="fleet-time" value=""/>
-      <label id="fleetremain3" class="fleetremain" value=""/>
-    </hbox>
-    <hbox>
-      <label id="fleetname4" class="fleetname" value="第4艦隊"/>
-      <label id="fleet4" class="fleet-time" value=""/>
-      <label id="fleetremain4" class="fleetremain" value=""/>
-    </hbox>
+
+    <vbox style="display:none;">
+      <hbox>
+	<label value="■第1艦隊"/>
+	<label id="mission_name1" value=""/>
+      </hbox>
+      <hbox>
+	<label id="fleetname1" class="fleetname" value="第1艦隊"/><!-- 艦隊名 -->
+	<label id="fleet1" class="fleet-time" value=""/><!-- 帰還時刻 -->
+	<label id="fleetremain1" class="fleetremain" value=""/><!-- 残り時間 -->
+      </hbox>
+    </vbox>
+
+    <vbox>
+      <hbox>
+	<label value="■第2艦隊"/>
+	<label id="mission_name2" value=""/>
+      </hbox>
+      <hbox>
+	<label id="fleetname2" class="fleetname" value="第2艦隊"/>
+	<label id="fleet2" class="fleet-time" value=""/>
+	<label id="fleetremain2" class="fleetremain" value=""/>
+      </hbox>
+    </vbox>
+
+    <vbox>
+      <hbox>
+	<label value="■第3艦隊"/>
+	<label id="mission_name3" value=""/>
+      </hbox>
+      <hbox>
+	<label id="fleetname3" class="fleetname" value="第3艦隊"/>
+	<label id="fleet3" class="fleet-time" value=""/>
+	<label id="fleetremain3" class="fleetremain" value=""/>
+      </hbox>
+    </vbox>
+
+    <vbox>
+      <hbox>
+	<label value="■第4艦隊"/>
+	<label id="mission_name4" value=""/>
+      </hbox>
+      <hbox>
+	<label id="fleetname4" class="fleetname" value="第4艦隊"/>
+	<label id="fleet4" class="fleet-time" value=""/>
+	<label id="fleetremain4" class="fleetremain" value=""/>
+      </hbox>
+    </vbox>
+
   </groupbox>
 
   <groupbox>

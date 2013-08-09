@@ -1,3 +1,5 @@
+// http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/
+
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 
 function AddLog(str){
@@ -32,13 +34,20 @@ function callback(request,s){
 	if( data.api_result==1 ){
 	    for( let i in data.api_data ){
 		i = parseInt(i);
-		var nameid = 'fleetname'+(i+1);
-		var statusid = 'fleet'+(i+1);
+		var k = i+1;
+		var nameid = 'fleetname'+k;
+		var statusid = 'fleet'+k;
 		var d = data.api_data[i];
 		KanColleRemainInfo.fleet[i] = new Object();
 		KanColleRemainInfo.fleet_name[i] = d.api_name;
 		$(nameid).value = d.api_name; // 艦隊名
 		if( d.api_mission[0] ){
+		    let mission_id = d.api_mission[1]; // 遠征ID
+		    let mission_name = KanColleData.mission_name[mission_id];
+		    KanColleRemainInfo.mission_name[i] = mission_name;
+		    $(statusid).setAttribute('tooltiptext',mission_name);
+		    $('mission_name'+k).value = mission_name;
+
 		    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
 		    KanColleRemainInfo.fleet_time[i] = ftime;
 		    $(statusid).value = ftime;
@@ -257,6 +266,11 @@ var KanColleTimer = {
 		let k = i+1;
 		if( KanColleRemainInfo.fleet_name[i] ){
 		    $('fleetname'+k).value = KanColleRemainInfo.fleet_name[i];
+		}
+		if( KanColleRemainInfo.mission_name[i] ){
+		    let mission_name = KanColleRemainInfo.mission_name[i];
+		    $('fleet'+k).setAttribute('tooltiptext',mission_name);
+		    $('mission_name'+k).value=mission_name;
 		}
 		if( KanColleRemainInfo.fleet_time[i] ){
 		    $('fleet'+k).value = KanColleRemainInfo.fleet_time[i];
