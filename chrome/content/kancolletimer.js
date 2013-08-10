@@ -85,6 +85,7 @@ function callback(request,s){
 		    let diff = finishedtime - now;
 		    $(ftime_str).style.color = diff<60?"red":"black";
 		}else{
+		    KanColleRemainInfo.ndock_time[i] = "";
 		    $(ftime_str).value = "";
 		    KanColleRemainInfo.ndock[i].finishedtime = -1;
 		}
