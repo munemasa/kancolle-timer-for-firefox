@@ -36,7 +36,7 @@ function callback(request,s){
 		i = parseInt(i);
 		var k = i+1;
 		var nameid = 'fleetname'+k;
-		var statusid = 'fleet'+k;
+		var ftime_str = 'fleet'+k;
 		var d = data.api_data[i];
 		KanColleRemainInfo.fleet[i] = new Object();
 		KanColleRemainInfo.fleet_name[i] = d.api_name;
@@ -50,14 +50,17 @@ function callback(request,s){
 
 		    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
 		    KanColleRemainInfo.fleet_time[i] = ftime;
-		    $(statusid).value = ftime;
+		    $(ftime_str).value = ftime;
 
 		    var finishedtime = parseInt( d.api_mission[2]/1000 );
 		    if( now<finishedtime ){
 			KanColleRemainInfo.fleet[i].mission_finishedtime = finishedtime;
 		    }
+
+		    let diff = finishedtime - now;
+		    $(ftime_str).style.color = diff<60?"red":"black";
 		}else{
-		    $(statusid).value = "";
+		    $(ftime_str).value = "";
 		    KanColleRemainInfo.fleet[i].mission_finishedtime = -1;
 		}
 	    }
@@ -67,19 +70,22 @@ function callback(request,s){
 	if( data.api_result==1 ){
 	    for( let i in data.api_data ){
 		i = parseInt(i);
-		var id = 'ndock'+(i+1);
+		var ftime_str = 'ndock'+(i+1);
 		KanColleRemainInfo.ndock[i] = new Object();
 		if( data.api_data[i].api_complete_time ){
 		    var finishedtime_str = data.api_data[i].api_complete_time_str;
-		    $(id).value = finishedtime_str;
+		    $(ftime_str).value = finishedtime_str;
 		    KanColleRemainInfo.ndock_time[i] = finishedtime_str;
 
 		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
 		    if( now<finishedtime ){
 			KanColleRemainInfo.ndock[i].finishedtime = finishedtime;
 		    }
+
+		    let diff = finishedtime - now;
+		    $(ftime_str).style.color = diff<60?"red":"black";
 		}else{
-		    $(id).value = "";
+		    $(ftime_str).value = "";
 		    KanColleRemainInfo.ndock[i].finishedtime = -1;
 		}
 	    }
@@ -91,18 +97,18 @@ function callback(request,s){
 		i = parseInt(i);
 		var k = i+1;
 		KanColleRemainInfo.kdock[i] = new Object();
-		var id = 'kdock'+k;
+		var ftime_str = 'kdock'+k;
 		if( data.api_data[i].api_complete_time ){
 		    // 建造完了時刻の表示
 		    var finishedtime_str = data.api_data[i].api_complete_time_str;
-		    $(id).value = finishedtime_str;
+		    $(ftime_str).value = finishedtime_str;
 		    KanColleRemainInfo.kdock_time[i] = finishedtime_str;
 
 		    // 残り時間とツールチップの設定
 		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
 		    if( now < finishedtime ){
 			// 建造予定艦をツールチップで表示
-			let created_time = KanColleTimerConfig.getInt("kdock-created-time"+i);
+			let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k);
 			if( !created_time ){
 			    // ブラウザを起動して初回タイマー起動時に
 			    // 建造開始時刻を復元するため
@@ -115,9 +121,13 @@ function callback(request,s){
 
 			KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
 		    }
+
+		    let diff = finishedtime - now;
+		    $(ftime_str).style.color = diff<60?"red":"black";
 		}else{
 		    // 建造していない
-		    $(id).value = "";
+		    KanColleRemainInfo.kdock_time[i] = "";
+		    $(ftime_str).value = "";
 		    KanColleRemainInfo.kdock[i].finishedtime = -1;
 		    $('kdock-box'+k).setAttribute('tooltiptext','');
 		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
@@ -136,7 +146,20 @@ var KanColleTimer = {
 
     // 入渠ドックのメモ作成
     createRepairMemo: function(){
-	alert( $('popup-ndock-memo').triggerNode.tagName );
+	let elem = $('popup-ndock-memo').triggerNode;
+	let hbox = FindParentElement(elem,"hbox");
+	let oldstr = hbox.getAttribute('tooltiptext') || "";
+	let text = "入渠ドック"+hbox.firstChild.value+"のメモを入力してください。\nツールチップとして表示されるようになります。";
+	let str = InputPrompt(text,"入渠ドックメモ", oldstr);
+	if( str==null ) return;
+	hbox.setAttribute('tooltiptext',str);
+
+	let ndock_hbox = evaluateXPath(document,"//*[@class='ndock-box']");
+	for(let k in ndock_hbox){
+	    k = parseInt(k);
+	    let elem = ndock_hbox[k];
+	    KanColleRemainInfo.ndock_memo[k] = ndock_hbox[k].getAttribute('tooltiptext');
+	}
     },
 
     playSound: function(path){
@@ -297,12 +320,18 @@ var KanColleTimer = {
 		if( KanColleRemainInfo.fleet_time[i] ){
 		    $('fleet'+k).value = KanColleRemainInfo.fleet_time[i];
 		}
+		if( KanColleRemainInfo.ndock_memo[i] ){
+		    $('ndock-box'+k).setAttribute('tooltiptext',
+						  KanColleRemainInfo.ndock_memo[i] );
+		}
+
 		if( KanColleRemainInfo.ndock_time[i] ){
 		    $('ndock'+k).value = KanColleRemainInfo.ndock_time[i];
 		}
 		if( KanColleRemainInfo.kdock_time[i] ){
 		    $('kdock'+k).value = KanColleRemainInfo.kdock_time[i];
 		}
+		// 建造中艦艇の表示復元
 		if( KanColleRemainInfo.construction_shipname[i] ){
 		    $('kdock-box'+k).setAttribute('tooltiptext',KanColleRemainInfo.construction_shipname[i]);
 		}

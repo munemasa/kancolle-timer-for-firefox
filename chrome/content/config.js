@@ -43,6 +43,10 @@ var KanColleTimerConfig = {
 	}
 	return b;
     },
+    setUnichar:function(path,str){
+	var branch = this.getBranch();
+	branch.setUnicharPref(path,str);
+    },
 
     register:function(){
 	let prefService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);

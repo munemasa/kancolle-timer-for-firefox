@@ -34,7 +34,7 @@ function KanColleTimerSidebarCallback(request,s){
 		i = parseInt(i);
 		var k = i+1;
 		var nameid = 'fleetname'+k;
-		var statusid = 'fleet'+k;
+		var ftime_str = 'fleet'+k;
 		var d = data.api_data[i];
 		KanColleRemainInfo.fleet[i] = new Object();
 		KanColleRemainInfo.fleet_name[i] = d.api_name;
@@ -47,14 +47,17 @@ function KanColleTimerSidebarCallback(request,s){
 
 		    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
 		    KanColleRemainInfo.fleet_time[i] = ftime;
-		    $(statusid).value = ftime;
+		    $(ftime_str).value = ftime;
 
 		    var finishedtime = parseInt( d.api_mission[2]/1000 );
 		    if( now<finishedtime ){
 			KanColleRemainInfo.fleet[i].mission_finishedtime = finishedtime;
 		    }
+
+		    let diff = finishedtime - now;
+		    $(ftime_str).style.color = diff<60?"red":"black";
 		}else{
-		    $(statusid).value = "";
+		    $(ftime_str).value = "";
 		    KanColleRemainInfo.fleet[i].mission_finishedtime = -1;
 		}
 	    }
@@ -95,9 +98,9 @@ function KanColleTimerSidebarCallback(request,s){
 		    KanColleRemainInfo.kdock_time[i] = finishedtime_str;
 		    
 		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
-		    if( now<finishedtime ){
+		    if( now < finishedtime ){
 			// 建造予定艦をツールチップで表示
-			let created_time = KanColleTimerConfig.getInt("kdock-created-time"+i);
+			let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k);
 			if( !created_time ){
 			    // ブラウザを起動して初回タイマー起動時に
 			    // 建造開始時刻を復元するため
