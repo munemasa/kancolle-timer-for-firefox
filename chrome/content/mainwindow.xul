@@ -34,6 +34,11 @@
     <menubar>
       <menu label="ツール">
 	<menupopup>
+	  <menuitem id="window-stay-on-top" persist="checked"
+		    label="常に最前面に表示"
+		    type="checkbox" autocheck="true"
+		    tooltiptext="Windows/Firefox 17以降でのみ有効"
+		    oncommand="KanColleTimer.setWindowOnTop();"/>
 	  <menuitem label="設定..." oncommand="OpenSettingsDialog();"/>
 	  <menuseparator/>
 	  <menuitem label="About" oncommand="OpenAboutDialog();"/>

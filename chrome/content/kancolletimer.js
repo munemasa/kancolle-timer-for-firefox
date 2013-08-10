@@ -211,6 +211,11 @@ var KanColleTimer = {
 	this.playSound(path);
     },
 
+    // ウィンドウを最前面にする
+    setWindowOnTop:function(){
+	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
+    },
+
     update: function(){
 	let i;
 	let now = GetCurrentTime();
@@ -339,6 +344,8 @@ var KanColleTimer = {
 	    }
 	} catch (x) {
 	}
+
+	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
     },
 
     destroy: function(){

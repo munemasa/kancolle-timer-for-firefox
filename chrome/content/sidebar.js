@@ -299,12 +299,17 @@ var KanColleTimerSidebar = {
 		let k = i+1;
 		if( KanColleRemainInfo.mission_name[i] ){
 		    let mission_name = KanColleRemainInfo.mission_name[i];
-		    $('fleetremain'+k).setAttribute('tooltiptext',mission_name);
 		    $('mission_name'+k).value=mission_name;
 		}
+		// 建造中艦艇の表示復元
 		if( KanColleRemainInfo.construction_shipname[i] ){
 		    $('kdock-box'+k).setAttribute('tooltiptext',
 						  KanColleRemainInfo.construction_shipname[i]);
+		}
+		// 入渠ドックメモの復元
+		if( KanColleRemainInfo.ndock_memo[i] ){
+		    $('ndock-box'+k).setAttribute('tooltiptext',
+						  KanColleRemainInfo.ndock_memo[i] );
 		}
 	    }
 	}catch(e){
