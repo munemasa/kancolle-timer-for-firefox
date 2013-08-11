@@ -164,13 +164,16 @@ var KanColleTimer = {
     },
 
     playSound: function(path){
-	//debugprint(path);
-	let IOService = Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService);
-	let localFile = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsILocalFile);
-	let sound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
-	localFile.initWithPath( path );
-	sound.play(IOService.newFileURI(localFile));
-	//sound.playEventSound(0);
+	try{
+	    //debugprint(path);
+	    let IOService = Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService);
+	    let localFile = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsILocalFile);
+	    let sound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
+	    localFile.initWithPath( path );
+	    sound.play(IOService.newFileURI(localFile));
+	    //sound.playEventSound(0);
+	} catch (x) {
+	}
     },
 
     // 完了の通知
