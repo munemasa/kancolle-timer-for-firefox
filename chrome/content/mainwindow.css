@@ -9,6 +9,9 @@ window{
 /*    background-image: url("file:///C:/Users/amano/Desktop/KdL.jpg"); */
 }
 
+#wallpaper {
+    background-position: center center;
+}
 
 iframe {
     -moz-transition: height 0.25s, opacity 0.25s;

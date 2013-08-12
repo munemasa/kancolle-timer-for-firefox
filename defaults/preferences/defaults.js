@@ -1,5 +1,8 @@
 pref("extensions.kancolletimer.test",false);
 
+pref("extensions.kancolletimer.wallpaper","");
+pref("extensions.kancolletimer.wallpaper.alpha",100);
+
 pref("extensions.kancolletimer.sound.mission","");
 pref("extensions.kancolletimer.sound.ndock","");
 pref("extensions.kancolletimer.sound.kdock","");

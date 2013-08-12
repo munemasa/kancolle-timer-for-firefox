@@ -22,7 +22,26 @@ var KanColleTimerPreference = {
 	}
     },
 
+    /**
+     * 画像選択.
+     * @param target 設定対象
+     */
+    refPictureFile:function( target ){
+	const nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+	fp.init(window, "画像ファイルの選択", nsIFilePicker.modeOpen);
+	fp.appendFilters(nsIFilePicker.filterImages);
+	let rv = fp.show();
+	if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
+	    let file = fp.file;
+	    let path = fp.file.path;
+	    $(target).value = path;
+	}
+    },
+
     init:function(){
+	let alpha = $('pref-wallpaper-alpha').value;
+	$('wallpaper-alpha').value = alpha;
     },
     destroy:function(){
     }

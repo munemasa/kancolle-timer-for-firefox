@@ -103,7 +103,27 @@
       <checkbox preference="pref-popup-ndock-completed" label="修理完了"/>
       <checkbox preference="pref-popup-kdock-completed" label="建造完了"/>
     </vbox>
+  </prefpane>
 
+  <prefpane id="prefpane-wallpaper" label="壁紙" image="chrome://kancolletimer/content/data/popupnotification.png">
+    <preferences>
+      <preference id="pref-wallpaper"
+		  name="extensions.kancolletimer.wallpaper" type="string"/>
+      <preference id="pref-wallpaper-alpha"
+		  name="extensions.kancolletimer.wallpaper.alpha" type="int"/>
+    </preferences>
+
+    <hbox>
+      <textbox flex="1" preference="pref-wallpaper"/>
+      <button label="選択..."
+	      oncommand="KanColleTimerPreference.refPictureFile('pref-wallpaper');"/>
+    </hbox>
+    <hbox>
+      <label value="透過度"/>
+      <scale flex="1" preference="pref-wallpaper-alpha"
+	     id="wallpaper-alpha" value="100" min="0" max="100" onchange="$('alpha-label').value=this.value;" />
+      <label id="alpha-label" value="100" style="width:3em;"/>
+    </hbox>
   </prefpane>
 
   <script type="application/x-javascript" src="chrome://mozapps/content/preferences/fontbuilder.js"/>

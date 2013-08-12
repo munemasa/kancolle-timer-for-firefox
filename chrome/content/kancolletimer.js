@@ -308,6 +308,17 @@ var KanColleTimer = {
 	}
     },
 
+    initWallpaper:function(){
+	let wallpaper = KanColleTimerConfig.getUnichar('wallpaper');
+	if( wallpaper ){
+	    let alpha = KanColleTimerConfig.getInt('wallpaper.alpha') / 100.0;
+	    let sheet = document.styleSheets[1];
+	    wallpaper = wallpaper.replace(/\\/g,'/');
+	    let rule = "#wallpaper { background-image: url('file://"+wallpaper+"'); opacity: "+alpha+"; }";
+	    sheet.insertRule(rule,1);
+	}
+    },
+
     init: function(){
 	KanColleHttpRequestObserver.init();
 	KanColleHttpRequestObserver.addCallback( callback );
@@ -347,6 +358,8 @@ var KanColleTimer = {
 	    }
 	} catch (x) {
 	}
+
+	this.initWallpaper();
 
 	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
     },
