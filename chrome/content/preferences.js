@@ -3,6 +3,11 @@ var KanColleTimerPreference = {
     debugprint:function(txt){
     },
 
+    playSound: function(target){
+	$('audio-playback').src = "file://"+ $(target).value;
+	$('audio-playback').play();
+    },
+
     /**
      * サウンド通知用のサウンドファイル選択.
      * @param target 設定対象

@@ -6,3 +6,7 @@ hr {
     border-width: 1px 0px 0px 0px;
     border-style: solid; /*dashed;*/
 }
+
+prefwindow vbox button {
+    min-width: 0;
+}

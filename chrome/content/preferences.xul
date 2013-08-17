@@ -19,13 +19,13 @@
     </preferences>
 
     <vbox>
-      <label value="※現在は WAV ファイルのみ"/>
       <groupbox>
 	<caption>遠征終了</caption>
 	<hbox>
 	  <textbox flex="1" preference="pref-sound-mission-completed"/>
 	  <button label="選択..."
 		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-completed');"/>
+	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-mission-completed');"/>
 	</hbox>
       </groupbox>
       <groupbox>
@@ -34,6 +34,7 @@
 	  <textbox flex="1" preference="pref-sound-ndock-completed"/>
 	  <button label="選択..."
 		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-completed');"/>
+	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-ndock-completed');"/>
 	</hbox>
       </groupbox>
       <groupbox>
@@ -42,6 +43,7 @@
 	  <textbox flex="1" preference="pref-sound-kdock-completed"/>
 	  <button label="選択..."
 		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-completed');"/>
+	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-kdock-completed');"/>
 	</hbox>
       </groupbox>
     </vbox>
@@ -59,13 +61,13 @@
     </preferences>
 
     <vbox>
-      <label value="※現在は WAV ファイルのみ"/>
       <groupbox>
 	<caption>遠征終了</caption>
 	<hbox>
 	  <textbox flex="1" preference="pref-sound-mission-1min"/>
 	  <button label="選択..."
 		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-1min');"/>
+	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-mission-1min');"/>
 	</hbox>
       </groupbox>
       <groupbox>
@@ -74,6 +76,7 @@
 	  <textbox flex="1" preference="pref-sound-ndock-1min"/>
 	  <button label="選択..."
 		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-1min');"/>
+	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-ndock-1min');"/>
 	</hbox>
       </groupbox>
       <groupbox>
@@ -82,6 +85,7 @@
 	  <textbox flex="1" preference="pref-sound-kdock-1min"/>
 	  <button label="選択..."
 		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-1min');"/>
+	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-kdock-1min');"/>
 	</hbox>
       </groupbox>
     </vbox>
@@ -132,6 +136,8 @@
       </hbox>
     </groupbox>
   </prefpane>
+
+  <html:audio id="audio-playback" src=""/>
 
   <script type="application/x-javascript" src="chrome://mozapps/content/preferences/fontbuilder.js"/>
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/libs.js" />
