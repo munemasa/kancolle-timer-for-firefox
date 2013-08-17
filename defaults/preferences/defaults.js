@@ -1,5 +1,7 @@
 pref("extensions.kancolletimer.test",false);
 
+pref("extensions.kancolletimer.display.short",false);
+
 pref("extensions.kancolletimer.wallpaper","");
 pref("extensions.kancolletimer.wallpaper.alpha",100);
 

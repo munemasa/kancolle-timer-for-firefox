@@ -154,6 +154,14 @@
       <textbox id="log" placeholder="" multiline="true" flex="1" style="max-height:10em;"/>
     </vbox>
   </stack>
+
+  <html:audio src=""/>
+  <html:audio src=""/>
+  <html:audio src=""/>
+  <html:audio src=""/>
+  <html:audio src=""/>
+  <html:audio src=""/>
+
   <popupset>
     <menupopup id="popup-ndock-memo">
       <menuitem label="メモの記入" oncommand="KanColleTimer.createRepairMemo();"/>

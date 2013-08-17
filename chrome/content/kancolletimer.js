@@ -145,6 +145,8 @@ var KanColleTimer = {
     kdock: [],
     fleet: [],
 
+    audios:[],
+
     // 入渠ドックのメモ作成
     createRepairMemo: function(){
 	let elem = $('popup-ndock-memo').triggerNode;
@@ -178,23 +180,22 @@ var KanColleTimer = {
 
     // 完了の通知
     noticeRepairFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.ndock');
-	this.playSound(path);
+	this.audios[0].play();
 
 	if( KanColleTimerConfig.getBool('popup.ndock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
 	}
     },
     noticeConstructionFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.kdock');
-	this.playSound(path);
+	this.audios[1].play();
+
 	if( KanColleTimerConfig.getBool('popup.kdock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
 	}
     },
     noticeMissionFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.mission');
-	this.playSound(path);
+	this.audios[2].play();
+
 	if( KanColleTimerConfig.getBool('popup.mission') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
 	}
@@ -202,16 +203,13 @@ var KanColleTimer = {
 
     // 1分前の通知
     noticeRepair1min: function(i){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
-	this.playSound(path);
+	this.audios[3].play();
     },
     noticeConstruction1min: function(i){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
-	this.playSound(path);
+	this.audios[4].play();
     },
     noticeMission1min: function(i){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
-	this.playSound(path);
+	this.audios[5].play();
     },
 
     // ウィンドウを最前面にする
@@ -360,6 +358,8 @@ var KanColleTimer = {
 	}
 
 	this.initWallpaper();
+
+	this.audios = document.getElementsByTagName('html:audio');
 
 	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
     },
