@@ -28,6 +28,15 @@
                  oncommand="toggleSidebar('viewKanColleTimerSidebar');" />
   </broadcasterset>
 
+   <toolbarpalette id="BrowserToolbarPalette">
+     <toolbarbutton id="KanColleTimer-ToolbarButton"
+		    label="艦これタイマー"
+		    tooltiptext="艦これタイマーをサイドバーに表示します"
+		    image="chrome://kancolletimer/content/data/icon.png"
+		    class="toolbarbutton-1 chromeclass-toolbar-additional"
+		    oncommand="toggleSidebar('viewKanColleTimerSidebar');"/>
+   </toolbarpalette>
+
 <!--
   <popup id="contentAreaContextMenu">
     <menuitem id="kancolletimer-popup-menu" label="艦これタイマー" oncommand="KanColleTimerOverlay.open();" />
