@@ -56,6 +56,15 @@ api_token
 
 = 所有艦艇リスト
 POST http://203.104.105.167/kcsapi/api_get_member/ship
+= 所有艦艇リスト(艦隊の編成付き)
+POST http://203.104.105.167/kcsapi/api_get_member/ship2
+
+
+master/ship の api_sortno と 
+api_ship から api_id を得て、所有艦艇リストから api_id の一致するものを探し、
+その api_id からapi_sortnoを得て、 master/ship の api_data[n].api_sortno と一致するものを探すと
+艦名などが分かる。
+
 
 = 艦隊の状態
 POST http://203.104.105.167/kcsapi/api_get_member/deck_port
@@ -85,3 +94,10 @@ api_formation
 
 レスポンス
 svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":{"api_dock_id":1,"api_ship_ke":[-1,508,508,503,503,502,502],"api_ship_lv":[-1,1,1,1,1,1,1],"api_nowhps":[-1,10,63,32,79,77,45,48,48,24,24,22,22],"api_maxhps":[-1,10,63,32,79,77,45,48,48,24,24,22,22],"api_midnight_flag":0,"api_eSlot":[[504,513,513,-1,0],[504,513,513,-1,0],[502,513,-1,-1,0],[502,513,-1,-1,0],[502,-1,-1,-1,0],[502,-1,-1,-1,0]],"api_eKyouka":[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],"api_fParam":[[7,48,0,17],[79,0,43,62],[32,95,32,38],[39,0,76,79],[39,0,69,73],[20,0,31,41]],"api_eParam":[[18,48,10,22],[18,48,10,22],[6,16,6,7],[6,16,6,7],[7,16,7,6],[7,16,7,6]],"api_search":[1,5],"api_formation":[1,2,3],"api_stage_flag":[1,1,1],"api_kouku":{"api_plane_from":[[4,5,6],[-1]],"api_stage1":{"api_f_count":223,"api_f_lostcount":5,"api_e_count":0,"api_e_lostcount":0,"api_disp_seiku":1},"api_stage2":{"api_f_count":169,"api_f_lostcount":0,"api_e_count":0,"api_e_lostcount":0},"api_stage3":{"api_frai_flag":[-1,0,0,0,0,0,0],"api_erai_flag":[-1,0,0,1,1,1,0],"api_fbak_flag":[-1,0,0,0,0,0,0],"api_ebak_flag":[-1,0,1,0,1,1,0],"api_fcl_flag":[-1,0,0,0,0,0,0],"api_ecl_flag":[-1,0,0,0,0,0,0],"api_fdam":[-1,0,0,0,0,0,0],"api_edam":[-1,0,41,43,168,116,0]}},"api_support_flag":0,"api_support_info":null,"api_opening_flag":1,"api_opening_atack":{"api_frai":[-1,1,0,0,0,0,0],"api_erai":[-1,0,0,0,0,0,0],"api_fdam":[-1,0,0,0,0,0,0],"api_edam":[-1,67,0,0,0,0,0],"api_fydam":[-1,67,0,0,0,0,0],"api_eydam":[-1,0,0,0,0,0,0],"api_fcl":[-1,2,0,0,0,0,0],"api_ecl":[-1,0,0,0,0,0,0]},"api_hourai_flag":[1,0,0,0],"api_hougeki1":{"api_at_list":[-1,2,8,3,-1,-1,-1,-1,-1,-1,-1,-1,-1],"api_df_list":[-1,12,1,8,-1,-1,-1,-1,-1,-1,-1,-1,-1],"api_si_list":[-1,7,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"api_cl_list":[-1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"api_damage":[-1,110,1,26,0,0,0,0,0,0,0,0,0]},"api_hougeki2":null,"api_hougeki3":null,"api_raigeki":null}}
+
+
+= 全艦艇リスト
+POST http://203.104.105.167/kcsapi/api_get_master/ship
+
+api_data[n]
+ api_stype: 2,駆逐艦 3,軽巡洋艦

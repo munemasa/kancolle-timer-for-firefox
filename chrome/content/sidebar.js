@@ -70,6 +70,9 @@ function KanColleTimerSidebarCallback(request,s){
 		var id = 'ndock'+(i+1);
 		KanColleRemainInfo.ndock[i] = new Object();
 		if( data.api_data[i].api_complete_time ){
+		    let name = FindShipName( data.api_data[i].api_ship_id );
+		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', name);
+
 		    var finishedtime_str = data.api_data[i].api_complete_time_str;
 		    $(id).value = finishedtime_str;
 		    KanColleRemainInfo.ndock_time[i] = finishedtime_str;
@@ -131,6 +134,8 @@ var KanColleTimerSidebar = {
     kdock: [],
     fleet: [],
 
+    audios:[],
+
     playSound: function(path){
 	try{
 	    //debugprint(path);
@@ -146,23 +151,22 @@ var KanColleTimerSidebar = {
 
     // 完了の通知
     noticeRepairFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.ndock');
-	this.playSound(path);
+	this.audios[0].play();
 
 	if( KanColleTimerConfig.getBool('popup.ndock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
 	}
     },
     noticeConstructionFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.kdock');
-	this.playSound(path);
+	this.audios[1].play();
+
 	if( KanColleTimerConfig.getBool('popup.kdock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
 	}
     },
     noticeMissionFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.mission');
-	this.playSound(path);
+	this.audios[2].play();
+
 	if( KanColleTimerConfig.getBool('popup.missionk') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
 	}
@@ -170,16 +174,13 @@ var KanColleTimerSidebar = {
 
     // 1分前の通知
     noticeRepair1min: function(i){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
-	this.playSound(path);
+	this.audios[3].play();
     },
     noticeConstruction1min: function(i){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
-	this.playSound(path);
+	this.audios[4].play();
     },
     noticeMission1min: function(i){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
-	this.playSound(path);
+	this.audios[5].play();
     },
 
     update: function(){
@@ -297,26 +298,40 @@ var KanColleTimerSidebar = {
 	setInterval( function(){
 			 KanColleTimerSidebar.update();
 		     }, 1000 );
+
 	try{
 	    for(let i=0; i<4; i++){
 		let k = i+1;
+		if( KanColleRemainInfo.fleet_name[i] ){
+		    $('fleetname'+k).value = KanColleRemainInfo.fleet_name[i];
+		}
 		if( KanColleRemainInfo.mission_name[i] ){
 		    let mission_name = KanColleRemainInfo.mission_name[i];
 		    $('mission_name'+k).value=mission_name;
 		}
-		// 建造中艦艇の表示復元
-		if( KanColleRemainInfo.construction_shipname[i] ){
-		    $('kdock-box'+k).setAttribute('tooltiptext',
-						  KanColleRemainInfo.construction_shipname[i]);
+		if( KanColleRemainInfo.fleet_time[i] ){
+		    $('fleet'+k).value = KanColleRemainInfo.fleet_time[i];
 		}
-		// 入渠ドックメモの復元
 		if( KanColleRemainInfo.ndock_memo[i] ){
 		    $('ndock-box'+k).setAttribute('tooltiptext',
 						  KanColleRemainInfo.ndock_memo[i] );
 		}
+
+		if( KanColleRemainInfo.ndock_time[i] ){
+		    $('ndock'+k).value = KanColleRemainInfo.ndock_time[i];
+		}
+		if( KanColleRemainInfo.kdock_time[i] ){
+		    $('kdock'+k).value = KanColleRemainInfo.kdock_time[i];
+		}
+		// 建造中艦艇の表示復元
+		if( KanColleRemainInfo.construction_shipname[i] ){
+		    $('kdock-box'+k).setAttribute('tooltiptext',KanColleRemainInfo.construction_shipname[i]);
+		}
 	    }
-	}catch(e){
+	} catch (x) {
 	}
+
+	this.audios = document.getElementsByTagName('html:audio');
     },
 
     destroy: function(){

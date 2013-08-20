@@ -2,6 +2,7 @@
 
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 
+
 function AddLog(str){
     $('log').value = str + $('log').value;
 }
@@ -18,7 +19,7 @@ function OpenSettingsDialog(){
     w.focus();
 }
 
-function callback(request,s){
+function KanColleTimerSidebarCallback(request,s){
     var now = GetCurrentTime();
     var url = request.name;
 
@@ -64,7 +65,7 @@ function callback(request,s){
 		    KanColleRemainInfo.fleet[i].mission_finishedtime = -1;
 		}
 	    }
-	}	    
+	}
     }else if( url.match(/kcsapi\/api_get_member\/ndock/) ){
 	// 入渠ドック
 	if( data.api_result==1 ){
@@ -73,6 +74,9 @@ function callback(request,s){
 		var ftime_str = 'ndock'+(i+1);
 		KanColleRemainInfo.ndock[i] = new Object();
 		if( data.api_data[i].api_complete_time ){
+		    let name = FindShipName( data.api_data[i].api_ship_id );
+		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', name);
+
 		    var finishedtime_str = data.api_data[i].api_complete_time_str;
 		    $(ftime_str).value = finishedtime_str;
 		    KanColleRemainInfo.ndock_time[i] = finishedtime_str;
@@ -135,7 +139,11 @@ function callback(request,s){
 		}
 	    }
 	}
-    }    
+    }else if( url.match(/kcsapi\/api_get_master\/ship/) ){
+	KanColleRemainInfo.gShipList = data.api_data;
+    }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
+	KanColleRemainInfo.gOwnedShipList = data.api_data;
+    }
 }
 
 var KanColleTimer = {
@@ -319,7 +327,7 @@ var KanColleTimer = {
 
     init: function(){
 	KanColleHttpRequestObserver.init();
-	KanColleHttpRequestObserver.addCallback( callback );
+	KanColleHttpRequestObserver.addCallback( KanColleTimerSidebarCallback );
 
 	setInterval( function(){
 			 KanColleTimer.update();

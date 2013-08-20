@@ -15,6 +15,24 @@ const Ci = Components.interfaces;
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
+function FindShipName( ship_id ){
+    let sort;
+    for( let k in KanColleRemainInfo.gOwnedShipList ){
+	let ship = KanColleRemainInfo.gOwnedShipList[k];
+	let id = ship.api_id; // 所有艦艇の持つID
+	sort = ship.api_sortno;
+	if( id==ship_id ) break;
+    }
+
+    for( let k in KanColleRemainInfo.gShipList ){
+	let ship = KanColleRemainInfo.gShipList[k];
+	if( ship.api_sortno==sort ){
+	    return ship.api_name;
+	}
+    }
+    return "";
+}
+
 function WindowOnTop(win, istop){
     try{
 	let baseWin = win.QueryInterface(Ci.nsIInterfaceRequestor)
