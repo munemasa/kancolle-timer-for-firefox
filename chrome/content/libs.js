@@ -190,6 +190,24 @@ function FindShipName( ship_id ){
     return "";
 }
 
+function FindKanColleTab(){
+    let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+    let browserEnumerator = wm.getEnumerator("navigator:browser");
+    let url = "www.dmm.com/netgame/social/-/gadgets/=/app_id=854854";
+    while(browserEnumerator.hasMoreElements()) {
+	let browserInstance = browserEnumerator.getNext().gBrowser;
+	// browser インスタンスの全てのタブを確認する.
+	let numTabs = browserInstance.tabContainer.childNodes.length;
+	for(let index=0; index<numTabs; index++) {
+	    let currentBrowser = browserInstance.getBrowserAtIndex(index);
+	    if (currentBrowser.currentURI.spec.indexOf(url) != -1) {
+		return browserInstance.tabContainer.childNodes[index];
+	    }
+	}
+    }
+    return null;
+}
+
 function WindowOnTop(win, istop){
     try{
 	let baseWin = win.QueryInterface(Ci.nsIInterfaceRequestor)
