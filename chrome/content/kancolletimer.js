@@ -183,7 +183,7 @@ var KanColleTimer = {
 
     init: function(){
 	KanColleHttpRequestObserver.init();
-	KanColleHttpRequestObserver.addCallback( KanColleTimerSidebarCallback );
+	KanColleHttpRequestObserver.addCallback( KanColleTimerCallback );
 
 	setInterval( function(){
 			 KanColleTimer.update();
@@ -229,7 +229,7 @@ var KanColleTimer = {
     },
 
     destroy: function(){
-	KanColleHttpRequestObserver.removeCallback( callback );
+	KanColleHttpRequestObserver.removeCallback( KanColleTimerCallback );
 	KanColleHttpRequestObserver.destroy();
     }
 };
