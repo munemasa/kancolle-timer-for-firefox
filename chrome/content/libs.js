@@ -169,18 +169,23 @@ function OpenSettingsDialog(){
 
 function FindShipName( ship_id ){
     let sort;
-    for( let k in KanColleRemainInfo.gOwnedShipList ){
-	let ship = KanColleRemainInfo.gOwnedShipList[k];
-	let id = ship.api_id; // 所有艦艇の持つID
-	sort = ship.api_sortno;
-	if( id==ship_id ) break;
-    }
-
-    for( let k in KanColleRemainInfo.gShipList ){
-	let ship = KanColleRemainInfo.gShipList[k];
-	if( ship.api_sortno==sort ){
-	    return ship.api_name;
+    try{
+	for( let k in KanColleRemainInfo.gOwnedShipList ){
+	    let ship = KanColleRemainInfo.gOwnedShipList[k];
+	    let id = ship.api_id; // 所有艦艇の持つID
+	    sort = ship.api_sortno;
+	    if( id==ship_id ) break;
 	}
+
+	for( let k in KanColleRemainInfo.gShipList ){
+	    let ship = KanColleRemainInfo.gShipList[k];
+	    if( ship.api_sortno==sort ){
+		return ship.api_name;
+	    }
+	}
+	
+    } catch (x) {
+
     }
     return "";
 }
