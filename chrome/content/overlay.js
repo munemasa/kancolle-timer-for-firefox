@@ -33,6 +33,7 @@ var KanColleTimerOverlay = {
 
     takeScreenshot: function(){
 	var tab = this.FindKanColleTab();
+	if( !tab ) return;
 	var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
 
 	var game_frame = win.window.document.getElementById("game_frame");
