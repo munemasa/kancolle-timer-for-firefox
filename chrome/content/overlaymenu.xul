@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 
-<overlay id="KanColleTimerOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="KanColleTimerOverlay"
+	 xmlns:html="http://www.w3.org/1999/xhtml"
+	 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/utils/prefutils.js" />
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/overlay.js" />
@@ -30,12 +32,24 @@
 
    <toolbarpalette id="BrowserToolbarPalette">
      <toolbarbutton id="KanColleTimer-ToolbarButton"
+		    type="menu-button"
 		    label="艦これタイマー"
 		    tooltiptext="艦これタイマーをサイドバーに表示します"
 		    image="chrome://kancolletimer/content/data/icon.png"
 		    class="toolbarbutton-1 chromeclass-toolbar-additional"
-		    oncommand="toggleSidebar('viewKanColleTimerSidebar');"/>
+		    oncommand="toggleSidebar('viewKanColleTimerSidebar');">
+       <menupopup>
+	 <menuitem label="スクリーンショット撮影" oncommand="KanColleTimerOverlay.takeScreenshot(); event.stopPropagation();"/>
+       </menupopup>
+     </toolbarbutton>
    </toolbarpalette>
+
+   <statusbar id="status-bar">
+     <scrollbox width="1" height="1">
+       <html:canvas id="KanColleTimerCapture" display="none" />
+     </scrollbox>
+   </statusbar>
+
 
 <!--
   <popup id="contentAreaContextMenu">
