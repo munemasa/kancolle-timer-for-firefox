@@ -40,6 +40,8 @@
 		    oncommand="toggleSidebar('viewKanColleTimerSidebar');">
        <menupopup>
 	 <menuitem label="スクリーンショット撮影" oncommand="KanColleTimerOverlay.takeScreenshot(); event.stopPropagation();"/>
+	 <menuseparator/>
+	 <menuitem label="タイマー(ウィンドウ)を開く" oncommand="KanColleTimerOverlay.open(); event.stopPropagation();"/>
        </menupopup>
      </toolbarbutton>
    </toolbarpalette>

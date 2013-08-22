@@ -16,3 +16,5 @@ pref("extensions.kancolletimer.popup.kdock",false);
 pref("extensions.kancolletimer.sound.1min.mission","");
 pref("extensions.kancolletimer.sound.1min.ndock","");
 pref("extensions.kancolletimer.sound.1min.kdock","");
+
+pref("extensions.kancolletimer.twitter.screen_name","");

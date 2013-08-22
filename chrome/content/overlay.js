@@ -67,7 +67,7 @@ var KanColleTimerOverlay = {
 
 	var fp = Components.classes['@mozilla.org/filepicker;1']
             .createInstance(Components.interfaces.nsIFilePicker);
-	fp.init(window, "スクリーンショットの保存", fp.modeSave);
+	fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
 	fp.appendFilters(fp.filterImages);
 	fp.defaultExtension = "png";
 

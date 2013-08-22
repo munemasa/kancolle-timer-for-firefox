@@ -167,6 +167,55 @@ function OpenSettingsDialog(){
     w.focus();
 }
 
+function OpenTweetDialog(){
+    var f='chrome,toolbar,modal=yes,resizable=no,centerscreen';
+    var w = window.openDialog('chrome://kancolletimer/content/sstweet.xul','KanColleTimerTweet',f);
+    w.focus();
+}
+
+/**
+ * @return スクリーンショットのdataスキーマのnsIURIを返す
+ */
+function TakeKanColleScreenshot(){
+    var tab = FindKanColleTab();
+    var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
+
+    var game_frame = win.window.document.getElementById("game_frame");
+    var offset_x = game_frame.offsetLeft;
+    var offset_y = game_frame.offsetTop;
+    var flash = game_frame.contentWindow.document.getElementById("flashWrap");
+    offset_x += flash.offsetLeft;
+    offset_y += flash.offsetTop;
+
+    var w = flash.clientWidth;
+    var h = flash.clientHeight;
+    var x = offset_x;
+    var y = offset_y;
+    
+    var canvas = document.getElementById("KanColleTimerCapture");
+    canvas.style.display = "inline";
+    canvas.width = w;
+    canvas.height = h;
+
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.scale(1.0, 1.0);
+    // x,y,w,h
+    ctx.drawWindow(win, x, y, w, h, "rgb(255,255,255)");
+    ctx.restore();
+
+    var url = canvas.toDataURL("image/png");
+    const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+        .getService(Components.interfaces.nsIIOService);
+    url = IO_SERVICE.newURI(url, null, null);
+
+    canvas.style.display = "none";
+    canvas.width = 1;
+    canvas.height = 1;
+    return url;
+}
+
 function FindShipName( ship_id ){
     let sort;
     try{
@@ -206,6 +255,26 @@ function FindKanColleTab(){
 	}
     }
     return null;
+}
+
+/**
+ * 指定のURLを開く.
+ * @param url URL
+ * @param hasfocus 開いたタブがフォーカスを得るか
+ */
+function OpenDefaultBrowser(url, hasfocus){
+    let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+    let browserEnumerator = wm.getEnumerator("navigator:browser");
+    let browserInstance;
+    while(browserEnumerator.hasMoreElements()) {
+	browserInstance = browserEnumerator.getNext().gBrowser;
+    }
+
+    let tab = browserInstance.addTab( url );
+    if( hasfocus ){
+	browserInstance.selectedTab = tab;
+    }
+    return tab;
 }
 
 function WindowOnTop(win, istop){
