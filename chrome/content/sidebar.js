@@ -150,6 +150,40 @@ var KanColleTimerSidebar = {
 	return win;
     },
 
+    getNowDateString: function(){
+	var d = new Date();
+	var month = d.getMonth()+1;
+	month = month<10 ? "0"+month : month;
+	var date = d.getDate()<10 ? "0"+d.getDate() : d.getDate();
+	var hour = d.getHours()<10 ? "0"+d.getHours() : d.getHours();
+	var min = d.getMinutes()<10 ? "0"+d.getMinutes() : d.getMinutes();
+	var sec = d.getSeconds()<10 ? "0"+d.getSeconds() : d.getSeconds();
+	return "" + d.getFullYear() + month + date + hour + min + sec;
+    },
+
+    takeScreenshot: function(){
+	var url = TakeKanColleScreenshot();
+	if( !url ){
+	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
+	    return null;
+	}
+
+	var fp = Components.classes['@mozilla.org/filepicker;1']
+            .createInstance(Components.interfaces.nsIFilePicker);
+	fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
+	fp.appendFilters(fp.filterImages);
+	fp.defaultExtension = "png";
+
+	var datestr = this.getNowDateString();
+	fp.defaultString = "screenshot-"+ datestr +".png";
+	if ( fp.show() == fp.returnCancel || !fp.file ) return null;
+	
+	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
+            .createInstance(Components.interfaces.nsIWebBrowserPersist);
+	wbp.saveURI(url, null, null, null, null, fp.file, null);
+	return true;
+    },
+
     /**
      * 艦これタイマーを開く
      */

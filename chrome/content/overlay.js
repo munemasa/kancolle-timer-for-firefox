@@ -33,7 +33,7 @@ var KanColleTimerOverlay = {
 
     takeScreenshot: function(){
 	var tab = this.FindKanColleTab();
-	if( !tab ) return;
+	if( !tab ) return null;
 	var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
 
 	var game_frame = win.window.document.getElementById("game_frame");
@@ -84,6 +84,12 @@ var KanColleTimerOverlay = {
 	canvas.width = 1;
 	canvas.height = 1;
 	return true;
+    },
+
+    openTweetDialog: function(){
+	var f='chrome,toolbar,modal=yes,resizable=no,centerscreen';
+	var w = window.openDialog('chrome://kancolletimer/content/sstweet.xul','KanColleTimerTweet',f);
+	w.focus();
     },
 
     getNowDateString: function(){

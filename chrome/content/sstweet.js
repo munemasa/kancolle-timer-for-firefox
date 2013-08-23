@@ -29,9 +29,12 @@ var SSTweet = {
     },
 
     init:function(){
-	let data = TakeKanColleScreenshot();
-	// data:image/png;base64,......
-	$('ss-image').src = data.spec;
+	try{
+	    let data = TakeKanColleScreenshot();
+	    // data:image/png;base64,......
+	    $('ss-image').src = data.spec;
+	} catch (x) {
+	}
 	$('text').focus();
 
 	if( !Twitter.getScreenName() ){

@@ -172,6 +172,10 @@ var KanColleTimer = {
 
     takeScreenshot: function(){
 	var url = TakeKanColleScreenshot();
+	if( !url ){
+	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
+	    return null;
+	}
 
 	var fp = Components.classes['@mozilla.org/filepicker;1']
             .createInstance(Components.interfaces.nsIFilePicker);

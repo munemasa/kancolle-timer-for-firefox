@@ -174,10 +174,11 @@ function OpenTweetDialog(){
 }
 
 /**
- * @return スクリーンショットのdataスキーマのnsIURIを返す
+ * @return スクリーンショットのdataスキーマのnsIURIを返す。艦これのタブがなければnullを返す
  */
 function TakeKanColleScreenshot(){
     var tab = FindKanColleTab();
+    if( !tab ) return null;
     var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
 
     var game_frame = win.window.document.getElementById("game_frame");
