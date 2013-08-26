@@ -1,3 +1,9 @@
+game_frame
+iframe
+ - flashWrap
+ - externalswf
+
+
 = 遠征
 POST http://203.104.105.167/kcsapi/api_req_mission/start
 api_deck_id     艦隊No.

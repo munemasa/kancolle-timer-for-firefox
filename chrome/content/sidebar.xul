@@ -30,7 +30,11 @@
 	  <menuitem label="About" oncommand="OpenAboutDialog();"/>
 	</menupopup>
       </menu>
-      <menuitem label="つぶやく" oncommand="OpenTweetDialog();"/>
+      <menu label="Twitter">
+	<menupopup>
+	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog(true);"/>
+	</menupopup>
+      </menu>
     </menubar>
   </toolbox>
 

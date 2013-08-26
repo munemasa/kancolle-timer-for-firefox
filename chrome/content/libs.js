@@ -167,8 +167,13 @@ function OpenSettingsDialog(){
     w.focus();
 }
 
-function OpenTweetDialog(){
-    var f='chrome,toolbar,modal=yes,resizable=no,centerscreen';
+function OpenTweetDialog(nomodal){
+    var f;
+    if( nomodal ){
+	f='chrome,toolbar,modal=no,resizable=no,centerscreen';
+    }else{
+	f='chrome,toolbar,modal=yes,resizable=no,centerscreen';
+    }
     var w = window.openDialog('chrome://kancolletimer/content/sstweet.xul','KanColleTimerTweet',f);
     w.focus();
 }

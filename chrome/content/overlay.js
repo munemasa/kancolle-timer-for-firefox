@@ -87,7 +87,7 @@ var KanColleTimerOverlay = {
     },
 
     openTweetDialog: function(){
-	var f='chrome,toolbar,modal=yes,resizable=no,centerscreen';
+	var f='chrome,toolbar,modal=no,resizable=no,centerscreen';
 	var w = window.openDialog('chrome://kancolletimer/content/sstweet.xul','KanColleTimerTweet',f);
 	w.focus();
     },
