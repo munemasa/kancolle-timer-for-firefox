@@ -169,6 +169,7 @@ function OpenSettingsDialog(){
 
 function OpenTweetDialog(nomodal){
     var f;
+    nomodal = true;
     if( nomodal ){
 	f='chrome,toolbar,modal=no,resizable=no,centerscreen';
     }else{
@@ -177,6 +178,24 @@ function OpenTweetDialog(nomodal){
     var w = window.openDialog('chrome://kancolletimer/content/sstweet.xul','KanColleTimerTweet',f);
     w.focus();
 }
+
+function OpenKanCollePage(){
+    let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+    let browserEnumerator = wm.getEnumerator("navigator:browser");
+    let url = "www.dmm.com/netgame/social/-/gadgets/=/app_id=854854";
+    while(browserEnumerator.hasMoreElements()) {
+	let browserInstance = browserEnumerator.getNext().gBrowser;
+	// browser インスタンスの全てのタブを確認する.
+	let numTabs = browserInstance.tabContainer.childNodes.length;
+	for(let index=0; index<numTabs; index++) {
+	    let currentBrowser = browserInstance.getBrowserAtIndex(index);
+	    if (currentBrowser.currentURI.spec.indexOf(url) != -1) {
+		browserInstance.selectedTab = browserInstance.tabContainer.childNodes[index];
+	    }
+	}
+    }
+}
+
 
 /**
  * @return スクリーンショットのdataスキーマのnsIURIを返す。艦これのタブがなければnullを返す

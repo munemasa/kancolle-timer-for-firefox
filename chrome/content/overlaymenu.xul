@@ -39,6 +39,9 @@
 		    class="toolbarbutton-1 chromeclass-toolbar-additional"
 		    oncommand="toggleSidebar('viewKanColleTimerSidebar');">
        <menupopup>
+	 <!-- http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/ -->
+	 <menuitem label="艦これページを開く" oncommand="KanColleTimerOverlay.openKanCollePage(); event.stopPropagation();"/>
+	 <menuseparator/>
 	 <menuitem label="スクリーンショット撮影" oncommand="KanColleTimerOverlay.takeScreenshot(); event.stopPropagation();"/>
 	 <menuitem label="スクリーンショットをつぶやく" oncommand="KanColleTimerOverlay.openTweetDialog(); event.stopPropagation();"/>
 	 <menuseparator/>
