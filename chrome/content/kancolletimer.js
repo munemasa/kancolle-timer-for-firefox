@@ -170,27 +170,49 @@ var KanColleTimer = {
 	}
     },
 
-    takeScreenshot: function(){
+    /**
+     * スクリーンショット撮影
+     * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
+     */
+    takeScreenshot: function(path){
 	var url = TakeKanColleScreenshot();
 	if( !url ){
 	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
 	    return null;
 	}
 
-	var fp = Components.classes['@mozilla.org/filepicker;1']
-            .createInstance(Components.interfaces.nsIFilePicker);
-	fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
-	fp.appendFilters(fp.filterImages);
-	fp.defaultExtension = "png";
+	var file = null;
+	if( !path ){
+	    var fp = Components.classes['@mozilla.org/filepicker;1']
+		.createInstance(Components.interfaces.nsIFilePicker);
+	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
+	    fp.appendFilters(fp.filterImages);
+	    fp.defaultExtension = "png";
 
-	var datestr = this.getNowDateString();
-	fp.defaultString = "screenshot-"+ datestr +".png";
-	if ( fp.show() == fp.returnCancel || !fp.file ) return null;
+	    var datestr = this.getNowDateString();
+	    fp.defaultString = "screenshot-"+ datestr +".png";
+	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
+	    
+	    file = fp.file;
+	}else{
+	    let localfileCID = '@mozilla.org/file/local;1';
+	    let localfileIID =Components.interfaces.nsILocalFile;
+	    file = Components.classes[localfileCID].createInstance(localfileIID);
+	    file.initWithPath(path);
+	    var datestr = this.getNowDateString();
+	    var filename = "screenshot-"+ datestr +".png";
+	    file.append(filename);
+	}
 	
 	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
             .createInstance(Components.interfaces.nsIWebBrowserPersist);
-	wbp.saveURI(url, null, null, null, null, fp.file, null);
+	wbp.saveURI(url, null, null, null, null, file, null);
 	return true;
+    },
+
+    takeScreenshotSeriography:function(){
+	var path = KanColleTimerConfig.getUnichar("screenshot.path");
+	this.takeScreenshot(path);
     },
 
     getNowDateString: function(){
@@ -201,7 +223,15 @@ var KanColleTimer = {
 	var hour = d.getHours()<10 ? "0"+d.getHours() : d.getHours();
 	var min = d.getMinutes()<10 ? "0"+d.getMinutes() : d.getMinutes();
 	var sec = d.getSeconds()<10 ? "0"+d.getSeconds() : d.getSeconds();
-	return "" + d.getFullYear() + month + date + hour + min + sec;
+	var ms = d.getMilliseconds();
+	if( ms<10 ){
+	    ms = "000" + ms;
+	}else if( ms<100 ){
+	    ms = "00" + ms;
+	}else if( ms<1000 ){
+	    ms = "0" + ms;
+	}
+	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
     initWallpaper:function(){

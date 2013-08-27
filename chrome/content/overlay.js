@@ -31,7 +31,11 @@ var KanColleTimerOverlay = {
 	return null;
     },
 
-    takeScreenshot: function(){
+    /**
+     * スクリーンショット撮影
+     * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
+     */
+    takeScreenshot: function( path ){
 	var tab = this.FindKanColleTab();
 	if( !tab ) return null;
 	var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
@@ -66,24 +70,42 @@ var KanColleTimerOverlay = {
             .getService(Components.interfaces.nsIIOService);
 	url = IO_SERVICE.newURI(url, null, null);
 
-	var fp = Components.classes['@mozilla.org/filepicker;1']
-            .createInstance(Components.interfaces.nsIFilePicker);
-	fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
-	fp.appendFilters(fp.filterImages);
-	fp.defaultExtension = "png";
-
-	var datestr = this.getNowDateString();
-	fp.defaultString = "screenshot-"+ datestr +".png";
-	if ( fp.show() == fp.returnCancel || !fp.file ) return null;
-	
-	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-            .createInstance(Components.interfaces.nsIWebBrowserPersist);
-	wbp.saveURI(url, null, null, null, null, fp.file, null);
-	
 	canvas.style.display = "none";
 	canvas.width = 1;
 	canvas.height = 1;
+
+	var file = null;
+	if( !path ){
+	    var fp = Components.classes['@mozilla.org/filepicker;1']
+		.createInstance(Components.interfaces.nsIFilePicker);
+	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
+	    fp.appendFilters(fp.filterImages);
+	    fp.defaultExtension = "png";
+
+	    var datestr = this.getNowDateString();
+	    fp.defaultString = "screenshot-"+ datestr +".png";
+	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
+	
+	    file = fp.file;
+	}else{
+	    let localfileCID = '@mozilla.org/file/local;1';
+	    let localfileIID =Components.interfaces.nsILocalFile;
+	    file = Components.classes[localfileCID].createInstance(localfileIID);
+	    file.initWithPath(path);
+	    var datestr = this.getNowDateString();
+	    var filename = "screenshot-"+ datestr +".png";
+	    file.append(filename);
+	}
+	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
+	    .createInstance(Components.interfaces.nsIWebBrowserPersist);
+	wbp.saveURI(url, null, null, null, null, file, null);
+
 	return true;
+    },
+
+    takeScreenshotSeriography:function(){
+	var path = this.getPref().getUnicharPref("screenshot.path");
+	this.takeScreenshot(path);
     },
 
     openTweetDialog: function(){
@@ -100,7 +122,15 @@ var KanColleTimerOverlay = {
 	var hour = d.getHours()<10 ? "0"+d.getHours() : d.getHours();
 	var min = d.getMinutes()<10 ? "0"+d.getMinutes() : d.getMinutes();
 	var sec = d.getSeconds()<10 ? "0"+d.getSeconds() : d.getSeconds();
-	return "" + d.getFullYear() + month + date + hour + min + sec;
+	var ms = d.getMilliseconds();
+	if( ms<10 ){
+	    ms = "000" + ms;
+	}else if( ms<100 ){
+	    ms = "00" + ms;
+	}else if( ms<1000 ){
+	    ms = "0" + ms;
+	}
+	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
     openKanCollePage: function(){
@@ -121,6 +151,12 @@ var KanColleTimerOverlay = {
 	    break;
 
 	case 1: // スクリーンショットの撮影
+	    this.takeScreenshot();
+	    break;
+
+	case 2: // 連続撮影
+	    var path = this.getPref().getUnicharPref("screenshot.path");
+	    this.takeScreenshot(path);
 	    break;
 	}
     },
@@ -131,6 +167,9 @@ var KanColleTimerOverlay = {
 	}
 	if( document.getElementById('kt-take-screenshot').hasAttribute('checked') ){
 	    this.getPref().setIntPref("default-action.toolbar",1);
+	}
+	if( document.getElementById('kt-take-screenshot-seriography').hasAttribute('checked') ){
+	    this.getPref().setIntPref("default-action.toolbar",2);
 	}
     },
 
@@ -144,6 +183,10 @@ var KanColleTimerOverlay = {
 
 	case 1: // スクリーンショットの撮影
 	    document.getElementById('kt-take-screenshot').setAttribute('checked',"true");
+	    break;
+
+	case 2: // 連続撮影
+	    document.getElementById('kt-take-screenshot-seriography').setAttribute('checked',"true");
 	    break;
 	}
 	

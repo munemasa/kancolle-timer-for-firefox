@@ -23,16 +23,17 @@
     <menubar>
       <menu label="ツール">
 	<menupopup>
-	  <menuitem label="スクリーンショット撮影" oncommand="KanColleTimerSidebar.takeScreenshot();"/>
-	  <menuseparator/>
 	  <menuitem label="設定..." oncommand="OpenSettingsDialog();"/>
 	  <menuseparator/>
 	  <menuitem label="About" oncommand="OpenAboutDialog();"/>
 	</menupopup>
       </menu>
-      <menu label="Twitter">
+      <menu label="撮影">
 	<menupopup>
-	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog(true);"/>
+	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
+	  <menuseparator/>
+	  <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimerSidebar.takeScreenshot();"/>
+	  <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimerSidebar.takeScreenshotSeriography();"/>
 	</menupopup>
       </menu>
     </menubar>
