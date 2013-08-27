@@ -109,7 +109,7 @@
     </vbox>
   </prefpane>
 
-  <prefpane id="prefpane-wallpaper" label="表示" image="chrome://kancolletimer/content/data/popupnotification.png">
+  <prefpane id="prefpane-wallpaper" label="表示" image="chrome://kancolletimer/content/data/screen.png">
     <preferences>
       <preference id="pref-display-short"
 		  name="extensions.kancolletimer.display.short" type="bool"/>
@@ -133,6 +133,22 @@
 	<scale flex="1" preference="pref-wallpaper-alpha"
 	       id="wallpaper-alpha" value="100" min="0" max="100" onchange="$('alpha-label').value=this.value;" />
 	<label id="alpha-label" value="100" style="width:3em;"/>
+      </hbox>
+    </groupbox>
+  </prefpane>
+
+  <prefpane id="prefpane-camera" label="撮影" image="chrome://kancolletimer/content/data/camera.png">
+    <preferences>
+      <preference id="pref-screenshot-path"
+		  name="extensions.kancolletimer.screenshot.path" type="string"/>
+    </preferences>
+
+    <groupbox>
+      <caption>スクリーンショット保存先</caption>
+      <hbox>
+	<textbox flex="1" preference="pref-screenshot-path"/>
+	<button label="選択..."
+		oncommand="KanColleTimerPreference.refDirectory('pref-screenshot-path');"/>
       </hbox>
     </groupbox>
   </prefpane>

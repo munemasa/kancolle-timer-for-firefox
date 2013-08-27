@@ -112,6 +112,44 @@ var KanColleTimerOverlay = {
 	getBrowser().selectedTab = tab;
     },
 
+    onClickToolbar: function(){
+	var action = this.getPref().getIntPref("default-action.toolbar");
+
+	switch( action ){
+	case 0: // サイドバーの開閉
+	    toggleSidebar('viewKanColleTimerSidebar');
+	    break;
+
+	case 1: // スクリーンショットの撮影
+	    break;
+	}
+    },
+
+    setDefaultAction:function(){
+	if( document.getElementById('kt-open-sidebar').hasAttribute('checked') ){
+	    this.getPref().setIntPref("default-action.toolbar",0);
+	}
+	if( document.getElementById('kt-take-screenshot').hasAttribute('checked') ){
+	    this.getPref().setIntPref("default-action.toolbar",1);
+	}
+    },
+
+    onDefaultActionMenuShowing: function(){
+	var action = this.getPref().getIntPref("default-action.toolbar");
+
+	switch( action ){
+	case 0: // サイドバーの開閉
+	    document.getElementById('kt-open-sidebar').setAttribute('checked',"true");
+	    break;
+
+	case 1: // スクリーンショットの撮影
+	    document.getElementById('kt-take-screenshot').setAttribute('checked',"true");
+	    break;
+	}
+	
+	return true;
+    },
+
     /**
      * 艦これタイマーを開く
      */

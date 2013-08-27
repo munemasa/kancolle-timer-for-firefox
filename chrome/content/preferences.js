@@ -44,6 +44,22 @@ var KanColleTimerPreference = {
 	}
     },
 
+    /**
+     * スクリーンショット保存先の選択
+     * @param target 設定対象
+     */
+    refDirectory:function( target ){
+	const nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+	fp.init(window, "スクリーンショット保存先の選択", nsIFilePicker.modeGetFolder);
+	let rv = fp.show();
+	if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
+	    let file = fp.file;
+	    let path = fp.file.path;
+	    $(target).value = path;
+	}
+    },
+
     init:function(){
 	let alpha = $('pref-wallpaper-alpha').value;
 	$('wallpaper-alpha').value = alpha;

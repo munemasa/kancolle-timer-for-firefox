@@ -2,6 +2,10 @@ pref("extensions.kancolletimer.test",false);
 
 pref("extensions.kancolletimer.display.short",false);
 
+pref("extensions.kancolletimer.default-action.toolbar", 0);
+
+pref("extensions.kancolletimer.screenshot.path","");
+
 pref("extensions.kancolletimer.wallpaper","");
 pref("extensions.kancolletimer.wallpaper.alpha",100);
 
