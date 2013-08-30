@@ -23,7 +23,7 @@ var SSTweet = {
 	wbp.saveURI(data, null, null, null, null, file, null);
 
 	let text = $('text').value;
-	//Twitter.updateStatusWithMedia(text, File(file.path));
+	Twitter.updateStatusWithMedia(text, File(file.path));
 	//Twitter.updateStatus(text);
 	setTimeout( function(){ $('send-button').disabled = false; }, 1000 );
     },
