@@ -10,6 +10,10 @@ var KanColleTimerSidebar = {
 
     audios:[],
 
+    /**
+     * 音声再生を行う(nsISound)
+     * @param path ファイルのパス
+     */
     playSound: function(path){
 	try{
 	    //debugprint(path);
@@ -23,38 +27,62 @@ var KanColleTimerSidebar = {
 	}
     },
 
+    /**
+     * 音声通知を行う.
+     * 設定によって再生方式を変えて再生する。
+     * @param elem audio要素
+     * @param path ファイルのパス
+     */
+    playNotice: function( elem, path ){
+	let i = KanColleTimerConfig.getInt('sound.api');
+	switch( i ){
+	case 1:// nsISound
+	    this.playSound( path );
+	    break;
+	default:// HTML5 audio
+	    elem.play();
+	    break;
+	}
+    },
+
     // 完了の通知
     noticeRepairFinished: function(i,str){
-	this.audios[0].play();
+	let path = KanColleTimerConfig.getUnichar('sound.ndock');
+	this.playNotice( this.audios[0], path );
 
 	if( KanColleTimerConfig.getBool('popup.ndock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
 	}
     },
     noticeConstructionFinished: function(i,str){
-	this.audios[1].play();
+	let path = KanColleTimerConfig.getUnichar('sound.kdock');
+	this.playNotice( this.audios[1], path );
 
 	if( KanColleTimerConfig.getBool('popup.kdock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
 	}
     },
     noticeMissionFinished: function(i,str){
-	this.audios[2].play();
+	let path = KanColleTimerConfig.getUnichar('sound.mission');
+	this.playNotice( this.audios[2], path );
 
-	if( KanColleTimerConfig.getBool('popup.missionk') ){
+	if( KanColleTimerConfig.getBool('popup.mission') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
 	}
     },
 
     // 1分前の通知
     noticeRepair1min: function(i){
-	this.audios[3].play();
+	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
+	this.playNotice( this.audios[3], path );
     },
     noticeConstruction1min: function(i){
-	this.audios[4].play();
+	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
+	this.playNotice( this.audios[4], path );
     },
     noticeMission1min: function(i){
-	this.audios[5].play();
+	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
+	this.playNotice( this.audios[5], path );
     },
 
     update: function(){

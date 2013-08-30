@@ -1,11 +1,50 @@
 var KanColleTimerPreference = {
 
     debugprint:function(txt){
+	Application.console.log(txt);
+    },
+
+    /**
+     * 音声再生を行う(nsISound)
+     * @param path ファイルのパス
+     */
+    _playSound: function(path){
+	try{
+	    //debugprint(path);
+	    let IOService = Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService);
+	    let localFile = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsILocalFile);
+	    let sound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
+	    localFile.initWithPath( path );
+	    sound.play(IOService.newFileURI(localFile));
+	    //sound.playEventSound(0);
+	} catch (x) {
+	}
+    },
+
+    /**
+     * 音声通知を行う.
+     * 設定によって再生方式を変えて再生する。
+     * @param elem audio要素
+     * @param path ファイルのパス
+     */
+    playNotice: function( elem, path ){
+	let i = $('pref-sound-api').value;
+	switch( i ){
+	case 1:// nsISound
+	    this._playSound( path );
+	    break;
+	default:// HTML5 audio
+	    elem.play();
+	    break;
+	}
     },
 
     playSound: function(target){
-	$('audio-playback').src = "file://"+ $(target).value;
-	$('audio-playback').play();
+	this.debugprint(target);
+	let path = $(target).value;
+	$('audio-playback').src = "file://"+ path;
+
+	this.playNotice( $('audio-playback'), path );
     },
 
     /**

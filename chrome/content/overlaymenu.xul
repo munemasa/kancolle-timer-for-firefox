@@ -58,6 +58,8 @@
 	   </menupopup>
 	 </menu>
 
+	 <menuitem label="設定..." oncommand="event.stopPropagation(); KanColleTimerOverlay.openSettingsDialog();"/>
+
 	 <menuseparator/>
 	 <menuitem label="タイマー(ウィンドウ)を開く" oncommand="KanColleTimerOverlay.open(); event.stopPropagation();"/>
        </menupopup>

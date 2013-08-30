@@ -142,6 +142,12 @@ var KanColleTimerOverlay = {
 	getBrowser().selectedTab = tab;
     },
 
+    openSettingsDialog: function(){
+	var f='chrome,toolbar,modal=no,resizable=yes,centerscreen';
+	var w = window.openDialog('chrome://kancolletimer/content/preferences.xul','KanColleTimerPreference',f);
+	w.focus();
+    },
+
     onClickToolbar: function(){
 	var action = this.getPref().getIntPref("default-action.toolbar");
 
