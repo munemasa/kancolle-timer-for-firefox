@@ -39,10 +39,10 @@
     </menubar>
   </toolbox>
 
-  <groupbox>
+  <groupbox id="group-mission">
     <caption>遠征</caption>
-    
-    <vbox style="display:none;">
+
+    <vbox class="fleet" style="display:none;">
       <hbox>
 	<label value="■第1艦隊"/>
 	<label id="mission_name1" value=""/>
@@ -54,7 +54,7 @@
       </hbox>
     </vbox>
     
-    <vbox>
+    <vbox class="fleet">
       <hbox>
 	<label value="■第2艦隊"/>
 	<label id="mission_name2" value=""/>
@@ -66,7 +66,7 @@
       </hbox>
     </vbox>
     
-    <vbox>
+    <vbox class="fleet">
       <hbox>
 	<label value="■第3艦隊"/>
 	<label id="mission_name3" value=""/>
@@ -78,7 +78,7 @@
       </hbox>
     </vbox>
     
-    <vbox>
+    <vbox class="fleet">
       <hbox>
 	<label value="■第4艦隊"/>
 	<label id="mission_name4" value=""/>
@@ -118,22 +118,22 @@
   
   <groupbox>
     <caption>建造ドック</caption>
-    <hbox id="kdock-box1">
+    <hbox id="kdock-box1" class="kdock-box">
       <label value="No.1"/>
       <label id="kdock1" class="kdock-time" value=""/>
       <label id="kdockremain1" class="kdockremain" value=""/>
     </hbox>
-    <hbox id="kdock-box2">
+    <hbox id="kdock-box2" class="kdock-box">
       <label value="No.2"/>
       <label id="kdock2" class="kdock-time" value=""/>
       <label id="kdockremain2" class="kdockremain" value=""/>
     </hbox>
-    <hbox id="kdock-box3">
+    <hbox id="kdock-box3" class="kdock-box">
       <label value="No.3"/>
       <label id="kdock3" class="kdock-time" value=""/>
       <label id="kdockremain3" class="kdockremain" value=""/>
     </hbox>
-    <hbox id="kdock-box4">
+    <hbox id="kdock-box4" class="kdock-box">
       <label value="No.4"/>
       <label id="kdock4" class="kdock-time" value=""/>
       <label id="kdockremain4" class="kdockremain" value=""/>

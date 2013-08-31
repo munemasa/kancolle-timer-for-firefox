@@ -92,6 +92,13 @@ api_mission	遠征先	[1,12,1375536843237,0]	エリアID, ミッションID, 終
 レスポンス
 svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":[{"api_member_id":67767,"api_id":1,"api_name":"\u7b2c\u4e00\u8266\u968a","api_name_id":"82694076","api_mission":[0,0,0,0],"api_flagship":"0","api_ship":[171,77,82,93,72,90]},{"api_member_id":67767,"api_id":2,"api_name":"\u7b2c\u4e00\u9060\u5f81\u8266\u968a","api_name_id":"82692194","api_mission":[1,12,1375566823211,0],"api_flagship":"0","api_ship":[368,36,45,4,18,44]},{"api_member_id":67767,"api_id":3,"api_name":"\u7b2c\u4e8c\u9060\u5f81\u8266\u968a","api_name_id":"82692307","api_mission":[1,3,1375539354984,0],"api_flagship":"0","api_ship":[440,71,32,30,15,11]},{"api_member_id":67767,"api_id":4,"api_name":"\u7b2c\u4e09\u9060\u5f81\u8266\u968a","api_name_id":"82694584","api_mission":[1,5,1375543758972,0],"api_flagship":"0","api_ship":[29,13,241,572,14,353]}]}
 
+= プレイヤーのステータス
+POST http://203.104.105.167/kcsapi/api_get_member/basic
+
+レスポンス
+svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":{"api_member_id":"67767","api_nickname":"\u3042\u307e\u306e","api_nickname_id":"62846631","api_active_flag":1,"api_starttime":1377936144645,"api_level":67,"api_rank":4,"api_experience":239515,"api_fleetname":null,"api_comment":"\u5927\u548c(56)","api_comment_id":"96171231","api_max_chara":120,"api_max_slotitem":577,"api_max_kagu":0,"api_playtime":0,"api_tutorial":0,"api_furniture":[17,61,85,117,152,197],"api_count_deck":4,"api_count_kdock":2,"api_count_ndock":4,"api_fcoin":34000,"api_st_win":1803,"api_st_lose":318,"api_ms_count":940,"api_ms_success":927,"api_pt_win":284,"api_pt_lose":100,"api_pt_challenged":0,"api_pt_challenged_win":0,"api_firstflag":1,"api_tutorial_progress":100,"api_pvp":[0,0]}}
+
+
 = 戦闘詳報
 POST http://203.104.105.167/kcsapi/api_req_sortie/battle 
 api_verno

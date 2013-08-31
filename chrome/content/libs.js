@@ -148,6 +148,24 @@ function KanColleTimerCallback(request,s){
 	KanColleRemainInfo.gShipList = data.api_data;
     }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
 	KanColleRemainInfo.gOwnedShipList = data.api_data;
+    }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
+	let d = data.api_data;
+	let f = function( elems, n ){
+	    for( let i=1; i<4; i++ ){
+		elems[i].style.display = i<n ? "":"none";
+	    }
+	};
+	let tmp = parseInt( d.api_count_deck );
+	if( tmp==1 ){
+	    $('group-mission').style.display = "none";
+	}else{
+	    let fleets = document.getElementsByClassName("fleet");
+	    f( fleets, tmp );
+	}
+	let ndocks = document.getElementsByClassName("ndock-box");
+	let kdocks = document.getElementsByClassName("kdock-box");
+	f( ndocks, parseInt(d.api_count_ndock) );
+	f( kdocks, parseInt(d.api_count_kdock) );
     }
 }
 
@@ -264,6 +282,10 @@ function FindShipName( ship_id ){
     return "";
 }
 
+/**
+ * 艦これを開いているタブを返す
+ * @return Tabを返す。なければnull
+ */
 function FindKanColleTab(){
     let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
     let browserEnumerator = wm.getEnumerator("navigator:browser");
@@ -302,6 +324,12 @@ function OpenDefaultBrowser(url, hasfocus){
     return tab;
 }
 
+/**
+ * Windowの最前面表示設定をする.
+ * @note Windows/Firefox 17以降でのみ有効
+ * @param win Window
+ * @param istop 最前面にするならtrue
+ */
 function WindowOnTop(win, istop){
     try{
 	let baseWin = win.QueryInterface(Ci.nsIInterfaceRequestor)
@@ -343,6 +371,23 @@ function WindowOnTop(win, istop){
 		      0, 0, 0, 0,
 		      SWP_NOMOVE | SWP_NOSIZE);
 	lib.close();
+    } catch (x) {
+    }
+}
+
+/**
+ * サウンド再生をする.
+ * @param path ファイルのパス
+ */
+function PlaySound( path ){
+    try{
+	//debugprint(path);
+	let IOService = Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService);
+	let localFile = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsILocalFile);
+	let sound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
+	localFile.initWithPath( path );
+	sound.play(IOService.newFileURI(localFile));
+	//sound.playEventSound(0);
     } catch (x) {
     }
 }
