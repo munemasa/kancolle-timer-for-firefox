@@ -207,6 +207,9 @@ var KanColleTimer = {
 	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
 	    fp.appendFilters(fp.filterImages);
 	    fp.defaultExtension = "png";
+	    if( KanColleTimerConfig.getUnichar("screenshot.path") ){
+		fp.displayDirectory = OpenFile(KanColleTimerConfig.getUnichar("screenshot.path"));
+	    }
 
 	    var datestr = this.getNowDateString();
 	    fp.defaultString = "screenshot-"+ datestr +".png";

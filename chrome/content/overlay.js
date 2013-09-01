@@ -32,6 +32,22 @@ var KanColleTimerOverlay = {
     },
 
     /**
+     * ファイルを開く
+     */
+    OpenFile:function(path){
+	let localfileCID = '@mozilla.org/file/local;1';
+	let localfileIID =Components.interfaces.nsILocalFile;
+	try {
+	    let file = Components.classes[localfileCID].createInstance(localfileIID);
+	file.initWithPath(path);
+	    return file;
+	}
+	catch(e) {
+	    return false;
+	}
+    },
+
+    /**
      * スクリーンショット撮影
      * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
      */
@@ -81,11 +97,14 @@ var KanColleTimerOverlay = {
 	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
 	    fp.appendFilters(fp.filterImages);
 	    fp.defaultExtension = "png";
+	    if( this.getPref().getUnicharPref("screenshot.path") ){
+		fp.displayDirectory = this.OpenFile( this.getPref().getUnicharPref("screenshot.path"));
+	    }
 
 	    var datestr = this.getNowDateString();
 	    fp.defaultString = "screenshot-"+ datestr +".png";
 	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
-	
+
 	    file = fp.file;
 	}else{
 	    let localfileCID = '@mozilla.org/file/local;1';

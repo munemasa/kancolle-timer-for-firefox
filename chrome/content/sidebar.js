@@ -177,7 +177,15 @@ var KanColleTimerSidebar = {
 	var hour = d.getHours()<10 ? "0"+d.getHours() : d.getHours();
 	var min = d.getMinutes()<10 ? "0"+d.getMinutes() : d.getMinutes();
 	var sec = d.getSeconds()<10 ? "0"+d.getSeconds() : d.getSeconds();
-	return "" + d.getFullYear() + month + date + hour + min + sec;
+	var ms = d.getMilliseconds();
+	if( ms<10 ){
+	    ms = "000" + ms;
+	}else if( ms<100 ){
+	    ms = "00" + ms;
+	}else if( ms<1000 ){
+	    ms = "0" + ms;
+	}
+	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
     /**
@@ -198,6 +206,9 @@ var KanColleTimerSidebar = {
 	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
 	    fp.appendFilters(fp.filterImages);
 	    fp.defaultExtension = "png";
+	    if( KanColleTimerConfig.getUnichar("screenshot.path") ){
+		fp.displayDirectory = OpenFile(KanColleTimerConfig.getUnichar("screenshot.path"));
+	    }
 
 	    var datestr = this.getNowDateString();
 	    fp.defaultString = "screenshot-"+ datestr +".png";
