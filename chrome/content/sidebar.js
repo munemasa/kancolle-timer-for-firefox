@@ -251,6 +251,18 @@ var KanColleTimerSidebar = {
 	}
     },
 
+    initWallpaper:function(){
+	let wallpaper = KanColleTimerConfig.getUnichar('wallpaper');
+	if( wallpaper ){
+	    let alpha = KanColleTimerConfig.getInt('wallpaper.alpha') / 100.0;
+	    let sheet = document.styleSheets[1];
+	    wallpaper = wallpaper.replace(/\\/g,'/');
+	    let rule = "background-image: url('file://"+wallpaper+"'); opacity: "+alpha+";";
+	    $('wallpaper').setAttribute('style',rule);
+	    //sheet.insertRule(rule,1);
+	}
+    },
+
     init: function(){
 	Application.console.log('KanColle Timer sidebar init.');
 	KanColleHttpRequestObserver.init();
@@ -292,6 +304,7 @@ var KanColleTimerSidebar = {
 	}
 
 	this.audios = document.getElementsByTagName('html:audio');
+	this.initWallpaper();
     },
 
     destroy: function(){
