@@ -72,6 +72,15 @@
      </scrollbox>
    </statusbar>
 
+  <toolbar id="addon-bar">
+<!--    <statusbarpanel id="NicoLive-panel" label="NicoLive Helper" /> -->
+    <toolbarbutton id="kancolle-timer-toolbar-button"
+		   label="艦これタイマー"
+		   oncommand="KanColleTimerOverlay.open();"
+		   class="toolbarbutton-1"
+		   image="chrome://kancolletimer/content/data/icon.png" />
+  </toolbar>
+
 
 <!--
   <popup id="contentAreaContextMenu">
