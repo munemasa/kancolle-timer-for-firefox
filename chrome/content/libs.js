@@ -74,9 +74,12 @@ function KanColleTimerCallback(request,s){
 		    let name = FindShipName( data.api_data[i].api_ship_id );
 		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', name);
 
-		    var finishedtime_str = data.api_data[i].api_complete_time_str;
-		    $(ftime_str).value = finishedtime_str;
-		    KanColleRemainInfo.ndock_time[i] = finishedtime_str;
+		    try{
+			var tmp = data.api_data[i].api_complete_time_str;
+			var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
+			$(ftime_str).value = finishedtime_str;
+			KanColleRemainInfo.ndock_time[i] = finishedtime_str;
+		    } catch (x) {}
 
 		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
 		    if( now<finishedtime ){
@@ -103,9 +106,12 @@ function KanColleTimerCallback(request,s){
 		var ftime_str = 'kdock'+k;
 		if( data.api_data[i].api_complete_time ){
 		    // 建造完了時刻の表示
-		    var finishedtime_str = data.api_data[i].api_complete_time_str;
-		    $(ftime_str).value = finishedtime_str;
-		    KanColleRemainInfo.kdock_time[i] = finishedtime_str;
+		    try{
+			var tmp = data.api_data[i].api_complete_time_str;
+			var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
+			$(ftime_str).value = finishedtime_str;
+			KanColleRemainInfo.kdock_time[i] = finishedtime_str;
+		    } catch (x) {}
 
 		    // 残り時間とツールチップの設定
 		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
@@ -809,7 +815,7 @@ function GetCurrentTime(){
 
 function GetDateString(ms){
     let d = new Date(ms);
-    return d.toLocaleFormat("%Y-%m-%d %H:%M:%S");
+    return d.toLocaleFormat("%m-%d %H:%M:%S");
 }
 
 function GetFormattedDateString(format,ms){
