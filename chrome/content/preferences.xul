@@ -110,12 +110,17 @@
 		  name="extensions.kancolletimer.popup.ndock" type="bool"/>
       <preference id="pref-popup-kdock-completed"
 		  name="extensions.kancolletimer.popup.kdock" type="bool"/>
+      <preference id="pref-popup-1min-before"
+		  name="extensions.kancolletimer.popup.1min-before" type="bool"/>
     </preferences>
 
     <vbox>
-      <checkbox preference="pref-popup-mission-completed" label="遠征完了"/>
-      <checkbox preference="pref-popup-ndock-completed" label="修理完了"/>
-      <checkbox preference="pref-popup-kdock-completed" label="建造完了"/>
+      <checkbox preference="pref-popup-1min-before" label="1分前にもポップアップ通知を行う"/>
+      <groupbox>
+	<checkbox preference="pref-popup-mission-completed" label="遠征完了"/>
+	<checkbox preference="pref-popup-ndock-completed" label="修理完了"/>
+	<checkbox preference="pref-popup-kdock-completed" label="建造完了"/>
+      </groupbox>
     </vbox>
   </prefpane>
 

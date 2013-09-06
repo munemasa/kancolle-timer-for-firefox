@@ -63,17 +63,29 @@ var KanColleTimerSidebar = {
     },
 
     // 1分前の通知
-    noticeRepair1min: function(i){
+    noticeRepair1min: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
 	this.playNotice( this.audios[3], path );
+
+	if( KanColleTimerConfig.getBool('popup.1min-before') ){
+	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
+	}
     },
-    noticeConstruction1min: function(i){
+    noticeConstruction1min: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
 	this.playNotice( this.audios[4], path );
+
+	if( KanColleTimerConfig.getBool('popup.1min-before') ){
+	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
+	}
     },
-    noticeMission1min: function(i){
+    noticeMission1min: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
 	this.playNotice( this.audios[5], path );
+
+	if( KanColleTimerConfig.getBool('popup.1min-before') ){
+	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
+	}
     },
 
     update: function(){
@@ -92,7 +104,8 @@ var KanColleTimerSidebar = {
 
 		if( fleetremain[i].style.color=="black" ){
 		    if( d<60 ){
-			this.noticeMission1min(i);
+			let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
+			this.noticeMission1min(i,str);
 		    }
 		}
 		fleetremain[i].style.color = d<60?"red":"black";
@@ -119,7 +132,8 @@ var KanColleTimerSidebar = {
 
 		if( ndockremain[i].style.color=="black" ){
 		    if( d<60 ){
-			this.noticeRepair1min(i);
+			let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
+			this.noticeRepair1min(i,str);
 		    }
 		}
 		ndockremain[i].style.color = d<60?"red":"black";
@@ -145,7 +159,8 @@ var KanColleTimerSidebar = {
 
 		if( kdockremain[i].style.color=="black" ){
 		    if( d<60 ){
-			this.noticeConstruction1min(i);
+			let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
+			this.noticeConstruction1min(i,str);
 		    }
 		}
 		kdockremain[i].style.color = d<60?"red":"black";
