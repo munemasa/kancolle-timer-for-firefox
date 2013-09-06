@@ -14,7 +14,7 @@ var KanColleTimer = {
     // 入渠ドックのメモ作成
     createRepairMemo: function(){
 	let elem = $('popup-ndock-memo').triggerNode;
-	let hbox = FindParentElement(elem,"hbox");
+	let hbox = FindParentElement(elem,"row");
 	let oldstr = hbox.getAttribute('tooltiptext') || "";
 	let text = "入渠ドック"+hbox.firstChild.value+"のメモを入力してください。\nツールチップとして表示されるようになります。";
 	let str = InputPrompt(text,"入渠ドックメモ", oldstr);
