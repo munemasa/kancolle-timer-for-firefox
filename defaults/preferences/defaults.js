@@ -6,6 +6,7 @@ pref("extensions.kancolletimer.display.font-color","");
 pref("extensions.kancolletimer.default-action.toolbar", 0);
 
 pref("extensions.kancolletimer.screenshot.path","");
+pref("extensions.kancolletimer.screenshot.jpeg",false);
 
 pref("extensions.kancolletimer.wallpaper","");
 pref("extensions.kancolletimer.wallpaper.alpha",100);

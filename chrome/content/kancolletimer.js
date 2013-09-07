@@ -209,7 +209,8 @@ var KanColleTimer = {
      * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
      */
     takeScreenshot: function(path){
-	var url = TakeKanColleScreenshot();
+	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+	var url = TakeKanColleScreenshot( isjpeg );
 	if( !url ){
 	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
 	    return null;
@@ -221,13 +222,13 @@ var KanColleTimer = {
 		.createInstance(Components.interfaces.nsIFilePicker);
 	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
 	    fp.appendFilters(fp.filterImages);
-	    fp.defaultExtension = "png";
+	    fp.defaultExtension = isjpeg?"jpg":"png";
 	    if( KanColleTimerConfig.getUnichar("screenshot.path") ){
 		fp.displayDirectory = OpenFile(KanColleTimerConfig.getUnichar("screenshot.path"));
 	    }
 
 	    var datestr = this.getNowDateString();
-	    fp.defaultString = "screenshot-"+ datestr +".png";
+	    fp.defaultString = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
 	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
 	    
 	    file = fp.file;
@@ -237,7 +238,7 @@ var KanColleTimer = {
 	    file = Components.classes[localfileCID].createInstance(localfileIID);
 	    file.initWithPath(path);
 	    var datestr = this.getNowDateString();
-	    var filename = "screenshot-"+ datestr +".png";
+	    var filename = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
 	    file.append(filename);
 	}
 	

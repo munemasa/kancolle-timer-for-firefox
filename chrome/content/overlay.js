@@ -52,6 +52,7 @@ var KanColleTimerOverlay = {
      * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
      */
     takeScreenshot: function( path ){
+	var isjpeg = this.getPref().getBoolPref("screenshot.jpeg");
 	var tab = this.FindKanColleTab();
 	if( !tab ) return null;
 	var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
@@ -81,7 +82,12 @@ var KanColleTimerOverlay = {
 	ctx.drawWindow(win, x, y, w, h, "rgb(255,255,255)");
 	ctx.restore();
 
-	var url = canvas.toDataURL("image/png");
+	var url;
+	if( isjpeg ){
+	    url = canvas.toDataURL("image/jpeg");
+	}else{
+	    url = canvas.toDataURL("image/png");
+	}
 	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
             .getService(Components.interfaces.nsIIOService);
 	url = IO_SERVICE.newURI(url, null, null);
@@ -96,13 +102,13 @@ var KanColleTimerOverlay = {
 		.createInstance(Components.interfaces.nsIFilePicker);
 	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
 	    fp.appendFilters(fp.filterImages);
-	    fp.defaultExtension = "png";
+	    fp.defaultExtension = isjpeg?"jpg":"png";
 	    if( this.getPref().getUnicharPref("screenshot.path") ){
 		fp.displayDirectory = this.OpenFile( this.getPref().getUnicharPref("screenshot.path"));
 	    }
 
 	    var datestr = this.getNowDateString();
-	    fp.defaultString = "screenshot-"+ datestr +".png";
+	    fp.defaultString = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
 	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
 
 	    file = fp.file;
@@ -112,7 +118,7 @@ var KanColleTimerOverlay = {
 	    file = Components.classes[localfileCID].createInstance(localfileIID);
 	    file.initWithPath(path);
 	    var datestr = this.getNowDateString();
-	    var filename = "screenshot-"+ datestr +".png";
+	    var filename = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
 	    file.append(filename);
 	}
 	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']

@@ -109,8 +109,11 @@ var KanColleTimerConfig = {
     },
 
     init: function(){
-	this.register();
-	this.loadPrefs();
+	try{
+	    this.register();
+	    this.loadPrefs();
+	} catch (x) {
+	}
     },
     destroy: function(){
 	this.unregister();

@@ -228,7 +228,7 @@ function OpenKanCollePage(){
 /**
  * @return スクリーンショットのdataスキーマのnsIURIを返す。艦これのタブがなければnullを返す
  */
-function TakeKanColleScreenshot(){
+function TakeKanColleScreenshot(isjpeg){
     var tab = FindKanColleTab();
     if( !tab ) return null;
     var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
@@ -258,7 +258,12 @@ function TakeKanColleScreenshot(){
     ctx.drawWindow(win, x, y, w, h, "rgb(255,255,255)");
     ctx.restore();
 
-    var url = canvas.toDataURL("image/png");
+    var url;
+    if( isjpeg ){
+	url = canvas.toDataURL("image/jpeg");
+    }else{
+	url = canvas.toDataURL("image/png");
+    }
     const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
         .getService(Components.interfaces.nsIIOService);
     url = IO_SERVICE.newURI(url, null, null);

@@ -162,8 +162,11 @@
     <preferences>
       <preference id="pref-screenshot-path"
 		  name="extensions.kancolletimer.screenshot.path" type="string"/>
+      <preference id="pref-screenshot-jpeg"
+		  name="extensions.kancolletimer.screenshot.jpeg" type="bool"/>
     </preferences>
 
+    <checkbox preference="pref-screenshot-jpeg" label="JPEGで保存する"/>
     <groupbox>
       <caption>スクリーンショット保存先</caption>
       <hbox>
