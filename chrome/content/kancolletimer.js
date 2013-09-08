@@ -86,7 +86,8 @@ var KanColleTimer = {
 	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
 	this.playNotice( this.audios[3], path );
 
-	if( KanColleTimerConfig.getBool('popup.1min-before') ){
+	if( KanColleTimerConfig.getBool('popup.ndock') &&
+	    KanColleTimerConfig.getBool('popup.1min-before') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
 	}
     },
@@ -94,7 +95,8 @@ var KanColleTimer = {
 	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
 	this.playNotice( this.audios[4], path );
 
-	if( KanColleTimerConfig.getBool('popup.1min-before') ){
+	if( KanColleTimerConfig.getBool('popup.kdock') &&
+	    KanColleTimerConfig.getBool('popup.1min-before') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
 	}
     },
@@ -102,7 +104,8 @@ var KanColleTimer = {
 	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
 	this.playNotice( this.audios[5], path );
 
-	if( KanColleTimerConfig.getBool('popup.1min-before') ){
+	if( KanColleTimerConfig.getBool('popup.1min-before') &&
+	    KanColleTimerConfig.getBool('popup.mission') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
 	}
     },
