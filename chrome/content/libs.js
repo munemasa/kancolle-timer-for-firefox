@@ -179,6 +179,8 @@ function KanColleTimerShipHash(api_data){
  * master/ship: 艦型情報
  */
 function KanColleTimerMasterShipHandler(now,data){
+    if( data.api_result!=1 )
+	return;
     KanColleRemainInfo.gShipList = data.api_data;
     KanColleRemainInfo.shiplist_id = KanColleTimerShipHash(data.api_data);
 }
@@ -187,6 +189,8 @@ function KanColleTimerMasterShipHandler(now,data){
  * member/ship: 所有艦娘情報
  */
 function KanColleTimerMemberShipHandler(now,data){
+    if( data.api_result!=1 )
+	return;
     KanColleRemainInfo.gOwnedShipList = data.api_data;
     KanColleRemainInfo.ownedshiplist_id = KanColleTimerShipHash(data.api_data);
 }
@@ -195,6 +199,8 @@ function KanColleTimerMemberShipHandler(now,data){
  * member/ship2: 所有艦娘情報2
  */
 function KanColleTimerMemberShip2Handler(now,data){
+    if( data.api_result!=1 )
+	return;
     KanColleRemainInfo.gOwnedShipList2 = data.api_data;
     KanColleRemainInfo.ownedshiplist2_id = KanColleTimerShipHash(data.api_data);
 }
