@@ -71,6 +71,7 @@ POST http://203.104.105.167/kcsapi/api_get_member/ship
 = 所有艦艇リスト(艦隊の編成付き)
 POST http://203.104.105.167/kcsapi/api_get_member/ship2
 
+member/ship には艦名が含まれる。
 
 master/ship の api_sortno と 
 api_ship から api_id を得て、所有艦艇リストから api_id の一致するものを探し、
