@@ -18,6 +18,188 @@ const Ci = Components.interfaces;
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
+/*
+ * deck,deck_port
+ */
+function KanColleTimerDeckHandler(now,data){
+    if( data.api_result!=1 )
+	return;
+
+    // 遠征リスト
+    for( let i in data.api_data ){
+	i = parseInt(i);
+	var k = i+1;
+	var nameid = 'fleetname'+k;
+	var ftime_str = 'fleet'+k;
+	var d = data.api_data[i];
+	KanColleRemainInfo.fleet[i] = new Object();
+	KanColleRemainInfo.fleet_name[i] = d.api_name;
+	$(nameid).value = d.api_name; // 艦隊名
+	if( d.api_mission[0] ){
+	    let mission_id = d.api_mission[1]; // 遠征ID
+	    // 遠征名を表示
+	    let mission_name = KanColleData.mission_name[mission_id];
+	    KanColleRemainInfo.mission_name[i] = mission_name;
+	    $('mission_name'+k).value = mission_name;
+
+	    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
+	    KanColleRemainInfo.fleet_time[i] = ftime;
+	    $(ftime_str).value = ftime;
+
+	    var finishedtime = parseInt( d.api_mission[2]/1000 );
+	    if( now<finishedtime ){
+		KanColleRemainInfo.fleet[i].mission_finishedtime = finishedtime;
+	    }
+
+	    let diff = finishedtime - now;
+		    $(ftime_str).style.color = diff<60?"red":"black";
+	}else{
+	    $(ftime_str).value = "";
+	    KanColleRemainInfo.fleet[i].mission_finishedtime = -1;
+	}
+    }
+}
+
+/*
+ * member/ndock: 入渠ドック
+ */
+function KanColleTimerNdockHandler(now,data){
+    if( data.api_result!=1 )
+	return;
+
+    // 入渠ドック
+    for( let i in data.api_data ){
+	i = parseInt(i);
+	var ftime_str = 'ndock'+(i+1);
+	KanColleRemainInfo.ndock[i] = new Object();
+	if( data.api_data[i].api_complete_time ){
+	    let name = FindShipName( data.api_data[i].api_ship_id );
+	    $("ndock-label"+(i+1)).setAttribute('tooltiptext', name);
+	    if( name ){
+		$("ndock-label"+(i+1)).value = name;
+	    }
+
+	    try{
+		var tmp = data.api_data[i].api_complete_time_str;
+		var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
+		$(ftime_str).value = finishedtime_str;
+		KanColleRemainInfo.ndock_time[i] = finishedtime_str;
+	    } catch (x) {}
+
+	    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
+	    if( now<finishedtime ){
+		KanColleRemainInfo.ndock[i].finishedtime = finishedtime;
+	    }
+
+	    let diff = finishedtime - now;
+	    $(ftime_str).style.color = diff<60?"red":"black";
+	}else{
+	    $("ndock-label"+(i+1)).value = "No."+(i+1);
+	    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
+	    KanColleRemainInfo.ndock_time[i] = "";
+	    $(ftime_str).value = "";
+	    KanColleRemainInfo.ndock[i].finishedtime = -1;
+	}
+    }
+}
+
+/*
+ * member/kdock: 建造
+ */
+function KanColleTimerKdockHandler(now,data){
+    // 建造ドック
+    if( data.api_result!=1 )
+	return;
+
+    for( let i in data.api_data ){
+	i = parseInt(i);
+	var k = i+1;
+	KanColleRemainInfo.kdock[i] = new Object();
+	var ftime_str = 'kdock'+k;
+	if( data.api_data[i].api_complete_time ){
+	    // 建造完了時刻の表示
+	    try{
+		var tmp = data.api_data[i].api_complete_time_str;
+		var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
+		$(ftime_str).value = finishedtime_str;
+		KanColleRemainInfo.kdock_time[i] = finishedtime_str;
+	    } catch (x) {}
+
+	    // 残り時間とツールチップの設定
+	    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
+	    if( now < finishedtime ){
+		// 建造予定艦をツールチップで表示
+		let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k);
+		if( !created_time ){
+		    // ブラウザを起動して初回タイマー起動時に
+		    // 建造開始時刻を復元するため
+		    created_time = now;
+		    KanColleTimerConfig.setInt( "kdock-created-time"+k, now );
+		}
+		let name = GetConstructionShipName(created_time,finishedtime);
+		KanColleRemainInfo.construction_shipname[i] = name;
+		$('kdock-box'+k).setAttribute('tooltiptext',name);
+
+		KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
+	    }
+
+	    let diff = finishedtime - now;
+	    $(ftime_str).style.color = diff<60?"red":"black";
+
+	    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
+	    /*
+	    let ship_id = parseInt( data.api_data[i].api_created_ship_id );
+	    let ship_name = KanColleRemainInfo.gShipList[ ship_id-1 ].api_name;
+	    $('kdock-box'+k).setAttribute('tooltiptext',ship_name);
+	     */
+	}else{
+	    // 建造していない
+	    KanColleRemainInfo.kdock_time[i] = "";
+	    $(ftime_str).value = "";
+	    KanColleRemainInfo.kdock[i].finishedtime = -1;
+	    $('kdock-box'+k).setAttribute('tooltiptext','');
+	    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
+	}
+    }
+}
+
+/*
+ * master/ship: 艦型情報
+ */
+function KanColleTimerMasterShipHandler(now,data){
+    KanColleRemainInfo.gShipList = data.api_data;
+}
+
+/*
+ * member/ship,member/ship2: 所有艦娘情報
+ */
+function KanColleTimerMemberShipHandler(now,data){
+    KanColleRemainInfo.gOwnedShipList = data.api_data;
+}
+
+/*
+ * member/basic: 基本情報
+ */
+function KanColleTimerBasicHandler(now,data){
+    let d = data.api_data;
+    let f = function( elems, n ){
+        for( let i=1; i<4; i++ ){
+	    elems[i].style.display = i<n ? "":"none";
+	}
+    };
+    let tmp = parseInt( d.api_count_deck );
+    if( tmp==1 ){
+	$('group-mission').style.display = "none";
+    }else{
+	let fleets = document.getElementsByClassName("fleet");
+	f( fleets, tmp );
+    }
+    let ndocks = document.getElementsByClassName("ndock-box");
+    let kdocks = document.getElementsByClassName("kdock-box");
+    f( ndocks, parseInt(d.api_count_ndock) );
+    f( kdocks, parseInt(d.api_count_kdock) );
+}
+
 function KanColleTimerCallback(request,s){
     var now = GetCurrentTime();
     var url = request.name;
@@ -30,154 +212,22 @@ function KanColleTimerCallback(request,s){
 	// 遠征開始後にdeckが呼ばれるので見る必要なさそう
     }else if( url.match(/kcsapi\/api_get_member\/deck_port/) ||
 	      url.match(/kcsapi\/api_get_member\/deck/) ){
-	// 遠征リスト
-	if( data.api_result==1 ){
-	    for( let i in data.api_data ){
-		i = parseInt(i);
-		var k = i+1;
-		var nameid = 'fleetname'+k;
-		var ftime_str = 'fleet'+k;
-		var d = data.api_data[i];
-		KanColleRemainInfo.fleet[i] = new Object();
-		KanColleRemainInfo.fleet_name[i] = d.api_name;
-		$(nameid).value = d.api_name; // 艦隊名
-		if( d.api_mission[0] ){
-		    let mission_id = d.api_mission[1]; // 遠征ID
-		    // 遠征名を表示
-		    let mission_name = KanColleData.mission_name[mission_id];
-		    KanColleRemainInfo.mission_name[i] = mission_name;
-		    $('mission_name'+k).value = mission_name;
-
-		    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
-		    KanColleRemainInfo.fleet_time[i] = ftime;
-		    $(ftime_str).value = ftime;
-
-		    var finishedtime = parseInt( d.api_mission[2]/1000 );
-		    if( now<finishedtime ){
-			KanColleRemainInfo.fleet[i].mission_finishedtime = finishedtime;
-		    }
-
-		    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
-		}else{
-		    $(ftime_str).value = "";
-		    KanColleRemainInfo.fleet[i].mission_finishedtime = -1;
-		}
-	    }
-	}
+	KanColleTimerDeckHandler(now,data);
     }else if( url.match(/kcsapi\/api_get_member\/ndock/) ){
 	// 入渠ドック
-	if( data.api_result==1 ){
-	    for( let i in data.api_data ){
-		i = parseInt(i);
-		var ftime_str = 'ndock'+(i+1);
-		KanColleRemainInfo.ndock[i] = new Object();
-		if( data.api_data[i].api_complete_time ){
-		    let name = FindShipName( data.api_data[i].api_ship_id );
-		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', name);
-		    if( name ){
-			$("ndock-label"+(i+1)).value = name;
-		    }
-
-		    try{
-			var tmp = data.api_data[i].api_complete_time_str;
-			var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
-			$(ftime_str).value = finishedtime_str;
-			KanColleRemainInfo.ndock_time[i] = finishedtime_str;
-		    } catch (x) {}
-
-		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
-		    if( now<finishedtime ){
-			KanColleRemainInfo.ndock[i].finishedtime = finishedtime;
-		    }
-
-		    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
-		}else{
-		    $("ndock-label"+(i+1)).value = "No."+(i+1);
-		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
-		    KanColleRemainInfo.ndock_time[i] = "";
-		    $(ftime_str).value = "";
-		    KanColleRemainInfo.ndock[i].finishedtime = -1;
-		}
-	    }
-	}
+	KanColleTimerNdockHandler(now,data);
     }else if( url.match(/kcsapi\/api_get_member\/kdock/) ){
 	// 建造ドック
-	if( data.api_result==1 ){
-	    for( let i in data.api_data ){
-		i = parseInt(i);
-		var k = i+1;
-		KanColleRemainInfo.kdock[i] = new Object();
-		var ftime_str = 'kdock'+k;
-		if( data.api_data[i].api_complete_time ){
-		    // 建造完了時刻の表示
-		    try{
-			var tmp = data.api_data[i].api_complete_time_str;
-			var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
-			$(ftime_str).value = finishedtime_str;
-			KanColleRemainInfo.kdock_time[i] = finishedtime_str;
-		    } catch (x) {}
-
-		    // 残り時間とツールチップの設定
-		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
-		    if( now < finishedtime ){
-			// 建造予定艦をツールチップで表示
-			let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k);
-			if( !created_time ){
-			    // ブラウザを起動して初回タイマー起動時に
-			    // 建造開始時刻を復元するため
-			    created_time = now;
-			    KanColleTimerConfig.setInt( "kdock-created-time"+k, now );
-			}
-			let name = GetConstructionShipName(created_time,finishedtime);
-			KanColleRemainInfo.construction_shipname[i] = name;
-			$('kdock-box'+k).setAttribute('tooltiptext',name);
-
-			KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
-		    }
-
-		    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
-
-		    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
-		    /*
-		    let ship_id = parseInt( data.api_data[i].api_created_ship_id );
-		    let ship_name = KanColleRemainInfo.gShipList[ ship_id-1 ].api_name;
-		    $('kdock-box'+k).setAttribute('tooltiptext',ship_name);
-		     */
-		}else{
-		    // 建造していない
-		    KanColleRemainInfo.kdock_time[i] = "";
-		    $(ftime_str).value = "";
-		    KanColleRemainInfo.kdock[i].finishedtime = -1;
-		    $('kdock-box'+k).setAttribute('tooltiptext','');
-		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
-		}
-	    }
-	}
+	KanColleTimerKdockHandler(now,data);
     }else if( url.match(/kcsapi\/api_get_master\/ship/) ){
-	KanColleRemainInfo.gShipList = data.api_data;
+	// 艦型情報
+	KanColleTimerMasterShipHandler(now,data);
     }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
-	KanColleRemainInfo.gOwnedShipList = data.api_data;
+	// 所有艦娘情報
+	KanColleTimerMemberShipHandler(now,data);
     }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
-	let d = data.api_data;
-	let f = function( elems, n ){
-	    for( let i=1; i<4; i++ ){
-		elems[i].style.display = i<n ? "":"none";
-	    }
-	};
-	let tmp = parseInt( d.api_count_deck );
-	if( tmp==1 ){
-	    $('group-mission').style.display = "none";
-	}else{
-	    let fleets = document.getElementsByClassName("fleet");
-	    f( fleets, tmp );
-	}
-	let ndocks = document.getElementsByClassName("ndock-box");
-	let kdocks = document.getElementsByClassName("kdock-box");
-	f( ndocks, parseInt(d.api_count_ndock) );
-	f( kdocks, parseInt(d.api_count_kdock) );
+	// 基本情報
+	KanColleTimerBasicHandler(now,data);
     }
 }
 
