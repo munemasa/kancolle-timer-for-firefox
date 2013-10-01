@@ -19,19 +19,15 @@ const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
 /*
- * deck,deck_port
+ * デッキ/遠征
  */
-function KanColleTimerDeckHandler(now,data){
-    if( data.api_result!=1 )
-	return;
-
-    // 遠征リスト
-    for( let i in data.api_data ){
+function KanColleTimerDeckCommonHandler(now,api_data){
+    for( let i in api_data ){
 	i = parseInt(i);
 	var k = i+1;
 	var nameid = 'fleetname'+k;
 	var ftime_str = 'fleet'+k;
-	var d = data.api_data[i];
+	var d = api_data[i];
 	KanColleRemainInfo.fleet[i] = new Object();
 	KanColleRemainInfo.fleet_name[i] = d.api_name;
 	$(nameid).value = d.api_name; // 艦隊名
@@ -60,6 +56,18 @@ function KanColleTimerDeckHandler(now,data){
     }
 }
 
+/*
+ * deck,deck_port
+ */
+function KanColleTimerDeckHandler(now,data){
+    if( data.api_result!=1 )
+	return;
+
+    // デッキ情報/遠征リスト
+    KanColleTimerDeckCommonHandler(now,data.api_data);
+}
+
+    // 遠征リスト
 /*
  * member/ndock: 入渠ドック
  */
@@ -203,6 +211,9 @@ function KanColleTimerMemberShip2Handler(now,data){
 	return;
     KanColleRemainInfo.gOwnedShipList2 = data.api_data;
     KanColleRemainInfo.ownedshiplist2_id = KanColleTimerShipHash(data.api_data);
+
+    // デッキ/遠征情報
+    KanColleTimerDeckCommonHandler(now,data.api_data_deck);
 }
 
 /*
