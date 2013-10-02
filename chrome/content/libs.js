@@ -207,13 +207,59 @@ function KanColleTimerMemberShipHandler(now,data){
  * member/ship2: 所有艦娘情報2
  */
 function KanColleTimerMemberShip2Handler(now,data){
+    let d;
+
     if( data.api_result!=1 )
 	return;
     KanColleRemainInfo.gOwnedShipList2 = data.api_data;
     KanColleRemainInfo.ownedshiplist2_id = KanColleTimerShipHash(data.api_data);
 
     // デッキ/遠征情報
-    KanColleTimerDeckCommonHandler(now,data.api_data_deck);
+    d = data.api_data_deck;
+    KanColleTimerDeckCommonHandler(now,d);
+
+    // 艦隊情報
+    for ( let i = 0; i < d.length; i++ ){
+	let fi = d[i];
+	let id = parseInt(fi.api_id, 10);
+	$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fi.api_name);
+	for ( let j = 0; j < fi.api_ship.length; j++ ){
+	    let ship_id = fi.api_ship[j];
+	    let ship_name = FindShipName(ship_id);
+	    let ship_cond = FindShipCond(ship_id);
+	    let ship_bgcolor;
+
+	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_name);
+
+	    if (ship_cond === undefined) {
+		ship_cond = '-';
+		ship_bgcolor = null;
+	    } else if (ship_cond >= 90) {
+		ship_bgcolor = '#ffffff';   //キラキラ
+	    } else if (ship_cond >= 80) {
+		ship_bgcolor = '#eeffff';   //キラキラ
+	    } else if (ship_cond >= 70) {
+		ship_bgcolor = '#ddffee';   //キラキラ
+	    } else if (ship_cond >= 60) {
+		ship_bgcolor = '#ccffdd';   //キラキラ
+	    } else if (ship_cond >= 50) {
+		ship_bgcolor = '#bbffcc';   //キラキラ
+	    } else if (ship_cond >= 40) {
+		ship_bgcolor = '#88ff88';   //平常
+	    } else if (ship_cond >= 30) {
+		ship_bgcolor = '#ffcc88';   //間宮
+	    } else if (ship_cond >= 20) {
+		ship_bgcolor = '#ff8844';   //オレンジ
+	    } else if (ship_cond >= 0) {
+		ship_bgcolor = '#ff4444';   //赤
+	    } else {
+		ship_bgcolor = '#666666';   //...
+	    }
+
+	    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
+	    $('shipstatus-' + id + '-' + (j + 1)).style.backgroundColor = ship_bgcolor;
+	}
+    }
 }
 
 /*
@@ -400,6 +446,16 @@ function FindShipName( ship_id ){
 
     }
     return FindShipName2(ship_id);
+}
+
+function FindShipCond( ship_id ){
+    try{
+	let idx = KanColleRemainInfo.ownedshiplist2_id[ship_id];
+	let ship = KanColleRemainInfo.gOwnedShipList2[idx];
+	return parseInt(ship.api_cond, 10);
+    } catch (x) {
+    }
+    return undefined;
 }
 
 /**
