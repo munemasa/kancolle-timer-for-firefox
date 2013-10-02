@@ -226,8 +226,11 @@ function KanColleTimerMemberShip2Handler(now,data){
 	for ( let j = 0; j < fi.api_ship.length; j++ ){
 	    let ship_id = fi.api_ship[j];
 	    let ship_name = FindShipName(ship_id);
+	    let ship_info = FindShipStatus(ship_id);
 	    let ship_cond = FindShipCond(ship_id);
 	    let ship_bgcolor;
+	    let ship_border;
+	    let ship_color;
 
 	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_name);
 
@@ -258,6 +261,26 @@ function KanColleTimerMemberShip2Handler(now,data){
 
 	    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
 	    $('shipstatus-' + id + '-' + (j + 1)).style.backgroundColor = ship_bgcolor;
+
+	    if (ship_info === undefined) {
+		ship_border = null;
+		ship_color = null;
+	    } else {
+		if (ship_info.bull_max > ship_info.bull ||
+		    ship_info.fuel_max > ship_info.fuel) {
+		    ship_border = 'solid red';
+		} else {
+		    ship_border = null;
+		}
+		if (ship_info.maxhp > ship_info.nowhp) {
+		    ship_color = 'red';
+		} else {
+		    ship_color = null;
+		}
+	    }
+
+	    $('shipstatus-' + id + '-' + (j + 1)).style.border = ship_border;
+	    $('shipstatus-' + id + '-' + (j + 1)).style.color = ship_color;
 	}
     }
 }
@@ -453,6 +476,39 @@ function FindShipCond( ship_id ){
 	let idx = KanColleRemainInfo.ownedshiplist2_id[ship_id];
 	let ship = KanColleRemainInfo.gOwnedShipList2[idx];
 	return parseInt(ship.api_cond, 10);
+    } catch (x) {
+    }
+    return undefined;
+}
+
+function FindShipStatus( ship_id ){
+    try{
+	let info = {
+	    fuel: undefined,
+	    fuel_max: undefined,
+	    bull: undefined,
+	    bull_max: undefined,
+	    nowhp: undefined,
+	    maxhp: undefined,
+	};
+
+	// member/ship には fuel, bull, nowhp, maxhp
+	let idx = KanColleRemainInfo.ownedshiplist2_id[ship_id];
+	let ship = KanColleRemainInfo.gOwnedShipList2[idx];
+
+	info.fuel = parseInt(ship.api_fuel, 10);
+	info.bull = parseInt(ship.api_bull, 10);
+	info.nowhp = parseInt(ship.api_nowhp, 10);
+	info.maxhp = parseInt(ship.api_maxhp, 10);
+
+	// fuel_max と bull_max は master/shipから
+	idx = KanColleRemainInfo.shiplist_id[ship.api_ship_id];
+	ship = KanColleRemainInfo.gShipList[idx];
+
+	info.fuel_max = parseInt(ship.api_fuel_max, 10);
+	info.bull_max = parseInt(ship.api_bull_max, 10);
+
+	return info;
     } catch (x) {
     }
     return undefined;
