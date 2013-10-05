@@ -250,11 +250,11 @@ function KanColleTimerMemberShip2Handler(now,data){
 	    } else if (ship_cond >= 40) {
 		ship_bgcolor = '#88ff88';   //平常
 	    } else if (ship_cond >= 30) {
-		ship_bgcolor = '#ffcc88';   //間宮
+		ship_bgcolor = '#ffdd88';   //間宮
 	    } else if (ship_cond >= 20) {
-		ship_bgcolor = '#ff8844';   //オレンジ
+		ship_bgcolor = '#ffaa44';   //オレンジ
 	    } else if (ship_cond >= 0) {
-		ship_bgcolor = '#ff4444';   //赤
+		ship_bgcolor = '#ff8888';   //赤
 	    } else {
 		ship_bgcolor = '#666666';   //...
 	    }
