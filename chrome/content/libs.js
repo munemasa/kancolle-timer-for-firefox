@@ -464,7 +464,9 @@ function FindShipName( ship_id ){
 	// member/ship には艦名が含まれる
 	let idx = KanColleRemainInfo.ownedshiplist_id[ship_id];
 	let ship = KanColleRemainInfo.gOwnedShipList[idx];
-	return ship.api_name;
+	let name = ship.api_name;
+	if( name !== undefined )
+	    return name;
     } catch (x) {
 
     }
