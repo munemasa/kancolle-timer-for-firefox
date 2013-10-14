@@ -312,6 +312,8 @@ var KanColleTimerSidebar = {
 	} catch (x) {
 	}
 
+	KanColleShipInfoInit();
+
 	this.audios = document.getElementsByTagName('html:audio');
 	this.initWallpaper();
     },

@@ -209,6 +209,10 @@
       </columns>
     </grid>
   </groupbox>
+
+  <groupbox id="shipinfo-box" flex="1">
+    <caption>艦船</caption>
+  </groupbox>
   
   <button label="ウィンドウを開く" oncommand="KanColleTimerSidebar.open();"/>
   

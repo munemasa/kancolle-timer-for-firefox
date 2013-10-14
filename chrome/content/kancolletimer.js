@@ -322,6 +322,8 @@ var KanColleTimer = {
 
 	this.initWallpaper();
 
+	KanColleShipInfoInit();
+
 	this.audios = document.getElementsByTagName('html:audio');
 
 	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );

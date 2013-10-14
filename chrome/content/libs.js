@@ -283,6 +283,7 @@ function KanColleTimerMemberShip2Handler(now,data){
 	    $('shipstatus-' + id + '-' + (j + 1)).style.color = ship_color;
 	}
     }
+    KanColleShipInfoSetView();
 }
 
 /*
@@ -514,6 +515,299 @@ function FindShipStatus( ship_id ){
     } catch (x) {
     }
     return undefined;
+}
+
+/*
+ * Tree
+ */
+var ShipInfoTree = {
+    /* Columns*/
+    COLLIST: [
+	{ label: 'ID', id: 'id', flex: 1, },
+	//{ label: '艦種', id: 'type', flex: 2, },
+	{ label: '艦名', id: 'name', flex: 3, always: true, },
+	{ label: 'Lv', id: 'lv', flex: 1, },
+	{ label: 'HP', id: 'hp', flex: 1, },
+	{ label: 'MaxHP', id: 'maxhp', flex: 1, },
+	{ label: 'Cond', id: 'cond', flex: 1, },
+    ],
+    collisthash: {},
+    columns: [
+	'id',
+	//'type',
+	'name',
+	'lv',
+	'hp',
+	'cond',
+    ],
+};
+
+function KanColleCreateShipTree(){
+    let menulist;
+    let oldmenulist;
+    let tree;
+    let oldtree;
+    let treecols;
+    let treechildren;
+    let box;
+
+    debugprint('KanColleCreateShipTree()');
+
+    // outer box
+    box = $('shipinfo-box');
+
+    // Setup hash
+    ShipInfoTree.collisthash = {};
+    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++)
+	ShipInfoTree.collisthash[ShipInfoTree.COLLIST[i].id] = i;
+
+    // Build "menuitem"s
+    menulist = document.createElementNS(XUL_NS, 'menupopup');
+    menulist.setAttribute('id', 'shipinfo-colmenu');
+
+    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
+	let colinfo = ShipInfoTree.COLLIST[i];
+	let menuitem = document.createElementNS(XUL_NS, 'menuitem');
+	menuitem.setAttribute('id', 'shipinfo-colmenu-' + colinfo.id);
+	menuitem.setAttribute('type', 'checkbox');
+	menuitem.setAttribute('label', colinfo.label);
+	if (colinfo.always)
+	    menuitem.setAttribute('disabled', 'true');
+	menuitem.setAttribute('oncommand', 'ShipInfoTreeMenuPopup();');
+	menulist.appendChild(menuitem);
+    }
+
+    // Treecols
+    treecols = document.createElementNS(XUL_NS, 'treecols');
+    treecols.setAttribute('context', 'shipinfo-colmenu');
+    treecols.setAttribute('id', 'shipinfo-tree-columns');
+
+    // Check selected items and build menu
+    for (let i = 0; i < ShipInfoTree.columns.length; i++) {
+	let treecol;
+	let idx = ShipInfoTree.collisthash[ShipInfoTree.columns[i]];
+	let colinfo = ShipInfoTree.COLLIST[idx];
+
+	menulist.childNodes[idx].setAttribute('checked', 'true');
+
+	treecol = document.createElementNS(XUL_NS, 'treecol');
+	treecol.setAttribute('id', 'shipinfo-tree-column-' + colinfo.id);
+	treecol.setAttribute('label', colinfo.label);
+	if (colinfo.flex)
+	    treecol.setAttribute('flex', colinfo.flex);
+	treecol.setAttribute('onclick', 'ShipInfoTreeSort(this);');
+	treecol.setAttribute('class', 'sortDirectionIndicator');
+
+	treecols.appendChild(treecol);
+    }
+
+    // Treechildren
+    treechildren = document.createElementNS(XUL_NS, 'treechildren');
+    treechildren.setAttribute('id', 'shipinfo-tree-children');
+
+    // Build tree
+    tree = document.createElementNS(XUL_NS, 'tree');
+    tree.setAttribute('flex', '1');
+    tree.setAttribute('hidecolumnpicker', 'true');
+    tree.setAttribute('id', 'shipinfo-tree');
+    tree.setAttribute('sortDirection', 'ascending');
+    tree.setAttribute('sortResource', 'id');
+
+    tree.appendChild(treecols);
+    tree.appendChild(treechildren);
+
+    // Refresh tree
+    oldmenulist = $('shipinfo-colmenu');
+    if (oldmenulist)
+	box.replaceChild(menulist, oldmenulist);
+    else
+	box.appendChild(menulist);
+
+    // Replace existing tree, or append one.
+    oldtree = $('shipinfo-tree');
+    if (oldtree)
+	box.replaceChild(tree, oldtree);
+    else
+	box.appendChild(tree);
+}
+
+function ShipInfoTreeSort(col)
+{
+    let order;
+    let tree;
+    let id;
+    let key;
+    let dir;
+
+    debugprint('ShipInfoSort(): ' + (col ? col.id : 'undefined'));
+
+    tree = $('shipinfo-tree');
+    order = tree.getAttribute('sortDirection') == 'ascending' ? 1 : -1;
+
+    if (col) {
+	id = col.id;
+	if (tree.getAttribute('sortResource') == id)
+	    order = -order;
+    } else {
+	id = tree.getAttribute('sortResource');
+    }
+
+    dir = order > 0 ? 'ascending' : 'descending';
+
+    key = id.replace(/^shipinfo-tree-column-/, '');
+
+    for (i = 0; i < ShipInfoTree.columns.length; i++) {
+	let idx = ShipInfoTree.collisthash[ShipInfoTree.columns[i]];
+	let colid = ShipInfoTree.COLLIST[idx].id;
+	if (colid == key)
+	    $('shipinfo-tree-column-' + colid).setAttribute('sortDirection', dir);
+	else
+	    $('shipinfo-tree-column-' + colid).removeAttribute('sortDirection');
+    }
+
+    tree.setAttribute('sortResource', id);
+    tree.setAttribute('sortDirection', dir);
+
+    tree.view = new TreeView(key, order);
+}
+
+
+function TreeView(key, order)
+{
+    var that = this;
+    var shiplist;
+
+    // getCellText function table by column ID
+    var shipcellfunc = {
+	id: function(ship) {
+	    return ship.api_id;
+	},
+	name: function(ship) {
+	    return FindShipNameByCatId(ship.api_ship_id);
+	},
+	lv: function(ship) {
+	    return ship.api_lv;
+	},
+	hp: function(ship) {
+	    let info = FindShipStatus(ship.api_id);
+	    return info ? info.nowhp : '';
+	},
+	maxhp: function(ship) {
+	    let info = FindShipStatus(ship.api_id);
+	    return info ? info.maxhp : '';
+	},
+	cond: function(ship) {
+	    return FindShipCond(ship.api_id);
+	},
+    };
+
+    var objcmp = function(a,b) {
+	if (a > b)
+	    return 1;
+	else if (a < b)
+	    return -1;
+	return 0;
+    };
+
+    //
+    // sort ship list
+    //
+    // special comparision function: each function takes two 'ship's
+    var shipcmpfunc = {
+    };
+
+    // default
+    if (key === undefined)
+	key = 'id';
+    if (order === undefined)
+	order = 1;
+
+    shiplist = Object.keys(KanColleRemainInfo.ownedshiplist2_id).sort(function(a, b) {
+	let res = 0;
+
+	do {
+	    let ship_a = KanColleRemainInfo.gOwnedShipList2[KanColleRemainInfo.ownedshiplist2_id[a]];
+	    let ship_b = KanColleRemainInfo.gOwnedShipList2[KanColleRemainInfo.ownedshiplist2_id[b]];
+
+	    if (shipcmpfunc[key] !== undefined)
+		res = shipcmpfunc[key](ship_a,ship_b);
+	    else if (shipcellfunc[key] !== undefined) {
+		let va = shipcellfunc[key](ship_a);
+		let vb = shipcellfunc[key](ship_b);
+		res = objcmp(va,vb);
+	    }
+	    // tie breaker: id
+	    if (res || key == 'id');
+		break;
+	    key = 'id';
+	} while(1);
+	return res * order;
+    });
+
+    //
+    // the nsITreeView object interface
+    //
+    this.rowCount = KanColleRemainInfo.gOwnedShipList2.length;
+    this.getCellText = function(row,column){
+	let colid = column.id.replace(/^shipinfo-tree-column-/, '');
+	let ship;
+
+	if (row >= this.rowCount)
+	    return null;
+
+	ship = KanColleRemainInfo.gOwnedShipList2[KanColleRemainInfo.ownedshiplist2_id[shiplist[row]]];
+
+	func = shipcellfunc[colid];
+	if (func)
+	    ret = func(ship);
+	else
+	    ret = colid + '_' + row;
+	return ret;
+    };
+    this.setTree = function(treebox){ this.treebox = treebox; };
+    this.isContainer = function(row){ return false; };
+    this.isSeparator = function(row){ return false; };
+    this.isSorted = function(){ return false; };
+    this.getLevel = function(row){ return 0; };
+    this.getImageSrc = function(row,col){ return null; };
+    this.getRowProperties = function(row,props){};
+    this.getCellProperties = function(row,col,props){};
+    this.getColumnProperties = function(colid,col,props){};
+    this.cycleHeader = function(col,elem){};
+};
+
+function KanColleShipInfoSetView() {
+    debugprint('KanColleShipInfoSetView()');
+    $('shipinfo-tree').view = new TreeView();
+}
+
+function ShipInfoTreeMenuPopup() {
+    debugprint('ShipInfoTreeMenuPopup()');
+    let cols = [];
+    let str = '';
+    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
+	let id = ShipInfoTree.COLLIST[i].id;
+	let nodeid = 'shipinfo-colmenu-' + id;
+	str += id + ': ' + ($(nodeid).hasAttribute('checked') ? 'true' : 'false') + '\n';
+	if ($(nodeid).hasAttribute('checked')) {
+	    str += 'true';
+	    cols.push(id);
+	} else
+	    str += 'false';
+	str += '\n';
+    }
+
+    ShipInfoTree.columns = cols;
+
+    KanColleCreateShipTree();
+    KanColleShipInfoSetView();
+}
+
+function KanColleShipInfoInit()
+{
+    debugprint('KanColleShipInfoInit()');
+    KanColleCreateShipTree();
+    KanColleShipInfoSetView();
 }
 
 /**

@@ -225,6 +225,10 @@
     </grid>
   </groupbox>
   
+  <groupbox id="shipinfo-box" flex="1">
+    <caption>艦船</caption>
+  </groupbox>
+  
   <html:audio src=""/>
   <html:audio src=""/>
   <html:audio src=""/>
