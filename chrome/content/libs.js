@@ -616,7 +616,7 @@ function KanColleCreateShipTree(){
     tree.appendChild(treecols);
     tree.appendChild(treechildren);
 
-    // Refresh tree
+    // Refresh existing menulist or append one.
     oldmenulist = $('shipinfo-colmenu');
     if (oldmenulist)
 	box.replaceChild(menulist, oldmenulist);
@@ -699,6 +699,10 @@ function TreeView(key, order){
 	},
     };
 
+    //
+    // Sort ship list
+    //
+    // default comparison function
     var objcmp = function(a,b) {
 	if (a > b)
 	    return 1;
@@ -707,9 +711,6 @@ function TreeView(key, order){
 	return 0;
     };
 
-    //
-    // sort ship list
-    //
     // special comparision function: each function takes two 'ship's
     var shipcmpfunc = {
     };
