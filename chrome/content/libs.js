@@ -631,8 +631,7 @@ function KanColleCreateShipTree(){
 	box.appendChild(tree);
 }
 
-function ShipInfoTreeSort(col)
-{
+function ShipInfoTreeSort(col){
     let order;
     let tree;
     let id;
@@ -672,8 +671,7 @@ function ShipInfoTreeSort(col)
 }
 
 
-function TreeView(key, order)
-{
+function TreeView(key, order){
     var that = this;
     var shiplist;
 
@@ -776,12 +774,12 @@ function TreeView(key, order)
     this.cycleHeader = function(col,elem){};
 };
 
-function KanColleShipInfoSetView() {
+function KanColleShipInfoSetView(){
     debugprint('KanColleShipInfoSetView()');
     $('shipinfo-tree').view = new TreeView();
 }
 
-function ShipInfoTreeMenuPopup() {
+function ShipInfoTreeMenuPopup(){
     debugprint('ShipInfoTreeMenuPopup()');
     let cols = [];
     let str = '';
@@ -803,8 +801,7 @@ function ShipInfoTreeMenuPopup() {
     KanColleShipInfoSetView();
 }
 
-function KanColleShipInfoInit()
-{
+function KanColleShipInfoInit(){
     debugprint('KanColleShipInfoInit()');
     KanColleCreateShipTree();
     KanColleShipInfoSetView();
