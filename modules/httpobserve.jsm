@@ -15,6 +15,7 @@ var KanColleRemainInfo = {
     ownedshiplist2_id: {},
     slotitemlist_id: {},
     ownedslotitemlist_id: {},
+    slotitemowners: {},
 
     fleet_name: [], // 艦隊名
     mission_name:[],// 遠征名

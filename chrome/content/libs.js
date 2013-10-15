@@ -204,6 +204,58 @@ function KanColleTimerMemberShipHandler(now,data){
 }
 
 /*
+ * member/ship2 and member/slotitem
+ */
+function KanColleUpdateSlotitem(){
+    let db;
+
+    db = {};
+    if (KanColleRemainInfo.gOwnedSlotitemList.length &&
+	KanColleRemainInfo.gOwnedShipList2.length) {
+	let api_data = KanColleRemainInfo.gOwnedShipList2;
+
+	for ( let i = 0; i < api_data.length; i++ ){
+	    let ship = api_data[i];
+	    let ship_slot = ship.api_slot;
+
+	    //debugprint(FindShipName(ship.api_id) + ': ');
+
+	    for ( let j = 0; j < ship_slot.length; j++ ){
+		let itemidx;
+		let item;
+		let itemtypeid;
+
+		if (ship_slot[j] < 0)
+		    continue;
+		itemidx = KanColleRemainInfo.ownedslotitemlist_id[ship_slot[j]];
+		item = KanColleRemainInfo.gOwnedSlotitemList[itemidx];
+		itemtypeid = item.api_slotitem_id;
+
+		//debugprint(itemtypeid + ': ' + item.api_name);
+
+		if (!db[itemtypeid]) {
+		    db[itemtypeid] = {
+					name: item.api_name,
+					list: {},
+				     };
+		}
+		db[itemtypeid].list[ship.api_id]++;
+	    }
+	}
+
+	for ( let k in db ){
+	    let s = [];
+	    for ( let l in db[k].list ){
+		s.push(FindShipName(parseInt(l, 10)));
+	    }
+	    debugprint(db[k].name + ': ' + s.join(','));
+	}
+    }
+    //debugprint(KanColleRemainInfo.slotitemowners.toSource());
+    KanColleRemainInfo.slotitemowners = db;
+}
+
+/*
  * member/ship2: 所有艦娘情報2
  */
 function KanColleTimerMemberShip2Handler(now,data){
@@ -213,6 +265,8 @@ function KanColleTimerMemberShip2Handler(now,data){
 	return;
     KanColleRemainInfo.gOwnedShipList2 = data.api_data;
     KanColleRemainInfo.ownedshiplist2_id = KanColleTimerShipHash(data.api_data);
+
+    KanColleUpdateSlotitem();
 
     // デッキ/遠征情報
     d = data.api_data_deck;
@@ -283,6 +337,7 @@ function KanColleTimerMemberShip2Handler(now,data){
 	    $('shipstatus-' + id + '-' + (j + 1)).style.color = ship_color;
 	}
     }
+    KanColleCreateShipTree();
     KanColleShipInfoSetView();
 }
 
@@ -294,6 +349,10 @@ function KanColleTimerMasterSlotitemHandler(now,data){
 	return;
     KanColleRemainInfo.gSlotitemList = data.api_data;
     KanColleRemainInfo.slotitemlist_id = KanColleTimerShipHash(data.api_data);
+
+    KanColleUpdateSlotitem();
+    KanColleCreateShipTree();
+    KanColleShipInfoSetView();
 }
 
 /*
@@ -568,6 +627,76 @@ var ShipInfoTree = {
     ],
 };
 
+function KanColleBuildFilterMenuList(id){
+    let menulist;
+    let menupopup;
+    let menu;
+
+    function buildmenuitem(label, value){
+	let item = document.createElementNS(XUL_NS, 'menuitem');
+	item.setAttribute('label', label);
+	if (value) {
+	    item.setAttribute('value', value);
+	    item.setAttribute('id', id + '-popup-' + value);
+	    item.setAttribute('oncommand', 'ShipListFilter(this);');
+	} else
+	    item.setAttribute('oncommand', 'ShipListFilter();');
+	return item;
+    }
+
+    menulist = document.createElementNS(XUL_NS, 'menulist');
+    menulist.setAttribute('label', 'XXX');
+    menulist.setAttribute('id', id);
+
+    menupopup = document.createElementNS(XUL_NS, 'menupopup');
+    menupopup.setAttribute('id', id + '-popup');
+
+    menupopup.appendChild(buildmenuitem('すべて', null));
+
+    for (let k in KanColleRemainInfo.slotitemowners) {
+	let itemname = KanColleRemainInfo.slotitemowners[k].name;
+
+	/*
+	if (!itemname) {
+	    let itemtype_idx = KanColleRemainInfo.slotitemlist_id[k];
+	    let itemtype = KanColleRemainInfo.gSlotitemList[itemtype_idx];
+	    itemname = itemtype.api_name;
+	}
+	*/
+	debugprint(itemname + ': slotitem' + k);
+	menupopup.appendChild(buildmenuitem(itemname, 'slotitem' + k));
+    }
+    menulist.appendChild(menupopup);
+
+    return menulist;
+}
+
+function ShipListFilter(item){
+    let itemid = item ? item.id : null;
+    let filterspec;
+
+    debugprint('ShipListFilter(' + itemid + ')');
+
+    if (itemid)
+	KanColleRemainInfo.shipfilterspec = itemid.replace(/^shipinfo-filtermenu-popup-/, '');
+    else
+	KanColleRemainInfo.shipfilterspec = null;
+
+    KanColleShipInfoSetView();
+}
+
+function KanColleCreateFilterMenuList(box,id)
+{
+    let oldmenulist = $(id);
+    let menulist = KanColleBuildFilterMenuList(id);
+
+    // Replace existing one or add new one.
+    if (oldmenulist)
+	box.replaceChild(menulist, oldmenulist);
+    else
+	box.appendChild(menulist);
+}
+
 function KanColleCreateShipTree(){
     let menulist;
     let oldmenulist;
@@ -586,6 +715,9 @@ function KanColleCreateShipTree(){
     ShipInfoTree.collisthash = {};
     for (let i = 0; i < ShipInfoTree.COLLIST.length; i++)
 	ShipInfoTree.collisthash[ShipInfoTree.COLLIST[i].id] = i;
+
+    // Build filter menu popup
+    KanColleCreateFilterMenuList(box,'shipinfo-filtermenu');
 
     // Build "menuitem"s
     menulist = document.createElementNS(XUL_NS, 'menupopup');
@@ -725,6 +857,18 @@ function TreeView(key, order){
 	},
     };
 
+    // Ship list
+    shiplist = Object.keys(KanColleRemainInfo.ownedshiplist2_id);
+    if (KanColleRemainInfo.shipfilterspec) {
+	let filterspec = KanColleRemainInfo.shipfilterspec;
+	if (filterspec.match(/^slotitem(\d+)$/)) {
+	    let slotitemid = RegExp.$1;
+	    shiplist = Object.keys(KanColleRemainInfo.slotitemowners[slotitemid].list);
+	} else {
+	    debugprint('invalid filterspec "' + filterspec + '"; ignored');
+	}
+    }
+
     //
     // Sort ship list
     //
@@ -747,7 +891,7 @@ function TreeView(key, order){
     if (order === undefined)
 	order = 1;
 
-    shiplist = Object.keys(KanColleRemainInfo.ownedshiplist2_id).sort(function(a, b) {
+    shiplist = shiplist.sort(function(a, b) {
 	let res = 0;
 
 	do {
@@ -772,7 +916,7 @@ function TreeView(key, order){
     //
     // the nsITreeView object interface
     //
-    this.rowCount = KanColleRemainInfo.gOwnedShipList2.length;
+    this.rowCount = shiplist.length;
     this.getCellText = function(row,column){
 	let colid = column.id.replace(/^shipinfo-tree-column-/, '');
 	let ship;
