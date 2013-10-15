@@ -825,13 +825,20 @@ function ShipInfoTreeSort(col){
     tree.setAttribute('sortResource', id);
     tree.setAttribute('sortDirection', dir);
 
-    tree.view = new TreeView(key, order);
+    tree.view = new TreeView();
 }
 
-
-function TreeView(key, order){
+function TreeView(){
     var that = this;
     var shiplist;
+
+    let tree;
+    let id;
+
+    tree = $('shipinfo-tree');
+    order = tree.getAttribute('sortDirection') == 'ascending' ? 1 : -1;
+    id = tree.getAttribute('sortResource');
+    key = id.replace(/^shipinfo-tree-column-/, '');
 
     // getCellText function table by column ID
     var shipcellfunc = {
