@@ -287,6 +287,26 @@ function KanColleTimerMemberShip2Handler(now,data){
 }
 
 /*
+ * master/ship: 装備情報
+ */
+function KanColleTimerMasterSlotitemHandler(now,data){
+    if( data.api_result!=1 )
+	return;
+    KanColleRemainInfo.gSlotitemList = data.api_data;
+    KanColleRemainInfo.slotitemlist_id = KanColleTimerShipHash(data.api_data);
+}
+
+/*
+ * member/ship: 所有艦娘情報
+ */
+function KanColleTimerMemberSlotitemHandler(now,data){
+    if( data.api_result!=1 )
+	return;
+    KanColleRemainInfo.gOwnedSlotitemList = data.api_data;
+    KanColleRemainInfo.ownedslotitemlist_id = KanColleTimerShipHash(data.api_data);
+}
+
+/*
  * member/basic: 基本情報
  */
 function KanColleTimerBasicHandler(now,data){
@@ -337,6 +357,12 @@ function KanColleTimerCallback(request,s){
     }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
 	// 所有艦娘情報
 	KanColleTimerMemberShipHandler(now,data);
+    }else if( url.match(/kcsapi\/api_get_master\/slotitem/) ){
+	// 装備情報
+	KanColleTimerMemberSlotitemHandler(now,data);
+    }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
+	// 所有装備情報
+	KanColleTimerMemberSlotitemHandler(now,data);
     }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
 	// 基本情報
 	KanColleTimerBasicHandler(now,data);
