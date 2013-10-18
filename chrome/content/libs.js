@@ -356,7 +356,7 @@ function KanColleTimerMasterSlotitemHandler(now,data){
 }
 
 /*
- * member/ship: 所有艦娘情報
+ * member/slotitem: 所有装備情報
  */
 function KanColleTimerMemberSlotitemHandler(now,data){
     if( data.api_result!=1 )
