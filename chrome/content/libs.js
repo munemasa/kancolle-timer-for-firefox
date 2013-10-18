@@ -254,6 +254,9 @@ function KanColleUpdateSlotitem(){
 		    continue;
 
 		item = KanColleTimerDB.memberSlotitem.get(ship_slot[j]);
+		// member/slotitem might be out-of-date for a while.
+		if (!item)
+		    continue;
 		itemtypeid = item.api_slotitem_id;
 
 		//debugprint(itemtypeid + ': ' + item.api_name);
