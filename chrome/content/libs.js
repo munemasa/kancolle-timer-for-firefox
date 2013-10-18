@@ -19,6 +19,53 @@ const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
 /*
+ * Database
+ */
+function KanColleDataBase(){
+    var _db = null;
+    var _list = null;
+
+    this.update = function(data){
+	let hash = {};
+	if (data) {
+	    for( let i = 0; i < data.length; i++ ){
+		hash[data[i].api_id] = data[i];
+	    }
+	}
+	_db = hash;
+	_list = null;
+    };
+    this.list = function(){
+	if (!_db)
+	    return [];
+	if (!_list)
+	    _list = Object.keys(_db);
+	return _list;
+    };
+    this.get = function(id){
+	if (_db)
+	    return _db[id];
+	return null;
+    };
+}
+
+var KanColleTimerDB = {
+    // Database
+    masterShip: null,		// master/ship
+    masterSlotitem: null,	// master/slotitem
+    memberShip2: null,		// member/ship2
+    memberSlotitem: null,	// member/slotitem
+
+    // Initialization
+    init: function(){
+	this.masterShip = new KanColleDataBase();
+	this.masterSlotitem = new KanColleDataBase();
+	this.memberShip2 = new KanColleDataBase();
+	this.memberSlotitem = new KanColleDataBase();
+    },
+};
+
+/*
  * デッキ/遠征
  */
 function KanColleTimerDeckCommonHandler(now,api_data){
@@ -157,7 +204,7 @@ function KanColleTimerKdockHandler(now,data){
 	    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
 	    /*
 	    let ship_id = parseInt( data.api_data[i].api_created_ship_id );
-	    let ship_name = KanColleRemainInfo.gShipList[ ship_id-1 ].api_name;
+	    let ship_name = FindShipNameByCatId(ship_id);
 	    $('kdock-box'+k).setAttribute('tooltiptext',ship_name);
 	     */
 	}else{
@@ -172,25 +219,13 @@ function KanColleTimerKdockHandler(now,data){
 }
 
 /*
- * IDから配列へのマッピングを作成
- */
-function KanColleTimerShipHash(api_data){
-    let hash = new Object();
-
-    for( let i = 0; i < api_data.length; i++ )
-	hash[api_data[i].api_id] = i;
-
-    return hash;
-}
-
-/*
  * master/ship: 艦型情報
  */
 function KanColleTimerMasterShipHandler(now,data){
     if( data.api_result!=1 )
 	return;
-    KanColleRemainInfo.gShipList = data.api_data;
-    KanColleRemainInfo.shiplist_id = KanColleTimerShipHash(data.api_data);
+
+    KanColleTimerDB.masterShip.update(data.api_data);
 }
 
 /*
@@ -198,27 +233,27 @@ function KanColleTimerMasterShipHandler(now,data){
  */
 function KanColleUpdateSlotitem(){
     let db;
+    let ships;
 
     db = {};
-    if (KanColleRemainInfo.gOwnedSlotitemList.length &&
-	KanColleRemainInfo.gOwnedShipList2.length) {
-	let api_data = KanColleRemainInfo.gOwnedShipList2;
+    ships = KanColleTimerDB.memberShip2.list();
 
-	for ( let i = 0; i < api_data.length; i++ ){
-	    let ship = api_data[i];
+    if (KanColleTimerDB.memberSlotitem.list().length &&
+	ships.length) {
+	for ( let i = 0; i < ships.length; i++ ){
+	    let ship = KanColleTimerDB.memberShip2.get(ships[i]);
 	    let ship_slot = ship.api_slot;
 
 	    //debugprint(FindShipName(ship.api_id) + ': ');
 
 	    for ( let j = 0; j < ship_slot.length; j++ ){
-		let itemidx;
 		let item;
 		let itemtypeid;
 
 		if (ship_slot[j] < 0)
 		    continue;
-		itemidx = KanColleRemainInfo.ownedslotitemlist_id[ship_slot[j]];
-		item = KanColleRemainInfo.gOwnedSlotitemList[itemidx];
+
+		item = KanColleTimerDB.memberSlotitem.get(ship_slot[j]);
 		itemtypeid = item.api_slotitem_id;
 
 		//debugprint(itemtypeid + ': ' + item.api_name);
@@ -253,9 +288,8 @@ function KanColleTimerMemberShip2Handler(now,data){
 
     if( data.api_result!=1 )
 	return;
-    KanColleRemainInfo.gOwnedShipList2 = data.api_data;
-    KanColleRemainInfo.ownedshiplist2_id = KanColleTimerShipHash(data.api_data);
 
+    KanColleTimerDB.memberShip2.update(data.api_data);
     KanColleUpdateSlotitem();
 
     // デッキ/遠征情報
@@ -337,8 +371,8 @@ function KanColleTimerMemberShip2Handler(now,data){
 function KanColleTimerMasterSlotitemHandler(now,data){
     if( data.api_result!=1 )
 	return;
-    KanColleRemainInfo.gSlotitemList = data.api_data;
-    KanColleRemainInfo.slotitemlist_id = KanColleTimerShipHash(data.api_data);
+
+    KanColleTimerDB.masterSlotitem.update(data.api_data);
 
     KanColleUpdateSlotitem();
     KanColleCreateShipTree();
@@ -351,8 +385,8 @@ function KanColleTimerMasterSlotitemHandler(now,data){
 function KanColleTimerMemberSlotitemHandler(now,data){
     if( data.api_result!=1 )
 	return;
-    KanColleRemainInfo.gOwnedSlotitemList = data.api_data;
-    KanColleRemainInfo.ownedslotitemlist_id = KanColleTimerShipHash(data.api_data);
+
+    KanColleTimerDB.memberSlotitem.update(data.api_data);
 }
 
 /*
@@ -513,9 +547,7 @@ function TakeKanColleScreenshot(isjpeg){
 function FindShipNameByCatId( id ){
     try{
 	// 全艦データから艦艇型IDをキーに艦名を取得
-	let idx = KanColleRemainInfo.shiplist_id[id];
-	let ship = KanColleRemainInfo.gShipList[idx];
-	return ship.api_name;
+	return KanColleTimerDB.masterShip.get(id).api_name;
     } catch (x) {
     }
     return "";
@@ -524,8 +556,7 @@ function FindShipNameByCatId( id ){
 function FindShipName( ship_id ){
     try{
 	// member/ship2 には艦名がない。艦艇型から取得
-	let idx = KanColleRemainInfo.ownedshiplist2_id[ship_id];
-	let ship = KanColleRemainInfo.gOwnedShipList2[idx];
+	let ship = KanColleTimerDB.memberShip2.get(ship_id);
 	return FindShipNameByCatId( ship.api_ship_id );
     } catch (x) {
     }
@@ -534,8 +565,7 @@ function FindShipName( ship_id ){
 
 function FindShipCond( ship_id ){
     try{
-	let idx = KanColleRemainInfo.ownedshiplist2_id[ship_id];
-	let ship = KanColleRemainInfo.gOwnedShipList2[idx];
+	let ship = KanColleTimerDB.memberShip2.get(ship_id);
 	return parseInt(ship.api_cond, 10);
     } catch (x) {
     }
@@ -554,8 +584,7 @@ function FindShipStatus( ship_id ){
 	};
 
 	// member/ship には fuel, bull, nowhp, maxhp
-	let idx = KanColleRemainInfo.ownedshiplist2_id[ship_id];
-	let ship = KanColleRemainInfo.gOwnedShipList2[idx];
+	let ship = KanColleTimerDB.memberShip2.get(ship_id);
 
 	info.fuel = parseInt(ship.api_fuel, 10);
 	info.bull = parseInt(ship.api_bull, 10);
@@ -563,8 +592,7 @@ function FindShipStatus( ship_id ){
 	info.maxhp = parseInt(ship.api_maxhp, 10);
 
 	// fuel_max と bull_max は master/shipから
-	idx = KanColleRemainInfo.shiplist_id[ship.api_ship_id];
-	ship = KanColleRemainInfo.gShipList[idx];
+	ship = KanColleTimerDB.masterShip.get(ship.api_ship_id);
 
 	info.fuel_max = parseInt(ship.api_fuel_max, 10);
 	info.bull_max = parseInt(ship.api_bull_max, 10);
@@ -630,11 +658,8 @@ function KanColleBuildFilterMenuList(id){
 	let itemname = KanColleRemainInfo.slotitemowners[k].name;
 
 	/*
-	if (!itemname) {
-	    let itemtype_idx = KanColleRemainInfo.slotitemlist_id[k];
-	    let itemtype = KanColleRemainInfo.gSlotitemList[itemtype_idx];
-	    itemname = itemtype.api_name;
-	}
+	if (!itemname)
+	    itemname = KanColleTimerDB.masterSlotitem.get(k).api_name;
 	*/
 	debugprint(itemname + ': slotitem' + k);
 	menupopup.appendChild(buildmenuitem(itemname, 'slotitem' + k));
@@ -838,7 +863,7 @@ function TreeView(){
     };
 
     // Ship list
-    shiplist = Object.keys(KanColleRemainInfo.ownedshiplist2_id);
+    shiplist = KanColleTimerDB.memberShip2.list();
     if (KanColleRemainInfo.shipfilterspec) {
 	let filterspec = KanColleRemainInfo.shipfilterspec;
 	if (filterspec.match(/^slotitem(\d+)$/)) {
@@ -875,8 +900,8 @@ function TreeView(){
 	let res = 0;
 
 	do {
-	    let ship_a = KanColleRemainInfo.gOwnedShipList2[KanColleRemainInfo.ownedshiplist2_id[a]];
-	    let ship_b = KanColleRemainInfo.gOwnedShipList2[KanColleRemainInfo.ownedshiplist2_id[b]];
+	    let ship_a = KanColleTimerDB.memberShip2.get(a);
+	    let ship_b = KanColleTimerDB.memberShip2.get(b);
 
 	    if (shipcmpfunc[key] !== undefined)
 		res = shipcmpfunc[key](ship_a,ship_b);
@@ -904,7 +929,7 @@ function TreeView(){
 	if (row >= this.rowCount)
 	    return null;
 
-	ship = KanColleRemainInfo.gOwnedShipList2[KanColleRemainInfo.ownedshiplist2_id[shiplist[row]]];
+	ship = KanColleTimerDB.memberShip2.get(shiplist[row]);
 
 	func = shipcellfunc[colid];
 	if (func)
