@@ -5,13 +5,11 @@ var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo"];
 
 var KanColleRemainInfo = {
     gShipList: [],
-    gOwnedShipList: [],
     gOwnedShipList2: [],
     gSlotitemList: [],
     gOwnedSlotitemList: [],
 
     shiplist_id: {},
-    ownedshiplist_id: {},
     ownedshiplist2_id: {},
     slotitemlist_id: {},
     ownedslotitemlist_id: {},
