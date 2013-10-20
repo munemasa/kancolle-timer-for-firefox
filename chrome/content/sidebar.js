@@ -312,7 +312,6 @@ var KanColleTimerSidebar = {
 	} catch (x) {
 	}
 
-	KanColleTimerDB.init();
 	KanColleShipInfoInit();
 
 	this.audios = document.getElementsByTagName('html:audio');

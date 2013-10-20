@@ -322,7 +322,6 @@ var KanColleTimer = {
 
 	this.initWallpaper();
 
-	KanColleTimerDB.init();
 	KanColleShipInfoInit();
 
 	this.audios = document.getElementsByTagName('html:audio');

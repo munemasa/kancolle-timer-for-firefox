@@ -1,7 +1,62 @@
 /* -*- mode: js2;-*- */
 
-var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo"];
+var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo",
+			"KanColleDatabase"];
 
+/*
+ * Database
+ */
+function KanColleDB(){
+    var _db = null;
+    var _list = null;
+
+    this.update = function(data){
+	let hash = {};
+	if (data) {
+	    for( let i = 0; i < data.length; i++ ){
+		hash[data[i].api_id] = data[i];
+	    }
+	}
+	_db = hash;
+	_list = null;
+    };
+    this.list = function(){
+	if (!_db)
+	    return [];
+	if (!_list)
+	    _list = Object.keys(_db);
+	return _list;
+    };
+    this.get = function(id){
+	if (_db)
+	    return _db[id];
+	return null;
+    };
+}
+
+var KanColleDatabase = {
+    // Database
+    masterShip: null,		// master/ship
+    masterSlotitem: null,	// master/slotitem
+    memberShip2: null,		// member/ship2
+    memberSlotitem: null,	// member/slotitem
+
+    // Initialization
+    init: function(){
+	this.masterShip = new KanColleDB();
+	this.masterSlotitem = new KanColleDB();
+	this.memberShip2 = new KanColleDB();
+	this.memberSlotitem = new KanColleDB();
+	debugprint("KanColleDatabase initialized.");
+    },
+    exit: function(){
+	this.masterShip = null;
+	this.masterSlotitem = null;
+	this.memberShip2 = null;
+	this.memberSlotitem = null;
+	debugprint("KanColleDatabase cleared.");
+    },
+};
 
 var KanColleRemainInfo = {
     slotitemowners: {},
@@ -132,6 +187,8 @@ var KanColleHttpRequestObserver =
 		.getService(Components.interfaces.nsIObserverService);
 	    this.observerService.addObserver(this, "http-on-examine-response", false);
 	    debugprint("start kancolle observer.");
+
+	    KanColleDatabase.init();
 	}
 	this.counter++;
     },
@@ -139,6 +196,8 @@ var KanColleHttpRequestObserver =
     destroy: function(){
 	this.counter--;
 	if( this.counter<=0 ){
+	    KanColleDatabase.exit();
+
 	    this.observerService.removeObserver(this, "http-on-examine-response");
 	    this.counter = 0;
 	    debugprint("stop kancolle observer.");
