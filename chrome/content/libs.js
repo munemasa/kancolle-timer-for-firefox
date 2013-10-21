@@ -322,7 +322,7 @@ function KanColleTimerMemberShip2Handler(now,data){
 }
 
 /*
- * master/ship: 装備情報
+ * master/slotitem: 装備情報
  */
 function KanColleTimerMasterSlotitemHandler(now,data){
     if( data.api_result!=1 )
@@ -395,7 +395,7 @@ function KanColleTimerCallback(request,s){
 	KanColleTimerMemberShip2Handler(now,data);
     }else if( url.match(/kcsapi\/api_get_master\/slotitem/) ){
 	// 装備情報
-	KanColleTimerMemberSlotitemHandler(now,data);
+	KanColleTimerMasterSlotitemHandler(now,data);
     }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
 	// 所有装備情報
 	KanColleTimerMemberSlotitemHandler(now,data);
