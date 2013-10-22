@@ -63,9 +63,6 @@ function KanColleTimerDeckCommonHandler(now,api_data){
  * deck,deck_port
  */
 function KanColleTimerDeckHandler(now,data){
-    if( data.api_result!=1 )
-	return;
-
     // デッキ情報/遠征リスト
     KanColleTimerDeckCommonHandler(now,data.api_data);
 }
@@ -75,9 +72,6 @@ function KanColleTimerDeckHandler(now,data){
  *  member/ndock	: api_data
  */
 function KanColleTimerNdockHandler(now,data){
-    if( data.api_result!=1 )
-	return;
-
     // 入渠ドック
     for( let i in data.api_data ){
 	i = parseInt(i);
@@ -120,9 +114,6 @@ function KanColleTimerNdockHandler(now,data){
  */
 function KanColleTimerKdockHandler(now,data){
     // 建造ドック
-    if( data.api_result!=1 )
-	return;
-
     for( let i in data.api_data ){
 	i = parseInt(i);
 	var k = i+1;
@@ -180,9 +171,6 @@ function KanColleTimerKdockHandler(now,data){
  *  master/ship		: api_data
  */
 function KanColleTimerMasterShipHandler(now,data){
-    if( data.api_result!=1 )
-	return;
-
     KanColleDatabase.masterShip.update(data.api_data);
 }
 
@@ -250,9 +238,6 @@ function KanColleUpdateSlotitem(){
  */
 function KanColleTimerMemberShip2Handler(now,data){
     let d;
-
-    if( data.api_result!=1 )
-	return;
 
     KanColleDatabase.memberShip2.update(data.api_data);
     KanColleUpdateSlotitem();
@@ -335,9 +320,6 @@ function KanColleTimerMemberShip2Handler(now,data){
  *  master/slotitem	: api_data
  */
 function KanColleTimerMasterSlotitemHandler(now,data){
-    if( data.api_result!=1 )
-	return;
-
     KanColleDatabase.masterSlotitem.update(data.api_data);
 
     KanColleUpdateSlotitem();
@@ -350,9 +332,6 @@ function KanColleTimerMasterSlotitemHandler(now,data){
  *  member/slotitem	: api_data
  */
 function KanColleTimerMemberSlotitemHandler(now,data){
-    if( data.api_result!=1 )
-	return;
-
     KanColleDatabase.memberSlotitem.update(data.api_data);
 }
 
@@ -386,6 +365,9 @@ function KanColleTimerCallback(request,s){
 
     s = s.substring( s.indexOf('svdata=')+7 );
     var data = JSON.parse(s);
+
+    if( data.api_result!=1 )
+	return;
 
     if( url.match(/kcsapi\/api_req_mission\/start/) ){
 	// 遠征開始
