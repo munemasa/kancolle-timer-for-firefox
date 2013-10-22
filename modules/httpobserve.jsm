@@ -7,6 +7,17 @@ var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo",
 /*
  * Database
  */
+function KanColleSimpleDB(){
+    var _db = null;
+
+    this.update = function(data){
+	_db = data;
+    };
+    this.get = function(){
+	return _db;
+    };
+}
+
 function KanColleDB(){
     var _raw = null;
     var _db = null;
@@ -53,6 +64,9 @@ var KanColleDatabase = {
     memberSlotitem: null,	// member/slotitem
     memberDeck: null,		// member/deck,member/deck_port,
 				// or member/ships[api_data_deck]
+    memberNdock: null,		// member/ndock
+    memberKdock: null,		// member/kdock
+    memberBasic: null,		// member/basic
 
     // Initialization
     init: function(){
@@ -61,6 +75,9 @@ var KanColleDatabase = {
 	this.memberShip2 = new KanColleDB();
 	this.memberSlotitem = new KanColleDB();
 	this.memberDeck = new KanColleDB();
+	this.memberNdock = new KanColleDB();
+	this.memberKdock = new KanColleDB();
+	this.memberBasic = new KanColleSimpleDB();
 	debugprint("KanColleDatabase initialized.");
     },
     exit: function(){
@@ -69,6 +86,9 @@ var KanColleDatabase = {
 	this.memberShip2 = null;
 	this.memberSlotitem = null;
 	this.memberDeck = null;
+	this.memberNdock = null;
+	this.memberKdock = null;
+	this.memberBasic = null;
 	debugprint("KanColleDatabase cleared.");
     },
 };
