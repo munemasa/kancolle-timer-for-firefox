@@ -9,12 +9,32 @@ var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo",
  */
 function KanColleSimpleDB(){
     var _db = null;
+    var _callback = [];
 
     this.update = function(data){
 	_db = data;
+	for( let i = 0; i < _callback.length; i++){
+	    if (_callback[i].compat)
+		_callback[i].func(Math.floor(_now/1000),data);
+	    else
+		_callback[i].func();
+	}
     };
     this.get = function(){
 	return _db;
+    };
+    this.appendCallback = function(f,c){
+	_callback.push({func: f, compat: c,});
+    };
+    this.removeCallback = function(f){
+	let count = 0;
+	for( let i = 0; i < _callback.length; i++ ){
+	    if( _callback[i].func == f ){
+		_callback.splice(i,1);
+		count++;
+	    }
+	}
+	return count;
     };
 }
 
@@ -22,6 +42,7 @@ function KanColleDB(){
     var _raw = null;
     var _db = null;
     var _list = null;
+    var _callback = [];
 
     function parse(){
 	let hash = {};
@@ -36,6 +57,12 @@ function KanColleDB(){
     this.update = function(data){
 	_raw = data;
 	_db = null;
+	for( let i = 0; i < _callback.length; i++ ){
+	    if (_callback[i].compat)
+		_callback[i].func(Math.floor(_now/1000),data);
+	    else
+		_callback[i].func();
+	}
     };
     this.list = function(){
 	if (!_raw)
@@ -53,6 +80,19 @@ function KanColleDB(){
 	if (_db)
 	    return _db[id];
 	return null;
+    };
+    this.appendCallback = function(f,c){
+	_callback.push({func: f, compat: c,});
+    };
+    this.removeCallback = function(f){
+	let count = 0;
+	for( let i = 0; i < _callback.length; i++ ){
+	    if( _callback[i].func == f ){
+		_callback.splice(i,1);
+		count++;
+	    }
+	}
+	return count;
     };
 }
 
