@@ -25,6 +25,8 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
  *  member/ship2	: api_data_deck
  */
 function KanColleTimerDeckHandler(now,api_data){
+    KanColleDatabase.masterDeck.update(api_data);
+
     for( let i in api_data ){
 	i = parseInt(i);
 	var k = i+1;
@@ -235,12 +237,12 @@ function KanColleTimerMemberShip2Handler(now,api_data){
     KanColleShipInfoSetView();
 }
 
-function KanColleTimerMemberShip2FleetHandler(now,api_data_deck){
-    let d = api_data_deck;
+function KanColleTimerMemberShip2FleetHandler(){
+    let l = KanColleDatabase.memberDeck.list();
 
     // 艦隊/遠征情報
-    for ( let i = 0; i < d.length; i++ ){
-	let fi = d[i];
+    for ( let i = 0; i < l.length; i++ ){
+	let fi = KanColleDatabase.memberDeck.get(l[i]);
 	let id = parseInt(fi.api_id, 10);
 	$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fi.api_name);
 	for ( let j = 0; j < fi.api_ship.length; j++ ){
@@ -378,7 +380,7 @@ function KanColleTimerCallback(request,s){
 	// 所有艦娘情報2
 	KanColleTimerMemberShip2Handler(now,data.api_data);
 	KanColleTimerDeckHandler(now,data.api_data_deck);
-	KanColleTimerMemberShip2FleetHandler(now,data.api_data_deck);
+	KanColleTimerMemberShip2FleetHandler();
     }else if( url.match(/kcsapi\/api_get_master\/slotitem/) ){
 	// 装備情報
 	KanColleTimerMasterSlotitemHandler(now,data.api_data);

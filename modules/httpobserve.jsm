@@ -51,6 +51,8 @@ var KanColleDatabase = {
     masterSlotitem: null,	// master/slotitem
     memberShip2: null,		// member/ship2
     memberSlotitem: null,	// member/slotitem
+    memberDeck: null,		// member/deck,member/deck_port,
+				// or member/ships[api_data_deck]
 
     // Initialization
     init: function(){
@@ -58,6 +60,7 @@ var KanColleDatabase = {
 	this.masterSlotitem = new KanColleDB();
 	this.memberShip2 = new KanColleDB();
 	this.memberSlotitem = new KanColleDB();
+	this.memberDeck = new KanColleDB();
 	debugprint("KanColleDatabase initialized.");
     },
     exit: function(){
@@ -65,6 +68,7 @@ var KanColleDatabase = {
 	this.masterSlotitem = null;
 	this.memberShip2 = null;
 	this.memberSlotitem = null;
+	this.memberDeck = null;
 	debugprint("KanColleDatabase cleared.");
     },
 };
