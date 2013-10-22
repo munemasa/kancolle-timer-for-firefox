@@ -8,27 +8,37 @@ var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo",
  * Database
  */
 function KanColleDB(){
+    var _raw = null;
     var _db = null;
     var _list = null;
 
-    this.update = function(data){
+    function parse(){
 	let hash = {};
-	if (data) {
-	    for( let i = 0; i < data.length; i++ ){
-		hash[data[i].api_id] = data[i];
-	    }
-	}
+	if (!_raw || _db)
+	    return;
+	for( let i = 0; i < _raw.length; i++ )
+	    hash[_raw[i].api_id] = _raw[i];
 	_db = hash;
 	_list = null;
+    }
+
+    this.update = function(data){
+	_raw = data;
+	_db = null;
     };
     this.list = function(){
-	if (!_db)
+	if (!_raw)
 	    return [];
-	if (!_list)
+	if (!_list) {
+	    parse();
 	    _list = Object.keys(_db);
+	}
 	return _list;
     };
     this.get = function(id){
+	parse();
+	if (!_db)
+	    parse();
 	if (_db)
 	    return _db[id];
 	return null;
