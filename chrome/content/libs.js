@@ -20,6 +20,9 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
 
 /*
  * デッキ/遠征
+ *  member/deck		: api_data
+ *  member/deck_port	: api_data
+ *  member/ship2	: api_data_deck
  */
 function KanColleTimerDeckCommonHandler(now,api_data){
     for( let i in api_data ){
@@ -67,9 +70,9 @@ function KanColleTimerDeckHandler(now,data){
     KanColleTimerDeckCommonHandler(now,data.api_data);
 }
 
-    // 遠征リスト
 /*
- * member/ndock: 入渠ドック
+ * 入渠ドック
+ *  member/ndock	: api_data
  */
 function KanColleTimerNdockHandler(now,data){
     if( data.api_result!=1 )
@@ -112,7 +115,8 @@ function KanColleTimerNdockHandler(now,data){
 }
 
 /*
- * member/kdock: 建造
+ * 建造
+ *  member/kdock	: api_data
  */
 function KanColleTimerKdockHandler(now,data){
     // 建造ドック
@@ -172,7 +176,8 @@ function KanColleTimerKdockHandler(now,data){
 }
 
 /*
- * master/ship: 艦型情報
+ * 艦型情報
+ *  master/ship		: api_data
  */
 function KanColleTimerMasterShipHandler(now,data){
     if( data.api_result!=1 )
@@ -182,6 +187,7 @@ function KanColleTimerMasterShipHandler(now,data){
 }
 
 /*
+ * 装備保持艦船の抽出
  * member/ship2 and member/slotitem
  */
 function KanColleUpdateSlotitem(){
@@ -239,7 +245,8 @@ function KanColleUpdateSlotitem(){
 }
 
 /*
- * member/ship2: 所有艦娘情報2
+ * 所有艦娘情報2
+ *  member/ship2	: api_data
  */
 function KanColleTimerMemberShip2Handler(now,data){
     let d;
@@ -324,7 +331,8 @@ function KanColleTimerMemberShip2Handler(now,data){
 }
 
 /*
- * master/slotitem: 装備情報
+ * 装備情報
+ *  master/slotitem	: api_data
  */
 function KanColleTimerMasterSlotitemHandler(now,data){
     if( data.api_result!=1 )
@@ -338,7 +346,8 @@ function KanColleTimerMasterSlotitemHandler(now,data){
 }
 
 /*
- * member/slotitem: 所有装備情報
+ * 所有装備情報
+ *  member/slotitem	: api_data
  */
 function KanColleTimerMemberSlotitemHandler(now,data){
     if( data.api_result!=1 )
@@ -348,7 +357,8 @@ function KanColleTimerMemberSlotitemHandler(now,data){
 }
 
 /*
- * member/basic: 基本情報
+ * 基本情報
+ *  member/basic	: api_data
  */
 function KanColleTimerBasicHandler(now,data){
     let d = data.api_data;
