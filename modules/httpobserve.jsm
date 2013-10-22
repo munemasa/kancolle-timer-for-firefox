@@ -8,10 +8,12 @@ var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo",
  * Database
  */
 function KanColleSimpleDB(){
+    var _now = null;
     var _db = null;
     var _callback = [];
 
     this.update = function(data){
+	_now = (new Date).getTime();
 	_db = data;
 	for( let i = 0; i < _callback.length; i++){
 	    if (_callback[i].compat)
@@ -22,6 +24,9 @@ function KanColleSimpleDB(){
     };
     this.get = function(){
 	return _db;
+    };
+    this.timestamp = function(){
+	return _now;
     };
     this.appendCallback = function(f,c){
 	_callback.push({func: f, compat: c,});
@@ -39,6 +44,7 @@ function KanColleSimpleDB(){
 }
 
 function KanColleDB(){
+    var _now = null;
     var _raw = null;
     var _db = null;
     var _list = null;
@@ -55,6 +61,7 @@ function KanColleDB(){
     }
 
     this.update = function(data){
+	_now = (new Date).getTime();
 	_raw = data;
 	_db = null;
 	for( let i = 0; i < _callback.length; i++ ){
@@ -80,6 +87,9 @@ function KanColleDB(){
 	if (_db)
 	    return _db[id];
 	return null;
+    };
+    this.timestamp = function(){
+	return _now;
     };
     this.appendCallback = function(f,c){
 	_callback.push({func: f, compat: c,});
