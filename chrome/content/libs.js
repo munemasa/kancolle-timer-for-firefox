@@ -216,7 +216,9 @@ function KanColleUpdateSlotitem(){
 
 		if (!db[itemtypeid]) {
 		    db[itemtypeid] = {
+					id: itemtypeid,
 					name: item.api_name,
+					type: item.api_type,
 					list: {},
 				     };
 		}
@@ -588,6 +590,7 @@ function KanColleBuildFilterMenuList(id){
     let menulist;
     let menupopup;
     let menu;
+    let itemlist;
 
     function buildmenuitem(label, value){
 	let item = document.createElementNS(XUL_NS, 'menuitem');
@@ -610,8 +613,20 @@ function KanColleBuildFilterMenuList(id){
 
     menupopup.appendChild(buildmenuitem('すべて', null));
 
-    for (let k in KanColleRemainInfo.slotitemowners) {
+    itemlist = Object.keys(KanColleRemainInfo.slotitemowners).sort(function(a,b){
+	let type_a = KanColleRemainInfo.slotitemowners[a].type[2];
+	let type_b = KanColleRemainInfo.slotitemowners[b].type[2];
+	let id_a = KanColleRemainInfo.slotitemowners[a].id;
+	let id_b = KanColleRemainInfo.slotitemowners[b].id;
+	let diff = type_a - type_b;
+	if (!diff)
+	    diff = id_a - id_b;
+	return diff;
+    });
+    for (let i = 0; i < itemlist.length; i++) {
+	let k = itemlist[i];
 	let itemname = KanColleRemainInfo.slotitemowners[k].name;
+	//let itemtype = KanColleRemainInfo.slotitemowners[k].type[2];
 
 	/*
 	if (!itemname)
@@ -619,6 +634,7 @@ function KanColleBuildFilterMenuList(id){
 	*/
 	debugprint(itemname + ': slotitem' + k);
 	menupopup.appendChild(buildmenuitem(itemname, 'slotitem' + k));
+	//menupopup.appendChild(buildmenuitem(itemname + ':' + itemtype, 'slotitem' + k));
     }
     menulist.appendChild(menupopup);
 
