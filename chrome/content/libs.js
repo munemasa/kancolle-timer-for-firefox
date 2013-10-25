@@ -626,15 +626,17 @@ function KanColleBuildFilterMenuList(id){
     for (let i = 0; i < itemlist.length; i++) {
 	let k = itemlist[i];
 	let itemname = KanColleRemainInfo.slotitemowners[k].name;
-	//let itemtype = KanColleRemainInfo.slotitemowners[k].type[2];
+	let itemtype = KanColleRemainInfo.slotitemowners[k].type[2];
+	let itemtypename = KanColleData.slotitem_type[itemtype];
+	if (!itemtypename)
+	    itemtypename = 'UNKNOWN_' + itemtype;
 
 	/*
 	if (!itemname)
 	    itemname = KanColleDatabase.masterSlotitem.get(k).api_name;
 	*/
 	debugprint(itemname + ': slotitem' + k);
-	menupopup.appendChild(buildmenuitem(itemname, 'slotitem' + k));
-	//menupopup.appendChild(buildmenuitem(itemname + ':' + itemtype, 'slotitem' + k));
+	menupopup.appendChild(buildmenuitem(itemname + '[' + itemtypename + ']', 'slotitem' + k));
     }
     menulist.appendChild(menupopup);
 
