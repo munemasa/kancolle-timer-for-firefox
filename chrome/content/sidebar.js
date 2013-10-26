@@ -275,7 +275,7 @@ var KanColleTimerSidebar = {
     init: function(){
 	Application.console.log('KanColle Timer sidebar init.');
 	KanColleHttpRequestObserver.init();
-	KanColleHttpRequestObserver.addCallback( KanColleTimerCallback );
+	KanColleTimerRegisterCallback();
 	setInterval( function(){
 			 KanColleTimerSidebar.update();
 		     }, 1000 );
@@ -320,7 +320,7 @@ var KanColleTimerSidebar = {
 
     destroy: function(){
 	Application.console.log('KanColle Timer sidebar destroy.');
-	KanColleHttpRequestObserver.removeCallback( KanColleTimerCallback );
+	KanColleTimerUnregisterCallback();
 	KanColleHttpRequestObserver.destroy();
     }
 };

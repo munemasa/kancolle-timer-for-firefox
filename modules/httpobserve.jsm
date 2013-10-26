@@ -143,6 +143,35 @@ var KanColleDatabase = {
     },
 };
 
+function KanColleCallback(req,s){
+    let now = (new Date).getTime();
+    let url = req.name;
+    let data = JSON.parse(s.substring( s.indexOf('svdata=')+7 ));
+
+    if( data.api_result!=1 )
+	return;
+
+    if( url.match(/kcsapi\/api_get_master\/ship/) ){
+	KanColleDatabase.masterShip.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_master\/slotitem/) ){
+	KanColleDatabase.masterSlotitem.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
+	KanColleDatabase.memberBasic.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/deck_port/) ||
+	      url.match(/kcsapi\/api_get_member\/deck/) ) {
+	KanColleDatabase.memberDeck.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/ndock/) ){
+	KanColleDatabase.memberNdock.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/kdock/) ){
+	KanColleDatabase.memberKdock.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/ship2/) ){
+	KanColleDatabase.memberShip2.update(data.api_data);
+	KanColleDatabase.memberDeck.update(data.api_data_deck);
+    }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
+	KanColleDatabase.memberSlotitem.update(data.api_data);
+    }
+}
+
 var KanColleRemainInfo = {
     slotitemowners: {},
 
@@ -274,6 +303,7 @@ var KanColleHttpRequestObserver =
 	    debugprint("start kancolle observer.");
 
 	    KanColleDatabase.init();
+	    this.addCallback(KanColleCallback);
 	}
 	this.counter++;
     },
@@ -281,6 +311,7 @@ var KanColleHttpRequestObserver =
     destroy: function(){
 	this.counter--;
 	if( this.counter<=0 ){
+	    this.removeCallback(KanColleCallback);
 	    KanColleDatabase.exit();
 
 	    this.observerService.removeObserver(this, "http-on-examine-response");

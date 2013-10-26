@@ -25,8 +25,6 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
  *  member/ship2	: api_data_deck
  */
 function KanColleTimerDeckHandler(now,api_data){
-    KanColleDatabase.masterDeck.update(api_data);
-
     for( let i in api_data ){
 	i = parseInt(i);
 	var k = i+1;
@@ -161,14 +159,6 @@ function KanColleTimerKdockHandler(now,api_data){
 }
 
 /*
- * 艦型情報
- *  master/ship		: api_data
- */
-function KanColleTimerMasterShipHandler(now,api_data){
-    KanColleDatabase.masterShip.update(api_data);
-}
-
-/*
  * 装備保持艦船の抽出
  * member/ship2 and member/slotitem
  */
@@ -230,8 +220,7 @@ function KanColleUpdateSlotitem(){
  * 所有艦娘情報2
  *  member/ship2	: api_data
  */
-function KanColleTimerMemberShip2Handler(now,api_data){
-    KanColleDatabase.memberShip2.update(api_data);
+function KanColleTimerShipInfoHandler(){
     KanColleUpdateSlotitem();
     KanColleCreateShipTree();
     KanColleShipInfoSetView();
@@ -308,26 +297,6 @@ function KanColleTimerMemberShip2FleetHandler(){
 }
 
 /*
- * 装備情報
- *  master/slotitem	: api_data
- */
-function KanColleTimerMasterSlotitemHandler(now,api_data){
-    KanColleDatabase.masterSlotitem.update(api_data);
-
-    KanColleUpdateSlotitem();
-    KanColleCreateShipTree();
-    KanColleShipInfoSetView();
-}
-
-/*
- * 所有装備情報
- *  member/slotitem	: api_data
- */
-function KanColleTimerMemberSlotitemHandler(now,api_data){
-    KanColleDatabase.memberSlotitem.update(api_data);
-}
-
-/*
  * 基本情報
  *  member/basic	: api_data
  */
@@ -351,46 +320,28 @@ function KanColleTimerBasicHandler(now,api_data){
     f( kdocks, parseInt(d.api_count_kdock) );
 }
 
-function KanColleTimerCallback(request,s){
-    var now = GetCurrentTime();
-    var url = request.name;
+function KanColleTimerRegisterCallback(){
+    let db = KanColleDatabase;
+    db.memberBasic.appendCallback(KanColleTimerBasicHandler, true);
+    db.memberDeck.appendCallback(KanColleTimerDeckHandler, true);
+    db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler, false);
+    db.memberNdock.appendCallback(KanColleTimerNdockHandler, true);
+    db.memberKdock.appendCallback(KanColleTimerKdockHandler, true);
+    db.memberShip2.appendCallback(KanColleTimerShipInfoHandler, false);
+    db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler, false);
+    db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler, false);
+}
 
-    s = s.substring( s.indexOf('svdata=')+7 );
-    var data = JSON.parse(s);
-
-    if( data.api_result!=1 )
-	return;
-
-    if( url.match(/kcsapi\/api_req_mission\/start/) ){
-	// 遠征開始
-	// 遠征開始後にdeckが呼ばれるので見る必要なさそう
-    }else if( url.match(/kcsapi\/api_get_member\/deck_port/) ||
-	      url.match(/kcsapi\/api_get_member\/deck/) ){
-	KanColleTimerDeckHandler(now,data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/ndock/) ){
-	// 入渠ドック
-	KanColleTimerNdockHandler(now,data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/kdock/) ){
-	// 建造ドック
-	KanColleTimerKdockHandler(now,data.api_data);
-    }else if( url.match(/kcsapi\/api_get_master\/ship/) ){
-	// 艦型情報
-	KanColleTimerMasterShipHandler(now,data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/ship2/) ){
-	// 所有艦娘情報2
-	KanColleTimerMemberShip2Handler(now,data.api_data);
-	KanColleTimerDeckHandler(now,data.api_data_deck);
-	KanColleTimerMemberShip2FleetHandler();
-    }else if( url.match(/kcsapi\/api_get_master\/slotitem/) ){
-	// 装備情報
-	KanColleTimerMasterSlotitemHandler(now,data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
-	// 所有装備情報
-	KanColleTimerMemberSlotitemHandler(now,data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
-	// 基本情報
-	KanColleTimerBasicHandler(now,data.api_data);
-    }
+function KanColleTimerUnregisterCallback(){
+    let db = KanColleDatabase;
+    db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler, false);
+    db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler, false);
+    db.memberShip2.removeCallback(KanColleTimerShipInfoHandler, false);
+    db.memberKdock.removeCallback(KanColleTimerKdockHandler, true);
+    db.memberNdock.removeCallback(KanColleTimerNdockHandler, true);
+    db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler, false);
+    db.memberDeck.removeCallback(KanColleTimerDeckHandler, true);
+    db.memberBasic.removeCallback(KanColleTimerBasicHandler, true);
 }
 
 function AddLog(str){
