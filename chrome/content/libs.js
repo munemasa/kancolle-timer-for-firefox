@@ -164,13 +164,30 @@ function KanColleTimerKdockHandler(now,api_data){
  */
 function KanColleUpdateSlotitem(){
     let db;
+    let items;
     let ships;
 
     db = {};
+    items = KanColleDatabase.memberSlotitem.list();
     ships = KanColleDatabase.memberShip2.list();
 
-    if (KanColleDatabase.memberSlotitem.list().length &&
-	ships.length) {
+    if ( items.length && ships.length ){
+	for ( let i = 0; i < items.length; i++ ){
+	    let item = KanColleDatabase.memberSlotitem.get(items[i]);
+	    let itemtypeid = item.api_slotitem_id;
+	    if (!db[itemtypeid]) {
+		db[itemtypeid] = {
+				    id: itemtypeid,
+				    name: item.api_name,
+				    type: item.api_type,
+				    list: {},
+				    totalnum: 0,
+				    num: 0,
+		};
+	    }
+	    db[itemtypeid].totalnum++;
+	}
+
 	for ( let i = 0; i < ships.length; i++ ){
 	    let ship = KanColleDatabase.memberShip2.get(ships[i]);
 	    let ship_slot = ship.api_slot;
@@ -192,15 +209,8 @@ function KanColleUpdateSlotitem(){
 
 		//debugprint(itemtypeid + ': ' + item.api_name);
 
-		if (!db[itemtypeid]) {
-		    db[itemtypeid] = {
-					id: itemtypeid,
-					name: item.api_name,
-					type: item.api_type,
-					list: {},
-				     };
-		}
 		db[itemtypeid].list[ship.api_id]++;
+		db[itemtypeid].num++;
 	    }
 	}
 
@@ -565,6 +575,10 @@ function KanColleBuildFilterMenuList(id){
 	let itemname = KanColleRemainInfo.slotitemowners[k].name;
 	let itemtype = KanColleRemainInfo.slotitemowners[k].type[2];
 	let itemtypename = KanColleData.slotitem_type[itemtype];
+	let itemnum = KanColleRemainInfo.slotitemowners[k].num;
+	let itemtotalnum = KanColleRemainInfo.slotitemowners[k].totalnum;
+	let itemmenutitle;
+
 	if (!itemtypename)
 	    itemtypename = 'UNKNOWN_' + itemtype;
 
@@ -573,7 +587,11 @@ function KanColleBuildFilterMenuList(id){
 	    itemname = KanColleDatabase.masterSlotitem.get(k).api_name;
 	*/
 	debugprint(itemname + ': slotitem' + k);
-	menupopup.appendChild(buildmenuitem(itemname + '[' + itemtypename + ']', 'slotitem' + k));
+
+	itemmenutitle = '[' + itemtypename + ']' + itemname +
+			'(' + itemnum + '/' + itemtotalnum + ')';
+
+	menupopup.appendChild(buildmenuitem(itemmenutitle, 'slotitem' + k));
     }
     menulist.appendChild(menupopup);
 
