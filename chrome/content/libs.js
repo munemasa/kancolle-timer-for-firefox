@@ -538,16 +538,17 @@ function KanColleBuildFilterMenuList(id){
     let menupopup;
     let menu;
     let itemlist;
+    let lastitemtype = null;
+    let menugrp = null;
 
     function buildmenuitem(label, value){
 	let item = document.createElementNS(XUL_NS, 'menuitem');
 	item.setAttribute('label', label);
-	if (value) {
-	    item.setAttribute('value', value);
-	    item.setAttribute('id', id + '-popup-' + value);
-	    item.setAttribute('oncommand', 'ShipListFilter(this);');
-	} else
-	    item.setAttribute('oncommand', 'ShipListFilter();');
+	if (!value)
+	    value = '0';
+	item.setAttribute('value', value);
+	item.setAttribute('id', id + '-popup-' + value);
+	item.setAttribute('oncommand', 'ShipListFilter(this);');
 	return item;
     }
 
@@ -588,10 +589,22 @@ function KanColleBuildFilterMenuList(id){
 	*/
 	debugprint(itemname + ': slotitem' + k);
 
-	itemmenutitle = '[' + itemtypename + ']' + itemname +
-			'(' + itemnum + '/' + itemtotalnum + ')';
+	itemmenutitle = itemname + '(' + itemnum + '/' + itemtotalnum + ')';
 
-	menupopup.appendChild(buildmenuitem(itemmenutitle, 'slotitem' + k));
+	if (!menugrp || lastitemtype != itemtypename) {
+	    let menugrpmenu;
+
+	    menugrp = document.createElementNS(XUL_NS, 'menupopup');
+
+	    menugrpmenu = document.createElementNS(XUL_NS, 'menu');
+	    menugrpmenu.setAttribute('label', itemtypename);
+	    menugrpmenu.appendChild(menugrp);
+
+	    menupopup.appendChild(menugrpmenu);
+	    lastitemtype = itemtypename;
+	}
+
+	menugrp.appendChild(buildmenuitem(itemmenutitle, 'slotitem' + k));
     }
     menulist.appendChild(menupopup);
 
@@ -600,14 +613,20 @@ function KanColleBuildFilterMenuList(id){
 
 function ShipListFilter(item){
     let itemid = item ? item.id : null;
-    let filterspec;
+    let filterspec = null;
 
     debugprint('ShipListFilter(' + itemid + ')');
 
-    if (itemid)
-	KanColleRemainInfo.shipfilterspec = itemid.replace(/^shipinfo-filtermenu-popup-/, '');
+    if (!itemid)
+	return;
+
+    filterspec = itemid.replace(/^shipinfo-filtermenu-popup-/, '');
+    if (filterspec && filterspec != '0')
+	KanColleRemainInfo.shipfilterspec = filterspec;
     else
 	KanColleRemainInfo.shipfilterspec = null;
+
+    $('shipinfo-filtermenu').setAttribute('label', $(itemid).getAttribute('label'));
 
     KanColleShipInfoSetView();
 }
