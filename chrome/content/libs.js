@@ -531,6 +531,8 @@ var ShipInfoTree = {
 	'hp',
 	'cond',
     ],
+    /* Filter */
+    filterspec: null,
 };
 
 function KanColleBuildFilterMenuList(id){
@@ -622,9 +624,9 @@ function ShipListFilter(item){
 
     filterspec = itemid.replace(/^shipinfo-filtermenu-popup-/, '');
     if (filterspec && filterspec != '0')
-	KanColleRemainInfo.shipfilterspec = filterspec;
+	ShipInfoTree.shipfilterspec = filterspec;
     else
-	KanColleRemainInfo.shipfilterspec = null;
+	ShipInfoTree.shipfilterspec = null;
 
     $('shipinfo-filtermenu').setAttribute('label', $(itemid).getAttribute('label'));
 
@@ -812,8 +814,8 @@ function TreeView(){
 
     // Ship list
     shiplist = KanColleDatabase.memberShip2.list();
-    if (KanColleRemainInfo.shipfilterspec) {
-	let filterspec = KanColleRemainInfo.shipfilterspec;
+    if (ShipInfoTree.shipfilterspec) {
+	let filterspec = ShipInfoTree.shipfilterspec;
 	if (filterspec.match(/^slotitem(\d+)$/)) {
 	    let slotitemid = RegExp.$1;
 	    shiplist = Object.keys(KanColleRemainInfo.slotitemowners[slotitemid].list);
