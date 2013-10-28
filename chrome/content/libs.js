@@ -533,6 +533,9 @@ var ShipInfoTree = {
     ],
     /* Filter */
     filterspec: null,
+    /* Sorting */
+    sortkey: null,
+    sortorder: null,
 };
 
 function KanColleBuildFilterMenuList(id){
@@ -703,6 +706,10 @@ function KanColleCreateShipTree(){
 	    treecol.setAttribute('flex', colinfo.flex);
 	treecol.setAttribute('onclick', 'ShipInfoTreeSort(this);');
 	treecol.setAttribute('class', 'sortDirectionIndicator');
+	if (ShipInfoTree.sortkey && colinfoid == ShipInfoTree.sortkey) {
+	    treecol.setAttribute('sortDirection',
+				 shipInfoTree.sortorder > 0 ? 'ascending' : 'descending');
+	}
 
 	treecols.appendChild(treecol);
     }
@@ -716,8 +723,6 @@ function KanColleCreateShipTree(){
     tree.setAttribute('flex', '1');
     tree.setAttribute('hidecolumnpicker', 'true');
     tree.setAttribute('id', 'shipinfo-tree');
-    tree.setAttribute('sortDirection', 'ascending');
-    tree.setAttribute('sortResource', 'id');
 
     tree.appendChild(treecols);
     tree.appendChild(treechildren);
@@ -739,27 +744,23 @@ function KanColleCreateShipTree(){
 
 function ShipInfoTreeSort(col){
     let order;
-    let tree;
     let id;
     let key;
     let dir;
 
     debugprint('ShipInfoSort(): ' + (col ? col.id : 'undefined'));
 
-    tree = $('shipinfo-tree');
-    order = tree.getAttribute('sortDirection') == 'ascending' ? 1 : -1;
-
-    if (col) {
-	id = col.id;
-	if (tree.getAttribute('sortResource') == id)
-	    order = -order;
-    } else {
-	id = tree.getAttribute('sortResource');
+    key = col.id.replace(/^shipinfo-tree-column-/,'');
+    if( ShipInfoTree.sortkey ){
+	if (ShipInfoTree.sortkey == key)
+	    ShipInfoTree.sortorder = -ShipInfoTree.sortorder;
+	ShipInfoTree.sortkey = key;
+    }else{
+	ShipInfoTree.sortkey = key;
+	ShipInfoTree.sortorder = 1;
     }
 
-    dir = order > 0 ? 'ascending' : 'descending';
-
-    key = id.replace(/^shipinfo-tree-column-/, '');
+    dir = ShipInfoTree.sortorder > 0 ? 'ascending' : 'descending';
 
     for (i = 0; i < ShipInfoTree.columns.length; i++) {
 	let idx = ShipInfoTree.collisthash[ShipInfoTree.columns[i]];
@@ -770,23 +771,19 @@ function ShipInfoTreeSort(col){
 	    $('shipinfo-tree-column-' + colid).removeAttribute('sortDirection');
     }
 
-    tree.setAttribute('sortResource', id);
-    tree.setAttribute('sortDirection', dir);
+    debugprint('key=' + ShipInfoTree.sortkey + ', order=' + ShipInfoTree.sortorder);
 
-    tree.view = new TreeView();
+    $('shipinfo-tree').view = new TreeView();
 }
 
 function TreeView(){
     var that = this;
     var shiplist;
 
-    let tree;
     let id;
 
-    tree = $('shipinfo-tree');
-    order = tree.getAttribute('sortDirection') == 'ascending' ? 1 : -1;
-    id = tree.getAttribute('sortResource');
-    key = id.replace(/^shipinfo-tree-column-/, '');
+    key = ShipInfoTree.sortkey;
+    order = ShipInfoTree.sortorder;
 
     // getCellText function table by column ID
     var shipcellfunc = {
