@@ -560,11 +560,13 @@ function KanColleBuildFilterMenuList(id){
     let itemlist;
     let lastitemtype = null;
     let menugrp = null;
+    let menuitems = [];
 
     function buildmenuitem(label, value){
 	let item = document.createElementNS(XUL_NS, 'menuitem');
 	item.setAttribute('label', label);
-	item.setAttribute('value', value);
+	if (value)
+	    item.setAttribute('value', value);
 	item.setAttribute('oncommand', 'ShipListFilter(this);');
 	return item;
     }
@@ -576,7 +578,7 @@ function KanColleBuildFilterMenuList(id){
     menupopup = document.createElementNS(XUL_NS, 'menupopup');
     menupopup.setAttribute('id', id + '-popup');
 
-    menupopup.appendChild(buildmenuitem('すべて', null));
+    menuitems.push(buildmenuitem('すべて', null));
 
     itemlist = Object.keys(KanColleRemainInfo.slotitemowners).sort(function(a,b){
 	let type_a = KanColleRemainInfo.slotitemowners[a].type[2];
@@ -596,6 +598,7 @@ function KanColleBuildFilterMenuList(id){
 	let itemnum = KanColleRemainInfo.slotitemowners[k].num;
 	let itemtotalnum = KanColleRemainInfo.slotitemowners[k].totalnum;
 	let itemmenutitle;
+	let itemval = 'slotitem' + k;
 
 	if (!itemtypename)
 	    itemtypename = 'UNKNOWN_' + itemtype;
@@ -617,12 +620,18 @@ function KanColleBuildFilterMenuList(id){
 	    menugrpmenu.setAttribute('label', itemtypename);
 	    menugrpmenu.appendChild(menugrp);
 
-	    menupopup.appendChild(menugrpmenu);
+	    menuitems.push(menugrpmenu);
 	    lastitemtype = itemtypename;
 	}
 
-	menugrp.appendChild(buildmenuitem(itemmenutitle, 'slotitem' + k));
+	menugrp.appendChild(buildmenuitem(itemmenutitle, itemval));
+	if (ShipInfoTree.shipfilterspec == itemval)
+	    menuitems.unshift(buildmenuitem(itemmenutitle, itemval));
     }
+
+    for (let i = 0; i < menuitems.length; i++)
+	menupopup.appendChild(menuitems[i]);
+
     menulist.appendChild(menupopup);
 
     return menulist;
