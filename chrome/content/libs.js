@@ -564,10 +564,7 @@ function KanColleBuildFilterMenuList(id){
     function buildmenuitem(label, value){
 	let item = document.createElementNS(XUL_NS, 'menuitem');
 	item.setAttribute('label', label);
-	if (!value)
-	    value = '0';
 	item.setAttribute('value', value);
-	item.setAttribute('id', id + '-popup-' + value);
 	item.setAttribute('oncommand', 'ShipListFilter(this);');
 	return item;
     }
@@ -632,21 +629,16 @@ function KanColleBuildFilterMenuList(id){
 }
 
 function ShipListFilter(item){
-    let itemid = item ? item.id : null;
-    let filterspec = null;
+    let itemval = item ? item.value : null;
 
-    debugprint('ShipListFilter(' + itemid + ')');
+    debugprint('ShipListFilter(' + itemval + ')');
 
-    if (!itemid)
-	return;
-
-    filterspec = itemid.replace(/^shipinfo-filtermenu-popup-/, '');
-    if (filterspec && filterspec != '0')
-	ShipInfoTree.shipfilterspec = filterspec;
+    if (itemval)
+	ShipInfoTree.shipfilterspec = itemval;
     else
 	ShipInfoTree.shipfilterspec = null;
 
-    $('shipinfo-filtermenu').setAttribute('label', $(itemid).getAttribute('label'));
+    $('shipinfo-filtermenu').setAttribute('label', item.getAttribute('label'));
 
     KanColleShipInfoSetView();
 }
