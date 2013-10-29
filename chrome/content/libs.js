@@ -252,6 +252,7 @@ function KanColleTimerMemberShip2FleetHandler(){
 	    let ship_bgcolor;
 	    let ship_border;
 	    let ship_color;
+	    let ship_shadow;
 
 	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_name);
 
@@ -287,21 +288,35 @@ function KanColleTimerMemberShip2FleetHandler(){
 		ship_border = null;
 		ship_color = null;
 	    } else {
+		let hpratio = ship_info.nowhp / ship_info.maxhp;
+
 		if (ship_info.bull_max > ship_info.bull ||
 		    ship_info.fuel_max > ship_info.fuel) {
 		    ship_border = 'solid red';
 		} else {
 		    ship_border = null;
 		}
-		if (ship_info.maxhp > ship_info.nowhp) {
-		    ship_color = 'red';
+
+		if (hpratio >= 1) {
+		    ship_color = null;	    //無傷
+		    ship_shadow = null;
 		} else {
-		    ship_color = null;
+		    ship_shadow = '1px 1px 0 black';
+		    if (hpratio > 0.75) {
+			ship_color = '#0000cc'; //かすり傷
+		    } else if (hpratio > 0.50) {
+			ship_color = '#ff44cc'; //小破
+		    } else if (hpratio > 0.25) {
+			ship_color = '#ff4400'; //中破
+		    } else {
+			ship_color = '#ff0000'; //大破
+		    }
 		}
 	    }
 
 	    $('shipstatus-' + id + '-' + (j + 1)).style.border = ship_border;
 	    $('shipstatus-' + id + '-' + (j + 1)).style.color = ship_color;
+	    $('shipstatus-' + id + '-' + (j + 1)).style.textShadow = ship_shadow;
 	}
     }
 }
