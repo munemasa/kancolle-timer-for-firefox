@@ -706,9 +706,9 @@ function KanColleCreateShipTree(){
 	    treecol.setAttribute('flex', colinfo.flex);
 	treecol.setAttribute('onclick', 'ShipInfoTreeSort(this);');
 	treecol.setAttribute('class', 'sortDirectionIndicator');
-	if (ShipInfoTree.sortkey && colinfoid == ShipInfoTree.sortkey) {
+	if (ShipInfoTree.sortkey && colinfo.id == ShipInfoTree.sortkey) {
 	    treecol.setAttribute('sortDirection',
-				 shipInfoTree.sortorder > 0 ? 'ascending' : 'descending');
+				 ShipInfoTree.sortorder > 0 ? 'ascending' : 'descending');
 	}
 
 	treecols.appendChild(treecol);
