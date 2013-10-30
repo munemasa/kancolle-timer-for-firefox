@@ -699,6 +699,60 @@ function KanColleCreateFilterMenuList(box,id)
 	box.appendChild(menulist);
 }
 
+function KanColleSortMenuPopup(that){
+    let value = that.value;
+    debugprint('KanColleSortMenuPopup(' + value + ')');
+
+    if (value.match(/:/)) {
+	let key = RegExp.leftContext;
+	let value = RegExp.rightContext;
+
+	ShipInfoTree.sortkey = key;
+	ShipInfoTree.sortorder = value;
+
+	ShipInfoTreeSort();
+    }
+}
+
+function KanColleBuildSortMenuPopup(id,key){
+    let menupopup;
+    let menuitem;
+
+    menupopup  = document.createElementNS(XUL_NS, 'menupopup');
+    menupopup.setAttribute('id', id);
+    menupopup.setAttribute('position', 'overlap');
+
+    menuitem = document.createElementNS(XUL_NS, 'menuitem');
+    menuitem.setAttribute('type', 'radio');
+    menuitem.setAttribute('name', id);
+    menuitem.setAttribute('label', '昇順');
+    menuitem.setAttribute('value', key + ':1');
+    menuitem.setAttribute('oncommand', 'KanColleSortMenuPopup(this);');
+    menupopup.appendChild(menuitem);
+
+    menuitem = document.createElementNS(XUL_NS, 'menuitem');
+    menuitem.setAttribute('type', 'radio');
+    menuitem.setAttribute('name', id);
+    menuitem.setAttribute('label', '降順');
+    menuitem.setAttribute('value', key + ':-1');
+    menuitem.setAttribute('oncommand', 'KanColleSortMenuPopup(this);');
+    menupopup.appendChild(menuitem);
+
+    return menupopup;
+}
+
+function KanColleCreateSortMenuPopup(box,id,key)
+{
+    let oldmenupopup = $(id);
+    let menupopup = KanColleBuildSortMenuPopup(id,key);
+
+    // Replace existing one or add new one.
+    if (oldmenupopup)
+	box.replaceChild(menupopup, oldmenupopup);
+    else
+	box.appendChild(menupopup);
+}
+
 function KanColleCreateShipTree(){
     let menulist;
     let oldmenulist;
@@ -737,6 +791,12 @@ function KanColleCreateShipTree(){
 	menulist.appendChild(menuitem);
     }
 
+    // Build sort menu
+    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
+	let key = ShipInfoTree.COLLIST[i].id;
+	KanColleCreateSortMenuPopup(box, 'shipinfo-sortmenu-' + key, key);
+    }
+
     // Treecols
     treecols = document.createElementNS(XUL_NS, 'treecols');
     treecols.setAttribute('context', 'shipinfo-colmenu');
@@ -755,7 +815,7 @@ function KanColleCreateShipTree(){
 	treecol.setAttribute('label', colinfo.label);
 	if (colinfo.flex)
 	    treecol.setAttribute('flex', colinfo.flex);
-	treecol.setAttribute('onclick', 'ShipInfoTreeSort(this);');
+	treecol.setAttribute('popup', 'shipinfo-sortmenu-' + colinfo.id);
 	treecol.setAttribute('class', 'sortDirectionIndicator');
 	if (ShipInfoTree.sortkey && colinfo.id == ShipInfoTree.sortkey) {
 	    treecol.setAttribute('sortDirection',
@@ -793,30 +853,20 @@ function KanColleCreateShipTree(){
 	box.appendChild(tree);
 }
 
-function ShipInfoTreeSort(col){
+function ShipInfoTreeSort(){
     let order;
     let id;
     let key;
     let dir;
 
-    debugprint('ShipInfoSort(): ' + (col ? col.id : 'undefined'));
-
-    key = col.id.replace(/^shipinfo-tree-column-/,'');
-    if( ShipInfoTree.sortkey ){
-	if (ShipInfoTree.sortkey == key)
-	    ShipInfoTree.sortorder = -ShipInfoTree.sortorder;
-	ShipInfoTree.sortkey = key;
-    }else{
-	ShipInfoTree.sortkey = key;
-	ShipInfoTree.sortorder = 1;
-    }
+    debugprint('ShipInfoSort()');
 
     dir = ShipInfoTree.sortorder > 0 ? 'ascending' : 'descending';
 
     for (i = 0; i < ShipInfoTree.columns.length; i++) {
 	let idx = ShipInfoTree.collisthash[ShipInfoTree.columns[i]];
 	let colid = ShipInfoTree.COLLIST[idx].id;
-	if (colid == key)
+	if (colid == ShipInfoTree.sortkey)
 	    $('shipinfo-tree-column-' + colid).setAttribute('sortDirection', dir);
 	else
 	    $('shipinfo-tree-column-' + colid).removeAttribute('sortDirection');
