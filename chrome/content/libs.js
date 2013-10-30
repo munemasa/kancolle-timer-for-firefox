@@ -883,8 +883,8 @@ function TreeView(){
 
     let id;
 
-    key = ShipInfoTree.sortkey;
-    order = ShipInfoTree.sortorder;
+    var key = ShipInfoTree.sortkey;
+    var order = ShipInfoTree.sortorder;
 
     // getCellText function table by column ID
     var shipcellfunc = {
