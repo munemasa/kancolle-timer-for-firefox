@@ -585,6 +585,14 @@ var ShipInfoTree = {
 	  ],
 	},
 	{ label: 'Cond', id: 'cond', flex: 1, },
+	{ label: '入渠', id: 'ndock', flex: 1,
+	  sortspecs: [
+	    {
+		sortspec: '_ndock',
+		label: '入渠時間',
+	    },
+	  ],
+	},
     ],
     collisthash: {},
     columns: [
@@ -945,6 +953,22 @@ function TreeView(){
 	_maxhp: function(ship) {
 	    let info = FindShipStatus(ship.api_id);
 	    return info ? info.maxhp : '';
+	},
+	ndock: function(ship) {
+	    let ndocktime = ship.api_ndock_time;
+	    let hour;
+	    let min;
+	    if (!ndocktime)
+		return '-';
+	    min = Math.floor(ndocktime / 60000);
+	    hour = Math.floor(min / 60);
+	    min -= hour * 60;
+	    if (min < 10)
+		min = '0' + min;
+	    return hour + ':' + min;
+	},
+	_ndock: function(ship) {
+	    return ship.api_ndock_time;
 	},
 	cond: function(ship) {
 	    return FindShipCond(ship.api_id);
