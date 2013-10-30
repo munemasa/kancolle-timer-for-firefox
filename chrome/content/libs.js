@@ -568,8 +568,22 @@ var ShipInfoTree = {
 	//{ label: '艦種', id: 'type', flex: 2, },
 	{ label: '艦名', id: 'name', flex: 3, always: true, },
 	{ label: 'Lv', id: 'lv', flex: 1, },
-	{ label: 'HP', id: 'hp', flex: 1, },
-	{ label: 'MaxHP', id: 'maxhp', flex: 1, },
+	{ label: 'HP', id: 'hp', flex: 1,
+	  sortspecs: [
+	    {
+		sortspec: '_hp',
+		label: 'HP',
+	    },
+	//    {
+	//	sortspec: 'hpratio',
+	//	label: 'HP%',
+	//    },
+	    {
+		sortspec: '_maxhp',
+		label: 'MaxHP',
+	    },
+	  ],
+	},
 	{ label: 'Cond', id: 'cond', flex: 1, },
     ],
     collisthash: {},
@@ -725,27 +739,37 @@ function KanColleSortMenuPopup(that){
 
 function KanColleBuildSortMenuPopup(id,key){
     let menupopup;
-    let menuitem;
+    let idx;
+    let colinfo;
+    let sortspecs;
 
     menupopup  = document.createElementNS(XUL_NS, 'menupopup');
     menupopup.setAttribute('id', id);
     menupopup.setAttribute('position', 'overlap');
 
-    menuitem = document.createElementNS(XUL_NS, 'menuitem');
-    menuitem.setAttribute('type', 'radio');
-    menuitem.setAttribute('name', id);
-    menuitem.setAttribute('label', '昇順');
-    menuitem.setAttribute('value', key + ':1');
-    menuitem.setAttribute('oncommand', 'KanColleSortMenuPopup(this);');
-    menupopup.appendChild(menuitem);
+    idx = ShipInfoTree.collisthash[key];
+    colinfo = ShipInfoTree.COLLIST[idx];
+    sortspecs = colinfo.sortspecs;
+    if (!sortspecs)
+	sortspecs = [{ sortspec: colinfo.id, label: colinfo.label, }];
 
-    menuitem = document.createElementNS(XUL_NS, 'menuitem');
-    menuitem.setAttribute('type', 'radio');
-    menuitem.setAttribute('name', id);
-    menuitem.setAttribute('label', '降順');
-    menuitem.setAttribute('value', key + ':-1');
-    menuitem.setAttribute('oncommand', 'KanColleSortMenuPopup(this);');
-    menupopup.appendChild(menuitem);
+    for (let i = 0; i < sortspecs.length; i++) {
+	let ad = [ { val:  1, label: '昇順', },
+		   { val: -1, label: '降順', },
+	];
+	for (let j = 0; j < ad.length; j++) {
+	    let menuitem = document.createElementNS(XUL_NS, 'menuitem');
+
+	    debugprint('key=' + key + ', spec = ' + sortspecs[i].sortspec);
+
+	    menuitem.setAttribute('type', 'radio');
+	    menuitem.setAttribute('name', id);
+	    menuitem.setAttribute('label', sortspecs[i].label + ad[j].label);
+	    menuitem.setAttribute('value', sortspecs[i].sortspec + '@' + key + ':' + ad[j].val);
+	    menuitem.setAttribute('oncommand', 'KanColleSortMenuPopup(this);');
+	    menupopup.appendChild(menuitem);
+	}
+    }
 
     return menupopup;
 }
@@ -912,9 +936,13 @@ function TreeView(){
 	},
 	hp: function(ship) {
 	    let info = FindShipStatus(ship.api_id);
+	    return info ? info.nowhp + '/' + info.maxhp : '';
+	},
+	_hp: function(ship) {
+	    let info = FindShipStatus(ship.api_id);
 	    return info ? info.nowhp : '';
 	},
-	maxhp: function(ship) {
+	_maxhp: function(ship) {
 	    let info = FindShipStatus(ship.api_id);
 	    return info ? info.maxhp : '';
 	},
