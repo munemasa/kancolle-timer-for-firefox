@@ -59,6 +59,11 @@
     <vbox id="wallpaper" flex="1">
     </vbox>
     <vbox flex="1">
+      <groupbox id="basic-information">
+	<caption>基本情報</caption>
+	<hbox><label value="艦船数"/><label id="basic-information-shipcount" value=""/></hbox>
+	<hbox><label value="装備数"/><label id="basic-information-slotitemcount" value=""/></hbox>
+      </groupbox>
       <groupbox id="group-mission">
 	<caption>遠征</caption>
 

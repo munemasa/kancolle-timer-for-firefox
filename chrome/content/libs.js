@@ -19,6 +19,35 @@ const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
 /*
+ * 艦娘/装備数
+ */
+function KanColleTimerBasicInfomationPanel(){
+    let basic = KanColleDatabase.memberBasic.get();
+    let maxships;
+    let maxslotitems;
+    let ships;
+    let slotitems;
+
+    if (basic) {
+	maxships = basic.api_max_chara;
+	maxslotitems = basic.api_max_slotitem;
+    } else {
+	maxships = '-';
+	maxslotitems = '-';
+    }
+
+    ships = KanColleDatabase.memberShip2.count();
+    if (ships === undefined)
+	ships = '-';
+    slotitems = KanColleDatabase.memberSlotitem.count();
+    if (slotitems === undefined)
+	slotitems = '-';
+
+    $('basic-information-shipcount').value = ships + ' / ' + basic.api_max_chara;
+    $('basic-information-slotitemcount').value = slotitems + ' / ' + basic.api_max_slotitem;
+}
+
+/*
  * デッキ/遠征
  *  member/deck		: api_data
  *  member/deck_port	: api_data
@@ -348,24 +377,30 @@ function KanColleTimerBasicHandler(now,api_data){
 function KanColleTimerRegisterCallback(){
     let db = KanColleDatabase;
     db.memberBasic.appendCallback(KanColleTimerBasicHandler, true);
+    db.memberBasic.appendCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberDeck.appendCallback(KanColleTimerDeckHandler, true);
     db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberNdock.appendCallback(KanColleTimerNdockHandler, true);
     db.memberKdock.appendCallback(KanColleTimerKdockHandler, true);
     db.memberShip2.appendCallback(KanColleTimerShipInfoHandler, false);
+    db.memberShip2.appendCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler, false);
     db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler, false);
+    db.memberSlotitem.appendCallback(KanColleTimerBasicInfomationPanel, false);
 }
 
 function KanColleTimerUnregisterCallback(){
     let db = KanColleDatabase;
+    db.memberSlotitem.removeCallback(KanColleTimerBasicInfomationPanel, false);
     db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler, false);
     db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler, false);
+    db.memberShip2.removeCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberShip2.removeCallback(KanColleTimerShipInfoHandler, false);
     db.memberKdock.removeCallback(KanColleTimerKdockHandler, true);
     db.memberNdock.removeCallback(KanColleTimerNdockHandler, true);
     db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberDeck.removeCallback(KanColleTimerDeckHandler, true);
+    db.memberBasic.removeCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberBasic.removeCallback(KanColleTimerBasicHandler, true);
 }
 
