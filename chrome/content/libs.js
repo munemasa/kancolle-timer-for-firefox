@@ -585,6 +585,7 @@ var ShipInfoTree = {
     filterspec: null,
     /* Sorting */
     sortkey: null,
+    sortspec: null,
     sortorder: null,
 };
 
@@ -705,10 +706,18 @@ function KanColleSortMenuPopup(that){
 
     if (value.match(/:/)) {
 	let key = RegExp.leftContext;
-	let value = RegExp.rightContext;
+	let order = RegExp.rightContext;
+	let spec = null;
+
+	if (key.match(/@/)) {
+	    spec = RegExp.leftContext;
+	    key = RegExp.rightContext;
+	} else
+	    spec = key;
 
 	ShipInfoTree.sortkey = key;
-	ShipInfoTree.sortorder = value;
+	ShipInfoTree.sortspec = spec;
+	ShipInfoTree.sortorder = order;
 
 	ShipInfoTreeSort();
     }
@@ -881,9 +890,13 @@ function TreeView(){
     var that = this;
     var shiplist;
 
+    key = null;
+    spec = null;
+    order = null;
     let id;
 
     var key = ShipInfoTree.sortkey;
+    var spec = ShipInfoTree.sortspec;
     var order = ShipInfoTree.sortorder;
 
     // getCellText function table by column ID
@@ -941,6 +954,8 @@ function TreeView(){
     // default
     if (key === undefined)
 	key = 'id';
+    if (spec === undefined)
+	spec = key;
     if (order === undefined)
 	order = 1;
 
@@ -951,11 +966,11 @@ function TreeView(){
 	    let ship_a = KanColleDatabase.memberShip2.get(a);
 	    let ship_b = KanColleDatabase.memberShip2.get(b);
 
-	    if (shipcmpfunc[key] !== undefined)
-		res = shipcmpfunc[key](ship_a,ship_b);
-	    else if (shipcellfunc[key] !== undefined) {
-		let va = shipcellfunc[key](ship_a);
-		let vb = shipcellfunc[key](ship_b);
+	    if (shipcmpfunc[spec] !== undefined)
+		res = shipcmpfunc[spec](ship_a,ship_b);
+	    else if (shipcellfunc[spec] !== undefined) {
+		let va = shipcellfunc[spec](ship_a);
+		let vb = shipcellfunc[spec](ship_b);
 		res = objcmp(va,vb);
 	    }
 	    // tie breaker: id
