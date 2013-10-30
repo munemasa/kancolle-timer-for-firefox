@@ -566,7 +566,18 @@ var ShipInfoTree = {
     COLLIST: [
 	{ label: 'ID', id: 'id', flex: 1, },
 	//{ label: '艦種', id: 'type', flex: 2, },
-	{ label: '艦名', id: 'name', flex: 3, always: true, },
+	{ label: '艦名', id: 'name', flex: 3, always: true,
+	  sortspecs: [
+	//    {
+	//	sortspec: '_sortno',
+	//	label: 'オリジナル',
+	//    },
+	    {
+		sortspec: '_yomi',
+		label: 'ヨミ',
+	    },
+	  ],
+	},
 	{ label: 'Lv', id: 'lv', flex: 1, },
 	{ label: 'HP', id: 'hp', flex: 1,
 	  sortspecs: [
@@ -938,6 +949,15 @@ function TreeView(){
 	},
 	name: function(ship) {
 	    return FindShipNameByCatId(ship.api_ship_id);
+	},
+	//_sortno: function(ship) {
+	//    return ship.api_sortno;
+	//},
+	_yomi: function(ship) {
+	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id)
+	    if (!shiptype)
+		return 0;
+	    return shiptype.api_yomi;
 	},
 	lv: function(ship) {
 	    return ship.api_lv;
