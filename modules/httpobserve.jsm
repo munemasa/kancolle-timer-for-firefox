@@ -71,6 +71,11 @@ function KanColleDB(){
 		_callback[i].func();
 	}
     };
+    this.count = function(){
+	if (!_raw)
+	    return undefined;
+	return this.list().length;
+    };
     this.list = function(){
 	if (!_raw)
 	    return [];
