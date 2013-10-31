@@ -595,6 +595,34 @@ var ShipInfoTree = {
 	    },
 	  ],
 	},
+	{ label: '火力', id: 'karyoku', flex: 1,
+	  sortspecs: [
+	    {	sortspec: '_karyoku',	    label: '火力',	    },
+	    {	sortspec: '_karyokumax',    label: '最大火力',	    },
+	    {	sortspec: '_karyokuremain', label: '火力強化余地',  },
+	  ],
+	},
+	{ label: '雷装', id: 'raisou', flex: 1,
+	  sortspecs: [
+	    {	sortspec: '_raisou',	    label: '雷装',	    },
+	    {	sortspec: '_raisoumax',    label: '最大雷装',	    },
+	    {	sortspec: '_raisouremain',  label: '雷装強化余地',  },
+	  ],
+	},
+	{ label: '対空', id: 'taiku', flex: 1,
+	  sortspecs: [
+	    {	sortspec: '_taiku',	    label: '対空',	    },
+	    {	sortspec: '_taikumax',	    label: '最大対空',	    },
+	    {	sortspec: '_taikuremain',   label: '対空強化余地',  },
+	  ],
+	},
+	{ label: '装甲', id: 'soukou', flex: 1,
+	  sortspecs: [
+	    {	sortspec: '_soukou',	    label: '装甲',	    },
+	    {	sortspec: '_soukoumax',	    label: '最大装甲',	    },
+	    {	sortspec: '_soukouremain',  label: '装甲強化余地',  },
+	  ],
+	},
 	{ label: 'Cond', id: 'cond', flex: 1, },
 	{ label: '入渠', id: 'ndock', flex: 1,
 	  sortspecs: [
@@ -929,6 +957,31 @@ function ShipInfoTreeSort(){
     $('shipinfo-tree').view = new TreeView();
 }
 
+function getShipProperties(ship,name)
+{
+    const propmap = {
+	karyoku: { kidx: 0, master: 'houg', },
+	raisou:  { kidx: 1, master: 'raig', },
+	taiku:   { kidx: 2, master: 'tyku', },
+	soukou:  { kidx: 3, master: 'souk', },
+    };
+    let prop = {
+	cur: null,
+	max: null,
+	str: null,
+	remain: null,
+    };
+    let shiptype;
+    shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+    prop.cur = ship['api_' + name][0];
+    prop.max = prop.cur - ship.api_kyouka[propmap[name].kidx] +
+	       shiptype['api_' + propmap[name].master][1] -
+	       shiptype['api_' + propmap[name].master][0];
+    prop.str = prop.cur + '/' + prop.max;
+    prop.remain = prop.max - prop.cur;
+    return prop;
+}
+
 function TreeView(){
     var that = this;
     var shiplist;
@@ -974,6 +1027,22 @@ function TreeView(){
 	    let info = FindShipStatus(ship.api_id);
 	    return info ? info.maxhp : '';
 	},
+	karyoku:	function(ship) { return getShipProperties(ship,'karyoku').str; },
+	_karyoku:	function(ship) { return getShipProperties(ship,'karyoku').cur; },
+	_karyokumax:	function(ship) { return getShipProperties(ship,'karyoku').max; },
+	_karyokuremain:	function(ship) { return getShipProperties(ship,'karyoku').remain; },
+	raisou:		function(ship) { return getShipProperties(ship,'raisou').str; },
+	_raisou:	function(ship) { return getShipProperties(ship,'raisou').cur; },
+	_raisoumax:	function(ship) { return getShipProperties(ship,'raisou').max; },
+	_raisouremain:	function(ship) { return getShipProperties(ship,'raisou').remain; },
+	taiku:		function(ship) { return getShipProperties(ship,'taiku').str; },
+	_taiku:		function(ship) { return getShipProperties(ship,'taiku').cur; },
+	_taikumax:	function(ship) { return getShipProperties(ship,'taiku').max; },
+	_taikuremain:	function(ship) { return getShipProperties(ship,'taiku').remain; },
+	soukou:		function(ship) { return getShipProperties(ship,'soukou').str; },
+	_soukou:	function(ship) { return getShipProperties(ship,'soukou').cur; },
+	_soukoumax:	function(ship) { return getShipProperties(ship,'soukou').max; },
+	_soukouremain:	function(ship) { return getShipProperties(ship,'soukou').remain; },
 	ndock: function(ship) {
 	    let ndocktime = ship.api_ndock_time;
 	    let hour;
