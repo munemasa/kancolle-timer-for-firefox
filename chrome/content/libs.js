@@ -1107,6 +1107,9 @@ function TreeView(){
 	    let ship_a = KanColleDatabase.memberShip2.get(a);
 	    let ship_b = KanColleDatabase.memberShip2.get(b);
 
+	    if (!ship_a || !ship_b)
+		return ((ship_a ? 1 : 0) - (ship_b ? 1 : 0)) * order;
+
 	    if (shipcmpfunc[spec] !== undefined)
 		res = shipcmpfunc[spec](ship_a,ship_b);
 	    else if (shipcellfunc[spec] !== undefined) {
@@ -1131,9 +1134,11 @@ function TreeView(){
 	let ship;
 
 	if (row >= this.rowCount)
-	    return null;
+	    return 'N/A';
 
 	ship = KanColleDatabase.memberShip2.get(shiplist[row]);
+	if (!ship)
+	    return 'N/A';
 
 	func = shipcellfunc[colid];
 	if (func)
