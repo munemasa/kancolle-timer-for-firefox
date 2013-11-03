@@ -224,6 +224,12 @@ var KanColleTimerOverlay = {
 	return true;
     },
 
+    openShipList: function(){
+	let feature="chrome,resizable=yes";
+	let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);
+	w.focus();
+    },
+
     /**
      * 艦これタイマーを開く
      */
