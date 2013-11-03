@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 
 
@@ -273,7 +275,7 @@ var KanColleTimerSidebar = {
     init: function(){
 	Application.console.log('KanColle Timer sidebar init.');
 	KanColleHttpRequestObserver.init();
-	KanColleHttpRequestObserver.addCallback( KanColleTimerCallback );
+	KanColleTimerRegisterCallback();
 	setInterval( function(){
 			 KanColleTimerSidebar.update();
 		     }, 1000 );
@@ -310,13 +312,15 @@ var KanColleTimerSidebar = {
 	} catch (x) {
 	}
 
+	KanColleShipInfoInit();
+
 	this.audios = document.getElementsByTagName('html:audio');
 	this.initWallpaper();
     },
 
     destroy: function(){
 	Application.console.log('KanColle Timer sidebar destroy.');
-	KanColleHttpRequestObserver.removeCallback( KanColleTimerCallback );
+	KanColleTimerUnregisterCallback();
 	KanColleHttpRequestObserver.destroy();
     }
 };

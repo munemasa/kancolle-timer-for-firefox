@@ -5,11 +5,11 @@ var ShipList = {
 
 
     init: function(){
-	let ships = KanColleRemainInfo.gOwnedShipList;
+	let ships = KanColleDatabase.memberShip2.list();
 
 	let list = $('ship-list');
-	for( let k in ships ){
-	    let ship = ships[k];
+	for( let j = 0; j < ships.length; j++ ){
+	    let ship = KanColleDatabase.memberShip2.get(ships[j]);
 
 	    let elem = CreateElement('listitem');
 	    elem.appendChild( CreateListCell( FindShipName(ship.api_id) ) );
