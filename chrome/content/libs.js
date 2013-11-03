@@ -67,6 +67,8 @@ function KanColleTimerDeckHandler(now,api_data){
 	    let mission_id = d.api_mission[1]; // 遠征ID
 	    // 遠征名を表示
 	    let mission_name = KanColleData.mission_name[mission_id];
+	    if (!mission_name)
+		mission_name = 'UNKNOWN_' + mission_id;
 	    KanColleRemainInfo.mission_name[i] = mission_name;
 	    $('mission_name'+k).value = mission_name;
 
