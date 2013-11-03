@@ -158,6 +158,8 @@ function KanColleTimerCallback(request,s){
 	KanColleRemainInfo.gShipList = data.api_data;
     }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
 	KanColleRemainInfo.gOwnedShipList = data.api_data;
+    }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
+	KanColleRemainInfo.gOwnedItem = data.api_data;
     }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
 	let d = data.api_data;
 	let f = function( elems, n ){
@@ -273,6 +275,21 @@ function TakeKanColleScreenshot(isjpeg){
     canvas.height = 1;
     return url;
 }
+
+/*
+ 
+ */
+
+function FindSlotItemNameById( api_id ){
+    let items = KanColleRemainInfo.gOwnedItem;
+    for( let k in items ){
+	if( items[k].api_id==api_id ){
+	    return items[k].api_name;
+	}
+    }
+    return "[Unknown]";
+}
+
 
 function FindShipName( ship_id ){
     let sort;
@@ -554,6 +571,12 @@ function CreateLabel(label){
     return elem;
 }
 
+function CreateListCell(label){
+    let elem;
+    elem = document.createElementNS(XUL_NS,'listcell');
+    elem.setAttribute('label',label);
+    return elem;
+}
 
 /** ディレクトリを作成する.
  * ディレクトリ掘ったらtrue、掘らなかったらfalseを返す.

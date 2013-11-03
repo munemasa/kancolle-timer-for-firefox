@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
+
+<window id="kancolletimer_shiplist"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	persist="screenX screenY width height sizemode"
+	width="640" height="480"
+	windowtype="KanColleTimerShipListWindow"
+	title="保有艦艇リスト">
+
+  <keyset>
+    <!-- CTRL+W: Close this window -->
+    <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+  </keyset>
+
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/libs.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/shiplist.js" />
+
+
+  <vbox flex="1">
+    <listbox id="ship-list" flex="1">
+      <listcols>
+	<listcol />
+	<listcol />
+	<listcol />
+	<listcol flex="1"/>
+	<listcol flex="1"/>
+	<listcol flex="1"/>
+	<listcol flex="1"/>
+      </listcols>
+      <listhead>
+	<listheader label="艦名" />
+	<listheader label="レベル" />
+	<listheader label="疲労度" />
+	<listheader label="装備1" />
+	<listheader label="装備2" />
+	<listheader label="装備3" />
+	<listheader label="装備4" />
+      </listhead>
+    </listbox>
+  </vbox>
+
+</window>
