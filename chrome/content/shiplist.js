@@ -37,7 +37,7 @@ var ShipList = {
 
 	    let rows = $('fleet-'+(f+1));
 
-	    for( let i=0; fleet.api_ship[i]!=-1; i++){
+	    for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
 		let row = CreateElement('row');
 		let data = FindOwnShipData( fleet.api_ship[i] );
 		let masterdata = FindShipData( fleet.api_ship[i] );
