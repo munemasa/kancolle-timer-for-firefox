@@ -284,8 +284,7 @@ function KanColleTimerMemberShip2FleetHandler(){
 	    let ship_border;
 	    let ship_color;
 	    let ship_shadow;
-
-	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_name);
+	    let ship_text = ship_name;
 
 	    if (ship_cond === undefined) {
 		ship_cond = '-';
@@ -312,8 +311,29 @@ function KanColleTimerMemberShip2FleetHandler(){
 		ship_bgcolor = '#666666';   //...
 	    }
 
+	    if (ship_cond < 49) {
+		let d;
+		let t;
+		let h;
+		let m;
+
+		t = KanColleDatabase.memberShip2.timestamp();
+		if (t) {
+		    t += Math.ceil((49 - ship_cond) / 3) * 180000;
+		    (d = new Date).setTime(t);
+
+		    h = d.getHours();
+		    if (h < 10)
+			h = '0' + h;
+		    m = d.getMinutes();
+		    if (m < 10)
+			m = '0' + m;
+		}
+		ship_text += ' ' + h + ':' + m;
+	    }
 	    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
 	    $('shipstatus-' + id + '-' + (j + 1)).style.backgroundColor = ship_bgcolor;
+	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_text);
 
 	    if (ship_info === undefined) {
 		ship_border = null;
