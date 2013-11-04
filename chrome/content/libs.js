@@ -189,6 +189,12 @@ function AddLog(str){
     $('log').value = str + $('log').value;
 }
 
+function OpenShipList(){
+    let feature="chrome,resizable=yes";
+    let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);
+    w.focus();
+}
+
 function OpenAboutDialog(){
     var f='chrome,toolbar,modal=yes,resizable=no,centerscreen';
     var w = window.openDialog('chrome://kancolletimer/content/about.xul','KanColleTimerAbout',f);
