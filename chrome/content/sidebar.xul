@@ -24,6 +24,8 @@
     <menubar>
       <menu label="ツール">
 	<menupopup>
+	  <menuitem label="所有艦艇リスト" oncommand="OpenShipList();"/>
+	  <menuseparator/>
 	  <menuitem label="設定..." oncommand="OpenSettingsDialog();"/>
 	  <menuseparator/>
 	  <menuitem label="About" oncommand="OpenAboutDialog();"/>

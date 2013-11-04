@@ -7,12 +7,16 @@ var ShipList = {
     init: function(){
 	let ships = KanColleDatabase.memberShip2.list();
 
+	let no = 1;
 	let list = $('ship-list');
 	for( let j = 0; j < ships.length; j++ ){
 	    let ship = KanColleDatabase.memberShip2.get(ships[j]);
 
 	    let elem = CreateElement('listitem');
-	    elem.appendChild( CreateListCell( FindShipName(ship.api_id) ) );
+	    let data = FindShipData( ship.api_id );
+	    elem.appendChild( CreateListCell( no++ ) );
+	    elem.appendChild( CreateListCell( KanColleData.type_name[data.api_stype] ) );
+	    elem.appendChild( CreateListCell( data.api_name ) );
 	    elem.appendChild( CreateListCell( ship.api_lv) );
 	    elem.appendChild( CreateListCell( ship.api_cond) );
 
@@ -24,6 +28,35 @@ var ShipList = {
 	    }
 	    list.appendChild(elem);
 	}
+
+	let fleets = KanColleDatabase.memberDeck.list();
+
+	for( let j=0; j < fleets.length; j++ ){
+	    let fleet = KanColleDatabase.memberDeck.get(fleets[j]);
+
+	    let rows = $('fleet-'+fleet.api_id);
+
+	    for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
+		let row = CreateElement('row');
+		let data = FindOwnShipData( fleet.api_ship[i] );
+		let masterdata = FindShipData( fleet.api_ship[i] );
+		row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
+		row.appendChild( CreateLabel(masterdata.api_name) );
+		row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
+		row.appendChild( CreateLabel(""+data.api_cond) );
+
+		let maxhp = parseInt(data.api_maxhp);
+		let nowhp = parseInt(data.api_nowhp);
+		if( nowhp-1 <= maxhp*0.25 ){
+		    row.style.backgroundColor = '#ff8080';
+		}else{
+		    row.style.backgroundColor = '';
+		}
+		rows.appendChild( row );
+	    }
+
+	}
+
     }
 
 };

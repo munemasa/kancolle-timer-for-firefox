@@ -410,6 +410,12 @@ function AddLog(str){
     $('log').value = str + $('log').value;
 }
 
+function OpenShipList(){
+    let feature="chrome,resizable=yes";
+    let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);
+    w.focus();
+}
+
 function OpenAboutDialog(){
     var f='chrome,toolbar,modal=yes,resizable=no,centerscreen';
     var w = window.openDialog('chrome://kancolletimer/content/about.xul','KanColleTimerAbout',f);
@@ -520,6 +526,26 @@ function FindShipNameByCatId( id ){
     return "";
 }
 
+/**
+ * 自分の保有している艦のデータを返す.
+ */
+function FindOwnShipData( ship_id ){
+    return KanColleDatabase.memberShip2.get(ship_id);
+}
+
+/**
+ * 艦のデータを返す
+ */
+function FindShipData( ship_id ){
+    let ship = KanColleDatabase.memberShip2.get(ship_id);
+    if (ship)
+	return KanColleDatabase.masterShip.get(ship.api_ship_id);
+    return undefined;
+}
+
+/**
+ * 艦艇の名前を返す
+ */
 function FindShipName( ship_id ){
     try{
 	// member/ship2 には艦名がない。艦艇型から取得
