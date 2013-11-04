@@ -43,7 +43,16 @@ var ShipList = {
 		let masterdata = FindShipData( fleet.api_ship[i] );
 		row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
 		row.appendChild( CreateLabel(masterdata.api_name) );
+		row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
 		row.appendChild( CreateLabel(""+data.api_cond) );
+
+		let maxhp = parseInt(data.api_maxhp);
+		let nowhp = parseInt(data.api_nowhp);
+		if( nowhp-1 <= maxhp*0.25 ){
+		    row.style.backgroundColor = '#ff8080';
+		}else{
+		    row.style.backgroundColor = '';
+		}
 		rows.appendChild( row );
 	    }
 

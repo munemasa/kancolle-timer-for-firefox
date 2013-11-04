@@ -44,8 +44,8 @@
 	    </listhead>
 	  </listbox>
 	</vbox><!-- tab 1 -->
-
-	<vbox style="overflow:scroll;"><!-- tab 2 -->
+	
+	<hbox style="overflow:auto;"><!-- tab 2 -->
 	  <grid>
 	    <columns>
 	      <column/><column/>
@@ -62,7 +62,7 @@
 		    </rows>
 		  </grid>
 		</groupbox>
-
+		
 		<groupbox>
 		  <caption>第2艦隊</caption>
 		  <grid>
@@ -74,7 +74,7 @@
 		  </grid>
 		</groupbox>
 	      </row>
-
+	      
 	      <row>
 		<groupbox>
 		  <caption>第3艦隊</caption>
@@ -86,7 +86,7 @@
 		    </rows>
 		  </grid>
 		</groupbox>
-
+		
 		<groupbox>
 		  <caption>第4艦隊</caption>
 		  <grid>
@@ -101,8 +101,12 @@
 	      
 	    </rows>
 	  </grid>
-
-	</vbox><!-- tab 2 -->
+	  <hbox>
+	    <vbox>
+	      <image src="data/sync.png" style="cursor:pointer;" tooltiptext="表示を更新" onclick="OpenShipList();"/>
+	    </vbox>
+	  </hbox>
+	</hbox><!-- tab 2 -->
       </tabpanels>
     </tabbox>
   </vbox>

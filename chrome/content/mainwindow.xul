@@ -60,7 +60,7 @@
   <stack flex="1">
     <vbox id="wallpaper" flex="1">
     </vbox>
-    <vbox flex="1">
+    <vbox flex="1" style="overflow:auto;">
       <groupbox id="group-mission">
 	<caption>遠征</caption>
 
