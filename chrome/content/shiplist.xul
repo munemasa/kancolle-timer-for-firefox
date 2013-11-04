@@ -20,30 +20,91 @@
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/libs.js" />
   <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/data.js" />
+  <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/shiplist.js" />
 
 
   <vbox flex="1">
-    <listbox id="ship-list" flex="1">
-      <listcols>
-	<listcol />
-	<listcol />
-	<listcol />
-	<listcol flex="1"/>
-	<listcol flex="1"/>
-	<listcol flex="1"/>
-	<listcol flex="1"/>
-      </listcols>
-      <listhead>
-	<listheader label="艦名" />
-	<listheader label="レベル" />
-	<listheader label="状態" />
-	<listheader label="装備1" />
-	<listheader label="装備2" />
-	<listheader label="装備3" />
-	<listheader label="装備4" />
-      </listhead>
-    </listbox>
-  </vbox>
+    <tabbox id="tab" flex="1" persist="selectedIndex">
+      <tabs>
+	<tab label="全艦艇リスト"/>
+	<tab label="艦隊編成"/>
+      </tabs>
+      <tabpanels flex="1">
+	<vbox><!-- tab 1 -->
+	  <listbox id="ship-list" flex="1">
+	    <listcols>
+	      <listcol/><listcol/><listcol/><listcol/><listcol/>
+	      <listcol flex="1"/><listcol flex="1"/><listcol flex="1"/><listcol flex="1"/>
+	    </listcols>
+	    <listhead>
+	      <listheader label="#"/><listheader label="艦種"/><listheader label="艦名"/><listheader label="レベル"/><listheader label="状態"/>
+	      <listheader label="装備1"/><listheader label="装備2"/><listheader label="装備3"/><listheader label="装備4"/>
+	    </listhead>
+	  </listbox>
+	</vbox><!-- tab 1 -->
 
+	<vbox style="overflow:scroll;"><!-- tab 2 -->
+	  <grid>
+	    <columns>
+	      <column/><column/>
+	    </columns>
+	    <rows>
+	      <row>
+		<groupbox>
+		  <caption>第1艦隊</caption>
+		  <grid>
+		    <columns>
+		      <column/><column/><column/>
+		    </columns>
+		    <rows id="fleet-1">
+		    </rows>
+		  </grid>
+		</groupbox>
+
+		<groupbox>
+		  <caption>第2艦隊</caption>
+		  <grid>
+		    <columns>
+		      <column/><column/><column/>
+		    </columns>
+		    <rows id="fleet-2">
+		    </rows>
+		  </grid>
+		</groupbox>
+	      </row>
+
+	      <row>
+		<groupbox>
+		  <caption>第3艦隊</caption>
+		  <grid>
+		    <columns>
+		      <column/><column/><column/>
+		    </columns>
+		    <rows id="fleet-3">
+		    </rows>
+		  </grid>
+		</groupbox>
+
+		<groupbox>
+		  <caption>第4艦隊</caption>
+		  <grid>
+		    <columns>
+		      <column/><column/><column/>
+		    </columns>
+		    <rows id="fleet-4">
+		    </rows>
+		  </grid>
+		</groupbox>
+	      </row>
+	      
+	    </rows>
+	  </grid>
+
+	</vbox><!-- tab 2 -->
+      </tabpanels>
+    </tabbox>
+  </vbox>
+  
 </window>

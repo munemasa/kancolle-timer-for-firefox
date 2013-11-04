@@ -8,11 +8,15 @@ var ShipList = {
 	let ships = KanColleRemainInfo.gOwnedShipList;
 
 	let list = $('ship-list');
+	let no = 1;
 	for( let k in ships ){
 	    let ship = ships[k];
 
 	    let elem = CreateElement('listitem');
-	    elem.appendChild( CreateListCell( FindShipName(ship.api_id) ) );
+	    let data = FindShipData( ship.api_id );
+	    elem.appendChild( CreateListCell( no++ ) );
+	    elem.appendChild( CreateListCell( KanColleData.type_name[data.api_stype] ) );
+	    elem.appendChild( CreateListCell( data.api_name ) );
 	    elem.appendChild( CreateListCell( ship.api_lv) );
 	    elem.appendChild( CreateListCell( ship.api_cond) );
 
@@ -24,6 +28,27 @@ var ShipList = {
 	    }
 	    list.appendChild(elem);
 	}
+
+	let fleets = KanColleRemainInfo.gDeckList;
+
+	for( let f in fleets ){
+	    f = parseInt(f);
+	    let fleet = fleets[f];
+
+	    let rows = $('fleet-'+(f+1));
+
+	    for( let i=0; fleet.api_ship[i]!=-1; i++){
+		let row = CreateElement('row');
+		let data = FindOwnShipData( fleet.api_ship[i] );
+		let masterdata = FindShipData( fleet.api_ship[i] );
+		row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
+		row.appendChild( CreateLabel(masterdata.api_name) );
+		row.appendChild( CreateLabel(""+data.api_cond) );
+		rows.appendChild( row );
+	    }
+
+	}
+
     }
 
 };

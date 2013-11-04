@@ -28,6 +28,10 @@ function KanColleTimerCallback(request,s){
 	// 遠征開始後にdeckが呼ばれるので見る必要なさそう
     }else if( url.match(/kcsapi\/api_get_member\/deck_port/) ||
 	      url.match(/kcsapi\/api_get_member\/deck/) ){
+	try{
+	    KanColleRemainInfo.gDeckList = data.api_data;
+	}catch(e){}
+
 	// 遠征リスト
 	if( data.api_result==1 ){
 	    for( let i in data.api_data ){
@@ -291,6 +295,45 @@ function FindSlotItemNameById( api_id ){
 }
 
 
+/**
+ * 自分の保有している艦のデータを返す.
+ */
+function FindOwnShipData( ship_id ){
+    for( let k in KanColleRemainInfo.gOwnedShipList ){
+	let ship = KanColleRemainInfo.gOwnedShipList[k];
+	let id = ship.api_id; // 所有艦艇の持つID
+	if( id==ship_id ) return ship;
+    }
+    return undefined;
+}
+
+/**
+ * 艦のデータを返す
+ */
+function FindShipData( ship_id ){
+    let sort;
+    try{
+	for( let k in KanColleRemainInfo.gOwnedShipList ){
+	    let ship = KanColleRemainInfo.gOwnedShipList[k];
+	    let id = ship.api_id; // 所有艦艇の持つID
+	    sort = ship.api_sortno;
+	    if( id==ship_id ) break;
+	}
+
+	for( let k in KanColleRemainInfo.gShipList ){
+	    let ship = KanColleRemainInfo.gShipList[k];
+	    if( ship.api_sortno==sort ){
+		return ship;
+	    }
+	}
+    } catch (x) {
+    }
+    return undefined;
+}
+
+/**
+ * 艦艇の名前を返す
+ */
 function FindShipName( ship_id ){
     let sort;
     try{
