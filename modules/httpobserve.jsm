@@ -126,8 +126,10 @@ var KanColleDatabase = {
 
     // Initialization
     init: function(){
-	this.masterShip = new KanColleDB();
-	this.masterSlotitem = new KanColleDB();
+	if (!this.masterShip)
+	    this.masterShip = new KanColleDB();
+	if (!this.masterSlotitem)
+	    this.masterSlotitem = new KanColleDB();
 	this.memberShip2 = new KanColleDB();
 	this.memberSlotitem = new KanColleDB();
 	this.memberDeck = new KanColleDB();
@@ -138,8 +140,9 @@ var KanColleDatabase = {
 	debugprint("KanColleDatabase initialized.");
     },
     exit: function(){
-	this.masterShip = null;
-	this.masterSlotitem = null;
+	//マスタ情報は再送されないので削除しない
+	//this.masterShip = null;
+	//this.masterSlotitem = null;
 	this.memberShip2 = null;
 	this.memberSlotitem = null;
 	this.memberDeck = null;
