@@ -292,11 +292,12 @@ function KanColleTimerMemberShip2FleetHandler(){
 	    let ship_name = FindShipName(ship_id);
 	    let ship_info = FindShipStatus(ship_id);
 	    let ship_cond = FindShipCond(ship_id);
+	    let ship = KanColleDatabase.memberShip2.get(ship_id);
 	    let ship_bgcolor;
 	    let ship_border;
 	    let ship_color;
 	    let ship_shadow;
-	    let ship_text = ship_name;
+	    let ship_text = ship_name + (ship ? ' Lv' + ship.api_lv : '');
 
 	    if (ship_cond === undefined) {
 		ship_cond = '-';
