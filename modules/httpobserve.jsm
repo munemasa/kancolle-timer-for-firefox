@@ -8,7 +8,7 @@ var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo",
  * Database
  */
 function KanColleSimpleDB(){
-    var _now = null;
+    var _now = 0;
     var _db = null;
     var _callback = [];
 
@@ -44,7 +44,7 @@ function KanColleSimpleDB(){
 }
 
 function KanColleDB(){
-    var _now = null;
+    var _now = 0;
     var _raw = null;
     var _db = null;
     var _list = null;
