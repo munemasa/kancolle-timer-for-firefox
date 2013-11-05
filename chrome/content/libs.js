@@ -22,32 +22,38 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
  * 艦娘/装備数
  */
 function KanColleTimerBasicInfomationPanel(){
+    let timestamp = 0;
     let basic = KanColleDatabase.memberBasic.get();
     let record = KanColleDatabase.memberRecord.get();
     let maxships = '-';
     let maxslotitems = '-';
     let ships = '-';
     let slotitems = '-';
-    let count;
 
     if (record) {
+	timestamp = KanColleDatabase.memberRecord.timestamp();
 	ships = record.api_ship[0];
 	maxships = record.api_ship[1];
 	slotitems = record.api_slotitem[0];
 	maxslotitems = record.api_slotitem[1];
     }
 
-    if (basic) {
+    if (timestamp < KanColleDatabase.memberBasic.timestamp()) {
 	maxships = basic.api_max_chara;
 	maxslotitems = basic.api_max_slotitem;
     }
 
-    count = KanColleDatabase.memberShip2.count();
-    if (count !== undefined)
-	ships = count;
-    count = KanColleDatabase.memberSlotitem.count();
-    if (count !== undefined)
-	slotitems = count;
+    if (timestamp < KanColleDatabase.memberShip2.timestamp()) {
+	let count = KanColleDatabase.memberShip2.count();
+	if (count !== undefined)
+	    ships = count;
+    }
+
+    if (timestamp < KanColleDatabase.memberSlotitem.timestamp()) {
+	let count = KanColleDatabase.memberSlotitem.count();
+	if (count !== undefined)
+	    slotitems = count;
+    }
 
     $('basic-information-shipcount').value = ships + ' / ' + maxships;
     $('basic-information-slotitemcount').value = slotitems + ' / ' + maxslotitems;
