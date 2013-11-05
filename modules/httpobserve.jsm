@@ -122,6 +122,7 @@ var KanColleDatabase = {
     memberNdock: null,		// member/ndock
     memberKdock: null,		// member/kdock
     memberBasic: null,		// member/basic
+    memberRecord: null,		// member/record
 
     // Initialization
     init: function(){
@@ -133,6 +134,7 @@ var KanColleDatabase = {
 	this.memberNdock = new KanColleDB();
 	this.memberKdock = new KanColleDB();
 	this.memberBasic = new KanColleSimpleDB();
+	this.memberRecord = new KanColleSimpleDB();
 	debugprint("KanColleDatabase initialized.");
     },
     exit: function(){
@@ -144,6 +146,7 @@ var KanColleDatabase = {
 	this.memberNdock = null;
 	this.memberKdock = null;
 	this.memberBasic = null;
+	this.memberRecord = null;
 	debugprint("KanColleDatabase cleared.");
     },
 };
@@ -162,6 +165,8 @@ function KanColleCallback(req,s){
 	KanColleDatabase.masterSlotitem.update(data.api_data);
     }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
 	KanColleDatabase.memberBasic.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/record/) ){
+	KanColleDatabase.memberRecord.update(data.api_data);
     }else if( url.match(/kcsapi\/api_get_member\/deck_port/) ||
 	      url.match(/kcsapi\/api_get_member\/deck/) ) {
 	KanColleDatabase.memberDeck.update(data.api_data);

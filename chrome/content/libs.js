@@ -23,28 +23,34 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
  */
 function KanColleTimerBasicInfomationPanel(){
     let basic = KanColleDatabase.memberBasic.get();
-    let maxships;
-    let maxslotitems;
-    let ships;
-    let slotitems;
+    let record = KanColleDatabase.memberRecord.get();
+    let maxships = '-';
+    let maxslotitems = '-';
+    let ships = '-';
+    let slotitems = '-';
+    let count;
+
+    if (record) {
+	ships = record.api_ship[0];
+	maxships = record.api_ship[1];
+	slotitems = record.api_slotitem[0];
+	maxslotitems = record.api_slotitem[1];
+    }
 
     if (basic) {
 	maxships = basic.api_max_chara;
 	maxslotitems = basic.api_max_slotitem;
-    } else {
-	maxships = '-';
-	maxslotitems = '-';
     }
 
-    ships = KanColleDatabase.memberShip2.count();
-    if (ships === undefined)
-	ships = '-';
-    slotitems = KanColleDatabase.memberSlotitem.count();
-    if (slotitems === undefined)
-	slotitems = '-';
+    count = KanColleDatabase.memberShip2.count();
+    if (count !== undefined)
+	ships = count;
+    count = KanColleDatabase.memberSlotitem.count();
+    if (count !== undefined)
+	slotitems = count;
 
-    $('basic-information-shipcount').value = ships + ' / ' + basic.api_max_chara;
-    $('basic-information-slotitemcount').value = slotitems + ' / ' + basic.api_max_slotitem;
+    $('basic-information-shipcount').value = ships + ' / ' + maxships;
+    $('basic-information-slotitemcount').value = slotitems + ' / ' + maxslotitems;
 }
 
 /*
@@ -400,6 +406,7 @@ function KanColleTimerRegisterCallback(){
     let db = KanColleDatabase;
     db.memberBasic.appendCallback(KanColleTimerBasicHandler, true);
     db.memberBasic.appendCallback(KanColleTimerBasicInfomationPanel, false);
+    db.memberRecord.appendCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberDeck.appendCallback(KanColleTimerDeckHandler, true);
     db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberNdock.appendCallback(KanColleTimerNdockHandler, true);
@@ -422,6 +429,7 @@ function KanColleTimerUnregisterCallback(){
     db.memberNdock.removeCallback(KanColleTimerNdockHandler, true);
     db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberDeck.removeCallback(KanColleTimerDeckHandler, true);
+    db.memberRecord.removeCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberBasic.removeCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberBasic.removeCallback(KanColleTimerBasicHandler, true);
 }
