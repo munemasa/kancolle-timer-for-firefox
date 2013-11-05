@@ -645,12 +645,20 @@ var ShipInfoTree = {
     COLLIST: [
 	{ label: 'ID', id: 'id', flex: 1, },
 	//{ label: '艦種', id: 'type', flex: 2, },
+	{ label: '艦種', id: 'stype', flex: 1,
+	  sortspecs: [
+	    {
+		sortspec: '_stype',
+		label: '艦種',
+	    },
+	  ],
+	},
 	{ label: '艦名', id: 'name', flex: 3, always: true,
 	  sortspecs: [
-	//    {
-	//	sortspec: '_sortno',
-	//	label: 'オリジナル',
-	//    },
+	    {
+		sortspec: '_stype',
+		label: '艦種',
+	    },
 	    {
 		sortspec: '_yomi',
 		label: 'ヨミ',
@@ -1079,6 +1087,12 @@ function TreeView(){
 	id: function(ship) {
 	    return ship.api_id;
 	},
+	stype: function(ship) {
+	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+	    if (!shiptype)
+		return -1;
+	    return KanColleData.type_name[shiptype.api_stype];
+	},
 	name: function(ship) {
 	    return FindShipNameByCatId(ship.api_ship_id);
 	},
@@ -1169,6 +1183,18 @@ function TreeView(){
 
     // special comparision function: each function takes two 'ship's
     var shipcmpfunc = {
+	_stype: function(ship_a,ship_b){
+	    let shiptype_a = KanColleDatabase.masterShip.get(ship_a.api_ship_id);
+	    let shiptype_b = KanColleDatabase.masterShip.get(ship_b.api_ship_id);
+	    let ret;
+	    if (shiptype_a === undefined || shiptype_b === undefined)
+		return ((shiptype_a !== undefined ? 1 : 0) - (shiptype_b !== undefined ? 1 : 0)) * order;
+	    ret = shiptype_a.api_stype - shiptype_b.api_stype;
+	    if (ret)
+		return ret;
+	    //ゲーム内ソートは艦種と艦船の順位づけが逆
+	    return ship_b.api_sortno - ship_a.api_sortno;
+	},
     };
 
     // default
