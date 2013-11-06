@@ -102,6 +102,21 @@ function KanColleTimerDeckHandler(now,api_data){
     }
 }
 
+function KanColleTimerMakeShipFleetMap(){
+    let decks = KanColleDatabase.memberDeck.list();
+    let db = {};
+    for( let i = 0; i < decks.length; i++ ){
+	let deck = KanColleDatabase.memberDeck.get(decks[i]);
+	for( let j = 0; j < deck.api_ship.length; j++ ){
+	    if (deck.api_ship[j] < 0)
+		continue;
+	    db[deck.api_ship[j]] = { fleet: deck.api_id, pos: j, };
+	}
+    }
+    debugprint(db.toSource());
+    KanColleRemainInfo.shipfleet = db;
+}
+
 /*
  * 入渠ドック
  *  member/ndock	: api_data
@@ -415,6 +430,7 @@ function KanColleTimerRegisterCallback(){
     db.memberBasic.appendCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberRecord.appendCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberDeck.appendCallback(KanColleTimerDeckHandler, true);
+    db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap, false);
     db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberNdock.appendCallback(KanColleTimerNdockHandler, true);
     db.memberKdock.appendCallback(KanColleTimerKdockHandler, true);
@@ -435,6 +451,7 @@ function KanColleTimerUnregisterCallback(){
     db.memberKdock.removeCallback(KanColleTimerKdockHandler, true);
     db.memberNdock.removeCallback(KanColleTimerNdockHandler, true);
     db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler, false);
+    db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap, false);
     db.memberDeck.removeCallback(KanColleTimerDeckHandler, true);
     db.memberRecord.removeCallback(KanColleTimerBasicInfomationPanel, false);
     db.memberBasic.removeCallback(KanColleTimerBasicInfomationPanel, false);
@@ -644,6 +661,7 @@ function CreateListCell(label){
 var ShipInfoTree = {
     /* Columns*/
     COLLIST: [
+	{ label: '艦隊', id: 'fleet', flex: 1, },
 	{ label: 'ID', id: 'id', flex: 1, },
 	//{ label: '艦種', id: 'type', flex: 2, },
 	{ label: '艦種', id: 'stype', flex: 1,
@@ -723,6 +741,7 @@ var ShipInfoTree = {
     ],
     collisthash: {},
     columns: [
+	'fleet',
 	'id',
 	//'type',
 	'name',
@@ -1098,6 +1117,12 @@ function TreeView(){
 
     // getCellText function table by column ID
     var shipcellfunc = {
+	fleet: function(ship) {
+	    let fleet = KanColleRemainInfo.shipfleet[ship.api_id];
+	    if (fleet)
+		return fleet.fleet;
+	    return '';
+	},
 	id: function(ship) {
 	    return ship.api_id;
 	},
@@ -1197,6 +1222,22 @@ function TreeView(){
 
     // special comparision function: each function takes two 'ship's
     var shipcmpfunc = {
+	fleet: function(ship_a,ship_b){
+	    let fleet_a = KanColleRemainInfo.shipfleet[ship_a.api_id];
+	    let fleet_b = KanColleRemainInfo.shipfleet[ship_b.api_id];
+	    let ret;
+	    if (!fleet_a || !fleet_b)
+		return ((fleet_b ? 1 : 0) - (fleet_a ? 1 : 0)) * order;
+	    if (!fleet_a.fleet || !fleet_b.fleet)
+		return ((fleet_b.fleet ? 1 : 0) - (fleet_a.fleet ? 1 : 0)) * order;
+	    ret = fleet_a.fleet - fleet_b.fleet;
+	    if (ret)
+		return ret;
+	    ret = (fleet_a.pos - fleet_b.pos) * order;
+	    if (ret)
+		return ret;
+	    return DefaultSortFunc(ship_b,ship_a,order);
+	},
 	_stype: function(ship_a,ship_b){
 	    return DefaultSortFunc(ship_a,ship_b,order);
 	},

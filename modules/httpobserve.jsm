@@ -187,6 +187,7 @@ function KanColleCallback(req,s){
 
 var KanColleRemainInfo = {
     slotitemowners: {},
+    shipfleet: {},
 
     fleet_name: [], // 艦隊名
     mission_name:[],// 遠征名
