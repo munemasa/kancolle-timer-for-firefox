@@ -741,6 +741,10 @@ var ShipInfoTree = {
 	    },
 	  ],
 	},
+	{ label: '装備1', id: 'slotitem1', flex: 1, },
+	{ label: '装備2', id: 'slotitem2', flex: 1, },
+	{ label: '装備3', id: 'slotitem3', flex: 1, },
+	{ label: '装備4', id: 'slotitem4', flex: 1, },
     ],
     collisthash: {},
     columns: [
@@ -1092,6 +1096,31 @@ function getShipProperties(ship,name)
     return prop;
 }
 
+function getShipSlotitem(ship,slot){
+    let idx = slot - 1;
+    let name;
+
+    if (idx >= ship.api_slotnum)
+	return '';
+
+    if (ship.api_slot[idx] < 0)
+	return '-';
+
+    item = KanColleDatabase.memberSlotitem.get(ship.api_slot[idx]);
+    if (!item)
+	return '!';
+
+    if (item.api_name)
+	name = item.api_name;
+    else {
+	let itemtype = KanColleDatabase.masterSlotitem.get(item.api_slotitem_id);
+	if (!itemtype)
+	    return '?';
+	name = itemtype.api_name;
+    }
+    return name;
+}
+
 function DefaultSortFunc(ship_a,ship_b,order){
     let shiptype_a = KanColleDatabase.masterShip.get(ship_a.api_ship_id);
     let shiptype_b = KanColleDatabase.masterShip.get(ship_b.api_ship_id);
@@ -1196,6 +1225,18 @@ function TreeView(){
 	},
 	cond: function(ship) {
 	    return FindShipCond(ship.api_id);
+	},
+	slotitem1: function(ship) {
+	    return getShipSlotitem(ship,1);
+	},
+	slotitem2: function(ship) {
+	    return getShipSlotitem(ship,2);
+	},
+	slotitem3: function(ship) {
+	    return getShipSlotitem(ship,3);
+	},
+	slotitem4: function(ship) {
+	    return getShipSlotitem(ship,4);
 	},
     };
 
