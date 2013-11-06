@@ -1070,6 +1070,19 @@ function getShipProperties(ship,name)
     return prop;
 }
 
+function DefaultSortFunc(ship_a,ship_b,order){
+    let shiptype_a = KanColleDatabase.masterShip.get(ship_a.api_ship_id);
+    let shiptype_b = KanColleDatabase.masterShip.get(ship_b.api_ship_id);
+    let ret;
+    if (shiptype_a === undefined || shiptype_b === undefined)
+	return ((shiptype_a !== undefined ? 1 : 0) - (shiptype_b !== undefined ? 1 : 0)) * order;
+    ret = shiptype_a.api_stype - shiptype_b.api_stype;
+    if (ret)
+	return ret;
+    //ゲーム内ソートは艦種と艦船の順位づけが逆
+    return ship_b.api_sortno - ship_a.api_sortno;
+}
+
 function TreeView(){
     var that = this;
     var shiplist;
@@ -1185,16 +1198,7 @@ function TreeView(){
     // special comparision function: each function takes two 'ship's
     var shipcmpfunc = {
 	_stype: function(ship_a,ship_b){
-	    let shiptype_a = KanColleDatabase.masterShip.get(ship_a.api_ship_id);
-	    let shiptype_b = KanColleDatabase.masterShip.get(ship_b.api_ship_id);
-	    let ret;
-	    if (shiptype_a === undefined || shiptype_b === undefined)
-		return ((shiptype_a !== undefined ? 1 : 0) - (shiptype_b !== undefined ? 1 : 0)) * order;
-	    ret = shiptype_a.api_stype - shiptype_b.api_stype;
-	    if (ret)
-		return ret;
-	    //ゲーム内ソートは艦種と艦船の順位づけが逆
-	    return ship_b.api_sortno - ship_a.api_sortno;
+	    return DefaultSortFunc(ship_a,ship_b,order);
 	},
     };
 
