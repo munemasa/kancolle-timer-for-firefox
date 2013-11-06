@@ -675,6 +675,10 @@ var ShipInfoTree = {
 	{ label: '艦名', id: 'name', flex: 3, always: true,
 	  sortspecs: [
 	    {
+		sortspec: 'id',
+		label: 'ID',
+	    },
+	    {
 		sortspec: '_stype',
 		label: '艦種',
 	    },
@@ -742,7 +746,7 @@ var ShipInfoTree = {
     collisthash: {},
     columns: [
 	'fleet',
-	'id',
+	//'id',
 	//'type',
 	'name',
 	'lv',
