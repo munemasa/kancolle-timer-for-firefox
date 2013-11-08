@@ -113,7 +113,6 @@ function KanColleTimerMakeShipFleetMap(){
 	    db[deck.api_ship[j]] = { fleet: deck.api_id, pos: j, };
 	}
     }
-    debugprint(db.toSource());
     KanColleRemainInfo.shipfleet = db;
 }
 
