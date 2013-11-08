@@ -88,8 +88,6 @@ function KanColleDB(){
     };
     this.get = function(id){
 	parse();
-	if (!_db)
-	    parse();
 	if (_db)
 	    return _db[id];
 	return null;
