@@ -64,6 +64,7 @@ function KanColleDB(){
 	_now = (new Date).getTime();
 	_raw = data;
 	_db = null;
+	_list = null;
 	for( let i = 0; i < _callback.length; i++ ){
 	    if (_callback[i].compat)
 		_callback[i].func(Math.floor(_now/1000),data);
