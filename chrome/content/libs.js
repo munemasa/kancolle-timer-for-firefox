@@ -1309,7 +1309,7 @@ function TreeView(){
     this.getImageSrc = function(row,col){ return null; };
     this.getRowProperties = function(row,props){};
     this.getCellProperties = function(row,col,props){};
-    this.getColumnProperties = function(colid,col,props){};
+    this.getColumnProperties = function(col,props){};
     this.cycleHeader = function(col,elem){};
 };
 
