@@ -1286,6 +1286,7 @@ function TreeView(){
     this.getCellText = function(row,column){
 	let colid = column.id.replace(/^shipinfo-tree-column-/, '');
 	let ship;
+	let func;
 
 	if (row >= this.rowCount)
 	    return 'N/A';
