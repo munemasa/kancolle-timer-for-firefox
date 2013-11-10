@@ -771,7 +771,10 @@ function KanColleBuildFilterMenuList(id){
     let itemlist;
     let lastitemtype = null;
     let menugrp = null;
+    let submenu;
+    let subroot;
     let menuitems = [];
+    let defaultmenu = null;
 
     function buildmenuitem(label, value){
 	let item = document.createElementNS(XUL_NS, 'menuitem');
@@ -790,6 +793,13 @@ function KanColleBuildFilterMenuList(id){
     menupopup.setAttribute('id', id + '-popup');
 
     menuitems.push(buildmenuitem('すべて', null));
+
+    // Build menu for slotitems
+    subroot = document.createElementNS(XUL_NS, 'menupopup');
+
+    submenu = document.createElementNS(XUL_NS, 'menu');
+    submenu.setAttribute('label', '装備');
+    submenu.appendChild(subroot);
 
     itemlist = Object.keys(KanColleRemainInfo.slotitemowners).sort(function(a,b){
 	let type_a = KanColleRemainInfo.slotitemowners[a].type[2];
@@ -831,15 +841,21 @@ function KanColleBuildFilterMenuList(id){
 	    menugrpmenu.setAttribute('label', itemtypename);
 	    menugrpmenu.appendChild(menugrp);
 
-	    menuitems.push(menugrpmenu);
+	    subroot.appendChild(menugrpmenu);
 	    lastitemtype = itemtypename;
 	}
 
 	menugrp.appendChild(buildmenuitem(itemmenutitle, itemval));
 	if (ShipInfoTree.shipfilterspec == itemval)
-	    menuitems.unshift(buildmenuitem(itemmenutitle, itemval));
+	    defaultmenu = buildmenuitem(itemmenutitle, itemval);
     }
 
+    if (itemlist.length)
+	menuitems.push(submenu);
+
+    // Finally build menu
+    if (defaultmenu)
+	menupopup.appendChild(defaultmenu);
     for (let i = 0; i < menuitems.length; i++)
 	menupopup.appendChild(menuitems[i]);
 
