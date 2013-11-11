@@ -901,13 +901,13 @@ function KanColleSlotitemFilterTemplate(){
 
 function KanColleUpgradeFilterTemplate(){
     return {
-	    label: '近代化改修',
+	    label: '近代化',
 	    menu: [
 		{
-		    label: 'すべて',
+		    label: '改修可能',
 		    spec: 'upgrade0',
 		},{
-		    label: '改造済',
+		    label: '最高改造段階で改修可能',
 		    spec: 'upgrade1',
 		},
 	    ],
