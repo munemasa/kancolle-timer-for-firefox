@@ -899,6 +899,21 @@ function KanColleSlotitemFilterTemplate(){
     };
 }
 
+function KanColleUpgradeFilterTemplate(){
+    return {
+	    label: '近代化改修',
+	    menu: [
+		{
+		    label: 'すべて',
+		    spec: 'upgrade0',
+		},{
+		    label: '改造済',
+		    spec: 'upgrade1',
+		},
+	    ],
+    };
+}
+
 function KanColleBuildFilterMenuList(id){
     let menulist;
     let menupopup;
@@ -966,6 +981,11 @@ function KanColleBuildFilterMenuList(id){
 
     // Build menu by Slotitem
     menu = createmenu(KanColleSlotitemFilterTemplate());
+    if (menu)
+	menuitems.push(menu);
+
+    // Build menu by upgradability
+    menu = createmenu(KanColleUpgradeFilterTemplate());
     if (menu)
 	menuitems.push(menu);
 
@@ -1394,6 +1414,25 @@ function TreeView(){
 		    slist.push(shiplist[i]);
 	    }
 	    shiplist = slist;
+	} else if (filterspec.match(/^upgrade(\d+)$/)) {
+	    const proplist = [ 'karyoku', 'raisou', 'taiku', 'soukou' ];
+	    let upgrade = parseInt(RegExp.$1, 10);
+	    let ships = [];
+	    for( let i = 0; i < shiplist.length; i++ ){
+		let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
+		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+		if (upgrade && shiptype.api_afterlv)
+		    continue;
+		for (j = 0; j < proplist.length; j++) {
+		    k = proplist[j];
+		    let p = getShipProperties(ship,k);
+		    if (p && p.remain) {
+			ships.push(shiplist[i]);
+			break;
+		    }
+		}
+	    }
+	    shiplist = ships;
 	} else {
 	    debugprint('invalid filterspec "' + filterspec + '"; ignored');
 	}
