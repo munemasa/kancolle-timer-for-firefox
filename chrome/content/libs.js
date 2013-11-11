@@ -1399,7 +1399,7 @@ function TreeView(){
 	if (filterspec.match(/^slotitem(\d+)$/)) {
 	    let slotitemid = RegExp.$1;
 	    shiplist = Object.keys(KanColleRemainInfo.slotitemowners[slotitemid].list);
-	} else if (filterspec.match(/^stype((\d+-)*\d+)/)) {
+	} else if (filterspec.match(/^stype((\d+-)*\d+)$/)) {
 	    let stypesearch = '-' + RegExp.$1 + '-';
 	    let slist = [];
 	    for (let i = 0; i < shiplist.length; i++) {
