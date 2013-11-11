@@ -764,127 +764,89 @@ var ShipInfoTree = {
     sortorder: null,
 };
 
-function KanColleBuildFilterMenuList(id){
-    let menulist;
-    let menupopup;
-    let menu;
-    let itemlist;
-    let lastitemtype = null;
-    let menugrp = null;
-    let submenu;
-    let subroot;
-    let menuitems = [];
-    let defaultmenu = null;
+// Filter by Stype (Ship Class)
+function KanColleStypeFilterTemplate(){
     let stypegroup = [
 	{ label: '駆逐系',
 	  types: [
-	    { id: 2, }
+	    { id: 2, }	    //駆逐
 	  ],
 	},
 	{ label: '軽巡系',
 	  types: [
-	    { id: 3, },
-	    { id: 4, },
+	    { id: 3, },	    //軽巡
+	    { id: 4, },	    //雷巡
 	  ],
 	},
 	{ label: '重巡系',
 	  types: [
-	    { id: 5, },
-	    { id: 6, },
+	    { id: 5, },	    //重巡
+	    { id: 6, },	    //航巡
 	  ]
 	},
 	{ label: '戦艦系',
 	  types: [
 	    { id: 8, label: '高速戦艦' },
-	    { id: 9, },
-	    { id: 10, },
+	    { id: 9, },	    //戦艦
+	    { id: 10, },    //航空戦艦
 	  ]
 	},
 	{ label: '空母系',
 	  types: [
-	    { id: 7, },
-	    { id: 11, },
-	    { id: 16, },
+	    { id: 7, },	    //水母
+	    { id: 11, },    //軽水母
+	    { id: 16, },    //空母
 	  ],
 	},
 	{ label: '潜水艦系',
 	  types: [
-	    { id: 13, },
-	    { id: 14, },
+	    { id: 13, },    //潜水艦
+	    { id: 14, },    //潜母
 	  ],
 	},
     ];
-
-    function buildmenuitem(label, value){
-	let item = document.createElementNS(XUL_NS, 'menuitem');
-	item.setAttribute('label', label);
-	if (value)
-	    item.setAttribute('value', value);
-	item.setAttribute('oncommand', 'ShipListFilter(this);');
-	return item;
-    }
-
-    menulist = document.createElementNS(XUL_NS, 'menulist');
-    menulist.setAttribute('label', 'XXX');
-    menulist.setAttribute('id', id);
-
-    menupopup = document.createElementNS(XUL_NS, 'menupopup');
-    menupopup.setAttribute('id', id + '-popup');
-
-    menuitems.push(buildmenuitem('すべて', null));
-
-    // Build menu for shiptype
-    subroot = document.createElementNS(XUL_NS, 'menupopup');
-
-    submenu = document.createElementNS(XUL_NS, 'menu');
-    submenu.setAttribute('label', '艦種');
-    submenu.appendChild(subroot);
-
-    for (let i = 0; i < stypegroup.length; i++) {
-	let stypegrpmenu;
-	let stypegrp;
-	let alllabel;
-
-	stypegrp = document.createElementNS(XUL_NS, 'menupopup');
-
-	stypegrpmenu = document.createElementNS(XUL_NS, 'menu');
-	stypegrpmenu.setAttribute('label', stypegroup[i].label);
-	stypegrpmenu.appendChild(stypegrp);
-
-	subroot.appendChild(stypegrpmenu);
-
+    let menu = [];
+    for( let i = 0; i < stypegroup.length; i++ ){
+	let submenu = {
+	    label: stypegroup[i].label,
+	    menu: [],
+	};
 	if (stypegroup[i].types.length > 1) {
 	    let spec = [];
 	    let label = stypegroup[i].label + 'すべて';
-	    for (let j = 0; j < stypegroup[i].types.length; j++)
+	    for( let j = 0; j < stypegroup[i].types.length; j++ )
 		spec.push(stypegroup[i].types[j].id);
 	    spec = 'stype' + spec.join('-');
-	    stypegrp.appendChild(buildmenuitem(label, spec));
-	    if (ShipInfoTree.shipfilterspec == spec)
-		defaultmenu = buildmenuitem(label, spec);
+	    submenu.menu.push({
+				label: label,
+				spec: spec,
+			      });
 	}
-	for (let j = 0; j < stypegroup[i].types.length; j++) {
+	for( let j = 0; j < stypegroup[i].types.length; j++ ){
 	    let spec;
 	    let label = stypegroup[i].types[j].label;
 	    if (!label)
 		label = KanColleData.type_name[stypegroup[i].types[j].id];
 	    spec = 'stype' + stypegroup[i].types[j].id;
-	    stypegrp.appendChild(buildmenuitem(label, spec));
-	    if (ShipInfoTree.shipfilterspec == spec)
-		defaultmenu = buildmenuitem(label, spec);
+	    submenu.menu.push({
+				label: label,
+				spec: spec,
+			      });
 	}
+	menu.push(submenu);
     }
+    return {
+	label: '艦種',
+	menu: menu,
+    };
+}
 
-    menuitems.push(submenu);
+// Filter by Slotitems
+function KanColleSlotitemFilterTemplate(){
+    let menu = [];
+    let submenu = null;
 
-    // Build menu for slotitems
-    subroot = document.createElementNS(XUL_NS, 'menupopup');
-
-    submenu = document.createElementNS(XUL_NS, 'menu');
-    submenu.setAttribute('label', '装備');
-    submenu.appendChild(subroot);
-
-    itemlist = Object.keys(KanColleRemainInfo.slotitemowners).sort(function(a,b){
+    let itemlist = Object.keys(KanColleRemainInfo.slotitemowners).sort(function(a,b){
 	let type_a = KanColleRemainInfo.slotitemowners[a].type[2];
 	let type_b = KanColleRemainInfo.slotitemowners[b].type[2];
 	let id_a = KanColleRemainInfo.slotitemowners[a].id;
@@ -894,6 +856,7 @@ function KanColleBuildFilterMenuList(id){
 	    diff = id_a - id_b;
 	return diff;
     });
+
     for (let i = 0; i < itemlist.length; i++) {
 	let k = itemlist[i];
 	let itemname = KanColleRemainInfo.slotitemowners[k].name;
@@ -915,26 +878,96 @@ function KanColleBuildFilterMenuList(id){
 
 	itemmenutitle = itemname + '(' + itemnum + '/' + itemtotalnum + ')';
 
-	if (!menugrp || lastitemtype != itemtypename) {
-	    let menugrpmenu;
-
-	    menugrp = document.createElementNS(XUL_NS, 'menupopup');
-
-	    menugrpmenu = document.createElementNS(XUL_NS, 'menu');
-	    menugrpmenu.setAttribute('label', itemtypename);
-	    menugrpmenu.appendChild(menugrp);
-
-	    subroot.appendChild(menugrpmenu);
+	if (!submenu || lastitemtype != itemtypename) {
+	    submenu = {
+		label: itemtypename,
+		menu: [],
+	    };
+	    menu.push(submenu);
 	    lastitemtype = itemtypename;
 	}
 
-	menugrp.appendChild(buildmenuitem(itemmenutitle, itemval));
-	if (ShipInfoTree.shipfilterspec == itemval)
-	    defaultmenu = buildmenuitem(itemmenutitle, itemval);
+	submenu.menu.push({
+			    label: itemmenutitle,
+			    spec: itemval,
+			  });
     }
 
-    if (itemlist.length)
-	menuitems.push(submenu);
+    return {
+	    label: '装備',
+	    menu: menu,
+    };
+}
+
+function KanColleBuildFilterMenuList(id){
+    let menulist;
+    let menupopup;
+    let menu;
+    let menuitems = [];
+    var defaultmenu = null;
+
+    function buildmenuitem(label, value){
+	let item = document.createElementNS(XUL_NS, 'menuitem');
+	item.setAttribute('label', label);
+	if (value)
+	    item.setAttribute('value', value);
+	item.setAttribute('oncommand', 'ShipListFilter(this);');
+	return item;
+    }
+
+    function createmenu(templ) {
+	let popup;
+	let menu;
+	let mlist;
+
+	if (!templ)
+	    return;
+
+	debugprint(templ.toSource());
+
+	if (templ.spec) {
+	    if (ShipInfoTree.shipfilterspec == templ.spec)
+		defaultmenu = buildmenuitem(templ.label, templ.spec);
+	    return buildmenuitem(templ.label, templ.spec);
+	}
+
+	mlist = [];
+	popup = document.createElementNS(XUL_NS, 'menupopup');
+	menu = document.createElementNS(XUL_NS, 'menu');
+
+	menu.setAttribute('label', templ.label);
+	menu.appendChild(popup);
+
+	if (templ.menu) {
+	    for (let i = 0; i < templ.menu.length; i++)
+		mlist.push(createmenu(templ.menu[i]));
+	}
+	for( let i = 0; i < mlist.length; i++ )
+	    popup.appendChild(mlist[i]);
+
+	return menu;
+    }
+
+    menulist = document.createElementNS(XUL_NS, 'menulist');
+    menulist.setAttribute('label', 'XXX');
+    menulist.setAttribute('id', id);
+
+    menupopup = document.createElementNS(XUL_NS, 'menupopup');
+    menupopup.setAttribute('id', id + '-popup');
+
+    // Default
+    menu = buildmenuitem('すべて', null);
+    menuitems.push(menu);
+
+    // Build menu by Stype (ship class)
+    menu = createmenu(KanColleStypeFilterTemplate());
+    if (menu)
+	menuitems.push(menu);
+
+    // Build menu by Slotitem
+    menu = createmenu(KanColleSlotitemFilterTemplate());
+    if (menu)
+	menuitems.push(menu);
 
     // Finally build menu
     if (defaultmenu)
