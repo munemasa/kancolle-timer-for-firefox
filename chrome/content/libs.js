@@ -216,6 +216,54 @@ function KanColleTimerKdockHandler(now,api_data){
 }
 
 /*
+ * 建造艦名表示（隠し機能）
+ *
+ * 建造ドックのNo.欄を素早く何度かダブルクリックすると
+ * 艦名を tooltip として表示
+ */
+var KanColleKdockMouseEventHandler = {
+    timer: {},
+
+    handleEvent: function(e) {
+	let id = e.target.id;
+	let now = (new Date).getTime();
+
+	if (!this.timer[id] || this.timer[id] + 1000 < now) {
+	    this.timer[id] = now;
+	    return;
+	}
+	this.timer[id] += 1000;
+
+	if (this.timer[id] - now <= 2000)
+	    return;
+
+	if (id.match(/^kdock-label(\d+)$/)) {
+	    let fleet_id = parseInt(RegExp.$1, 10);
+	    let fleet = KanColleDatabase.memberKdock.get(fleet_id);
+	    if( fleet && fleet.api_complete_time ){
+		let ship_id = parseInt( fleet.api_created_ship_id );
+		let ship_name = FindShipNameByCatId(ship_id);
+		e.target.setAttribute('tooltiptext',ship_name);
+	    }
+	}
+    },
+
+    init: function(){
+	for( let i = 0; i < 4; i++ ){
+	    let k = 'kdock-label' + (i + 1);
+	    $(k).addEventListener('dblclick', this);
+	}
+    },
+
+    exit: function(){
+	for( let i = 0; i < 4; i++ ){
+	    let k = 'kdock-label' + (i + 1);
+	    $(k).removeEventListener('dblclick', this);
+	}
+    },
+};
+
+/*
  * 装備保持艦船の抽出
  * member/ship2 and member/slotitem
  */
@@ -1579,9 +1627,11 @@ function KanColleShipInfoInit(){
  */
 function KanColleTimerLibInit(){
     KanColleShipInfoInit();
+    KanColleKdockMouseEventHandler.init();
 }
 
 function KanColleTimerLibExit(){
+    KanColleKdockMouseEventHandler.exit();
 }
 
 /**
