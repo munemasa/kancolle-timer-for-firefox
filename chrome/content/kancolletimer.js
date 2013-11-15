@@ -322,7 +322,7 @@ var KanColleTimer = {
 
 	this.initWallpaper();
 
-	KanColleShipInfoInit();
+	KanColleTimerLibInit();
 
 	this.audios = document.getElementsByTagName('html:audio');
 
@@ -330,6 +330,7 @@ var KanColleTimer = {
     },
 
     destroy: function(){
+	KanColleTimerLibExit();
 	KanColleTimerUnregisterCallback();
 	KanColleHttpRequestObserver.destroy();
     }

@@ -1575,6 +1575,16 @@ function KanColleShipInfoInit(){
 }
 
 /**
+ * ライブラリ初期化/後始末
+ */
+function KanColleTimerLibInit(){
+    KanColleShipInfoInit();
+}
+
+function KanColleTimerLibExit(){
+}
+
+/**
  * 艦これを開いているタブを返す
  * @return Tabを返す。なければnull
  */

@@ -312,7 +312,7 @@ var KanColleTimerSidebar = {
 	} catch (x) {
 	}
 
-	KanColleShipInfoInit();
+	KanColleTimerLibInit();
 
 	this.audios = document.getElementsByTagName('html:audio');
 	this.initWallpaper();
@@ -320,6 +320,7 @@ var KanColleTimerSidebar = {
 
     destroy: function(){
 	Application.console.log('KanColle Timer sidebar destroy.');
+	KanColleTimerLibExit();
 	KanColleTimerUnregisterCallback();
 	KanColleHttpRequestObserver.destroy();
     }
