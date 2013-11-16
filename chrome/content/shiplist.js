@@ -2,10 +2,13 @@ Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 
 var ShipList = {
 
-
-
     init: function(){
+	let now = GetCurrentTime();
+
+	// 艦艇リスト
 	let ships = KanColleRemainInfo.gOwnedShipList;
+
+	document.title = "保有艦艇リスト "+ships.length+"隻 ("+GetDateString(now*1000)+")";
 
 	let list = $('ship-list');
 	let no = 1;
@@ -29,8 +32,8 @@ var ShipList = {
 	    list.appendChild(elem);
 	}
 
+	// 艦隊編成
 	let fleets = KanColleRemainInfo.gDeckList;
-
 	for( let f in fleets ){
 	    f = parseInt(f);
 	    let fleet = fleets[f];
