@@ -348,7 +348,9 @@ function KanColleTimerMemberShip2FleetHandler(){
     for ( let i = 0; i < l.length; i++ ){
 	let fi = KanColleDatabase.memberDeck.get(l[i]);
 	let id = parseInt(fi.api_id, 10);
-	$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fi.api_name);
+	let fleet_text = fi.api_name;
+	let fleet_flagship_lv = 0;
+	let fleet_stypes = {};
 	for ( let j = 0; j < fi.api_ship.length; j++ ){
 	    let ship_id = fi.api_ship[j];
 	    let ship_name = FindShipName(ship_id);
@@ -360,6 +362,16 @@ function KanColleTimerMemberShip2FleetHandler(){
 	    let ship_color;
 	    let ship_shadow;
 	    let ship_text = ship_name + (ship ? ' Lv' + ship.api_lv : '');
+
+	    if (ship) {
+		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+		if (j == 0)
+		    fleet_flagship_lv = ship.api_lv;
+		if (!fleet_stypes[shiptype.api_stype])
+		    fleet_stypes[shiptype.api_stype] = 1;
+		else
+		    fleet_stypes[shiptype.api_stype]++;
+	    }
 
 	    if (ship_cond === undefined) {
 		ship_cond = '-';
@@ -444,6 +456,24 @@ function KanColleTimerMemberShip2FleetHandler(){
 	    $('shipstatus-' + id + '-' + (j + 1)).style.color = ship_color;
 	    $('shipstatus-' + id + '-' + (j + 1)).style.textShadow = ship_shadow;
 	}
+
+	if (fleet_flagship_lv > 0) {
+	    let stypes;
+	    let fleetinfo = [];
+	    stypes = Object.keys(fleet_stypes).sort(function(a,b){
+		return fleet_stypes[b] - fleet_stypes[a];
+	    });
+	    fleet_text += '\n旗艦Lv' + fleet_flagship_lv;
+	    for( let j = 0; j < stypes.length; j++ ){
+		let stypename = KanColleData.type_name[stypes[j]];
+		if (!stypename)
+		    stypename = 'UNKNOWN_' + stypes[j];
+		fleetinfo.push(' ' + stypename + '(' + fleet_stypes[stypes[j]] + ')');
+	    }
+	    fleet_text += ';' + fleetinfo.join(',');
+	}
+
+	$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
     }
 }
 
