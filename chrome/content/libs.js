@@ -418,15 +418,14 @@ function KanColleTimerMemberShip2FleetHandler(){
 		}
 		ship_text += ' ' + h + ':' + m;
 	    }
-	    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
-	    $('shipstatus-' + id + '-' + (j + 1)).style.backgroundColor = ship_bgcolor;
-	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_text);
 
 	    if (ship_info === undefined) {
 		ship_border = null;
 		ship_color = null;
 	    } else {
 		let hpratio = ship_info.nowhp / ship_info.maxhp;
+
+		ship_text += '\nHP: ' + ship_info.nowhp + '/' + ship_info.maxhp;
 
 		if (ship_info.bull_max > ship_info.bull ||
 		    ship_info.fuel_max > ship_info.fuel) {
@@ -452,6 +451,9 @@ function KanColleTimerMemberShip2FleetHandler(){
 		}
 	    }
 
+	    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
+	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_text);
+	    $('shipstatus-' + id + '-' + (j + 1)).style.backgroundColor = ship_bgcolor;
 	    $('shipstatus-' + id + '-' + (j + 1)).style.border = ship_border;
 	    $('shipstatus-' + id + '-' + (j + 1)).style.color = ship_color;
 	    $('shipstatus-' + id + '-' + (j + 1)).style.textShadow = ship_shadow;
