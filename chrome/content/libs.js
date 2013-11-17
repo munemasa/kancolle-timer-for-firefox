@@ -190,7 +190,7 @@ function KanColleTimerKdockHandler(now,api_data){
 		}
 		let name = GetConstructionShipName(created_time,finishedtime);
 		KanColleRemainInfo.construction_shipname[i] = name;
-		$('kdock-box'+k).setAttribute('tooltiptext',name);
+		$('kdock-label'+k).setAttribute('tooltiptext',name);
 
 		KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
 	    }
@@ -209,7 +209,7 @@ function KanColleTimerKdockHandler(now,api_data){
 	    KanColleRemainInfo.kdock_time[i] = "";
 	    $(ftime_str).value = "";
 	    KanColleRemainInfo.kdock[i].finishedtime = -1;
-	    $('kdock-box'+k).setAttribute('tooltiptext','');
+	    $('kdock-label'+k).setAttribute('tooltiptext','');
 	    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
 	}
     }
