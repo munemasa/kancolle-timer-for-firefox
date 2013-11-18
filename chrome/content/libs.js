@@ -827,15 +827,6 @@ var ShipInfoTree = {
 	{ label: '装備4', id: 'slotitem4', flex: 1, },
     ],
     collisthash: {},
-    columns: [
-	'fleet',
-	//'id',
-	//'type',
-	'name',
-	'lv',
-	'hp',
-	'cond',
-    ],
     /* Filter */
     filterspec: null,
     /* Sorting */
@@ -1180,8 +1171,6 @@ function KanColleCreateSortMenuPopup(box,id,key)
 }
 
 function KanColleCreateShipTree(){
-    let menulist;
-    let oldmenulist;
     let tree;
     let oldtree;
     let treecols;
@@ -1200,27 +1189,6 @@ function KanColleCreateShipTree(){
 
     // Build filter menu popup
     KanColleCreateFilterMenuList(box,'shipinfo-filtermenu');
-
-    // Build "menuitem"s
-    menulist = document.createElementNS(XUL_NS, 'menupopup');
-    menulist.setAttribute('id', 'shipinfo-colmenu');
-
-    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
-	let colinfo = ShipInfoTree.COLLIST[i];
-	let menuitem = document.createElementNS(XUL_NS, 'menuitem');
-	menuitem.setAttribute('id', 'shipinfo-colmenu-' + colinfo.id);
-	menuitem.setAttribute('type', 'checkbox');
-	menuitem.setAttribute('label', colinfo.label);
-	if (colinfo.always)
-	    menuitem.setAttribute('disabled', 'true');
-	menuitem.setAttribute('oncommand', 'ShipInfoTreeMenuPopup();');
-	menulist.appendChild(menuitem);
-    }
-
-    for (let i = 0; i < ShipInfoTree.columns.length; i++) {
-	let idx = ShipInfoTree.collisthash[ShipInfoTree.columns[i]];
-	menulist.childNodes[idx].setAttribute('checked', 'true');
-    }
 
     // Build sort menu
     for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
@@ -1270,13 +1238,6 @@ function KanColleCreateShipTree(){
 
     tree.appendChild(treecols);
     tree.appendChild(treechildren);
-
-    // Refresh existing menulist or append one.
-    oldmenulist = $('shipinfo-colmenu');
-    if (oldmenulist)
-	box.replaceChild(menulist, oldmenulist);
-    else
-	box.appendChild(menulist);
 
     // Replace existing tree, or append one.
     oldtree = $('shipinfo-tree');
@@ -1634,22 +1595,6 @@ function KanColleShipInfoSetView(){
 
 function ShipInfoTreeMenuPopup(){
     debugprint('ShipInfoTreeMenuPopup()');
-    let cols = [];
-    let str = '';
-    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
-	let id = ShipInfoTree.COLLIST[i].id;
-	let nodeid = 'shipinfo-colmenu-' + id;
-	str += id + ': ' + ($(nodeid).hasAttribute('checked') ? 'true' : 'false') + '\n';
-	if ($(nodeid).hasAttribute('checked')) {
-	    str += 'true';
-	    cols.push(id);
-	} else
-	    str += 'false';
-	str += '\n';
-    }
-
-    ShipInfoTree.columns = cols;
-
     KanColleCreateShipTree();
     KanColleShipInfoSetView();
 }

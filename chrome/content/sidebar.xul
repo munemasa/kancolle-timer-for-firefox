@@ -219,6 +219,40 @@
 
   <groupbox id="shipinfo-box" flex="1">
     <caption>艦船</caption>
+    <menupopup id="shipinfo-colmenu" oncommand="ShipInfoTreeMenuPopup();">
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="艦隊"	value="fleet"		id="shipinfo-colmenu-fleet"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="ID"	value="id"		id="shipinfo-colmenu-id"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="艦種" 	value="stype"		id="shipinfo-colmenu-stype"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="艦名"	value="name"		id="shipinfo-colmenu-name"	checked="true"  disabled="true" />
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="Lv"	value="lv"		id="shipinfo-colmenu-lv"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="HP"	value="hp"		id="shipinfo-colmenu-hp"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="火力"	value="karyoku"		id="shipinfo-colmenu-karyoku"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="雷装"	value="raisou"		id="shipinfo-colmenu-raisou"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="対空"	value="taiku"		id="shipinfo-colmenu-taiku"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装甲"	value="soukou"		id="shipinfo-colmenu-soukou"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="Cond"	value="cond"		id="shipinfo-colmenu-cond"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="入渠"	value="ndock"		id="shipinfo-colmenu-ndock"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装備1"	value="slotitem1"	id="shipinfo-colmenu-slotitem1"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装備2"	value="slotitem2"	id="shipinfo-colmenu-slotitem2"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装備3"	value="slotitem3"	id="shipinfo-colmenu-slotitem3"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装備4"	value="slotitem4"	id="shipinfo-colmenu-slotitem4"	checked="false" disabled="false"/>
+    </menupopup>
   </groupbox>
   
   <button label="ウィンドウを開く" oncommand="KanColleTimerSidebar.open();"/>
