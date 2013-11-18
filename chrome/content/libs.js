@@ -1217,6 +1217,11 @@ function KanColleCreateShipTree(){
 	menulist.appendChild(menuitem);
     }
 
+    for (let i = 0; i < ShipInfoTree.columns.length; i++) {
+	let idx = ShipInfoTree.collisthash[ShipInfoTree.columns[i]];
+	menulist.childNodes[idx].setAttribute('checked', 'true');
+    }
+
     // Build sort menu
     for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
 	let key = ShipInfoTree.COLLIST[i].id;
@@ -1229,12 +1234,13 @@ function KanColleCreateShipTree(){
     treecols.setAttribute('id', 'shipinfo-tree-columns');
 
     // Check selected items and build menu
-    for (let i = 0; i < ShipInfoTree.columns.length; i++) {
+    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
 	let treecol;
-	let idx = ShipInfoTree.collisthash[ShipInfoTree.columns[i]];
-	let colinfo = ShipInfoTree.COLLIST[idx];
-
-	menulist.childNodes[idx].setAttribute('checked', 'true');
+	let colinfo = ShipInfoTree.COLLIST[i];
+	let node = $('shipinfo-colmenu-' + colinfo.id);
+	let ischecked = node &&
+			node.hasAttribute('checked') &&
+			node.getAttribute('checked') == 'true';
 
 	treecol = document.createElementNS(XUL_NS, 'treecol');
 	treecol.setAttribute('id', 'shipinfo-tree-column-' + colinfo.id);
@@ -1247,6 +1253,7 @@ function KanColleCreateShipTree(){
 	    treecol.setAttribute('sortDirection',
 				 ShipInfoTree.sortorder > 0 ? 'ascending' : 'descending');
 	}
+	treecol.setAttribute('hidden', ischecked ? 'false' : 'true');
 
 	treecols.appendChild(treecol);
     }
@@ -1289,9 +1296,8 @@ function ShipInfoTreeSort(){
 
     dir = ShipInfoTree.sortorder > 0 ? 'ascending' : 'descending';
 
-    for (i = 0; i < ShipInfoTree.columns.length; i++) {
-	let idx = ShipInfoTree.collisthash[ShipInfoTree.columns[i]];
-	let colid = ShipInfoTree.COLLIST[idx].id;
+    for (i = 0; i < ShipInfoTree.COLLIST.length; i++) {
+	let colid = ShipInfoTree.COLLIST[i].id;
 	if (colid == ShipInfoTree.sortkey)
 	    $('shipinfo-tree-column-' + colid).setAttribute('sortDirection', dir);
 	else
