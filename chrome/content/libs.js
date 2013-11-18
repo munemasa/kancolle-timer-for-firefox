@@ -812,7 +812,7 @@ var ShipInfoTree = {
 	    {	sortspec: '_soukouremain',  label: '装甲強化余地',  },
 	  ],
 	},
-	{ label: 'Cond', id: 'cond', flex: 1, },
+	{ label: '士気', id: 'cond', flex: 1, },
 	{ label: '入渠', id: 'ndock', flex: 1,
 	  sortspecs: [
 	    {

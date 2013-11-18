@@ -241,7 +241,7 @@
       <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="装甲"	value="soukou"		id="shipinfo-colmenu-soukou"	checked="false" disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"
-		label="Cond"	value="cond"		id="shipinfo-colmenu-cond"	checked="true"  disabled="false"/>
+		label="士気"	value="cond"		id="shipinfo-colmenu-cond"	checked="true"  disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="入渠"	value="ndock"		id="shipinfo-colmenu-ndock"	checked="false" disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"
