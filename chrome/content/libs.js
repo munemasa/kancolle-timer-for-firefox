@@ -1262,6 +1262,11 @@ function KanColleCreateShipTree(){
 	}
 	treecol.setAttribute('hidden', ischecked ? 'false' : 'true');
 
+	if (i) {
+	    let splitter = document.createElementNS(XUL_NS, 'splitter');
+	    splitter.setAttribute('class', 'tree-splitter');
+	    treecols.appendChild(splitter);
+	}
 	treecols.appendChild(treecol);
     }
 
