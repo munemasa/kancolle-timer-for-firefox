@@ -1372,6 +1372,28 @@ function DefaultSortFunc(ship_a,ship_b,order){
     return ship_b.api_sortno - ship_a.api_sortno;
 }
 
+function ShipNextLvExp(ship){
+    let nextexp = KanColleData.level_accumexp[ship.api_lv];
+    if (nextexp === undefined)
+	return undefined;
+    else if (nextexp < 0)
+	return Number.POSITIVE_INFINITY;
+    return nextexp;
+}
+
+function ShipUpgradeableExp(ship){
+    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+    let nextlv = shiptype ? shiptype.api_afterlv : 0;
+    let nextexp;
+    if (nextlv > 0) {
+	nextexp = KanColleData.level_accumexp[nextlv - 1];
+	if (nextexp === undefined || nextexp < 0)
+	    return undefined;
+    } else
+	nextexp = Number.POSITIVE_INFINITY;
+    return nextexp;
+}
+
 function TreeView(){
     var that = this;
     var shiplist;
@@ -1439,19 +1461,20 @@ function TreeView(){
 	    return nextlv - ship.api_lv;
 	},
 	exp: function(ship) {
-	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
-	    let nextlv = shiptype ? shiptype.api_afterlv : 0;
-	    let nextexp0 = KanColleData.level_accumexp[ship.api_lv];
-	    let nextexp;
-	    if (nextexp0 === undefined || nextexp0 < 0)
-		nextexp0 = '-';
-	    if (nextlv > 0) {
-		nextexp = KanColleData.level_accumexp[nextlv - 1];
-		if (nextexp === undefined || nextexp < 0)
-		    nextexp = '?';
-	    } else
-		nextexp = '-';
-	    return ship.api_exp + '/' + nextexp0 + '/' + nextexp;
+	    let nextlvexp = ShipNextLvExp(ship);
+	    let nextupgexp = ShipUpgradeableExp(ship);
+
+	    if (nextlvexp === undefined)
+		nextlvexp = '?';
+	    else if (nextlvexp == Number.POSITIVE_INFINITY)
+		nextlvexp = '-';
+
+	    if (nextupgexp === undefined)
+		nextupgexp = '?';
+	    else if (nextupgexp === Number.POSITIVE_INFINITY)
+		nextupgexp = '-';
+
+	    return ship.api_exp + '/' + nextlvexp + '/' + nextupgexp;
 	},
 	_exp: function(ship) {
 	    return ship.api_exp;
@@ -1596,72 +1619,56 @@ function TreeView(){
 	_stype: function(ship_a,ship_b){
 	    return DefaultSortFunc(ship_a,ship_b,order);
 	},
-	_nextexp: function(ship_a,ship_b) {
-	    function nextexp(ship) {
-		let nextexp0 = KanColleData.level_accumexp[ship.api_lv];
-		if (nextexp0 === undefined || nextexp0 < 0)
-		    nextexp0 = Number.POSITIVE_INFINITY;
-		return nextexp0;
-	    }
-	    let nextexp_a = nextexp(ship_a);
-	    let nextexp_b = nextexp(ship_b);
+	_expnext: function(ship_a,ship_b) {
+	    let nextexp_a = ShipNextLvExp(ship_a);
+	    let nextexp_b = ShipNextLvExp(ship_b);
+	    if (nextexp_a === undefined)
+		nextexp_a = Number.POSITIVE_INFINITY;
+	    if (nextexp_b === undefined)
+		nextexp_b = Number.POSITIVE_INFINITY;
 	    if (nextexp_a == Number.POSITIVE_INFINITY &&
 	        nextexp_b == Number.POSITIVE_INFINITY)
 		return 0;
 	    return nextexp_a - nextexp_b;
 	},
-	_nextexpremain: function(ship_a,ship_b) {
-	    function nextexp(ship) {
-		let nextexp0 = KanColleData.level_accumexp[ship.api_lv];
-		if (nextexp0 === undefined || nextexp0 < 0)
-		    nextexp0 = Number.POSITIVE_INFINITY;
-		return nextexp0;
-	    }
-	    let nextexp_a = nextexp(ship_a) - ship_a.api_exp;
-	    let nextexp_b = nextexp(ship_b) - ship_b.api_exp;
+	_expnextremain: function(ship_a,ship_b) {
+	    let nextexp_a = ShipNextLvExp(ship_a);
+	    let nextexp_b = ShipNextLvExp(ship_b);
+	    if (nextexp_a === undefined)
+		nextexp_a = Number.POSITIVE_INFINITY;
+	    if (nextexp_b === undefined)
+		nextexp_b = Number.POSITIVE_INFINITY;
 	    if (nextexp_a == Number.POSITIVE_INFINITY &&
 	        nextexp_b == Number.POSITIVE_INFINITY)
 		return 0;
+	    nextexp_a -= ship_a.api_exp;
+	    nextexp_b -= ship_b.api_exp;
 	    return nextexp_a - nextexp_b;
 	},
 	_expupg: function(ship_a,ship_b) {
-	    function nextexp(ship) {
-		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
-		let nextlv = shiptype ? shiptype.api_afterlv : 0;
-		let nextexp;
-		if (nextlv > 0) {
-		    nextexp = KanColleData.level_accumexp[nextlv - 1];
-		    if (nextexp === undefined || nextexp < 0)
-			return Number.POSITIVE_INFINITY;
-		} else
-		    nextexp = Number.POSITIVE_INFINITY;
-		return nextexp;
-	    }
-	    let nextexp_a = nextexp(ship_a);
-	    let nextexp_b = nextexp(ship_b);
+	    let nextexp_a = ShipUpgradeableExp(ship_a);
+	    let nextexp_b = ShipUpgradeableExp(ship_b);
+	    if (nextexp_a === undefined)
+		nextexp_a = Number.POSITIVE_INFINITY;
+	    if (nextexp_b === undefined)
+		nextexp_b = Number.POSITIVE_INFINITY;
 	    if (nextexp_a == Number.POSITIVE_INFINITY &&
 	        nextexp_b == Number.POSITIVE_INFINITY)
 		return 0;
 	    return nextexp_a - nextexp_b;
 	},
 	_expupgremain: function(ship_a,ship_b) {
-	    function nextexp(ship) {
-		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
-		let nextlv = shiptype ? shiptype.api_afterlv : 0;
-		let nextexp;
-		if (nextlv > 0) {
-		    nextexp = KanColleData.level_accumexp[nextlv - 1];
-		    if (nextexp === undefined || nextexp < 0)
-			return Number.POSITIVE_INFINITY;
-		} else
-		    nextexp = Number.POSITIVE_INFINITY;
-		return nextexp;
-	    }
-	    let nextexp_a = nextexp(ship_a) - ship_a.api_exp;
-	    let nextexp_b = nextexp(ship_b) - ship_b.api_exp;
+	    let nextexp_a = ShipUpgradeableExp(ship_a);
+	    let nextexp_b = ShipUpgradeableExp(ship_b);
+	    if (nextexp_a === undefined)
+		nextexp_a = Number.POSITIVE_INFINITY;
+	    if (nextexp_b === undefined)
+		nextexp_b = Number.POSITIVE_INFINITY;
 	    if (nextexp_a == Number.POSITIVE_INFINITY &&
 	        nextexp_b == Number.POSITIVE_INFINITY)
 		return 0;
+	    nextexp_a -= ship_a.api_exp;
+	    nextexp_b -= ship_b.api_exp;
 	    return nextexp_a - nextexp_b;
 	},
     };
