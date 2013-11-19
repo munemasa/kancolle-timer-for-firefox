@@ -246,6 +246,8 @@
       <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="Lv"	value="lv"		id="shipinfo-colmenu-lv"	checked="true"  disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="経験値"	value="exp"		id="shipinfo-colmenu-exp"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="HP"	value="hp"		id="shipinfo-colmenu-hp"	checked="true"  disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="火力"	value="karyoku"		id="shipinfo-colmenu-karyoku"	checked="true"  disabled="false"/>
