@@ -477,10 +477,10 @@ function KanColleTimerMemberShip2FleetHandler(){
 
 	    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
 	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_text);
-	    $('shipstatus-' + id + '-' + (j + 1)).style.backgroundColor = ship_bgcolor;
-	    $('shipstatus-' + id + '-' + (j + 1)).style.border = ship_border;
-	    $('shipstatus-' + id + '-' + (j + 1)).style.color = ship_color;
-	    $('shipstatus-' + id + '-' + (j + 1)).style.textShadow = ship_shadow;
+	    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'background-color', ship_bgcolor);
+	    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'border', ship_border);
+	    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'color', ship_color);
+	    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'text-shadow', ship_shadow);
 	}
 
 	if (fleet_flagship_lv > 0) {
@@ -511,7 +511,7 @@ function KanColleTimerBasicHandler(now,api_data){
     let d = api_data;
     let f = function( elems, n ){
         for( let i=1; i<4; i++ ){
-	    elems[i].style.display = i<n ? "":"none";
+	    SetStyleProperty(elems[i], 'display', i<n ? "":"none");
 	}
     };
     let tmp = parseInt( d.api_count_deck );
@@ -1798,6 +1798,19 @@ function KanColleTimerLibInit(){
 
 function KanColleTimerLibExit(){
     KanColleKdockMouseEventHandler.exit();
+}
+
+/**
+ * Style
+ */
+function SetStyleProperty(node, prop, value, prio){
+    if (value === undefined || value === null)
+	node.style.removeProperty(prop);
+    else {
+	if (prio === undefined || prio == null)
+	    prio = '';
+	node.style.setProperty(prop,value,prio);
+    }
 }
 
 /**
