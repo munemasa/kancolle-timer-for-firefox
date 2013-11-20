@@ -348,7 +348,7 @@ function KanColleUpdateSlotitem(){
 	    for ( let l in db[k].list ){
 		s.push(FindShipName(parseInt(l, 10)));
 	    }
-	    debugprint(db[k].name + ': ' + s.join(','));
+	    //debugprint(db[k].name + ': ' + s.join(','));
 	}
     }
     //debugprint(KanColleRemainInfo.slotitemowners.toSource());
@@ -1008,7 +1008,7 @@ function KanColleSlotitemFilterTemplate(){
 	if (!itemname)
 	    itemname = KanColleDatabase.masterSlotitem.get(k).api_name;
 	*/
-	debugprint(itemname + ': slotitem' + k);
+	//debugprint(itemname + ': slotitem' + k);
 
 	itemmenutitle = itemname + '(' + itemnum + '/' + itemtotalnum + ')';
 
@@ -1072,7 +1072,7 @@ function KanColleBuildFilterMenuList(id){
 	if (!templ)
 	    return;
 
-	debugprint(templ.toSource());
+	//debugprint(templ.toSource());
 
 	if (templ.spec) {
 	    if (ShipInfoTree.shipfilterspec == templ.spec)
@@ -1207,7 +1207,7 @@ function KanColleBuildSortMenuPopup(id,key){
 	for (let j = 0; j < ad.length; j++) {
 	    let menuitem = document.createElementNS(XUL_NS, 'menuitem');
 
-	    debugprint('key=' + key + ', spec = ' + sortspecs[i].sortspec);
+	    //debugprint('key=' + key + ', spec = ' + sortspecs[i].sortspec);
 
 	    menuitem.setAttribute('type', 'radio');
 	    menuitem.setAttribute('name', id);
@@ -1333,7 +1333,7 @@ function ShipInfoTreeSort(){
 	    $('shipinfo-tree-column-' + colid).removeAttribute('sortDirection');
     }
 
-    debugprint('key=' + ShipInfoTree.sortkey + ', order=' + ShipInfoTree.sortorder);
+    //debugprint('key=' + ShipInfoTree.sortkey + ', order=' + ShipInfoTree.sortorder);
 
     $('shipinfo-tree').view = new TreeView();
 }
