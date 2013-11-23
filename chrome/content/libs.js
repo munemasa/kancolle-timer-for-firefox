@@ -227,24 +227,27 @@ function KanColleTimerNdockRestore(){
  * 建造
  *  member/kdock	: api_data
  */
-function KanColleTimerKdockHandler(now,api_data){
+function KanColleTimerKdockHandler(){
+    let docks = KanColleDatabase.memberKdock.list();
+    let now = Math.floor(KanColleDatabase.memberKdock.timestamp()/1000);
+
     // 建造ドック
-    for( let i in api_data ){
-	i = parseInt(i);
-	var k = i+1;
+    for( let i = 0; i < docks.length; i++ ){
+	let d = KanColleDatabase.memberKdock.get(docks[i]);
+	let k = d.api_id;
+	let ftime_str = 'kdock'+k;
 	KanColleRemainInfo.kdock[i] = new Object();
-	var ftime_str = 'kdock'+k;
-	if( api_data[i].api_complete_time ){
+	if( d.api_complete_time ){
 	    // 建造完了時刻の表示
 	    try{
-		var tmp = api_data[i].api_complete_time_str;
+		var tmp = d.api_complete_time_str;
 		var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
 		$(ftime_str).value = finishedtime_str;
 		KanColleRemainInfo.kdock_time[i] = finishedtime_str;
 	    } catch (x) {}
 
 	    // 残り時間とツールチップの設定
-	    var finishedtime = parseInt( api_data[i].api_complete_time/1000 );
+	    var finishedtime = parseInt( d.api_complete_time/1000 );
 	    if( now < finishedtime ){
 		// 建造予定艦をツールチップで表示
 		let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k);
@@ -266,7 +269,7 @@ function KanColleTimerKdockHandler(now,api_data){
 
 	    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
 	    /*
-	    let ship_id = parseInt( api_data[i].api_created_ship_id );
+	    let ship_id = parseInt( d.api_created_ship_id );
 	    let ship_name = FindShipNameByCatId(ship_id);
 	    $('kdock-box'+k).setAttribute('tooltiptext',ship_name);
 	     */
@@ -594,7 +597,7 @@ function KanColleTimerRegisterCallback(){
     db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap, false);
     db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberNdock.appendCallback(KanColleTimerNdockHandler, true);
-    db.memberKdock.appendCallback(KanColleTimerKdockHandler, true);
+    db.memberKdock.appendCallback(KanColleTimerKdockHandler, false);
     db.memberShip2.appendCallback(KanColleTimerShipInfoHandler, false);
     db.memberShip2.appendCallback(KanColleTimerBasicInformationPanel, false);
     db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler, false);
@@ -609,7 +612,7 @@ function KanColleTimerUnregisterCallback(){
     db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler, false);
     db.memberShip2.removeCallback(KanColleTimerBasicInformationPanel, false);
     db.memberShip2.removeCallback(KanColleTimerShipInfoHandler, false);
-    db.memberKdock.removeCallback(KanColleTimerKdockHandler, true);
+    db.memberKdock.removeCallback(KanColleTimerKdockHandler, false);
     db.memberNdock.removeCallback(KanColleTimerNdockHandler, true);
     db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap, false);
