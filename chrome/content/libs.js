@@ -167,29 +167,32 @@ function KanColleTimerMakeShipFleetMap(){
  * 入渠ドック
  *  member/ndock	: api_data
  */
-function KanColleTimerNdockHandler(now,api_data){
+function KanColleTimerNdockHandler(){
+    let docks = KanColleDatabase.memberNdock.list();
+    let now = Math.floor(KanColleDatabase.memberNdock.timestamp()/1000);
     // 入渠ドック
-    for( let i in api_data ){
-	i = parseInt(i);
-	var ftime_str = 'ndock'+(i+1);
+    for( let i = 0; i < docks.length; i++ ){
+	let d = KanColleDatabase.memberNdock.get(docks[i]);
+	let k = d.api_id;
+	var ftime_str = 'ndock'+k;
 	KanColleRemainInfo.ndock[i] = new Object();
-	if( api_data[i].api_complete_time ){
-	    let ship_id = api_data[i].api_ship_id;
+	if( d.api_complete_time ){
+	    let ship_id = d.api_ship_id;
 	    let name = FindShipName( ship_id );
 	    KanColleRemainInfo.ndock_ship_id[i] = ship_id;
-	    $("ndock-label"+(i+1)).setAttribute('tooltiptext', name);
+	    $("ndock-label"+k).setAttribute('tooltiptext', name);
 	    if( name ){
-		$("ndock-label"+(i+1)).value = name;
+		$("ndock-label"+k).value = name;
 	    }
 
 	    try{
-		var tmp = api_data[i].api_complete_time_str;
+		var tmp = d.api_complete_time_str;
 		var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
 		$(ftime_str).value = finishedtime_str;
 		KanColleRemainInfo.ndock_time[i] = finishedtime_str;
 	    } catch (x) {}
 
-	    var finishedtime = parseInt( api_data[i].api_complete_time/1000 );
+	    var finishedtime = parseInt( d.api_complete_time/1000 );
 	    if( now<finishedtime ){
 		KanColleRemainInfo.ndock[i].finishedtime = finishedtime;
 	    }
@@ -596,7 +599,7 @@ function KanColleTimerRegisterCallback(){
     db.memberDeck.appendCallback(KanColleTimerDeckHandler, false);
     db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap, false);
     db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler, false);
-    db.memberNdock.appendCallback(KanColleTimerNdockHandler, true);
+    db.memberNdock.appendCallback(KanColleTimerNdockHandler, false);
     db.memberKdock.appendCallback(KanColleTimerKdockHandler, false);
     db.memberShip2.appendCallback(KanColleTimerShipInfoHandler, false);
     db.memberShip2.appendCallback(KanColleTimerBasicInformationPanel, false);
@@ -613,7 +616,7 @@ function KanColleTimerUnregisterCallback(){
     db.memberShip2.removeCallback(KanColleTimerBasicInformationPanel, false);
     db.memberShip2.removeCallback(KanColleTimerShipInfoHandler, false);
     db.memberKdock.removeCallback(KanColleTimerKdockHandler, false);
-    db.memberNdock.removeCallback(KanColleTimerNdockHandler, true);
+    db.memberNdock.removeCallback(KanColleTimerNdockHandler, false);
     db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap, false);
     db.memberDeck.removeCallback(KanColleTimerDeckHandler, false);
