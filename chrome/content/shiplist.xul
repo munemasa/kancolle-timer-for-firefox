@@ -39,7 +39,7 @@
 	      <listcol flex="1"/><listcol flex="1"/><listcol flex="1"/><listcol flex="1"/>
 	    </listcols>
 	    <listhead>
-	      <listheader label="#"/><listheader label="艦種"/><listheader label="艦名"/><listheader label="レベル"/><listheader label="状態"/>
+	      <listheader label="#"/><listheader label="艦種" onclick="ShipList.sort(0);"/><listheader label="艦名"/><listheader label="レベル" onclick="ShipList.sort(1);"/><listheader label="状態" onclick="ShipList.sort(2);"/>
 	      <listheader label="装備1"/><listheader label="装備2"/><listheader label="装備3"/><listheader label="装備4"/>
 	    </listhead>
 	  </listbox>
