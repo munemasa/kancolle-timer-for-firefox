@@ -279,6 +279,22 @@ function KanColleTimerKdockHandler(now,api_data){
     }
 }
 
+function KanColleTimerKdockRestore(){
+    try{
+	for(let i=0; i<4; i++){
+	    let k = i+1;
+	    if( KanColleRemainInfo.kdock_time[i] ){
+		$('kdock'+k).value = KanColleRemainInfo.kdock_time[i];
+	    }
+	    // 建造中艦艇の表示復元
+	    if( KanColleRemainInfo.construction_shipname[i] ){
+		$('kdock-box'+k).setAttribute('tooltiptext',KanColleRemainInfo.construction_shipname[i]);
+	    }
+	}
+    } catch (x) {
+    }
+}
+
 /*
  * 建造艦名表示（隠し機能）
  *
