@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 Components.utils.import("resource://gre/modules/ctypes.jsm");
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 
@@ -16,173 +18,523 @@ const Ci = Components.interfaces;
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
-function KanColleTimerCallback(request,s){
-    var now = GetCurrentTime();
-    var url = request.name;
+/*
+ * 艦娘/装備数
+ */
+function KanColleTimerBasicInfomationPanel(){
+    let timestamp = 0;
+    let basic = KanColleDatabase.memberBasic.get();
+    let record = KanColleDatabase.memberRecord.get();
+    let maxships = '-';
+    let maxslotitems = '-';
+    let ships = '-';
+    let slotitems = '-';
 
-    s = s.substring( s.indexOf('svdata=')+7 );
-    var data = JSON.parse(s);
-
-    if( url.match(/kcsapi\/api_req_mission\/start/) ){
-	// 遠征開始
-	// 遠征開始後にdeckが呼ばれるので見る必要なさそう
-    }else if( url.match(/kcsapi\/api_get_member\/deck_port/) ||
-	      url.match(/kcsapi\/api_get_member\/deck/) ){
-	try{
-	    KanColleRemainInfo.gDeckList = data.api_data;
-	}catch(e){}
-
-	// 遠征リスト
-	if( data.api_result==1 ){
-	    for( let i in data.api_data ){
-		i = parseInt(i);
-		var k = i+1;
-		var nameid = 'fleetname'+k;
-		var ftime_str = 'fleet'+k;
-		var d = data.api_data[i];
-		KanColleRemainInfo.fleet[i] = new Object();
-		KanColleRemainInfo.fleet_name[i] = d.api_name;
-		$(nameid).value = d.api_name; // 艦隊名
-		if( d.api_mission[0] ){
-		    let mission_id = d.api_mission[1]; // 遠征ID
-		    // 遠征名を表示
-		    let mission_name = KanColleData.mission_name[mission_id];
-		    KanColleRemainInfo.mission_name[i] = mission_name;
-		    $('mission_name'+k).value = mission_name;
-
-		    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
-		    KanColleRemainInfo.fleet_time[i] = ftime;
-		    $(ftime_str).value = ftime;
-
-		    var finishedtime = parseInt( d.api_mission[2]/1000 );
-		    if( now<finishedtime ){
-			KanColleRemainInfo.fleet[i].mission_finishedtime = finishedtime;
-		    }
-
-		    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
-		}else{
-		    $(ftime_str).value = "";
-		    KanColleRemainInfo.fleet[i].mission_finishedtime = -1;
-		}
-	    }
-	}
-    }else if( url.match(/kcsapi\/api_get_member\/ndock/) ){
-	// 入渠ドック
-	if( data.api_result==1 ){
-	    for( let i in data.api_data ){
-		i = parseInt(i);
-		var ftime_str = 'ndock'+(i+1);
-		KanColleRemainInfo.ndock[i] = new Object();
-		if( data.api_data[i].api_complete_time ){
-		    let name = FindShipName( data.api_data[i].api_ship_id );
-		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', name);
-		    if( name ){
-			$("ndock-label"+(i+1)).value = name;
-		    }
-
-		    try{
-			var tmp = data.api_data[i].api_complete_time_str;
-			var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
-			$(ftime_str).value = finishedtime_str;
-			KanColleRemainInfo.ndock_time[i] = finishedtime_str;
-		    } catch (x) {}
-
-		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
-		    if( now<finishedtime ){
-			KanColleRemainInfo.ndock[i].finishedtime = finishedtime;
-		    }
-
-		    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
-		}else{
-		    $("ndock-label"+(i+1)).value = "No."+(i+1);
-		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
-		    KanColleRemainInfo.ndock_time[i] = "";
-		    $(ftime_str).value = "";
-		    KanColleRemainInfo.ndock[i].finishedtime = -1;
-		}
-	    }
-	}
-    }else if( url.match(/kcsapi\/api_get_member\/kdock/) ){
-	// 建造ドック
-	if( data.api_result==1 ){
-	    for( let i in data.api_data ){
-		i = parseInt(i);
-		var k = i+1;
-		KanColleRemainInfo.kdock[i] = new Object();
-		var ftime_str = 'kdock'+k;
-		if( data.api_data[i].api_complete_time ){
-		    // 建造完了時刻の表示
-		    try{
-			var tmp = data.api_data[i].api_complete_time_str;
-			var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
-			$(ftime_str).value = finishedtime_str;
-			KanColleRemainInfo.kdock_time[i] = finishedtime_str;
-		    } catch (x) {}
-
-		    // 残り時間とツールチップの設定
-		    var finishedtime = parseInt( data.api_data[i].api_complete_time/1000 );
-		    if( now < finishedtime ){
-			// 建造予定艦をツールチップで表示
-			let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k);
-			if( !created_time ){
-			    // ブラウザを起動して初回タイマー起動時に
-			    // 建造開始時刻を復元するため
-			    created_time = now;
-			    KanColleTimerConfig.setInt( "kdock-created-time"+k, now );
-			}
-			let name = GetConstructionShipName(created_time,finishedtime);
-			KanColleRemainInfo.construction_shipname[i] = name;
-			$('kdock-box'+k).setAttribute('tooltiptext',name);
-
-			KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
-		    }
-
-		    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
-
-		    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
-		    /*
-		    let ship_id = parseInt( data.api_data[i].api_created_ship_id );
-		    let ship_name = KanColleRemainInfo.gShipList[ ship_id-1 ].api_name;
-		    $('kdock-box'+k).setAttribute('tooltiptext',ship_name);
-		     */
-		}else{
-		    // 建造していない
-		    KanColleRemainInfo.kdock_time[i] = "";
-		    $(ftime_str).value = "";
-		    KanColleRemainInfo.kdock[i].finishedtime = -1;
-		    $('kdock-box'+k).setAttribute('tooltiptext','');
-		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
-		}
-	    }
-	}
-    }else if( url.match(/kcsapi\/api_get_master\/ship/) ){
-	KanColleRemainInfo.gShipList = data.api_data;
-    }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
-	KanColleRemainInfo.gOwnedShipList = data.api_data;
-    }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
-	KanColleRemainInfo.gOwnedItem = data.api_data;
-    }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
-	let d = data.api_data;
-	let f = function( elems, n ){
-	    for( let i=1; i<4; i++ ){
-		elems[i].style.display = i<n ? "":"none";
-	    }
-	};
-	let tmp = parseInt( d.api_count_deck );
-	if( tmp==1 ){
-	    $('group-mission').style.display = "none";
-	}else{
-	    let fleets = document.getElementsByClassName("fleet");
-	    f( fleets, tmp );
-	}
-	let ndocks = document.getElementsByClassName("ndock-box");
-	let kdocks = document.getElementsByClassName("kdock-box");
-	f( ndocks, parseInt(d.api_count_ndock) );
-	f( kdocks, parseInt(d.api_count_kdock) );
+    if (record) {
+	timestamp = KanColleDatabase.memberRecord.timestamp();
+	ships = record.api_ship[0];
+	maxships = record.api_ship[1];
+	slotitems = record.api_slotitem[0];
+	maxslotitems = record.api_slotitem[1];
     }
+
+    if (timestamp < KanColleDatabase.memberBasic.timestamp()) {
+	maxships = basic.api_max_chara;
+	maxslotitems = basic.api_max_slotitem;
+    }
+
+    if (timestamp < KanColleDatabase.memberShip2.timestamp()) {
+	let count = KanColleDatabase.memberShip2.count();
+	if (count !== undefined)
+	    ships = count;
+    }
+
+    if (timestamp < KanColleDatabase.memberSlotitem.timestamp()) {
+	let count = KanColleDatabase.memberSlotitem.count();
+	if (count !== undefined)
+	    slotitems = count;
+    }
+
+    $('basic-information-shipcount').value = ships + ' / ' + maxships;
+    $('basic-information-slotitemcount').value = slotitems + ' / ' + maxslotitems;
+}
+
+/*
+ * デッキ/遠征
+ *  member/deck		: api_data
+ *  member/deck_port	: api_data
+ *  member/ship2	: api_data_deck
+ */
+function KanColleTimerDeckHandler(now,api_data){
+    for( let i in api_data ){
+	i = parseInt(i);
+	var k = i+1;
+	var nameid = 'fleetname'+k;
+	var ftime_str = 'fleet'+k;
+	var d = api_data[i];
+	KanColleRemainInfo.fleet[i] = new Object();
+	KanColleRemainInfo.fleet_name[i] = d.api_name;
+	$(nameid).value = d.api_name; // 艦隊名
+	if( d.api_mission[0] ){
+	    let mission_id = d.api_mission[1]; // 遠征ID
+	    // 遠征名を表示
+	    let mission_name = KanColleData.mission_name[mission_id];
+	    if (!mission_name)
+		mission_name = 'UNKNOWN_' + mission_id;
+	    KanColleRemainInfo.mission_name[i] = mission_name;
+	    $('mission_name'+k).value = mission_name;
+
+	    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
+	    KanColleRemainInfo.fleet_time[i] = ftime;
+	    $(ftime_str).value = ftime;
+
+	    var finishedtime = parseInt( d.api_mission[2]/1000 );
+	    if( now<finishedtime ){
+		KanColleRemainInfo.fleet[i].mission_finishedtime = finishedtime;
+	    }
+
+	    let diff = finishedtime - now;
+		    $(ftime_str).style.color = diff<60?"red":"black";
+	}else{
+	    $(ftime_str).value = "";
+	    KanColleRemainInfo.fleet[i].mission_finishedtime = -1;
+	}
+    }
+}
+
+function KanColleTimerMakeShipFleetMap(){
+    let decks = KanColleDatabase.memberDeck.list();
+    let db = {};
+    for( let i = 0; i < decks.length; i++ ){
+	let deck = KanColleDatabase.memberDeck.get(decks[i]);
+	for( let j = 0; j < deck.api_ship.length; j++ ){
+	    if (deck.api_ship[j] < 0)
+		continue;
+	    db[deck.api_ship[j]] = { fleet: deck.api_id, pos: j, };
+	}
+    }
+    KanColleRemainInfo.shipfleet = db;
+}
+
+/*
+ * 入渠ドック
+ *  member/ndock	: api_data
+ */
+function KanColleTimerNdockHandler(now,api_data){
+    // 入渠ドック
+    for( let i in api_data ){
+	i = parseInt(i);
+	var ftime_str = 'ndock'+(i+1);
+	KanColleRemainInfo.ndock[i] = new Object();
+	if( api_data[i].api_complete_time ){
+	    let name = FindShipName( api_data[i].api_ship_id );
+	    $("ndock-label"+(i+1)).setAttribute('tooltiptext', name);
+	    if( name ){
+		$("ndock-label"+(i+1)).value = name;
+	    }
+
+	    try{
+		var tmp = api_data[i].api_complete_time_str;
+		var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
+		$(ftime_str).value = finishedtime_str;
+		KanColleRemainInfo.ndock_time[i] = finishedtime_str;
+	    } catch (x) {}
+
+	    var finishedtime = parseInt( api_data[i].api_complete_time/1000 );
+	    if( now<finishedtime ){
+		KanColleRemainInfo.ndock[i].finishedtime = finishedtime;
+	    }
+
+	    let diff = finishedtime - now;
+	    $(ftime_str).style.color = diff<60?"red":"black";
+	}else{
+	    $("ndock-label"+(i+1)).value = "No."+(i+1);
+	    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
+	    KanColleRemainInfo.ndock_time[i] = "";
+	    $(ftime_str).value = "";
+	    KanColleRemainInfo.ndock[i].finishedtime = -1;
+	}
+    }
+}
+
+/*
+ * 建造
+ *  member/kdock	: api_data
+ */
+function KanColleTimerKdockHandler(now,api_data){
+    // 建造ドック
+    for( let i in api_data ){
+	i = parseInt(i);
+	var k = i+1;
+	KanColleRemainInfo.kdock[i] = new Object();
+	var ftime_str = 'kdock'+k;
+	if( api_data[i].api_complete_time ){
+	    // 建造完了時刻の表示
+	    try{
+		var tmp = api_data[i].api_complete_time_str;
+		var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
+		$(ftime_str).value = finishedtime_str;
+		KanColleRemainInfo.kdock_time[i] = finishedtime_str;
+	    } catch (x) {}
+
+	    // 残り時間とツールチップの設定
+	    var finishedtime = parseInt( api_data[i].api_complete_time/1000 );
+	    if( now < finishedtime ){
+		// 建造予定艦をツールチップで表示
+		let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k);
+		if( !created_time ){
+		    // ブラウザを起動して初回タイマー起動時に
+		    // 建造開始時刻を復元するため
+		    created_time = now;
+		    KanColleTimerConfig.setInt( "kdock-created-time"+k, now );
+		}
+		let name = GetConstructionShipName(created_time,finishedtime);
+		KanColleRemainInfo.construction_shipname[i] = name;
+		$('kdock-label'+k).setAttribute('tooltiptext',name);
+
+		KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
+	    }
+
+	    let diff = finishedtime - now;
+	    $(ftime_str).style.color = diff<60?"red":"black";
+
+	    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
+	    /*
+	    let ship_id = parseInt( api_data[i].api_created_ship_id );
+	    let ship_name = FindShipNameByCatId(ship_id);
+	    $('kdock-box'+k).setAttribute('tooltiptext',ship_name);
+	     */
+	}else{
+	    // 建造していない
+	    KanColleRemainInfo.kdock_time[i] = "";
+	    $(ftime_str).value = "";
+	    KanColleRemainInfo.kdock[i].finishedtime = -1;
+	    $('kdock-label'+k).setAttribute('tooltiptext','');
+	    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
+	}
+    }
+}
+
+/*
+ * 建造艦名表示（隠し機能）
+ *
+ * 建造ドックのNo.欄を素早く何度かダブルクリックすると
+ * 艦名を tooltip として表示
+ */
+var KanColleKdockMouseEventHandler = {
+    timer: {},
+
+    handleEvent: function(e) {
+	let id = e.target.id;
+	let now = (new Date).getTime();
+
+	if (!this.timer[id] || this.timer[id] + 1000 < now) {
+	    this.timer[id] = now;
+	    return;
+	}
+	this.timer[id] += 1000;
+
+	if (this.timer[id] - now <= 2000)
+	    return;
+
+	if (id.match(/^kdock-label(\d+)$/)) {
+	    let fleet_id = parseInt(RegExp.$1, 10);
+	    let fleet = KanColleDatabase.memberKdock.get(fleet_id);
+	    if( fleet && fleet.api_complete_time ){
+		let ship_id = parseInt( fleet.api_created_ship_id );
+		let ship_name = FindShipNameByCatId(ship_id);
+		e.target.setAttribute('tooltiptext',ship_name);
+	    }
+	}
+    },
+
+    init: function(){
+	for( let i = 0; i < 4; i++ ){
+	    let k = 'kdock-label' + (i + 1);
+	    $(k).addEventListener('dblclick', this);
+	}
+    },
+
+    exit: function(){
+	for( let i = 0; i < 4; i++ ){
+	    let k = 'kdock-label' + (i + 1);
+	    $(k).removeEventListener('dblclick', this);
+	}
+    },
+};
+
+/*
+ * 装備保持艦船の抽出
+ * member/ship2 and member/slotitem
+ */
+function KanColleUpdateSlotitem(){
+    let db;
+    let items;
+    let ships;
+
+    db = {};
+    items = KanColleDatabase.memberSlotitem.list();
+    ships = KanColleDatabase.memberShip2.list();
+
+    if ( items.length && ships.length ){
+	for ( let i = 0; i < items.length; i++ ){
+	    let item = KanColleDatabase.memberSlotitem.get(items[i]);
+	    let itemtypeid = item.api_slotitem_id;
+	    if (!db[itemtypeid]) {
+		db[itemtypeid] = {
+				    id: itemtypeid,
+				    name: item.api_name,
+				    type: item.api_type,
+				    list: {},
+				    totalnum: 0,
+				    num: 0,
+		};
+	    }
+	    db[itemtypeid].totalnum++;
+	}
+
+	for ( let i = 0; i < ships.length; i++ ){
+	    let ship = KanColleDatabase.memberShip2.get(ships[i]);
+	    let ship_slot = ship.api_slot;
+
+	    //debugprint(FindShipName(ship.api_id) + ': ');
+
+	    for ( let j = 0; j < ship_slot.length; j++ ){
+		let item;
+		let itemtypeid;
+
+		if (ship_slot[j] < 0)
+		    continue;
+
+		item = KanColleDatabase.memberSlotitem.get(ship_slot[j]);
+		// member/slotitem might be out-of-date for a while.
+		if (!item)
+		    continue;
+		itemtypeid = item.api_slotitem_id;
+
+		//debugprint(itemtypeid + ': ' + item.api_name);
+
+		db[itemtypeid].list[ship.api_id]++;
+		db[itemtypeid].num++;
+	    }
+	}
+
+	for ( let k in db ){
+	    let s = [];
+	    for ( let l in db[k].list ){
+		s.push(FindShipName(parseInt(l, 10)));
+	    }
+	    debugprint(db[k].name + ': ' + s.join(','));
+	}
+    }
+    //debugprint(KanColleRemainInfo.slotitemowners.toSource());
+    KanColleRemainInfo.slotitemowners = db;
+}
+
+/*
+ * 所有艦娘情報2
+ *  member/ship2	: api_data
+ */
+function KanColleTimerShipInfoHandler(){
+    KanColleUpdateSlotitem();
+    KanColleCreateShipTree();
+    KanColleShipInfoSetView();
+}
+
+function KanColleTimerMemberShip2FleetHandler(){
+    let l = KanColleDatabase.memberDeck.list();
+
+    // 艦隊/遠征情報
+    for ( let i = 0; i < l.length; i++ ){
+	let fi = KanColleDatabase.memberDeck.get(l[i]);
+	let id = parseInt(fi.api_id, 10);
+	let fleet_text = fi.api_name;
+	let fleet_flagship_lv = 0;
+	let fleet_stypes = {};
+	for ( let j = 0; j < fi.api_ship.length; j++ ){
+	    let ship_id = fi.api_ship[j];
+	    let ship_name = FindShipName(ship_id);
+	    let ship_info = FindShipStatus(ship_id);
+	    let ship_cond = FindShipCond(ship_id);
+	    let ship = KanColleDatabase.memberShip2.get(ship_id);
+	    let ship_bgcolor;
+	    let ship_border;
+	    let ship_color;
+	    let ship_shadow;
+	    let ship_text = ship_name + (ship ? ' Lv' + ship.api_lv : '');
+
+	    if (ship) {
+		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+		if (j == 0)
+		    fleet_flagship_lv = ship.api_lv;
+		if (!fleet_stypes[shiptype.api_stype])
+		    fleet_stypes[shiptype.api_stype] = 1;
+		else
+		    fleet_stypes[shiptype.api_stype]++;
+	    }
+
+	    if (ship_cond === undefined) {
+		ship_cond = '-';
+		ship_bgcolor = null;
+	    } else if (ship_cond >= 90) {
+		ship_bgcolor = '#ffffff';   //キラキラ
+	    } else if (ship_cond >= 80) {
+		ship_bgcolor = '#eeffff';   //キラキラ
+	    } else if (ship_cond >= 70) {
+		ship_bgcolor = '#ddffee';   //キラキラ
+	    } else if (ship_cond >= 60) {
+		ship_bgcolor = '#ccffdd';   //キラキラ
+	    } else if (ship_cond >= 50) {
+		ship_bgcolor = '#bbffcc';   //キラキラ
+	    } else if (ship_cond >= 40) {
+		ship_bgcolor = '#88ff88';   //平常
+	    } else if (ship_cond >= 30) {
+		ship_bgcolor = '#ffdd88';   //間宮
+	    } else if (ship_cond >= 20) {
+		ship_bgcolor = '#ffaa44';   //オレンジ
+	    } else if (ship_cond >= 0) {
+		ship_bgcolor = '#ff8888';   //赤
+	    } else {
+		ship_bgcolor = '#666666';   //...
+	    }
+
+	    if (ship_cond < 49) {
+		let d;
+		let t;
+		let h;
+		let m;
+
+		t = KanColleDatabase.memberShip2.timestamp();
+		if (t) {
+		    t += Math.ceil((49 - ship_cond) / 3) * 180000;
+		    (d = new Date).setTime(t);
+
+		    h = d.getHours();
+		    if (h < 10)
+			h = '0' + h;
+		    m = d.getMinutes();
+		    if (m < 10)
+			m = '0' + m;
+		}
+		ship_text += ' ' + h + ':' + m;
+	    }
+
+	    if (ship_info === undefined) {
+		ship_border = null;
+		ship_color = null;
+	    } else {
+		let hpratio = ship_info.nowhp / ship_info.maxhp;
+
+		ship_text += '\nHP: ' + ship_info.nowhp + '/' + ship_info.maxhp;
+
+		if (ship_info.bull_max > ship_info.bull ||
+		    ship_info.fuel_max > ship_info.fuel) {
+		    ship_border = 'solid red';
+		} else {
+		    ship_border = null;
+		}
+
+		if (hpratio >= 1) {
+		    ship_color = null;	    //無傷
+		    ship_shadow = null;
+		} else {
+		    ship_shadow = '1px 1px 0 black';
+		    if (hpratio > 0.75) {
+			ship_color = '#0000cc'; //かすり傷
+		    } else if (hpratio > 0.50) {
+			ship_color = '#ff44cc'; //小破
+		    } else if (hpratio > 0.25) {
+			ship_color = '#ff4400'; //中破
+		    } else {
+			ship_color = '#ff0000'; //大破
+		    }
+		}
+	    }
+
+	    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
+	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_text);
+	    $('shipstatus-' + id + '-' + (j + 1)).style.backgroundColor = ship_bgcolor;
+	    $('shipstatus-' + id + '-' + (j + 1)).style.border = ship_border;
+	    $('shipstatus-' + id + '-' + (j + 1)).style.color = ship_color;
+	    $('shipstatus-' + id + '-' + (j + 1)).style.textShadow = ship_shadow;
+	}
+
+	if (fleet_flagship_lv > 0) {
+	    let stypes;
+	    let fleetinfo = [];
+	    stypes = Object.keys(fleet_stypes).sort(function(a,b){
+		return fleet_stypes[b] - fleet_stypes[a];
+	    });
+	    fleet_text += '\n旗艦Lv' + fleet_flagship_lv;
+	    for( let j = 0; j < stypes.length; j++ ){
+		let stypename = KanColleData.type_name[stypes[j]];
+		if (!stypename)
+		    stypename = 'UNKNOWN_' + stypes[j];
+		fleetinfo.push(' ' + stypename + '(' + fleet_stypes[stypes[j]] + ')');
+	    }
+	    fleet_text += ';' + fleetinfo.join(',');
+	}
+
+	$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
+    }
+}
+
+/*
+ * 基本情報
+ *  member/basic	: api_data
+ */
+function KanColleTimerBasicHandler(now,api_data){
+    let d = api_data;
+    let f = function( elems, n ){
+        for( let i=1; i<4; i++ ){
+	    elems[i].style.display = i<n ? "":"none";
+	}
+    };
+    let tmp = parseInt( d.api_count_deck );
+    if( tmp==1 ){
+	$('group-mission').style.display = "none";
+    }else{
+	let fleets = document.getElementsByClassName("fleet");
+	f( fleets, tmp );
+    }
+    let ndocks = document.getElementsByClassName("ndock-box");
+    let kdocks = document.getElementsByClassName("kdock-box");
+    f( ndocks, parseInt(d.api_count_ndock) );
+    f( kdocks, parseInt(d.api_count_kdock) );
+}
+
+function KanColleTimerRegisterCallback(){
+    let db = KanColleDatabase;
+    db.memberBasic.appendCallback(KanColleTimerBasicHandler, true);
+    db.memberBasic.appendCallback(KanColleTimerBasicInfomationPanel, false);
+    db.memberRecord.appendCallback(KanColleTimerBasicInfomationPanel, false);
+    db.memberDeck.appendCallback(KanColleTimerDeckHandler, true);
+    db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap, false);
+    db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler, false);
+    db.memberNdock.appendCallback(KanColleTimerNdockHandler, true);
+    db.memberKdock.appendCallback(KanColleTimerKdockHandler, true);
+    db.memberShip2.appendCallback(KanColleTimerShipInfoHandler, false);
+    db.memberShip2.appendCallback(KanColleTimerBasicInfomationPanel, false);
+    db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler, false);
+    db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler, false);
+    db.memberSlotitem.appendCallback(KanColleTimerBasicInfomationPanel, false);
+}
+
+function KanColleTimerUnregisterCallback(){
+    let db = KanColleDatabase;
+    db.memberSlotitem.removeCallback(KanColleTimerBasicInfomationPanel, false);
+    db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler, false);
+    db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler, false);
+    db.memberShip2.removeCallback(KanColleTimerBasicInfomationPanel, false);
+    db.memberShip2.removeCallback(KanColleTimerShipInfoHandler, false);
+    db.memberKdock.removeCallback(KanColleTimerKdockHandler, true);
+    db.memberNdock.removeCallback(KanColleTimerNdockHandler, true);
+    db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler, false);
+    db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap, false);
+    db.memberDeck.removeCallback(KanColleTimerDeckHandler, true);
+    db.memberRecord.removeCallback(KanColleTimerBasicInfomationPanel, false);
+    db.memberBasic.removeCallback(KanColleTimerBasicInfomationPanel, false);
+    db.memberBasic.removeCallback(KanColleTimerBasicHandler, true);
 }
 
 function AddLog(str){
@@ -289,51 +641,36 @@ function TakeKanColleScreenshot(isjpeg){
 /*
  
  */
-
 function FindSlotItemNameById( api_id ){
-    let items = KanColleRemainInfo.gOwnedItem;
-    for( let k in items ){
-	if( items[k].api_id==api_id ){
-	    return items[k].api_name;
-	}
-    }
-    return "[Unknown]";
+    let item = KanColleDatabase.memberSlotitem.get(api_id);
+    if (item)
+	return item.api_name;
+    return "[Unknown";
 }
 
+function FindShipNameByCatId( id ){
+    try{
+	// 全艦データから艦艇型IDをキーに艦名を取得
+	return KanColleDatabase.masterShip.get(id).api_name;
+    } catch (x) {
+    }
+    return "";
+}
 
 /**
  * 自分の保有している艦のデータを返す.
  */
 function FindOwnShipData( ship_id ){
-    for( let k in KanColleRemainInfo.gOwnedShipList ){
-	let ship = KanColleRemainInfo.gOwnedShipList[k];
-	let id = ship.api_id; // 所有艦艇の持つID
-	if( id==ship_id ) return ship;
-    }
-    return undefined;
+    return KanColleDatabase.memberShip2.get(ship_id);
 }
 
 /**
  * 艦のデータを返す
  */
 function FindShipData( ship_id ){
-    let sort;
-    try{
-	for( let k in KanColleRemainInfo.gOwnedShipList ){
-	    let ship = KanColleRemainInfo.gOwnedShipList[k];
-	    let id = ship.api_id; // 所有艦艇の持つID
-	    sort = ship.api_sortno;
-	    if( id==ship_id ) break;
-	}
-
-	for( let k in KanColleRemainInfo.gShipList ){
-	    let ship = KanColleRemainInfo.gShipList[k];
-	    if( ship.api_sortno==sort ){
-		return ship;
-	    }
-	}
-    } catch (x) {
-    }
+    let ship = KanColleDatabase.memberShip2.get(ship_id);
+    if (ship)
+	return KanColleDatabase.masterShip.get(ship.api_ship_id);
     return undefined;
 }
 
@@ -341,26 +678,1101 @@ function FindShipData( ship_id ){
  * 艦艇の名前を返す
  */
 function FindShipName( ship_id ){
-    let sort;
     try{
-	for( let k in KanColleRemainInfo.gOwnedShipList ){
-	    let ship = KanColleRemainInfo.gOwnedShipList[k];
-	    let id = ship.api_id; // 所有艦艇の持つID
-	    sort = ship.api_sortno;
-	    if( id==ship_id ) break;
-	}
-
-	for( let k in KanColleRemainInfo.gShipList ){
-	    let ship = KanColleRemainInfo.gShipList[k];
-	    if( ship.api_sortno==sort ){
-		return ship.api_name;
-	    }
-	}
-	
+	// member/ship2 には艦名がない。艦艇型から取得
+	let ship = KanColleDatabase.memberShip2.get(ship_id);
+	return FindShipNameByCatId( ship.api_ship_id );
     } catch (x) {
-
     }
     return "";
+}
+
+function FindShipCond( ship_id ){
+    try{
+	let ship = KanColleDatabase.memberShip2.get(ship_id);
+	return parseInt(ship.api_cond, 10);
+    } catch (x) {
+    }
+    return undefined;
+}
+
+function FindShipStatus( ship_id ){
+    try{
+	let info = {
+	    fuel: undefined,
+	    fuel_max: undefined,
+	    bull: undefined,
+	    bull_max: undefined,
+	    nowhp: undefined,
+	    maxhp: undefined,
+	};
+
+	// member/ship には fuel, bull, nowhp, maxhp
+	let ship = KanColleDatabase.memberShip2.get(ship_id);
+
+	info.fuel = parseInt(ship.api_fuel, 10);
+	info.bull = parseInt(ship.api_bull, 10);
+	info.nowhp = parseInt(ship.api_nowhp, 10);
+	info.maxhp = parseInt(ship.api_maxhp, 10);
+
+	// fuel_max と bull_max は master/shipから
+	ship = KanColleDatabase.masterShip.get(ship.api_ship_id);
+
+	info.fuel_max = parseInt(ship.api_fuel_max, 10);
+	info.bull_max = parseInt(ship.api_bull_max, 10);
+
+	return info;
+    } catch (x) {
+    }
+    return undefined;
+}
+
+function CreateListCell(label){
+    let elem;
+    elem = document.createElementNS(XUL_NS,'listcell');
+    elem.setAttribute('label',label);
+    return elem;
+}
+
+/*
+ * Tree
+ */
+var ShipInfoTree = {
+    /* Columns*/
+    COLLIST: [
+	{ label: '艦隊', id: 'fleet', flex: 1, },
+	{ label: 'ID', id: 'id', flex: 1, },
+	//{ label: '艦種', id: 'type', flex: 2, },
+	{ label: '艦種', id: 'stype', flex: 1,
+	  sortspecs: [
+	    {
+		sortspec: '_stype',
+		label: '艦種',
+	    },
+	  ],
+	},
+	{ label: '艦名', id: 'name', flex: 3, always: true,
+	  sortspecs: [
+	    {
+		sortspec: 'id',
+		label: 'ID',
+	    },
+	    {
+		sortspec: '_stype',
+		label: '艦種',
+	    },
+	    {
+		sortspec: '_yomi',
+		label: 'ヨミ',
+	    },
+	  ],
+	},
+	{ label: 'Lv', id: 'lv', flex: 1,
+	  sortspecs: [
+	    {
+		sortspec: '_lv',
+		label: 'Lv',
+	    },
+	    {
+		sortspec: '_lvupg',
+		label: '次改装Lv',
+	    },
+	    {
+		sortspec: '_lvupgremain',
+		label: '次改装Lv残',
+	    },
+	  ],
+	},
+	{ label: '経験値', id: 'exp', flex: 2,
+	  sortspecs: [
+	    {
+		sortspec: '_exp',
+		label: '経験値',
+	    },
+	    {
+		sortspec: '_expnext',
+		label: '次Lv経験値',
+	    },
+	    {
+		sortspec: '_expnextremain',
+		label: '次Lv経験値残',
+	    },
+	    {
+		sortspec: '_expupg',
+		label: '次改装Lv経験値',
+	    },
+	    {
+		sortspec: '_expupgremain',
+		label: '次改装Lv経験値残',
+	    },
+	  ],
+	},
+	{ label: 'HP', id: 'hp', flex: 1,
+	  sortspecs: [
+	    {
+		sortspec: '_hp',
+		label: 'HP',
+	    },
+	//    {
+	//	sortspec: 'hpratio',
+	//	label: 'HP%',
+	//    },
+	    {
+		sortspec: '_maxhp',
+		label: 'MaxHP',
+	    },
+	  ],
+	},
+	{ label: '火力', id: 'karyoku', flex: 1,
+	  sortspecs: [
+	    {	sortspec: '_karyoku',	    label: '火力',	    },
+	    {	sortspec: '_karyokumax',    label: '最大火力',	    },
+	    {	sortspec: '_karyokuremain', label: '火力強化余地',  },
+	  ],
+	},
+	{ label: '雷装', id: 'raisou', flex: 1,
+	  sortspecs: [
+	    {	sortspec: '_raisou',	    label: '雷装',	    },
+	    {	sortspec: '_raisoumax',    label: '最大雷装',	    },
+	    {	sortspec: '_raisouremain',  label: '雷装強化余地',  },
+	  ],
+	},
+	{ label: '対空', id: 'taiku', flex: 1,
+	  sortspecs: [
+	    {	sortspec: '_taiku',	    label: '対空',	    },
+	    {	sortspec: '_taikumax',	    label: '最大対空',	    },
+	    {	sortspec: '_taikuremain',   label: '対空強化余地',  },
+	  ],
+	},
+	{ label: '装甲', id: 'soukou', flex: 1,
+	  sortspecs: [
+	    {	sortspec: '_soukou',	    label: '装甲',	    },
+	    {	sortspec: '_soukoumax',	    label: '最大装甲',	    },
+	    {	sortspec: '_soukouremain',  label: '装甲強化余地',  },
+	  ],
+	},
+	{ label: '士気', id: 'cond', flex: 1, },
+	{ label: '入渠', id: 'ndock', flex: 1,
+	  sortspecs: [
+	    {
+		sortspec: '_ndock',
+		label: '入渠時間',
+	    },
+	  ],
+	},
+	{ label: '装備1', id: 'slotitem1', flex: 1, },
+	{ label: '装備2', id: 'slotitem2', flex: 1, },
+	{ label: '装備3', id: 'slotitem3', flex: 1, },
+	{ label: '装備4', id: 'slotitem4', flex: 1, },
+    ],
+    collisthash: {},
+    /* Filter */
+    filterspec: null,
+    /* Sorting */
+    sortkey: null,
+    sortspec: null,
+    sortorder: null,
+};
+
+// Filter by Stype (Ship Class)
+function KanColleStypeFilterTemplate(){
+    let stypegroup = [
+	{ label: '駆逐系',
+	  types: [
+	    { id: 2, }	    //駆逐
+	  ],
+	},
+	{ label: '軽巡系',
+	  types: [
+	    { id: 3, },	    //軽巡
+	    { id: 4, },	    //雷巡
+	  ],
+	},
+	{ label: '重巡系',
+	  types: [
+	    { id: 5, },	    //重巡
+	    { id: 6, },	    //航巡
+	  ]
+	},
+	{ label: '戦艦系',
+	  types: [
+	    { id: 8, label: '高速戦艦' },
+	    { id: 9, },	    //戦艦
+	    { id: 10, },    //航空戦艦
+	  ]
+	},
+	{ label: '空母系',
+	  types: [
+	    { id: 7, },	    //水母
+	    { id: 11, },    //軽水母
+	    { id: 16, },    //空母
+	  ],
+	},
+	{ label: '潜水艦系',
+	  types: [
+	    { id: 13, },    //潜水艦
+	    { id: 14, },    //潜母
+	  ],
+	},
+    ];
+    let menu = [];
+    for( let i = 0; i < stypegroup.length; i++ ){
+	let submenu = {
+	    label: stypegroup[i].label,
+	    menu: [],
+	};
+	if (stypegroup[i].types.length > 1) {
+	    let spec = [];
+	    let label = stypegroup[i].label + 'すべて';
+	    for( let j = 0; j < stypegroup[i].types.length; j++ )
+		spec.push(stypegroup[i].types[j].id);
+	    spec = 'stype' + spec.join('-');
+	    submenu.menu.push({
+				label: label,
+				spec: spec,
+			      });
+	}
+	for( let j = 0; j < stypegroup[i].types.length; j++ ){
+	    let spec;
+	    let label = stypegroup[i].types[j].label;
+	    if (!label)
+		label = KanColleData.type_name[stypegroup[i].types[j].id];
+	    spec = 'stype' + stypegroup[i].types[j].id;
+	    submenu.menu.push({
+				label: label,
+				spec: spec,
+			      });
+	}
+	menu.push(submenu);
+    }
+    return {
+	label: '艦種',
+	menu: menu,
+    };
+}
+
+// Filter by Slotitems
+function KanColleSlotitemFilterTemplate(){
+    let menu = [];
+    let submenu = null;
+
+    let itemlist = Object.keys(KanColleRemainInfo.slotitemowners).sort(function(a,b){
+	let type_a = KanColleRemainInfo.slotitemowners[a].type[2];
+	let type_b = KanColleRemainInfo.slotitemowners[b].type[2];
+	let id_a = KanColleRemainInfo.slotitemowners[a].id;
+	let id_b = KanColleRemainInfo.slotitemowners[b].id;
+	let diff = type_a - type_b;
+	if (!diff)
+	    diff = id_a - id_b;
+	return diff;
+    });
+
+    for (let i = 0; i < itemlist.length; i++) {
+	let k = itemlist[i];
+	let itemname = KanColleRemainInfo.slotitemowners[k].name;
+	let itemtype = KanColleRemainInfo.slotitemowners[k].type[2];
+	let itemtypename = KanColleData.slotitem_type[itemtype];
+	let itemnum = KanColleRemainInfo.slotitemowners[k].num;
+	let itemtotalnum = KanColleRemainInfo.slotitemowners[k].totalnum;
+	let itemmenutitle;
+	let itemval = 'slotitem' + k;
+
+	if (!itemtypename)
+	    itemtypename = 'UNKNOWN_' + itemtype;
+
+	/*
+	if (!itemname)
+	    itemname = KanColleDatabase.masterSlotitem.get(k).api_name;
+	*/
+	debugprint(itemname + ': slotitem' + k);
+
+	itemmenutitle = itemname + '(' + itemnum + '/' + itemtotalnum + ')';
+
+	if (!submenu || lastitemtype != itemtypename) {
+	    submenu = {
+		label: itemtypename,
+		menu: [],
+	    };
+	    menu.push(submenu);
+	    lastitemtype = itemtypename;
+	}
+
+	submenu.menu.push({
+			    label: itemmenutitle,
+			    spec: itemval,
+			  });
+    }
+
+    return {
+	    label: '装備',
+	    menu: menu,
+    };
+}
+
+function KanColleUpgradeFilterTemplate(){
+    return {
+	    label: '近代化',
+	    menu: [
+		{
+		    label: '改修可能',
+		    spec: 'upgrade0',
+		},{
+		    label: '最高改造段階で改修可能',
+		    spec: 'upgrade1',
+		},
+	    ],
+    };
+}
+
+function KanColleBuildFilterMenuList(id){
+    let menulist;
+    let menupopup;
+    let menu;
+    let menuitems = [];
+    var defaultmenu = null;
+
+    function buildmenuitem(label, value){
+	let item = document.createElementNS(XUL_NS, 'menuitem');
+	item.setAttribute('label', label);
+	if (value)
+	    item.setAttribute('value', value);
+	item.setAttribute('oncommand', 'ShipListFilter(this);');
+	return item;
+    }
+
+    function createmenu(templ) {
+	let popup;
+	let menu;
+	let mlist;
+
+	if (!templ)
+	    return;
+
+	debugprint(templ.toSource());
+
+	if (templ.spec) {
+	    if (ShipInfoTree.shipfilterspec == templ.spec)
+		defaultmenu = buildmenuitem(templ.label, templ.spec);
+	    return buildmenuitem(templ.label, templ.spec);
+	}
+
+	mlist = [];
+	popup = document.createElementNS(XUL_NS, 'menupopup');
+	menu = document.createElementNS(XUL_NS, 'menu');
+
+	menu.setAttribute('label', templ.label);
+	menu.appendChild(popup);
+
+	if (templ.menu) {
+	    for (let i = 0; i < templ.menu.length; i++)
+		mlist.push(createmenu(templ.menu[i]));
+	}
+	for( let i = 0; i < mlist.length; i++ )
+	    popup.appendChild(mlist[i]);
+
+	return menu;
+    }
+
+    menulist = document.createElementNS(XUL_NS, 'menulist');
+    menulist.setAttribute('label', 'XXX');
+    menulist.setAttribute('id', id);
+
+    menupopup = document.createElementNS(XUL_NS, 'menupopup');
+    menupopup.setAttribute('id', id + '-popup');
+
+    // Default
+    menu = buildmenuitem('すべて', null);
+    menuitems.push(menu);
+
+    // Build menu by Stype (ship class)
+    menu = createmenu(KanColleStypeFilterTemplate());
+    if (menu)
+	menuitems.push(menu);
+
+    // Build menu by Slotitem
+    menu = createmenu(KanColleSlotitemFilterTemplate());
+    if (menu)
+	menuitems.push(menu);
+
+    // Build menu by upgradability
+    menu = createmenu(KanColleUpgradeFilterTemplate());
+    if (menu)
+	menuitems.push(menu);
+
+    // Finally build menu
+    if (defaultmenu)
+	menupopup.appendChild(defaultmenu);
+    for (let i = 0; i < menuitems.length; i++)
+	menupopup.appendChild(menuitems[i]);
+
+    menulist.appendChild(menupopup);
+
+    return menulist;
+}
+
+function ShipListFilter(item){
+    let itemval = item ? item.value : null;
+
+    debugprint('ShipListFilter(' + itemval + ')');
+
+    if (itemval)
+	ShipInfoTree.shipfilterspec = itemval;
+    else
+	ShipInfoTree.shipfilterspec = null;
+
+    $('shipinfo-filtermenu').setAttribute('label', item.getAttribute('label'));
+
+    KanColleShipInfoSetView();
+}
+
+function KanColleCreateFilterMenuList(box,id)
+{
+    let oldmenulist = $(id);
+    let menulist = KanColleBuildFilterMenuList(id);
+
+    // Replace existing one or add new one.
+    if (oldmenulist)
+	box.replaceChild(menulist, oldmenulist);
+    else
+	box.appendChild(menulist);
+}
+
+function KanColleSortMenuPopup(that){
+    let value = that.value;
+    debugprint('KanColleSortMenuPopup(' + value + ')');
+
+    if (value.match(/:/)) {
+	let key = RegExp.leftContext;
+	let order = RegExp.rightContext;
+	let spec = null;
+
+	if (key.match(/@/)) {
+	    spec = RegExp.leftContext;
+	    key = RegExp.rightContext;
+	} else
+	    spec = key;
+
+	ShipInfoTree.sortkey = key;
+	ShipInfoTree.sortspec = spec;
+	ShipInfoTree.sortorder = order;
+
+	ShipInfoTreeSort();
+    }
+}
+
+function KanColleBuildSortMenuPopup(id,key){
+    let menupopup;
+    let idx;
+    let colinfo;
+    let sortspecs;
+
+    menupopup  = document.createElementNS(XUL_NS, 'menupopup');
+    menupopup.setAttribute('id', id);
+    menupopup.setAttribute('position', 'overlap');
+
+    idx = ShipInfoTree.collisthash[key];
+    colinfo = ShipInfoTree.COLLIST[idx];
+    sortspecs = colinfo.sortspecs;
+    if (!sortspecs)
+	sortspecs = [{ sortspec: colinfo.id, label: colinfo.label, }];
+
+    for (let i = 0; i < sortspecs.length; i++) {
+	let ad = [ { val:  1, label: '昇順', },
+		   { val: -1, label: '降順', },
+	];
+	for (let j = 0; j < ad.length; j++) {
+	    let menuitem = document.createElementNS(XUL_NS, 'menuitem');
+
+	    debugprint('key=' + key + ', spec = ' + sortspecs[i].sortspec);
+
+	    menuitem.setAttribute('type', 'radio');
+	    menuitem.setAttribute('name', id);
+	    menuitem.setAttribute('label', sortspecs[i].label + ad[j].label);
+	    menuitem.setAttribute('value', sortspecs[i].sortspec + '@' + key + ':' + ad[j].val);
+	    menuitem.setAttribute('oncommand', 'KanColleSortMenuPopup(this);');
+	    menupopup.appendChild(menuitem);
+	}
+    }
+
+    return menupopup;
+}
+
+function KanColleCreateSortMenuPopup(box,id,key)
+{
+    let oldmenupopup = $(id);
+    let menupopup = KanColleBuildSortMenuPopup(id,key);
+
+    // Replace existing one or add new one.
+    if (oldmenupopup)
+	box.replaceChild(menupopup, oldmenupopup);
+    else
+	box.appendChild(menupopup);
+}
+
+function KanColleCreateShipTree(){
+    let tree;
+    let oldtree;
+    let treecols;
+    let treechildren;
+    let box;
+
+    debugprint('KanColleCreateShipTree()');
+
+    // outer box
+    box = $('shipinfo-box');
+
+    // Setup hash
+    ShipInfoTree.collisthash = {};
+    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++)
+	ShipInfoTree.collisthash[ShipInfoTree.COLLIST[i].id] = i;
+
+    // Build filter menu popup
+    KanColleCreateFilterMenuList(box,'shipinfo-filtermenu');
+
+    // Build sort menu
+    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
+	let key = ShipInfoTree.COLLIST[i].id;
+	KanColleCreateSortMenuPopup(box, 'shipinfo-sortmenu-' + key, key);
+    }
+
+    // Treecols
+    treecols = document.createElementNS(XUL_NS, 'treecols');
+    treecols.setAttribute('context', 'shipinfo-colmenu');
+    treecols.setAttribute('id', 'shipinfo-tree-columns');
+
+    // Check selected items and build menu
+    for (let i = 0; i < ShipInfoTree.COLLIST.length; i++) {
+	let treecol;
+	let colinfo = ShipInfoTree.COLLIST[i];
+	let node = $('shipinfo-colmenu-' + colinfo.id);
+	let ischecked = node &&
+			node.hasAttribute('checked') &&
+			node.getAttribute('checked') == 'true';
+
+	treecol = document.createElementNS(XUL_NS, 'treecol');
+	treecol.setAttribute('id', 'shipinfo-tree-column-' + colinfo.id);
+	treecol.setAttribute('label', colinfo.label);
+	if (colinfo.flex)
+	    treecol.setAttribute('flex', colinfo.flex);
+	treecol.setAttribute('popup', 'shipinfo-sortmenu-' + colinfo.id);
+	treecol.setAttribute('class', 'sortDirectionIndicator');
+	if (ShipInfoTree.sortkey && colinfo.id == ShipInfoTree.sortkey) {
+	    treecol.setAttribute('sortDirection',
+				 ShipInfoTree.sortorder > 0 ? 'ascending' : 'descending');
+	}
+	treecol.setAttribute('hidden', ischecked ? 'false' : 'true');
+
+	if (i) {
+	    let splitter = document.createElementNS(XUL_NS, 'splitter');
+	    splitter.setAttribute('class', 'tree-splitter');
+	    treecols.appendChild(splitter);
+	}
+	treecols.appendChild(treecol);
+    }
+
+    // Treechildren
+    treechildren = document.createElementNS(XUL_NS, 'treechildren');
+    treechildren.setAttribute('id', 'shipinfo-tree-children');
+
+    // Build tree
+    tree = document.createElementNS(XUL_NS, 'tree');
+    tree.setAttribute('flex', '1');
+    tree.setAttribute('hidecolumnpicker', 'true');
+    tree.setAttribute('id', 'shipinfo-tree');
+
+    tree.appendChild(treecols);
+    tree.appendChild(treechildren);
+
+    // Replace existing tree, or append one.
+    oldtree = $('shipinfo-tree');
+    if (oldtree)
+	box.replaceChild(tree, oldtree);
+    else
+	box.appendChild(tree);
+}
+
+function ShipInfoTreeSort(){
+    let order;
+    let id;
+    let key;
+    let dir;
+
+    debugprint('ShipInfoSort()');
+
+    dir = ShipInfoTree.sortorder > 0 ? 'ascending' : 'descending';
+
+    for (i = 0; i < ShipInfoTree.COLLIST.length; i++) {
+	let colid = ShipInfoTree.COLLIST[i].id;
+	if (colid == ShipInfoTree.sortkey)
+	    $('shipinfo-tree-column-' + colid).setAttribute('sortDirection', dir);
+	else
+	    $('shipinfo-tree-column-' + colid).removeAttribute('sortDirection');
+    }
+
+    debugprint('key=' + ShipInfoTree.sortkey + ', order=' + ShipInfoTree.sortorder);
+
+    $('shipinfo-tree').view = new TreeView();
+}
+
+function getShipProperties(ship,name)
+{
+    const propmap = {
+	karyoku: { kidx: 0, master: 'houg', },
+	raisou:  { kidx: 1, master: 'raig', },
+	taiku:   { kidx: 2, master: 'tyku', },
+	soukou:  { kidx: 3, master: 'souk', },
+    };
+    let prop = {
+	cur: null,
+	max: null,
+	str: null,
+	remain: null,
+    };
+    let shiptype;
+    shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+    prop.cur = ship['api_' + name][0];
+    prop.max = prop.cur - ship.api_kyouka[propmap[name].kidx] +
+	       shiptype['api_' + propmap[name].master][1] -
+	       shiptype['api_' + propmap[name].master][0];
+    prop.str = prop.cur + '/' + prop.max;
+    prop.remain = prop.max - prop.cur;
+    return prop;
+}
+
+function getShipSlotitem(ship,slot){
+    let idx = slot - 1;
+    let name;
+
+    if (idx >= ship.api_slotnum)
+	return '';
+
+    if (ship.api_slot[idx] < 0)
+	return '-';
+
+    item = KanColleDatabase.memberSlotitem.get(ship.api_slot[idx]);
+    if (!item)
+	return '!';
+
+    if (item.api_name)
+	name = item.api_name;
+    else {
+	let itemtype = KanColleDatabase.masterSlotitem.get(item.api_slotitem_id);
+	if (!itemtype)
+	    return '?';
+	name = itemtype.api_name;
+    }
+    return name;
+}
+
+function DefaultSortFunc(ship_a,ship_b,order){
+    let shiptype_a = KanColleDatabase.masterShip.get(ship_a.api_ship_id);
+    let shiptype_b = KanColleDatabase.masterShip.get(ship_b.api_ship_id);
+    let ret;
+    if (shiptype_a === undefined || shiptype_b === undefined)
+	return ((shiptype_a !== undefined ? 1 : 0) - (shiptype_b !== undefined ? 1 : 0)) * order;
+    ret = shiptype_a.api_stype - shiptype_b.api_stype;
+    if (ret)
+	return ret;
+    //ゲーム内ソートは艦種と艦船の順位づけが逆
+    return ship_b.api_sortno - ship_a.api_sortno;
+}
+
+function ShipNextLvExp(ship){
+    let nextexp = KanColleData.level_accumexp[ship.api_lv];
+    if (nextexp === undefined)
+	return undefined;
+    else if (nextexp < 0)
+	return Number.POSITIVE_INFINITY;
+    return nextexp;
+}
+
+function ShipUpgradeableExp(ship){
+    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+    let nextlv = shiptype ? shiptype.api_afterlv : 0;
+    let nextexp;
+    if (nextlv > 0) {
+	nextexp = KanColleData.level_accumexp[nextlv - 1];
+	if (nextexp === undefined || nextexp < 0)
+	    return undefined;
+    } else
+	nextexp = Number.POSITIVE_INFINITY;
+    return nextexp;
+}
+
+function TreeView(){
+    var that = this;
+    var shiplist;
+
+    key = null;
+    spec = null;
+    order = null;
+    let id;
+
+    var key = ShipInfoTree.sortkey;
+    var spec = ShipInfoTree.sortspec;
+    var order = ShipInfoTree.sortorder;
+
+    // getCellText function table by column ID
+    var shipcellfunc = {
+	fleet: function(ship) {
+	    let fleet = KanColleRemainInfo.shipfleet[ship.api_id];
+	    if (fleet)
+		return fleet.fleet;
+	    return '';
+	},
+	id: function(ship) {
+	    return ship.api_id;
+	},
+	stype: function(ship) {
+	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+	    if (!shiptype)
+		return -1;
+	    return KanColleData.type_name[shiptype.api_stype];
+	},
+	name: function(ship) {
+	    return FindShipNameByCatId(ship.api_ship_id);
+	},
+	//_sortno: function(ship) {
+	//    return ship.api_sortno;
+	//},
+	_yomi: function(ship) {
+	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id)
+	    if (!shiptype)
+		return 0;
+	    return shiptype.api_yomi;
+	},
+	lv: function(ship) {
+	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+	    let nextlv = shiptype ? shiptype.api_afterlv : 0;
+	    if (!nextlv)
+		nextlv = '-';
+	    return ship.api_lv + '/' + nextlv;
+	},
+	_lv: function(ship) {
+	    return ship.api_lv;
+	},
+	_lvupg: function(ship) {
+	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+	    let nextlv = shiptype ? shiptype.api_afterlv : 0;
+	    if (!nextlv)
+		nextlv = 99999;	// FIXME
+	    return nextlv;
+	},
+	_lvupgremain: function(ship) {
+	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+	    let nextlv = shiptype ? shiptype.api_afterlv : 0;
+	    if (!nextlv)
+		return 99999;	// FIXME
+	    return nextlv - ship.api_lv;
+	},
+	exp: function(ship) {
+	    let nextlvexp = ShipNextLvExp(ship);
+	    let nextupgexp = ShipUpgradeableExp(ship);
+
+	    if (nextlvexp === undefined)
+		nextlvexp = '?';
+	    else if (nextlvexp == Number.POSITIVE_INFINITY)
+		nextlvexp = '-';
+
+	    if (nextupgexp === undefined)
+		nextupgexp = '?';
+	    else if (nextupgexp === Number.POSITIVE_INFINITY)
+		nextupgexp = '-';
+
+	    return ship.api_exp + '/' + nextlvexp + '/' + nextupgexp;
+	},
+	_exp: function(ship) {
+	    return ship.api_exp;
+	},
+	hp: function(ship) {
+	    let info = FindShipStatus(ship.api_id);
+	    return info ? info.nowhp + '/' + info.maxhp : '';
+	},
+	_hp: function(ship) {
+	    let info = FindShipStatus(ship.api_id);
+	    return info ? info.nowhp : '';
+	},
+	_maxhp: function(ship) {
+	    let info = FindShipStatus(ship.api_id);
+	    return info ? info.maxhp : '';
+	},
+	karyoku:	function(ship) { return getShipProperties(ship,'karyoku').str; },
+	_karyoku:	function(ship) { return getShipProperties(ship,'karyoku').cur; },
+	_karyokumax:	function(ship) { return getShipProperties(ship,'karyoku').max; },
+	_karyokuremain:	function(ship) { return getShipProperties(ship,'karyoku').remain; },
+	raisou:		function(ship) { return getShipProperties(ship,'raisou').str; },
+	_raisou:	function(ship) { return getShipProperties(ship,'raisou').cur; },
+	_raisoumax:	function(ship) { return getShipProperties(ship,'raisou').max; },
+	_raisouremain:	function(ship) { return getShipProperties(ship,'raisou').remain; },
+	taiku:		function(ship) { return getShipProperties(ship,'taiku').str; },
+	_taiku:		function(ship) { return getShipProperties(ship,'taiku').cur; },
+	_taikumax:	function(ship) { return getShipProperties(ship,'taiku').max; },
+	_taikuremain:	function(ship) { return getShipProperties(ship,'taiku').remain; },
+	soukou:		function(ship) { return getShipProperties(ship,'soukou').str; },
+	_soukou:	function(ship) { return getShipProperties(ship,'soukou').cur; },
+	_soukoumax:	function(ship) { return getShipProperties(ship,'soukou').max; },
+	_soukouremain:	function(ship) { return getShipProperties(ship,'soukou').remain; },
+	ndock: function(ship) {
+	    let ndocktime = ship.api_ndock_time;
+	    let hour;
+	    let min;
+	    if (!ndocktime)
+		return '-';
+	    min = Math.floor(ndocktime / 60000);
+	    hour = Math.floor(min / 60);
+	    min -= hour * 60;
+	    if (min < 10)
+		min = '0' + min;
+	    return hour + ':' + min;
+	},
+	_ndock: function(ship) {
+	    return ship.api_ndock_time;
+	},
+	cond: function(ship) {
+	    return FindShipCond(ship.api_id);
+	},
+	slotitem1: function(ship) {
+	    return getShipSlotitem(ship,1);
+	},
+	slotitem2: function(ship) {
+	    return getShipSlotitem(ship,2);
+	},
+	slotitem3: function(ship) {
+	    return getShipSlotitem(ship,3);
+	},
+	slotitem4: function(ship) {
+	    return getShipSlotitem(ship,4);
+	},
+    };
+
+    // Ship list
+    shiplist = KanColleDatabase.memberShip2.list();
+    if (ShipInfoTree.shipfilterspec) {
+	let filterspec = ShipInfoTree.shipfilterspec;
+	if (filterspec.match(/^slotitem(\d+)$/)) {
+	    let slotitemid = RegExp.$1;
+	    shiplist = Object.keys(KanColleRemainInfo.slotitemowners[slotitemid].list);
+	} else if (filterspec.match(/^stype((\d+-)*\d+)$/)) {
+	    let stypesearch = '-' + RegExp.$1 + '-';
+	    let slist = [];
+	    for (let i = 0; i < shiplist.length; i++) {
+		let shiptype;
+		let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
+		if (!ship)
+		    continue;
+		shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+		if (!shiptype)
+		    continue;
+		if (stypesearch.indexOf('-' + shiptype.api_stype + '-') != -1)
+		    slist.push(shiplist[i]);
+	    }
+	    shiplist = slist;
+	} else if (filterspec.match(/^upgrade(\d+)$/)) {
+	    const proplist = [ 'karyoku', 'raisou', 'taiku', 'soukou' ];
+	    let upgrade = parseInt(RegExp.$1, 10);
+	    let ships = [];
+	    for( let i = 0; i < shiplist.length; i++ ){
+		let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
+		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+		if (upgrade && shiptype.api_afterlv)
+		    continue;
+		for (j = 0; j < proplist.length; j++) {
+		    k = proplist[j];
+		    let p = getShipProperties(ship,k);
+		    if (p && p.remain) {
+			ships.push(shiplist[i]);
+			break;
+		    }
+		}
+	    }
+	    shiplist = ships;
+	} else {
+	    debugprint('invalid filterspec "' + filterspec + '"; ignored');
+	}
+    }
+
+    //
+    // Sort ship list
+    //
+    // default comparison function
+    var objcmp = function(a,b) {
+	if (a > b)
+	    return 1;
+	else if (a < b)
+	    return -1;
+	return 0;
+    };
+
+    // special comparision function: each function takes two 'ship's
+    var shipcmpfunc = {
+	fleet: function(ship_a,ship_b){
+	    let fleet_a = KanColleRemainInfo.shipfleet[ship_a.api_id];
+	    let fleet_b = KanColleRemainInfo.shipfleet[ship_b.api_id];
+	    let ret;
+	    if (!fleet_a || !fleet_b)
+		return ((fleet_b ? 1 : 0) - (fleet_a ? 1 : 0)) * order;
+	    if (!fleet_a.fleet || !fleet_b.fleet)
+		return ((fleet_b.fleet ? 1 : 0) - (fleet_a.fleet ? 1 : 0)) * order;
+	    ret = fleet_a.fleet - fleet_b.fleet;
+	    if (ret)
+		return ret;
+	    ret = (fleet_a.pos - fleet_b.pos) * order;
+	    if (ret)
+		return ret;
+	    return DefaultSortFunc(ship_b,ship_a,order);
+	},
+	_stype: function(ship_a,ship_b){
+	    return DefaultSortFunc(ship_a,ship_b,order);
+	},
+	_expnext: function(ship_a,ship_b) {
+	    let nextexp_a = ShipNextLvExp(ship_a);
+	    let nextexp_b = ShipNextLvExp(ship_b);
+	    if (nextexp_a === undefined)
+		nextexp_a = Number.POSITIVE_INFINITY;
+	    if (nextexp_b === undefined)
+		nextexp_b = Number.POSITIVE_INFINITY;
+	    if (nextexp_a == Number.POSITIVE_INFINITY &&
+	        nextexp_b == Number.POSITIVE_INFINITY)
+		return 0;
+	    return nextexp_a - nextexp_b;
+	},
+	_expnextremain: function(ship_a,ship_b) {
+	    let nextexp_a = ShipNextLvExp(ship_a);
+	    let nextexp_b = ShipNextLvExp(ship_b);
+	    if (nextexp_a === undefined)
+		nextexp_a = Number.POSITIVE_INFINITY;
+	    if (nextexp_b === undefined)
+		nextexp_b = Number.POSITIVE_INFINITY;
+	    if (nextexp_a == Number.POSITIVE_INFINITY &&
+	        nextexp_b == Number.POSITIVE_INFINITY)
+		return 0;
+	    nextexp_a -= ship_a.api_exp;
+	    nextexp_b -= ship_b.api_exp;
+	    return nextexp_a - nextexp_b;
+	},
+	_expupg: function(ship_a,ship_b) {
+	    let nextexp_a = ShipUpgradeableExp(ship_a);
+	    let nextexp_b = ShipUpgradeableExp(ship_b);
+	    if (nextexp_a === undefined)
+		nextexp_a = Number.POSITIVE_INFINITY;
+	    if (nextexp_b === undefined)
+		nextexp_b = Number.POSITIVE_INFINITY;
+	    if (nextexp_a == Number.POSITIVE_INFINITY &&
+	        nextexp_b == Number.POSITIVE_INFINITY)
+		return 0;
+	    return nextexp_a - nextexp_b;
+	},
+	_expupgremain: function(ship_a,ship_b) {
+	    let nextexp_a = ShipUpgradeableExp(ship_a);
+	    let nextexp_b = ShipUpgradeableExp(ship_b);
+	    if (nextexp_a === undefined)
+		nextexp_a = Number.POSITIVE_INFINITY;
+	    if (nextexp_b === undefined)
+		nextexp_b = Number.POSITIVE_INFINITY;
+	    if (nextexp_a == Number.POSITIVE_INFINITY &&
+	        nextexp_b == Number.POSITIVE_INFINITY)
+		return 0;
+	    nextexp_a -= ship_a.api_exp;
+	    nextexp_b -= ship_b.api_exp;
+	    return nextexp_a - nextexp_b;
+	},
+    };
+
+    // default
+    if (key === undefined)
+	key = 'id';
+    if (spec === undefined)
+	spec = key;
+    if (order === undefined)
+	order = 1;
+
+    shiplist = shiplist.sort(function(a, b) {
+	let res = 0;
+
+	do {
+	    let ship_a = KanColleDatabase.memberShip2.get(a);
+	    let ship_b = KanColleDatabase.memberShip2.get(b);
+
+	    if (!ship_a || !ship_b)
+		return ((ship_a ? 1 : 0) - (ship_b ? 1 : 0)) * order;
+
+	    if (shipcmpfunc[spec] !== undefined)
+		res = shipcmpfunc[spec](ship_a,ship_b);
+	    else if (shipcellfunc[spec] !== undefined) {
+		let va = shipcellfunc[spec](ship_a);
+		let vb = shipcellfunc[spec](ship_b);
+		res = objcmp(va,vb);
+	    }
+	    // tie breaker: id
+	    if (res || key == 'id');
+		break;
+	    key = 'id';
+	} while(1);
+	return res * order;
+    });
+
+    //
+    // the nsITreeView object interface
+    //
+    this.rowCount = shiplist.length;
+    this.getCellText = function(row,column){
+	let colid = column.id.replace(/^shipinfo-tree-column-/, '');
+	let ship;
+	let func;
+
+	if (row >= this.rowCount)
+	    return 'N/A';
+
+	ship = KanColleDatabase.memberShip2.get(shiplist[row]);
+	if (!ship)
+	    return 'N/A';
+
+	func = shipcellfunc[colid];
+	if (func)
+	    ret = func(ship);
+	else
+	    ret = colid + '_' + row;
+	return ret;
+    };
+    this.setTree = function(treebox){ this.treebox = treebox; };
+    this.isContainer = function(row){ return false; };
+    this.isSeparator = function(row){ return false; };
+    this.isSorted = function(){ return false; };
+    this.getLevel = function(row){ return 0; };
+    this.getImageSrc = function(row,col){ return null; };
+    this.getRowProperties = function(row,props){};
+    this.getCellProperties = function(row,col,props){};
+    this.getColumnProperties = function(col,props){};
+    this.cycleHeader = function(col,elem){};
+};
+
+function KanColleShipInfoSetView(){
+    debugprint('KanColleShipInfoSetView()');
+    $('shipinfo-tree').view = new TreeView();
+}
+
+function ShipInfoTreeMenuPopup(){
+    debugprint('ShipInfoTreeMenuPopup()');
+    KanColleCreateShipTree();
+    KanColleShipInfoSetView();
+}
+
+function KanColleShipInfoInit(){
+    debugprint('KanColleShipInfoInit()');
+    KanColleCreateShipTree();
+    KanColleShipInfoSetView();
+}
+
+/**
+ * ライブラリ初期化/後始末
+ */
+function KanColleTimerLibInit(){
+    KanColleShipInfoInit();
+    KanColleKdockMouseEventHandler.init();
+}
+
+function KanColleTimerLibExit(){
+    KanColleKdockMouseEventHandler.exit();
 }
 
 /**
