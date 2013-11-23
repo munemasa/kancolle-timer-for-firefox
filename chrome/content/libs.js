@@ -91,13 +91,15 @@ function KanColleTimerBasicInformationPanel(){
  *  member/deck_port	: api_data
  *  member/ship2	: api_data_deck
  */
-function KanColleTimerDeckHandler(now,api_data){
-    for( let i in api_data ){
-	i = parseInt(i);
-	var k = i+1;
-	var nameid = 'fleetname'+k;
-	var ftime_str = 'fleet'+k;
-	var d = api_data[i];
+function KanColleTimerDeckHandler(){
+    let decks = KanColleDatabase.memberDeck.list();
+    let now = Math.floor(KanColleDatabase.memberDeck.timestamp() / 1000);
+
+    for( let i = 0; i < decks.length; i++ ){
+	let d = KanColleDatabase.memberDeck.get(decks[i]);
+	let k = d.api_id;
+	let nameid = 'fleetname'+k;
+	let ftime_str = 'fleet'+k;
 	KanColleRemainInfo.fleet[i] = new Object();
 	KanColleRemainInfo.fleet_name[i] = d.api_name;
 	$(nameid).value = d.api_name; // 艦隊名
@@ -588,7 +590,7 @@ function KanColleTimerRegisterCallback(){
     db.memberBasic.appendCallback(KanColleTimerBasicHandler, true);
     db.memberBasic.appendCallback(KanColleTimerBasicInformationPanel, false);
     db.memberRecord.appendCallback(KanColleTimerBasicInformationPanel, false);
-    db.memberDeck.appendCallback(KanColleTimerDeckHandler, true);
+    db.memberDeck.appendCallback(KanColleTimerDeckHandler, false);
     db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap, false);
     db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberNdock.appendCallback(KanColleTimerNdockHandler, true);
@@ -611,7 +613,7 @@ function KanColleTimerUnregisterCallback(){
     db.memberNdock.removeCallback(KanColleTimerNdockHandler, true);
     db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler, false);
     db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap, false);
-    db.memberDeck.removeCallback(KanColleTimerDeckHandler, true);
+    db.memberDeck.removeCallback(KanColleTimerDeckHandler, false);
     db.memberRecord.removeCallback(KanColleTimerBasicInformationPanel, false);
     db.memberBasic.removeCallback(KanColleTimerBasicInformationPanel, false);
     db.memberBasic.removeCallback(KanColleTimerBasicHandler, true);
