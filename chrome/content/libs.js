@@ -205,6 +205,22 @@ function KanColleTimerNdockHandler(now,api_data){
     }
 }
 
+function KanColleTimerNdockRestore(){
+    try{
+	for( let i=0; i < 4; i++ ){
+	    let k = i + 1;
+	    if( KanColleRemainInfo.ndock_memo[i] ){
+		$('ndock-box'+k).setAttribute('tooltiptext',
+					      KanColleRemainInfo.ndock_memo[i] );
+	    }
+	    if( KanColleRemainInfo.ndock_time[i] ){
+		$('ndock'+k).value = KanColleRemainInfo.ndock_time[i];
+	    }
+	}
+    } catch(x) {
+    }
+}
+
 /*
  * 建造
  *  member/kdock	: api_data

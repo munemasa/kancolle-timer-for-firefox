@@ -410,18 +410,11 @@ var KanColleTimer = {
 		     }, 1000 );
 
 	KanColleTimerDeckRestore();
+	KanColleTimerNdockRestore();
 
 	try{
 	    for(let i=0; i<4; i++){
 		let k = i+1;
-		if( KanColleRemainInfo.ndock_memo[i] ){
-		    $('ndock-box'+k).setAttribute('tooltiptext',
-						  KanColleRemainInfo.ndock_memo[i] );
-		}
-
-		if( KanColleRemainInfo.ndock_time[i] ){
-		    $('ndock'+k).value = KanColleRemainInfo.ndock_time[i];
-		}
 		if( KanColleRemainInfo.kdock_time[i] ){
 		    $('kdock'+k).value = KanColleRemainInfo.kdock_time[i];
 		}
