@@ -593,36 +593,36 @@ function KanColleTimerBasicHandler(){
 
 function KanColleTimerRegisterCallback(){
     let db = KanColleDatabase;
-    db.memberBasic.appendCallback(KanColleTimerBasicHandler, false);
-    db.memberBasic.appendCallback(KanColleTimerBasicInformationPanel, false);
-    db.memberRecord.appendCallback(KanColleTimerBasicInformationPanel, false);
-    db.memberDeck.appendCallback(KanColleTimerDeckHandler, false);
-    db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap, false);
-    db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler, false);
-    db.memberNdock.appendCallback(KanColleTimerNdockHandler, false);
-    db.memberKdock.appendCallback(KanColleTimerKdockHandler, false);
-    db.memberShip2.appendCallback(KanColleTimerShipInfoHandler, false);
-    db.memberShip2.appendCallback(KanColleTimerBasicInformationPanel, false);
-    db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler, false);
-    db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler, false);
-    db.memberSlotitem.appendCallback(KanColleTimerBasicInformationPanel, false);
+    db.memberBasic.appendCallback(KanColleTimerBasicHandler);
+    db.memberBasic.appendCallback(KanColleTimerBasicInformationPanel);
+    db.memberRecord.appendCallback(KanColleTimerBasicInformationPanel);
+    db.memberDeck.appendCallback(KanColleTimerDeckHandler);
+    db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap);
+    db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler);
+    db.memberNdock.appendCallback(KanColleTimerNdockHandler);
+    db.memberKdock.appendCallback(KanColleTimerKdockHandler);
+    db.memberShip2.appendCallback(KanColleTimerShipInfoHandler);
+    db.memberShip2.appendCallback(KanColleTimerBasicInformationPanel);
+    db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
+    db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
+    db.memberSlotitem.appendCallback(KanColleTimerBasicInformationPanel);
 }
 
 function KanColleTimerUnregisterCallback(){
     let db = KanColleDatabase;
-    db.memberSlotitem.removeCallback(KanColleTimerBasicInformationPanel, false);
-    db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler, false);
-    db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler, false);
-    db.memberShip2.removeCallback(KanColleTimerBasicInformationPanel, false);
-    db.memberShip2.removeCallback(KanColleTimerShipInfoHandler, false);
-    db.memberKdock.removeCallback(KanColleTimerKdockHandler, false);
-    db.memberNdock.removeCallback(KanColleTimerNdockHandler, false);
-    db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler, false);
-    db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap, false);
-    db.memberDeck.removeCallback(KanColleTimerDeckHandler, false);
-    db.memberRecord.removeCallback(KanColleTimerBasicInformationPanel, false);
-    db.memberBasic.removeCallback(KanColleTimerBasicInformationPanel, false);
-    db.memberBasic.removeCallback(KanColleTimerBasicHandler, false);
+    db.memberSlotitem.removeCallback(KanColleTimerBasicInformationPanel);
+    db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler);
+    db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler);
+    db.memberShip2.removeCallback(KanColleTimerBasicInformationPanel);
+    db.memberShip2.removeCallback(KanColleTimerShipInfoHandler);
+    db.memberKdock.removeCallback(KanColleTimerKdockHandler);
+    db.memberNdock.removeCallback(KanColleTimerNdockHandler);
+    db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler);
+    db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap);
+    db.memberDeck.removeCallback(KanColleTimerDeckHandler);
+    db.memberRecord.removeCallback(KanColleTimerBasicInformationPanel);
+    db.memberBasic.removeCallback(KanColleTimerBasicInformationPanel);
+    db.memberBasic.removeCallback(KanColleTimerBasicHandler);
 }
 
 function AddLog(str){
