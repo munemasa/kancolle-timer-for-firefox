@@ -571,8 +571,8 @@ function KanColleTimerMemberShip2FleetHandler(){
  * 基本情報
  *  member/basic	: api_data
  */
-function KanColleTimerBasicHandler(now,api_data){
-    let d = api_data;
+function KanColleTimerBasicHandler(){
+    let d = KanColleDatabase.memberBasic.get();
     let f = function( elems, n ){
         for( let i=1; i<4; i++ ){
 	    SetStyleProperty(elems[i], 'display', i<n ? "":"none");
@@ -593,7 +593,7 @@ function KanColleTimerBasicHandler(now,api_data){
 
 function KanColleTimerRegisterCallback(){
     let db = KanColleDatabase;
-    db.memberBasic.appendCallback(KanColleTimerBasicHandler, true);
+    db.memberBasic.appendCallback(KanColleTimerBasicHandler, false);
     db.memberBasic.appendCallback(KanColleTimerBasicInformationPanel, false);
     db.memberRecord.appendCallback(KanColleTimerBasicInformationPanel, false);
     db.memberDeck.appendCallback(KanColleTimerDeckHandler, false);
@@ -622,7 +622,7 @@ function KanColleTimerUnregisterCallback(){
     db.memberDeck.removeCallback(KanColleTimerDeckHandler, false);
     db.memberRecord.removeCallback(KanColleTimerBasicInformationPanel, false);
     db.memberBasic.removeCallback(KanColleTimerBasicInformationPanel, false);
-    db.memberBasic.removeCallback(KanColleTimerBasicHandler, true);
+    db.memberBasic.removeCallback(KanColleTimerBasicHandler, false);
 }
 
 function AddLog(str){
