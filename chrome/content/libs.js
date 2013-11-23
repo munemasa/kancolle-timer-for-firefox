@@ -130,6 +130,16 @@ function KanColleTimerDeckHandler(){
     }
 }
 
+function KanColleTimerDeckBasicHandler(){
+    let d = KanColleDatabase.memberBasic.get();
+    let fleets = document.getElementsByClassName("fleet");
+    for( let i=0; i<4; i++ )
+	SetStyleProperty(fleets[i], 'display',
+			 (i != 0 && i < d.api_count_deck) ? "" : "none");
+    if (d.api_count_deck < 2)
+	$('group-mission').style.display = "none";
+}
+
 function KanColleTimerDeckRestore(){
     try{
 	for( let i = 0; i < 4; i++ ){
@@ -210,6 +220,13 @@ function KanColleTimerNdockHandler(){
     }
 }
 
+function KanColleTimerNdockBasicHandler(){
+    let d = KanColleDatabase.memberBasic.get();
+    let ndocks = document.getElementsByClassName("ndock-box");
+    for( let i = 0; i < 4; i++ )
+	SetStyleProperty(ndocks[i], 'display', i < d.api_count_ndock ? "":"none");
+}
+
 function KanColleTimerNdockRestore(){
     try{
 	for( let i=0; i < 4; i++ ){
@@ -285,6 +302,13 @@ function KanColleTimerKdockHandler(){
 	    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
 	}
     }
+}
+
+function KanColleTimerKdockBasicHandler(){
+    let d = KanColleDatabase.memberBasic.get();
+    let ndocks = document.getElementsByClassName("kdock-box");
+    for( let i = 0; i < 4; i++ )
+	SetStyleProperty(ndocks[i], 'display', i < d.api_count_kdock ? "":"none");
 }
 
 function KanColleTimerKdockRestore(){
@@ -567,40 +591,18 @@ function KanColleTimerMemberShip2FleetHandler(){
     }
 }
 
-/*
- * 基本情報
- *  member/basic	: api_data
- */
-function KanColleTimerBasicHandler(){
-    let d = KanColleDatabase.memberBasic.get();
-    let f = function( elems, n ){
-        for( let i=1; i<4; i++ ){
-	    SetStyleProperty(elems[i], 'display', i<n ? "":"none");
-	}
-    };
-    let tmp = parseInt( d.api_count_deck );
-    if( tmp==1 ){
-	$('group-mission').style.display = "none";
-    }else{
-	let fleets = document.getElementsByClassName("fleet");
-	f( fleets, tmp );
-    }
-    let ndocks = document.getElementsByClassName("ndock-box");
-    let kdocks = document.getElementsByClassName("kdock-box");
-    f( ndocks, parseInt(d.api_count_ndock) );
-    f( kdocks, parseInt(d.api_count_kdock) );
-}
-
 function KanColleTimerRegisterCallback(){
     let db = KanColleDatabase;
-    db.memberBasic.appendCallback(KanColleTimerBasicHandler);
     db.memberBasic.appendCallback(KanColleTimerBasicInformationPanel);
     db.memberRecord.appendCallback(KanColleTimerBasicInformationPanel);
     db.memberDeck.appendCallback(KanColleTimerDeckHandler);
+    db.memberBasic.appendCallback(KanColleTimerDeckBasicHandler);
     db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap);
     db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler);
     db.memberNdock.appendCallback(KanColleTimerNdockHandler);
+    db.memberBasic.appendCallback(KanColleTimerNdockBasicHandler);
     db.memberKdock.appendCallback(KanColleTimerKdockHandler);
+    db.memberBasic.appendCallback(KanColleTimerKdockBasicHandler);
     db.memberShip2.appendCallback(KanColleTimerShipInfoHandler);
     db.memberShip2.appendCallback(KanColleTimerBasicInformationPanel);
     db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
@@ -615,14 +617,16 @@ function KanColleTimerUnregisterCallback(){
     db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler);
     db.memberShip2.removeCallback(KanColleTimerBasicInformationPanel);
     db.memberShip2.removeCallback(KanColleTimerShipInfoHandler);
+    db.memberBasic.removeCallback(KanColleTimerKdockBasicHandler);
     db.memberKdock.removeCallback(KanColleTimerKdockHandler);
+    db.memberBasic.removeCallback(KanColleTimerNdockBasicHandler);
     db.memberNdock.removeCallback(KanColleTimerNdockHandler);
     db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler);
     db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap);
+    db.memberBasic.removeCallback(KanColleTimerDeckBasicHandler);
     db.memberDeck.removeCallback(KanColleTimerDeckHandler);
     db.memberRecord.removeCallback(KanColleTimerBasicInformationPanel);
     db.memberBasic.removeCallback(KanColleTimerBasicInformationPanel);
-    db.memberBasic.removeCallback(KanColleTimerBasicHandler);
 }
 
 function AddLog(str){
