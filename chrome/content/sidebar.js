@@ -1,5 +1,8 @@
-Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
+/// vim: set ts=8 sw=4 sts=4 ff=dos :
 
+// http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/
+
+Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 
 var KanColleTimerSidebar = {
     imageURL: "http://pics.dmm.com/freegame/app/854854/200.jpg",
@@ -9,6 +12,24 @@ var KanColleTimerSidebar = {
     fleet: [],
 
     audios:[],
+
+    // 入渠ドックのメモ作成
+    createRepairMemo: function(){
+	let elem = $('popup-ndock-memo').triggerNode;
+	let hbox = FindParentElement(elem,"row");
+	let oldstr = hbox.getAttribute('tooltiptext') || "";
+	let text = "入渠ドック"+hbox.firstChild.value+"のメモを入力してください。\nツールチップとして表示されるようになります。";
+	let str = InputPrompt(text,"入渠ドックメモ", oldstr);
+	if( str==null ) return;
+	hbox.setAttribute('tooltiptext',str);
+
+	let ndock_hbox = evaluateXPath(document,"//*[@class='ndock-box']");
+	for(let k in ndock_hbox){
+	    k = parseInt(k);
+	    let elem = ndock_hbox[k];
+	    KanColleRemainInfo.ndock_memo[k] = ndock_hbox[k].getAttribute('tooltiptext');
+	}
+    },
 
     /**
      * 音声再生を行う(nsISound)
@@ -91,6 +112,13 @@ var KanColleTimerSidebar = {
 	}
     },
 
+    // ウィンドウを最前面にする
+    setWindowOnTop:function(){
+	let checkbox = $('window-stay-on-top');
+	if (checkbox)
+	    WindowOnTop( window, checkbox.hasAttribute('checked') );
+    },
+
     update: function(){
 	let i;
 	let now = GetCurrentTime();
@@ -104,7 +132,6 @@ var KanColleTimerSidebar = {
 	    let t = KanColleRemainInfo.fleet[i].mission_finishedtime;
 	    if( t > 0 ){
 		let d = t - now;
-
 		if( fleetremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
@@ -311,6 +338,8 @@ var KanColleTimerSidebar = {
 	}
 
 	this.audios = document.getElementsByTagName('html:audio');
+
+	this.setWindowOnTop();
     },
 
     destroy: function(){

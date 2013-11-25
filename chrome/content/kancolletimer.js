@@ -112,7 +112,9 @@ var KanColleTimer = {
 
     // ウィンドウを最前面にする
     setWindowOnTop:function(){
-	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
+	let checkbox = $('window-stay-on-top');
+	if (checkbox)
+	    WindowOnTop( window, checkbox.hasAttribute('checked') );
     },
 
     update: function(){
@@ -272,6 +274,27 @@ var KanColleTimer = {
 	this.takeScreenshot(path);
     },
 
+    findWindow:function(){
+	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
+	return win;
+    },
+
+    /**
+     * 艦これタイマーを開く
+     */
+    open:function(){
+	let feature="chrome,resizable=yes";
+
+	let win = this.findWindow();
+	if(win){
+	    win.focus();
+	}else{
+	    let w = window.open("chrome://kancolletimer/content/mainwindow.xul","KanColleTimer",feature);
+	    w.focus();
+	}
+    },
+
     init: function(){
 	KanColleHttpRequestObserver.init();
 	KanColleHttpRequestObserver.addCallback( KanColleTimerCallback );
@@ -314,7 +337,7 @@ var KanColleTimer = {
 
 	this.audios = document.getElementsByTagName('html:audio');
 
-	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
+	this.setWindowOnTop();
     },
 
     destroy: function(){
