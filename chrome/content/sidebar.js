@@ -267,9 +267,6 @@ var KanColleTimerSidebar = {
 	}
     },
 
-    initWallpaper:function(){
-    },
-
     init: function(){
 	Application.console.log('KanColle Timer sidebar init.');
 	KanColleHttpRequestObserver.init();
@@ -311,7 +308,6 @@ var KanColleTimerSidebar = {
 	}
 
 	this.audios = document.getElementsByTagName('html:audio');
-	this.initWallpaper();
     },
 
     destroy: function(){

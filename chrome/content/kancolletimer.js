@@ -275,9 +275,6 @@ var KanColleTimer = {
 	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
-    initWallpaper:function(){
-    },
-
     init: function(){
 	KanColleHttpRequestObserver.init();
 	KanColleHttpRequestObserver.addCallback( KanColleTimerCallback );
@@ -317,8 +314,6 @@ var KanColleTimer = {
 	    }
 	} catch (x) {
 	}
-
-	this.initWallpaper();
 
 	this.audios = document.getElementsByTagName('html:audio');
 
