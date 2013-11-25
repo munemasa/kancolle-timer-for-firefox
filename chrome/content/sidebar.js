@@ -67,7 +67,8 @@ var KanColleTimerSidebar = {
 	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
 	this.playNotice( this.audios[3], path );
 
-	if( KanColleTimerConfig.getBool('popup.1min-before') ){
+	if( KanColleTimerConfig.getBool('popup.ndock') &&
+	    KanColleTimerConfig.getBool('popup.1min-before') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
 	}
     },
@@ -75,7 +76,8 @@ var KanColleTimerSidebar = {
 	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
 	this.playNotice( this.audios[4], path );
 
-	if( KanColleTimerConfig.getBool('popup.1min-before') ){
+	if( KanColleTimerConfig.getBool('popup.kdock') &&
+	    KanColleTimerConfig.getBool('popup.1min-before') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
 	}
     },
@@ -83,7 +85,8 @@ var KanColleTimerSidebar = {
 	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
 	this.playNotice( this.audios[5], path );
 
-	if( KanColleTimerConfig.getBool('popup.1min-before') ){
+	if( KanColleTimerConfig.getBool('popup.mission') &&
+	    KanColleTimerConfig.getBool('popup.1min-before') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
 	}
     },
@@ -178,12 +181,6 @@ var KanColleTimerSidebar = {
 	}
     },
 
-    findWindow:function(){
-	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
-	return win;
-    },
-
     getNowDateString: function(){
 	var d = new Date();
 	var month = d.getMonth()+1;
@@ -250,6 +247,12 @@ var KanColleTimerSidebar = {
     takeScreenshotSeriography:function(){
 	var path = KanColleTimerConfig.getUnichar("screenshot.path");
 	this.takeScreenshot(path);
+    },
+
+    findWindow:function(){
+	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
+	return win;
     },
 
     /**
