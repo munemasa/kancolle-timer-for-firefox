@@ -68,6 +68,12 @@ var KanColleTimerPreference = {
 	}
     },
 
+    refFontSize:function( target, label, value ){
+	let t = $(target);
+	t.label = label;
+	t.value = value;
+    },
+
     /**
      * 画像選択.
      * @param target 設定対象
