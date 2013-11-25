@@ -18,7 +18,7 @@
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/data.js" />
   <script type="application/javascript;version=1.7"
-	  src="chrome://kancolletimer/content/sidebar.js" />
+	  src="chrome://kancolletimer/content/kancolletimer.js" />
 
   <toolbox>
     <toolbar>
@@ -165,7 +165,7 @@
     </vbox>
   </stack>
   
-  <button label="ウィンドウを開く" oncommand="KanColleTimerSidebar.open();"/>
+  <button label="ウィンドウを開く" oncommand="KanColleTimer.open();"/>
   
   <html:audio src=""/>
   <html:audio src=""/>
