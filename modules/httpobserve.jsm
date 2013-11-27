@@ -115,6 +115,7 @@ var KanColleDatabase = {
     masterShip: null,		// master/ship
     masterSlotitem: null,	// master/slotitem
     memberShip2: null,		// member/ship2
+    memberShip3Slot: null,	// member/ship3 (slot information)
     memberSlotitem: null,	// member/slotitem
     memberDeck: null,		// member/deck,member/deck_port,
 				// or member/ships[api_data_deck]
@@ -130,6 +131,7 @@ var KanColleDatabase = {
 	if (!this.masterSlotitem)
 	    this.masterSlotitem = new KanColleDB();
 	this.memberShip2 = new KanColleDB();
+	this.memberShip3Slot = new KanColleSimpleDB();
 	this.memberSlotitem = new KanColleDB();
 	this.memberDeck = new KanColleDB();
 	this.memberNdock = new KanColleDB();
@@ -143,6 +145,7 @@ var KanColleDatabase = {
 	//this.masterShip = null;
 	//this.masterSlotitem = null;
 	this.memberShip2 = null;
+	this.memberShip3Slot = null;
 	this.memberSlotitem = null;
 	this.memberDeck = null;
 	this.memberNdock = null;
@@ -179,6 +182,10 @@ function KanColleCallback(req,s){
     }else if( url.match(/kcsapi\/api_get_member\/ship2/) ){
 	KanColleDatabase.memberShip2.update(data.api_data);
 	KanColleDatabase.memberDeck.update(data.api_data_deck);
+    }else if( url.match(/kcsapi\/api_get_member\/ship3/) ){
+	KanColleDatabase.memberShip2.update(data.api_data.api_ship_data);
+	KanColleDatabase.memberDeck.update(data.api_data.api_deck_data);
+	//KanColleDatabase.memberShip3Slot.update(data.api_data.api_slot_data);
     }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
 	KanColleDatabase.memberSlotitem.update(data.api_data);
     }
