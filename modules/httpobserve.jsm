@@ -43,19 +43,20 @@ function KanColleSimpleDB(){
     };
 }
 
-function KanColleDB(){
+function KanColleDB(opt){
     var _now = 0;
     var _raw = null;
     var _db = null;
     var _list = null;
     var _callback = [];
+    var _pkey = 'api_' + (opt && opt.primary_key ? opt.primary_key : 'id');
 
     function parse(){
 	let hash = {};
 	if (!_raw || _db)
 	    return;
 	for( let i = 0; i < _raw.length; i++ )
-	    hash[_raw[i].api_id] = _raw[i];
+	    hash[_raw[i][_pkey]] = _raw[i];
 	_db = hash;
 	_list = null;
     }
