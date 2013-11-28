@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 var KanColleTimerConfig = {
     getBranch:function(){
 	var prefs = new PrefsWrapper1("extensions.kancolletimer.");
@@ -81,12 +83,16 @@ var KanColleTimerConfig = {
 	}
 
 	let col = this.getUnichar('display.font-color') || "";
+	let size = this.getUnichar('display.font-size') || "";
 	try{
 	    $('sbKanColleTimerSidebar').style.color = col;
+	    $('sbKanColleTimerSidebar').style.fontSize = size;
 	} catch (x) {}
 	try{
 	    $('kancolletimermainwindow').style.color = col;
+	    $('kancolletimermainwindow').style.fontSize = size;
 	} catch (x) {}
+
 
 	try{
 	    let audios = document.getElementsByTagName('html:audio');

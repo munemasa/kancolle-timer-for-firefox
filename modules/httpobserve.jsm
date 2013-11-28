@@ -1,13 +1,199 @@
 /* -*- mode: js2;-*- */
+// vim: set ts=8 sw=4 sts=4 ff=dos :
 
-var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo"];
+var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo",
+			"KanColleDatabase"];
 
+/*
+ * Database
+ */
+function KanColleSimpleDB(){
+    var _now = 0;
+    var _db = null;
+    var _callback = [];
+
+    this.update = function(data){
+	_now = (new Date).getTime();
+	_db = data;
+	for( let i = 0; i < _callback.length; i++){
+	    if (_callback[i].compat)
+		_callback[i].func(Math.floor(_now/1000),data);
+	    else
+		_callback[i].func();
+	}
+    };
+    this.get = function(){
+	return _db;
+    };
+    this.timestamp = function(){
+	return _now;
+    };
+    this.appendCallback = function(f,c){
+	_callback.push({func: f, compat: c,});
+    };
+    this.removeCallback = function(f){
+	let count = 0;
+	for( let i = 0; i < _callback.length; i++ ){
+	    if( _callback[i].func == f ){
+		_callback.splice(i,1);
+		count++;
+	    }
+	}
+	return count;
+    };
+}
+
+function KanColleDB(){
+    var _now = 0;
+    var _raw = null;
+    var _db = null;
+    var _list = null;
+    var _callback = [];
+
+    function parse(){
+	let hash = {};
+	if (!_raw || _db)
+	    return;
+	for( let i = 0; i < _raw.length; i++ )
+	    hash[_raw[i].api_id] = _raw[i];
+	_db = hash;
+	_list = null;
+    }
+
+    this.update = function(data){
+	_now = (new Date).getTime();
+	_raw = data;
+	_db = null;
+	_list = null;
+	for( let i = 0; i < _callback.length; i++ ){
+	    if (_callback[i].compat)
+		_callback[i].func(Math.floor(_now/1000),data);
+	    else
+		_callback[i].func();
+	}
+    };
+    this.count = function(){
+	if (!_raw)
+	    return undefined;
+	return this.list().length;
+    };
+    this.list = function(){
+	if (!_raw)
+	    return [];
+	if (!_list) {
+	    parse();
+	    _list = Object.keys(_db);
+	}
+	return _list;
+    };
+    this.get = function(id){
+	parse();
+	if (_db)
+	    return _db[id];
+	return null;
+    };
+    this.timestamp = function(){
+	return _now;
+    };
+    this.appendCallback = function(f,c){
+	_callback.push({func: f, compat: c,});
+    };
+    this.removeCallback = function(f){
+	let count = 0;
+	for( let i = 0; i < _callback.length; i++ ){
+	    if( _callback[i].func == f ){
+		_callback.splice(i,1);
+		count++;
+	    }
+	}
+	return count;
+    };
+}
+
+var KanColleDatabase = {
+    // Database
+    masterShip: null,		// master/ship
+    masterSlotitem: null,	// master/slotitem
+    memberShip2: null,		// member/ship2
+    memberShip3Slot: null,	// member/ship3 (slot information)
+    memberSlotitem: null,	// member/slotitem
+    memberDeck: null,		// member/deck,member/deck_port,
+				// or member/ships[api_data_deck]
+    memberNdock: null,		// member/ndock
+    memberKdock: null,		// member/kdock
+    memberBasic: null,		// member/basic
+    memberRecord: null,		// member/record
+
+    // Initialization
+    init: function(){
+	if (!this.masterShip)
+	    this.masterShip = new KanColleDB();
+	if (!this.masterSlotitem)
+	    this.masterSlotitem = new KanColleDB();
+	this.memberShip2 = new KanColleDB();
+	this.memberShip3Slot = new KanColleSimpleDB();
+	this.memberSlotitem = new KanColleDB();
+	this.memberDeck = new KanColleDB();
+	this.memberNdock = new KanColleDB();
+	this.memberKdock = new KanColleDB();
+	this.memberBasic = new KanColleSimpleDB();
+	this.memberRecord = new KanColleSimpleDB();
+	debugprint("KanColleDatabase initialized.");
+    },
+    exit: function(){
+	//マスタ情報は再送されないので削除しない
+	//this.masterShip = null;
+	//this.masterSlotitem = null;
+	this.memberShip2 = null;
+	this.memberShip3Slot = null;
+	this.memberSlotitem = null;
+	this.memberDeck = null;
+	this.memberNdock = null;
+	this.memberKdock = null;
+	this.memberBasic = null;
+	this.memberRecord = null;
+	debugprint("KanColleDatabase cleared.");
+    },
+};
+
+function KanColleCallback(req,s){
+    let now = (new Date).getTime();
+    let url = req.name;
+    let data = JSON.parse(s.substring( s.indexOf('svdata=')+7 ));
+
+    if( data.api_result!=1 )
+	return;
+
+    if( url.match(/kcsapi\/api_get_master\/ship/) ){
+	KanColleDatabase.masterShip.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_master\/slotitem/) ){
+	KanColleDatabase.masterSlotitem.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
+	KanColleDatabase.memberBasic.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/record/) ){
+	KanColleDatabase.memberRecord.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/deck_port/) ||
+	      url.match(/kcsapi\/api_get_member\/deck/) ) {
+	KanColleDatabase.memberDeck.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/ndock/) ){
+	KanColleDatabase.memberNdock.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/kdock/) ){
+	KanColleDatabase.memberKdock.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/ship2/) ){
+	KanColleDatabase.memberShip2.update(data.api_data);
+	KanColleDatabase.memberDeck.update(data.api_data_deck);
+    }else if( url.match(/kcsapi\/api_get_member\/ship3/) ){
+	KanColleDatabase.memberShip2.update(data.api_data.api_ship_data);
+	KanColleDatabase.memberDeck.update(data.api_data.api_deck_data);
+	//KanColleDatabase.memberShip3Slot.update(data.api_data.api_slot_data);
+    }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
+	KanColleDatabase.memberSlotitem.update(data.api_data);
+    }
+}
 
 var KanColleRemainInfo = {
-    gShipList: [],
-    gOwnedShipList: [],
-    gOwnedItem: [],
-    gDeckList:[],
+    slotitemowners: {},
+    shipfleet: {},
 
     fleet_name: [], // 艦隊名
     mission_name:[],// 遠征名
@@ -135,6 +321,9 @@ var KanColleHttpRequestObserver =
 		.getService(Components.interfaces.nsIObserverService);
 	    this.observerService.addObserver(this, "http-on-examine-response", false);
 	    debugprint("start kancolle observer.");
+
+	    KanColleDatabase.init();
+	    this.addCallback(KanColleCallback);
 	}
 	this.counter++;
     },
@@ -142,6 +331,9 @@ var KanColleHttpRequestObserver =
     destroy: function(){
 	this.counter--;
 	if( this.counter<=0 ){
+	    this.removeCallback(KanColleCallback);
+	    KanColleDatabase.exit();
+
 	    this.observerService.removeObserver(this, "http-on-examine-response");
 	    this.counter = 0;
 	    debugprint("stop kancolle observer.");

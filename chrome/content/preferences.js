@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 var KanColleTimerPreference = {
 
     debugprint:function(txt){
@@ -64,6 +66,12 @@ var KanColleTimerPreference = {
 
 	    $(target).value = path;
 	}
+    },
+
+    refFontSize:function( target, label, value ){
+	let t = $(target);
+	t.label = label;
+	t.value = value;
     },
 
     /**
