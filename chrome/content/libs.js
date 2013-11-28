@@ -161,7 +161,7 @@ function KanColleTimerCallback(request,s){
     }else if( url.match(/kcsapi\/api_get_master\/ship/) ){
 	KanColleRemainInfo.gShipList = data.api_data;
     }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
-	KanColleRemainInfo.gOwnedShipList = data.api_data;
+	KanColleRemainInfo.gOwnedShipList = data.api_data.api_ship_data || data.api_data;
     }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
 	KanColleRemainInfo.gOwnedItem = data.api_data;
     }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
