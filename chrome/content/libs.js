@@ -132,7 +132,10 @@ function KanColleTimerDeckHandler(){
 
 function KanColleTimerDeckBasicHandler(){
     let d = KanColleDatabase.memberBasic.get();
-    let fleets = document.getElementsByClassName("fleet");
+    let fleets;
+    if (!d)
+	return;
+    fleets = document.getElementsByClassName("fleet");
     for( let i=0; i<4; i++ )
 	SetStyleProperty(fleets[i], 'display',
 			 (i != 0 && i < d.api_count_deck) ? "" : "none");
@@ -141,6 +144,7 @@ function KanColleTimerDeckBasicHandler(){
 }
 
 function KanColleTimerDeckRestore(){
+    KanColleTimerDeckBasicHandler();
     try{
 	for( let i = 0; i < 4; i++ ){
 	    let k = i + 1;
@@ -222,12 +226,16 @@ function KanColleTimerNdockHandler(){
 
 function KanColleTimerNdockBasicHandler(){
     let d = KanColleDatabase.memberBasic.get();
-    let ndocks = document.getElementsByClassName("ndock-box");
+    let ndocks;
+    if (!d)
+	return;
+    ndocks  = document.getElementsByClassName("ndock-box");
     for( let i = 0; i < 4; i++ )
 	SetStyleProperty(ndocks[i], 'display', i < d.api_count_ndock ? "":"none");
 }
 
 function KanColleTimerNdockRestore(){
+    KanColleTimerNdockBasicHandler();
     try{
 	for( let i=0; i < 4; i++ ){
 	    let k = i + 1;
@@ -306,12 +314,16 @@ function KanColleTimerKdockHandler(){
 
 function KanColleTimerKdockBasicHandler(){
     let d = KanColleDatabase.memberBasic.get();
-    let ndocks = document.getElementsByClassName("kdock-box");
+    let ndocks;
+    if (!d)
+	return;
+    ndocks = document.getElementsByClassName("kdock-box");
     for( let i = 0; i < 4; i++ )
 	SetStyleProperty(ndocks[i], 'display', i < d.api_count_kdock ? "":"none");
 }
 
 function KanColleTimerKdockRestore(){
+    KanColleTimerKdockBasicHandler();
     try{
 	for(let i=0; i<4; i++){
 	    let k = i+1;
