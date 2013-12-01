@@ -15,6 +15,7 @@
   <keyset>
     <!-- CTRL+W: Close this window -->
     <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+    <key id="reload" key="r" modifiers="accel" oncommand="OpenShipList();"/>
   </keyset>
 
   <script type="application/javascript;version=1.7"
