@@ -123,6 +123,7 @@ var KanColleDatabase = {
     memberKdock: null,		// member/kdock
     memberBasic: null,		// member/basic
     memberRecord: null,		// member/record
+    memberMaterial: null,	// member/material
 
     // Initialization
     init: function(){
@@ -138,6 +139,7 @@ var KanColleDatabase = {
 	this.memberKdock = new KanColleDB();
 	this.memberBasic = new KanColleSimpleDB();
 	this.memberRecord = new KanColleSimpleDB();
+	this.memberMaterial = new KanColleDB();
 	debugprint("KanColleDatabase initialized.");
     },
     exit: function(){
@@ -152,6 +154,7 @@ var KanColleDatabase = {
 	this.memberKdock = null;
 	this.memberBasic = null;
 	this.memberRecord = null;
+	this.memberMaterial = null;
 	debugprint("KanColleDatabase cleared.");
     },
 };
@@ -188,6 +191,8 @@ function KanColleCallback(req,s){
 	//KanColleDatabase.memberShip3Slot.update(data.api_data.api_slot_data);
     }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
 	KanColleDatabase.memberSlotitem.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/material/) ){
+	KanColleDatabase.memberMaterial.update(data.api_data);
     }
 }
 

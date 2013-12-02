@@ -29,6 +29,8 @@ function KanColleTimerBasicInfomationPanel(){
     let maxslotitems = '-';
     let ships = '-';
     let slotitems = '-';
+    let burner = '-';
+    let bucket = '-';
 
     if (record) {
 	timestamp = KanColleDatabase.memberRecord.timestamp();
@@ -55,8 +57,24 @@ function KanColleTimerBasicInfomationPanel(){
 	    slotitems = count;
     }
 
+    if (KanColleDatabase.memberMaterial.timestamp()) {
+	/*
+	 * 1: 燃料
+	 * 2: 弾薬
+	 * 3: 鋼材
+	 * 4: ボーキサイト
+	 * 5: 高速建造材
+	 * 6: 高速修復材
+	 * 7: 開発資材
+	 */
+	burner = KanColleDatabase.memberMaterial.get(5).api_value;
+	bucket = KanColleDatabase.memberMaterial.get(6).api_value;
+    }
+
     $('basic-information-shipcount').value = ships + ' / ' + maxships;
     $('basic-information-slotitemcount').value = slotitems + ' / ' + maxslotitems;
+    $('basic-information-burnercount').value = burner;
+    $('basic-information-bucketcount').value = bucket;
 }
 
 /*
