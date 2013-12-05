@@ -11,6 +11,18 @@ var ShipList = {
 	}
     },
 
+    getFleetNo: function( ship_id ){
+	let fleets = KanColleRemainInfo.gDeckList;
+	for( let i in fleets ){
+	    for( let j in fleets[i].api_ship ){
+		if( fleets[i].api_ship[j]==ship_id ){
+		    return parseInt(i)+1;
+		}
+	    }
+	}
+	return 0;
+    },
+
     sort: function(type){
 	this.allships.sort( function(a,b){
 	    var tmpa = 0;
@@ -46,7 +58,11 @@ var ShipList = {
 
 	    let elem = CreateElement('listitem');
 	    elem.appendChild( CreateListCell( no++ ) );
-	    elem.appendChild( CreateListCell( obj.type ) );
+	    if( obj.fleet_no ){
+		elem.appendChild( CreateListCell( obj.type + '('+obj.fleet_no+')' ) );
+	    }else{
+		elem.appendChild( CreateListCell( obj.type ) );
+	    }
 	    elem.appendChild( CreateListCell( obj.name ) );
 	    elem.appendChild( CreateListCell( obj.lv ) );
 	    elem.appendChild( CreateListCell( obj.cond ) );
@@ -80,8 +96,10 @@ var ShipList = {
 	for( let k in ships ){
 	    let ship = ships[k];
 	    let data = FindShipData( ship.api_id );
-	    let obj = new Object();
+	    let fleet_no = this.getFleetNo( ship.api_id );
 
+	    let obj = new Object();
+	    obj.fleet_no = fleet_no;
 	    obj.type = KanColleData.type_name[data.api_stype];
 	    obj.stype = data.api_stype;
 	    obj.name = data.api_name;
