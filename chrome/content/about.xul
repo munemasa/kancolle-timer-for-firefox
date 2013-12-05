@@ -5,10 +5,25 @@
 	title="About (KanColle Timer)"
 	buttons="accept" ondialogaccept="return true;">
 
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/libs.js" />
+  <script>
+  <![CDATA[
+	   window.addEventListener("load", function(e){
+	   var version = GetAddonVersion();
+	   $('id-version').value += version;
+	   }, false);
+  ]]>
+  </script>
+
   <vbox>
     <hbox>
       <vbox>
-	<label id="id-version" value="KanColle Timer"/>
+	<label id="id-version" value="KanColle Timer ver."/>
+	<label 
+	    style="color:blue; text-decoration:underline;cursor:pointer"
+	    onclick="OpenDefaultBrowser('http://miku39.jp/blog/wp/?page_id=1705',true);"
+	    value="Open Webpage"/>
 	<label value="Developed by amano."/>
       </vbox>
     </hbox>
