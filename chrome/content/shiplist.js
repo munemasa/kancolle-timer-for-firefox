@@ -12,14 +12,9 @@ var ShipList = {
     },
 
     getFleetNo: function( ship_id ){
-	let fleets = KanColleRemainInfo.gDeckList;
-	for( let i in fleets ){
-	    for( let j in fleets[i].api_ship ){
-		if( fleets[i].api_ship[j]==ship_id ){
-		    return parseInt(i)+1;
-		}
-	    }
-	}
+	let fleet = KanColleRemainInfo.shipfleet[ship_id];
+	if (fleet)
+	    return fleet.fleet;
 	return 0;
     },
 
@@ -87,16 +82,16 @@ var ShipList = {
 	let now = GetCurrentTime();
 
 	// 艦艇リスト
-	let ships = KanColleRemainInfo.gOwnedShipList;
+	let ships = KanColleDatabase.memberShip2.list();
 
 	document.title = "保有艦艇リスト "+ships.length+"隻 ("+GetDateString(now*1000)+")";
 
 	this.allships = new Array();
 
-	let list = $('ship-list');
 	let no = 1;
-	for( let k in ships ){
-	    let ship = ships[k];
+	let list = $('ship-list');
+	for( let j = 0; j < ships.length; j++ ){
+	    let ship = KanColleDatabase.memberShip2.get(ships[j]);
 	    let data = FindShipData( ship.api_id );
 	    let fleet_no = this.getFleetNo( ship.api_id );
 
@@ -121,12 +116,11 @@ var ShipList = {
 	this.setupListBox();
 
 	// 艦隊編成
-	let fleets = KanColleRemainInfo.gDeckList;
-	for( let f in fleets ){
-	    f = parseInt(f);
-	    let fleet = fleets[f];
+	let fleets = KanColleDatabase.memberDeck.list();
+	for( let j=0; j < fleets.length; j++ ){
+	    let fleet = KanColleDatabase.memberDeck.get(fleets[j]);
 
-	    let rows = $('fleet-'+(f+1));
+	    let rows = $('fleet-'+fleet.api_id);
 
 	    for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
 		let row = CreateElement('row');

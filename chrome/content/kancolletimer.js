@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 // http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/
 
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
@@ -280,7 +282,7 @@ var KanColleTimer = {
 
     init: function(){
 	KanColleHttpRequestObserver.init();
-	KanColleHttpRequestObserver.addCallback( KanColleTimerCallback );
+	KanColleTimerRegisterCallback();
 
 	setInterval( function(){
 			 KanColleTimer.update();
@@ -320,13 +322,16 @@ var KanColleTimer = {
 
 	this.initWallpaper();
 
+	KanColleTimerLibInit();
+
 	this.audios = document.getElementsByTagName('html:audio');
 
 	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
     },
 
     destroy: function(){
-	KanColleHttpRequestObserver.removeCallback( KanColleTimerCallback );
+	KanColleTimerLibExit();
+	KanColleTimerUnregisterCallback();
 	KanColleHttpRequestObserver.destroy();
     }
 };
