@@ -57,6 +57,8 @@ var ShipList = {
 	    let obj = this.allships[k];
 
 	    let elem = CreateElement('listitem');
+	    let style = no!=1&&(no%10)==1 ? "border-top: 1px solid black;":"";
+
 	    elem.appendChild( CreateListCell( no++ ) );
 	    if( obj.fleet_no ){
 		elem.appendChild( CreateListCell( obj.type + '('+obj.fleet_no+')' ) );
@@ -68,9 +70,9 @@ var ShipList = {
 	    elem.appendChild( CreateListCell( obj.cond ) );
 
 	    if( obj.cond >=50 ){
-		elem.setAttribute('style','background-color: #ffffc0;');
+		elem.setAttribute('style',style+'background-color: #ffffc0;');
 	    }else{
-		elem.setAttribute('style','background-color: white;');
+		elem.setAttribute('style',style+'background-color: white;');
 	    }
 
 	    for( let i in obj.equips ){
