@@ -1569,7 +1569,8 @@ function TreeView(){
 	let filterspec = ShipInfoTree.shipfilterspec;
 	if (filterspec.match(/^slotitem(\d+)$/)) {
 	    let slotitemid = RegExp.$1;
-	    shiplist = Object.keys(KanColleRemainInfo.slotitemowners[slotitemid].list);
+	    let owners = KanColleRemainInfo.slotitemowners[slotitemid];
+	    shiplist = owners ? Object.keys(owners.list) : [];
 	} else if (filterspec.match(/^stype((\d+-)*\d+)$/)) {
 	    let stypesearch = '-' + RegExp.$1 + '-';
 	    let slist = [];
