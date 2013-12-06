@@ -58,6 +58,7 @@ function KanColleTimerBasicInfomationPanel(){
     }
 
     if (KanColleDatabase.memberMaterial.timestamp()) {
+	let d;
 	/*
 	 * 1: 燃料
 	 * 2: 弾薬
@@ -67,8 +68,13 @@ function KanColleTimerBasicInfomationPanel(){
 	 * 6: 高速修復材
 	 * 7: 開発資材
 	 */
-	burner = KanColleDatabase.memberMaterial.get(5).api_value;
-	bucket = KanColleDatabase.memberMaterial.get(6).api_value;
+	d = KanColleDatabase.memberMaterial.get(5);
+	if (typeof(d) == 'object')
+	    burner = d.api_value;
+
+	d = KanColleDatabase.memberMaterial.get(6);
+	if (typeof(d) == 'object')
+	    bucket = d.api_value;
     }
 
     $('basic-information-shipcount').value = ships + ' / ' + maxships;
