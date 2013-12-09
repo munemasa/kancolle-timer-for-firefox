@@ -204,6 +204,8 @@ var KanColleRemainInfo = {
     slotitemowners: {},
     shipfleet: {},
 
+    cookie: {},	//重複音対策
+
     fleet_name: [], // 艦隊名
     mission_name:[],// 遠征名
     construction_shipname:[], // 建造艦種
