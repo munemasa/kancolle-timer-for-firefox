@@ -145,26 +145,26 @@ var KanColleTimer = {
 	    let t = KanColleRemainInfo.fleet[i].finishedtime;
 	    if( t > 0 ){
 		let d = t - now;
-		if( fleetremain[i].style.color=="black" ){
-		    if( d<60 ){
-			let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
-			if (check_cookie(KanColleRemainInfo.cookie,'1min.mission',i,t))
-			    this.noticeMission1min(i,str);
-		    }
-		}
-		fleetremain[i].style.color = d<60?"red":"black";
-
-		if( d<0 ){
+		if( d>=60 ){
+		    fleetremain[i].style.color = "black";
+		    fleetremain[i].value = GetTimeString( d );
+		} else if ( d>=0 ) {
+		    let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
+		    if (check_cookie(KanColleRemainInfo.cookie,'1min.mission',i,t))
+			this.noticeMission1min(i,str);
+		    fleetremain[i].style.color = "red";
+		    fleetremain[i].value = GetTimeString( d );
+		} else {
 		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
-		    AddLog(str);
-		    KanColleRemainInfo.fleet[i].finishedtime = 0;
+		    if (check_cookie(this.cookie,'mission',i,t))
+			AddLog(str);
 		    if (check_cookie(KanColleRemainInfo.cookie,'mission',i,t))
 			this.noticeMissionFinished(i, str);
-		}else{
-		    fleetremain[i].value = GetTimeString( d );
+		    fleetremain[i].style.color = "red";
+		    fleetremain[i].value = "00:00:00";
 		}
 	    }else{
-		fleetremain[i].value = t==0?"00:00:00":"";
+		fleetremain[i].value = "";
 	    }
 	}
 
@@ -174,26 +174,26 @@ var KanColleTimer = {
 	    let t = KanColleRemainInfo.ndock[i].finishedtime;
 	    if( t > 0 ){
 		let d = t - now;
-
-		if( ndockremain[i].style.color=="black" ){
-		    if( d<60 ){
-			let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
-			if (check_cookie(KanColleRemainInfo.cookie,'1min.ndock',i,t))
-			    this.noticeRepair1min(i,str);
-		    }
-		}
-		ndockremain[i].style.color = d<60?"red":"black";
-		if( d<0 ){
+		if( d>=60 ){
+		    ndockremain[i].style.color = "black";
+		    ndockremain[i].value = GetTimeString( d );
+		} else if ( d>=0 ) {
+		    let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
+		    if (check_cookie(KanColleRemainInfo.cookie,'1min.ndock',i,t))
+			this.noticeRepair1min(i,str);
+		    ndockremain[i].style.color = "red";
+		    ndockremain[i].value = GetTimeString( d );
+		} else {
 		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
-		    AddLog(str);
-		    KanColleRemainInfo.ndock[i].finishedtime = 0;
+		    if (check_cookie(this.cookie,'ndock',i,t))
+			AddLog(str);
 		    if (check_cookie(KanColleRemainInfo.cookie,'ndock',i,t))
 			this.noticeRepairFinished(i,str);
-		}else{
-		    ndockremain[i].value = GetTimeString( d );
+		    ndockremain[i].style.color = "red";
+		    ndockremain[i].value = "00:00:00";
 		}
-	    }else{
-		ndockremain[i].value = t==0?"00:00:00":"";
+	    } else {
+		ndockremain[i].value = "";
 	    }
 	}
 
@@ -203,26 +203,26 @@ var KanColleTimer = {
 	    let t = KanColleRemainInfo.kdock[i].finishedtime;
 	    if( t > 0 ){
 		let d = t - now;
-
-		if( kdockremain[i].style.color=="black" ){
-		    if( d<60 ){
-			let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
-			if (check_cookie(KanColleRemainInfo.cookie,'1min.kdock',i,t))
-			    this.noticeConstruction1min(i,str);
-		    }
-		}
-		kdockremain[i].style.color = d<60?"red":"black";
-		if( d<0 ){
-		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
-		    AddLog(str);
-		    KanColleRemainInfo.kdock[i].finishedtime = 0;
-		    if (check_cookie(KanColleRemainInfo.cookie,'kdock',i,t))
-			this.noticeConstructionFinished(i,str);
-		}else{
+		if( d>=60 ){
+		    kdockremain[i].style.color = "black";
 		    kdockremain[i].value = GetTimeString( d );
+		} else if ( d>=0 ) {
+		    let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
+		    if (check_cookie(KanColleRemainInfo.cookie,'1min.kdock',i,t))
+			this.noticeRepair1min(i,str);
+		    kdockremain[i].style.color = "red";
+		    kdockremain[i].value = GetTimeString( d );
+		} else {
+		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
+		    if (check_cookie(this.cookie,'kdock',i,t))
+			AddLog(str);
+		    if (check_cookie(KanColleRemainInfo.cookie,'kdock',i,t))
+			this.noticeRepairFinished(i,str);
+		    kdockremain[i].style.color = "red";
+		    kdockremain[i].value = "00:00:00";
 		}
-	    }else{
-		kdockremain[i].value = t==0?"00:00:00":"";
+	    } else {
+		kdockremain[i].value = "";
 	    }
 	}
     },
