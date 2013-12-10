@@ -142,7 +142,7 @@ var KanColleTimer = {
 	// 遠征
 	for(i in KanColleRemainInfo.fleet){
 	    i = parseInt(i);
-	    let t = KanColleRemainInfo.fleet[i].mission_finishedtime;
+	    let t = KanColleRemainInfo.fleet[i].finishedtime;
 	    if( t > 0 ){
 		let d = t - now;
 		if( fleetremain[i].style.color=="black" ){
@@ -157,7 +157,7 @@ var KanColleTimer = {
 		if( d<0 ){
 		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
 		    AddLog(str);
-		    KanColleRemainInfo.fleet[i].mission_finishedtime = 0;
+		    KanColleRemainInfo.fleet[i].finishedtime = 0;
 		    if (check_cookie(KanColleRemainInfo.cookie,'mission',i,t))
 			this.noticeMissionFinished(i, str);
 		}else{

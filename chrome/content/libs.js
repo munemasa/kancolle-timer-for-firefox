@@ -118,14 +118,14 @@ function KanColleTimerDeckHandler(){
 
 	    var finishedtime = parseInt( d.api_mission[2]/1000 );
 	    if( now<finishedtime ){
-		KanColleRemainInfo.fleet[i].mission_finishedtime = finishedtime;
+		KanColleRemainInfo.fleet[i].finishedtime = finishedtime;
 	    }
 
 	    let diff = finishedtime - now;
 		    $(ftime_str).style.color = diff<60?"red":"black";
 	}else{
 	    $(ftime_str).value = "";
-	    KanColleRemainInfo.fleet[i].mission_finishedtime = -1;
+	    KanColleRemainInfo.fleet[i].finishedtime = -1;
 	}
     }
 }
