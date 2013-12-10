@@ -1807,7 +1807,7 @@ function SetStyleProperty(node, prop, value, prio){
     if (value === undefined || value === null)
 	node.style.removeProperty(prop);
     else {
-	if (prio === undefined || prio == null)
+	if (prio === undefined || prio === null)
 	    prio = '';
 	node.style.setProperty(prop,value,prio);
     }
