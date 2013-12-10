@@ -12,6 +12,7 @@ var KanColleTimer = {
     fleet: [],
 
     audios:[],
+    cookie:{},
 
     // 入渠ドックのメモ作成
     createRepairMemo: function(){
@@ -126,15 +127,15 @@ var KanColleTimer = {
 	let ndockremain = evaluateXPath(document,"//*[@class='ndockremain']");
 	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
 
-	function check_cookie(type,no,time) {
+	function check_cookie(cookie,type,no,time) {
 	    let k;
 	    let v;
 	    let ret;
 	    k = type + '_' + no;
-	    v = KanColleRemainInfo.cookie[k];
+	    v = cookie[k];
 	    ret = v != time;
 	    if (ret)
-		KanColleRemainInfo.cookie[k] = time;
+		cookie[k] = time;
 	    return ret;
 	}
 
@@ -147,7 +148,7 @@ var KanColleTimer = {
 		if( fleetremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
-			if (check_cookie('1min.mission',i,t))
+			if (check_cookie(KanColleRemainInfo.cookie,'1min.mission',i,t))
 			    this.noticeMission1min(i,str);
 		    }
 		}
@@ -157,7 +158,7 @@ var KanColleTimer = {
 		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.fleet[i].mission_finishedtime = 0;
-		    if (check_cookie('mission',i,t))
+		    if (check_cookie(KanColleRemainInfo.cookie,'mission',i,t))
 			this.noticeMissionFinished(i, str);
 		}else{
 		    fleetremain[i].value = GetTimeString( d );
@@ -177,7 +178,7 @@ var KanColleTimer = {
 		if( ndockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
-			if (check_cookie('1min.ndock',i,t))
+			if (check_cookie(KanColleRemainInfo.cookie,'1min.ndock',i,t))
 			    this.noticeRepair1min(i,str);
 		    }
 		}
@@ -186,7 +187,7 @@ var KanColleTimer = {
 		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.ndock[i].finishedtime = 0;
-		    if (check_cookie('ndock',i,t))
+		    if (check_cookie(KanColleRemainInfo.cookie,'ndock',i,t))
 			this.noticeRepairFinished(i,str);
 		}else{
 		    ndockremain[i].value = GetTimeString( d );
@@ -206,7 +207,7 @@ var KanColleTimer = {
 		if( kdockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
-			if (check_cookie('1min.kdock',i,t))
+			if (check_cookie(KanColleRemainInfo.cookie,'1min.kdock',i,t))
 			    this.noticeConstruction1min(i,str);
 		    }
 		}
@@ -215,7 +216,7 @@ var KanColleTimer = {
 		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.kdock[i].finishedtime = 0;
-		    if (check_cookie('kdock',i,t))
+		    if (check_cookie(KanColleRemainInfo.cookie,'kdock',i,t))
 			this.noticeConstructionFinished(i,str);
 		}else{
 		    kdockremain[i].value = GetTimeString( d );
