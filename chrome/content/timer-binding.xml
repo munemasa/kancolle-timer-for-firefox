@@ -45,6 +45,19 @@
 	]]></setter>
       </property>
 
+      <property name="mode">
+	<getter><![CDATA[
+	  let val = this.getAttribute('mode');
+	  return val != 'target' ? 'time' : 'target';
+	]]></getter>
+	<setter><![CDATA[
+	  if (val != 'time' && val != 'target')
+	    return;
+	  this.setAttribute('mode', val);
+	  this.update();
+	]]></setter>
+      </property>
+
       <method name="$">
 	<parameter name="anonid"/>
 	<body><![CDATA[
@@ -68,12 +81,20 @@
 	    next = diff;
 	    if (diff < 0)
 	      diff = 0;
-	    if (diff > 0) {
-	      next %= 1000;
-	      if (!next)
-		next = 1000;
+
+	    if (this.mode == 'target') {
+	      if (diff > 60000)
+		next = diff - 60000;
+	      rstr = GetDateString(ft);
+	    } else {
+	      if (diff > 0) {
+		next %= 1000;
+		if (!next)
+		  next = 1000;
+	      }
+	      rstr = GetTimeString(Math.ceil(diff/1000));
 	    }
-	    rstr = GetTimeString(Math.ceil(diff/1000));
+
 	    rcolor = diff <= 60000 ? 'red' : null;
 	  } else {
 	    rstr = '';
