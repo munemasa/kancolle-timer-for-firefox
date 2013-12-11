@@ -99,7 +99,8 @@ function KanColleTimerDeckHandler(){
 	let d = KanColleDatabase.memberDeck.get(decks[i]);
 	let k = d.api_id;
 	let nameid = 'fleetname'+k;
-	let ftime_str = 'fleet'+k;
+	let targetid = 'fleet'+k;
+	let timeid = 'fleetremain'+k;
 	KanColleRemainInfo.fleet[i] = new Object();
 	KanColleRemainInfo.fleet_name[i] = d.api_name;
 	$(nameid).value = d.api_name; // 艦隊名
@@ -112,20 +113,13 @@ function KanColleTimerDeckHandler(){
 	    KanColleRemainInfo.mission_name[i] = mission_name;
 	    $('mission_name'+k).value = mission_name;
 
-	    let ftime = GetDateString( d.api_mission[2] ); // 遠征終了時刻
-	    KanColleRemainInfo.fleet_time[i] = ftime;
-	    $(ftime_str).value = ftime;
-
-	    var finishedtime = parseInt( d.api_mission[2]/1000 );
-	    if( now<finishedtime ){
-		KanColleRemainInfo.fleet[i].finishedtime = finishedtime;
-	    }
-
-	    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
+	    KanColleRemainInfo.fleet[i].finishedtime = d.api_mission[2];    //遠征終了時刻
+	    $(targetid).finishTime = d.api_mission[2];
+	    $(timeid).finishTime = d.api_mission[2];
 	}else{
-	    $(ftime_str).value = "";
-	    KanColleRemainInfo.fleet[i].finishedtime = -1;
+	    $(targetid).finishTime = '';
+	    $(timeid).finishTime = '';
+	    KanColleRemainInfo.fleet[i].finishedtime = Number.NaN;
 	}
     }
 }
@@ -155,8 +149,9 @@ function KanColleTimerDeckRestore(){
 		let mission_name = KanColleRemainInfo.mission_name[i];
 		$('mission_name'+k).value=mission_name;
 	    }
-	    if( KanColleRemainInfo.fleet_time[i] ){
-		$('fleet'+k).value = KanColleRemainInfo.fleet_time[i];
+	    if( KanColleRemainInfo.fleet[i] ){
+		$('fleet'+k).finishTime = KanColleRemainInfo.fleet[i].finishedtime;
+		$('fleetremain'+k).finishTime = KanColleRemainInfo.fleet[i].finishedtime;
 	    }
 	}
     } catch(x) {

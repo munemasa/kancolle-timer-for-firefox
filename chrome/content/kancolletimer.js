@@ -123,14 +123,13 @@ var KanColleTimer = {
     update: function(){
 	let i;
 	let now = GetCurrentTime();
-	let fleetremain = evaluateXPath(document,"//*[@class='fleetremain']");
+	let cur = (new Date).getTime();
 	let ndockremain = evaluateXPath(document,"//*[@class='ndockremain']");
 	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
 
 	function check_cookie(cookie,type,no,time) {
 	    let k;
 	    let v;
-	    let ret;
 	    k = type + '_' + no;
 	    v = cookie[k];
 	    ret = v != time;
@@ -144,27 +143,18 @@ var KanColleTimer = {
 	    i = parseInt(i);
 	    let t = KanColleRemainInfo.fleet[i].finishedtime;
 	    if( t > 0 ){
-		let d = t - now;
-		if( d>=60 ){
-		    fleetremain[i].style.color = "black";
-		    fleetremain[i].value = GetTimeString( d );
-		} else if ( d>=0 ) {
-		    let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
-		    if (check_cookie(KanColleRemainInfo.cookie,'1min.mission',i,t))
-			this.noticeMission1min(i,str);
-		    fleetremain[i].style.color = "red";
-		    fleetremain[i].value = GetTimeString( d );
-		} else {
+		let d = t - cur;
+		if (d < 0) {
 		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
 		    if (check_cookie(this.cookie,'mission',i,t))
 			AddLog(str);
 		    if (check_cookie(KanColleRemainInfo.cookie,'mission',i,t))
 			this.noticeMissionFinished(i, str);
-		    fleetremain[i].style.color = "red";
-		    fleetremain[i].value = "00:00:00";
+		} else if (d < 60000) {
+		    let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
+		    if (check_cookie(KanColleRemainInfo.cookie,'1min.mission',i,t))
+			this.noticeMission1min(i,str);
 		}
-	    }else{
-		fleetremain[i].value = "";
 	    }
 	}
 

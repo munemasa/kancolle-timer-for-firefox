@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/timer-binding.css" type="text/css" ?>
 
 <!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
 
@@ -85,8 +86,8 @@
 	    </hbox>
 	    <hbox>
 	      <label id="fleetname1" class="fleetname" value="第1艦隊"/><!-- 艦隊名 -->
-	      <label id="fleet1" class="fleet-time" value=""/><!-- 帰還時刻 -->
-	      <label id="fleetremain1" class="fleetremain" value=""/><!-- 残り時間 -->
+	      <timer id="fleet1" class="fleet-time" mode="target"/><!-- 帰還時刻 -->
+	      <timer id="fleetremain1" class="fleetremain" mode="time"/><!-- 残り時間 -->
 	    </hbox>
 	  </vbox>
 	  
@@ -97,8 +98,8 @@
 	    </hbox>
 	    <hbox>
 	      <label id="fleetname2" class="fleetname" value="第2艦隊"/>
-	      <label id="fleet2" class="fleet-time" value=""/>
-	      <label id="fleetremain2" class="fleetremain" value=""/>
+	      <timer id="fleet2" class="fleet-time" mode="target"/>
+	      <timer id="fleetremain2" class="fleetremain" mode="time"/>
 	    </hbox>
 	  </vbox>
 	  
@@ -109,8 +110,8 @@
 	    </hbox>
 	    <hbox>
 	      <label id="fleetname3" class="fleetname" value="第3艦隊"/>
-	      <label id="fleet3" class="fleet-time" value=""/>
-	      <label id="fleetremain3" class="fleetremain" value=""/>
+	      <timer id="fleet3" class="fleet-time" mode="target"/>
+	      <timer id="fleetremain3" class="fleetremain" mode="time"/>
 	    </hbox>
 	  </vbox>
 	  
@@ -121,8 +122,8 @@
 	    </hbox>
 	    <hbox>
 	      <label id="fleetname4" class="fleetname" value="第4艦隊"/>
-	      <label id="fleet4" class="fleet-time" value=""/>
-	      <label id="fleetremain4" class="fleetremain" value=""/>
+	      <timer id="fleet4" class="fleet-time" mode="target"/>
+	      <timer id="fleetremain4" class="fleetremain" mode="time"/>
 	    </hbox>
 	  </vbox>
 	  
