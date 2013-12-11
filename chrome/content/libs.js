@@ -1401,6 +1401,18 @@ function DefaultSortFunc(ship_a,ship_b,order){
     return ship_b.api_sortno - ship_a.api_sortno;
 }
 
+function ShipExp(ship){
+    let ship_exp;
+    if (typeof(ship.api_exp) == 'object') {
+	// 2013/12/11よりAPI変更
+	// 0: 現在経験値
+	// 1: 次Lvまでの必要経験値
+	// 2: 現在Lvでの獲得経験値(%)
+	return ship.api_exp[0];
+    } else
+	return ship.api_exp;
+}
+
 function ShipNextLvExp(ship){
     let nextexp = KanColleData.level_accumexp[ship.api_lv];
     if (nextexp === undefined)
@@ -1492,6 +1504,7 @@ function TreeView(){
 	exp: function(ship) {
 	    let nextlvexp = ShipNextLvExp(ship);
 	    let nextupgexp = ShipUpgradeableExp(ship);
+	    let ship_exp = ShipExp(ship);
 
 	    if (nextlvexp === undefined)
 		nextlvexp = '?';
@@ -1503,10 +1516,10 @@ function TreeView(){
 	    else if (nextupgexp === Number.POSITIVE_INFINITY)
 		nextupgexp = '-';
 
-	    return ship.api_exp + '/' + nextlvexp + '/' + nextupgexp;
+	    return ship_exp + '/' + nextlvexp + '/' + nextupgexp;
 	},
 	_exp: function(ship) {
-	    return ship.api_exp;
+	    return ShipExp(ship);
 	},
 	hp: function(ship) {
 	    let info = FindShipStatus(ship.api_id);
@@ -1671,8 +1684,8 @@ function TreeView(){
 	    if (nextexp_a == Number.POSITIVE_INFINITY &&
 	        nextexp_b == Number.POSITIVE_INFINITY)
 		return 0;
-	    nextexp_a -= ship_a.api_exp;
-	    nextexp_b -= ship_b.api_exp;
+	    nextexp_a -= ShipExp(ship_a);
+	    nextexp_b -= ShipExp(ship_b);
 	    return nextexp_a - nextexp_b;
 	},
 	_expupg: function(ship_a,ship_b) {
@@ -1697,8 +1710,8 @@ function TreeView(){
 	    if (nextexp_a == Number.POSITIVE_INFINITY &&
 	        nextexp_b == Number.POSITIVE_INFINITY)
 		return 0;
-	    nextexp_a -= ship_a.api_exp;
-	    nextexp_b -= ship_b.api_exp;
+	    nextexp_a -= ShipExp(ship_a);
+	    nextexp_b -= ShipExp(ship_b);
 	    return nextexp_a - nextexp_b;
 	},
     };
