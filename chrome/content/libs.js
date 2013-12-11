@@ -1051,6 +1051,21 @@ function KanColleUpgradeFilterTemplate(){
     };
 }
 
+function KanColleEvolutionFilterTemplate(){
+    return {
+	    label: '改造',
+	    menu: [
+		{
+		    label: '非最高改造段階',
+		    spec: 'evolution0',
+		},{
+		    label: '保護下で非最高改造段階',
+		    spec: 'evolution1',
+		},
+	    ],
+    };
+}
+
 function KanColleBuildFilterMenuList(id){
     let menulist;
     let menupopup;
@@ -1123,6 +1138,11 @@ function KanColleBuildFilterMenuList(id){
 
     // Build menu by upgradability
     menu = createmenu(KanColleUpgradeFilterTemplate());
+    if (menu)
+	menuitems.push(menu);
+
+    // Build menu by upgradability
+    menu = createmenu(KanColleEvolutionFilterTemplate());
     if (menu)
 	menuitems.push(menu);
 
@@ -1625,6 +1645,19 @@ function TreeView(){
 			break;
 		    }
 		}
+	    }
+	    shiplist = ships;
+	} else if (filterspec.match(/^evolution(\d+)$/)) {
+	    let locked = parseInt(RegExp.$1, 10);
+	    let ships = [];
+	    for( let i = 0; i < shiplist.length; i++ ){
+		let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
+		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+		if (!shiptype.api_afterlv)
+		    continue;
+		if (locked && !ship.api_locked)
+		    continue;
+		ships.push(shiplist[i]);
 	    }
 	    shiplist = ships;
 	} else {
