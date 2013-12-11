@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 
 
@@ -95,6 +97,18 @@ var KanColleTimerSidebar = {
 	let ndockremain = evaluateXPath(document,"//*[@class='ndockremain']");
 	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
 
+	function check_cookie(type,no,time) {
+	    let k;
+	    let v;
+	    let ret;
+	    k = type + '_' + no;
+	    v = KanColleRemainInfo.cookie[k];
+	    ret = v != time;
+	    if (ret)
+		KanColleRemainInfo.cookie[k] = time;
+	    return ret;
+	}
+
 	// 遠征
 	for(i in KanColleRemainInfo.fleet){
 	    i = parseInt(i);
@@ -105,7 +119,8 @@ var KanColleTimerSidebar = {
 		if( fleetremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
-			this.noticeMission1min(i,str);
+			if (check_cookie('1min.mission',i,t))
+			    this.noticeMission1min(i,str);
 		    }
 		}
 		fleetremain[i].style.color = d<60?"red":"black";
@@ -114,7 +129,8 @@ var KanColleTimerSidebar = {
 		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.fleet[i].mission_finishedtime = 0;
-		    this.noticeMissionFinished(i, str);
+		    if (check_cookie('mission',i,t))
+			this.noticeMissionFinished(i, str);
 		}else{
 		    fleetremain[i].value = GetTimeString( d );
 		}
@@ -133,7 +149,8 @@ var KanColleTimerSidebar = {
 		if( ndockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
-			this.noticeRepair1min(i,str);
+			if (check_cookie('1min.ndock',i,t))
+			    this.noticeRepair1min(i,str);
 		    }
 		}
 		ndockremain[i].style.color = d<60?"red":"black";
@@ -141,7 +158,8 @@ var KanColleTimerSidebar = {
 		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.ndock[i].finishedtime = 0;
-		    this.noticeRepairFinished(i,str);
+		    if (check_cookie('ndock',i,t))
+			this.noticeRepairFinished(i,str);
 		}else{
 		    ndockremain[i].value = GetTimeString( d );
 		}
@@ -160,7 +178,8 @@ var KanColleTimerSidebar = {
 		if( kdockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
-			this.noticeConstruction1min(i,str);
+			if (check_cookie('1min.kdock',i,t))
+			    this.noticeConstruction1min(i,str);
 		    }
 		}
 		kdockremain[i].style.color = d<60?"red":"black";
@@ -168,7 +187,8 @@ var KanColleTimerSidebar = {
 		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.kdock[i].finishedtime = 0;
-		    this.noticeConstructionFinished(i,str);
+		    if (check_cookie('kdock',i,t))
+			this.noticeConstructionFinished(i,str);
 		}else{
 		    kdockremain[i].value = GetTimeString( d );
 		}
@@ -273,7 +293,7 @@ var KanColleTimerSidebar = {
     init: function(){
 	Application.console.log('KanColle Timer sidebar init.');
 	KanColleHttpRequestObserver.init();
-	KanColleHttpRequestObserver.addCallback( KanColleTimerCallback );
+	KanColleTimerRegisterCallback();
 	setInterval( function(){
 			 KanColleTimerSidebar.update();
 		     }, 1000 );
@@ -310,13 +330,16 @@ var KanColleTimerSidebar = {
 	} catch (x) {
 	}
 
+	KanColleTimerLibInit();
+
 	this.audios = document.getElementsByTagName('html:audio');
 	this.initWallpaper();
     },
 
     destroy: function(){
 	Application.console.log('KanColle Timer sidebar destroy.');
-	KanColleHttpRequestObserver.removeCallback( KanColleTimerCallback );
+	KanColleTimerLibExit();
+	KanColleTimerUnregisterCallback();
 	KanColleHttpRequestObserver.destroy();
     }
 };

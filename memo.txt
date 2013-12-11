@@ -44,6 +44,8 @@ svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":[{"api_member_
 POST http://203.104.105.167/kcsapi/api_get_member/slotitem
 
 所持装備全リストっぽい
+api_type[2]が図鑑の型名（「大口径主砲」「特殊潜航艇」など）に
+相当する。
 
 = 戦績
 POST http://203.104.105.167/kcsapi/api_get_member/record
@@ -70,12 +72,20 @@ svdata={"api_result":1,"api_result_msg":"\u6210\u529f","api_data":{"api_count":6
 POST http://203.104.105.167/kcsapi/api_get_member/ship
 = 所有艦艇リスト(艦隊の編成付き)
 POST http://203.104.105.167/kcsapi/api_get_member/ship2
+= 所有艦艇リスト(艦隊編成、装備情報つき); 2013/11/27追加
+/kcsapi/api_get_member/ship3
 
+member/ship には艦名が含まれる。
 
 master/ship の api_sortno と 
 api_ship から api_id を得て、所有艦艇リストから api_id の一致するものを探し、
 その api_id からapi_sortnoを得て、 master/ship の api_data[n].api_sortno と一致するものを探すと
 艦名などが分かる。
+
+member/ship3 は member/ship2 と同等の情報が含まれる（JSONの配置は
+member/ship, member/ship2と異なる）。また、追加的に、
+装備種別(member/slotitemのapi_type[2]に相当)ごとの所有装備IDが
+含まれる。
 
 
 = 艦隊の状態
