@@ -75,7 +75,9 @@ function KanColleTimerCallback(request,s){
 		var ftime_str = 'ndock'+(i+1);
 		KanColleRemainInfo.ndock[i] = new Object();
 		if( data.api_data[i].api_complete_time ){
-		    let name = FindShipName( data.api_data[i].api_ship_id );
+		    let ship_id = data.api_data[i].api_ship_id;
+		    KanColleRemainInfo.ndock_ship_id[i] = ship_id;
+		    let name = FindShipName( ship_id );
 		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', name);
 		    if( name ){
 			$("ndock-label"+(i+1)).value = name;
@@ -98,6 +100,7 @@ function KanColleTimerCallback(request,s){
 		}else{
 		    $("ndock-label"+(i+1)).value = "No."+(i+1);
 		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
+		    KanColleRemainInfo.ndock_ship_id[i] = 0;
 		    KanColleRemainInfo.ndock_time[i] = "";
 		    $(ftime_str).value = "";
 		    KanColleRemainInfo.ndock[i].finishedtime = -1;

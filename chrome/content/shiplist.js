@@ -3,6 +3,36 @@ Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 var ShipList = {
     allships: [],
 
+    saveCvs:function(){
+	let txt = "";
+
+	for( let k in this.allships ){
+	    let obj = this.allships[k];
+	    txt += obj.type + "," + obj.name + "," + obj.lv + ",";
+	    for( let i in obj.equips ){
+		let name = obj.equips[i];
+		txt += name + ",";
+	    }
+	    txt += "\n";
+	}
+
+	const nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+	fp.init(window, "艦艇リストの保存...", nsIFilePicker.modeSave);
+	fp.appendFilters(nsIFilePicker.filterAll);
+	let rv = fp.show();
+	if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
+	    let file = fp.file;
+	    let path = fp.file.path;
+	    let os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance(Components.interfaces.nsIFileOutputStream);
+	    let flags = 0x02|0x08|0x20;// wronly|create|truncate
+	    os.init(file,flags,0664,0);
+	    let cos = GetUTF8ConverterOutputStream(os);
+	    cos.writeString( txt );
+	    cos.close();
+	}
+    },
+
     clearListBox:function(){
 	let list = $('ship-list');
 
@@ -23,6 +53,13 @@ var ShipList = {
 	return 0;
     },
 
+    isRepairing: function(ship_id){
+	for(let i in KanColleRemainInfo.ndock_ship_id ){
+	    if( KanColleRemainInfo.ndock_ship_id[i]==ship_id ) return true;
+	}
+	return false;
+    },
+
     sort: function(type){
 	this.allships.sort( function(a,b){
 	    var tmpa = 0;
@@ -40,6 +77,10 @@ var ShipList = {
 	    case 2: // 状態
 		tmpa = a.cond;
 		tmpb = b.cond;
+		break;
+	    case 3: // 入渠時間
+		tmpa = a.ndock_time;
+		tmpb = b.ndock_time;
 		break;
 	    }
 	    return (tmpa - tmpb) * order;
@@ -75,6 +116,13 @@ var ShipList = {
 		elem.setAttribute('style',style+'background-color: white;');
 	    }
 
+	    let cell = CreateListCell( obj.ndock_time ? GetTimeString(obj.ndock_time):"---" );
+	    if( this.isRepairing(obj.ship_id) ){
+		cell.setAttribute('style','color: gray;');
+	    }else{
+	    }
+	    elem.appendChild( cell );
+
 	    for( let i in obj.equips ){
 		let name = obj.equips[i];
 		elem.appendChild( CreateListCell( name ) );
@@ -101,12 +149,14 @@ var ShipList = {
 	    let fleet_no = this.getFleetNo( ship.api_id );
 
 	    let obj = new Object();
+	    obj.ship_id = ship.api_id;
 	    obj.fleet_no = fleet_no;
 	    obj.type = KanColleData.type_name[data.api_stype];
 	    obj.stype = data.api_stype;
 	    obj.name = data.api_name;
 	    obj.lv = ship.api_lv;
 	    obj.cond = ship.api_cond;
+	    obj.ndock_time = parseInt(ship.api_ndock_time/1000);
 
 	    obj.equips = new Array();
 

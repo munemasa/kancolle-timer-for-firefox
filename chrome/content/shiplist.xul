@@ -34,13 +34,14 @@
       </tabs>
       <tabpanels flex="1">
 	<vbox><!-- tab 1 -->
-	  <listbox id="ship-list" flex="1">
+	  <listbox id="ship-list" flex="1" context="popup-save-csv">
 	    <listcols>
-	      <listcol/><listcol/><listcol/><listcol/><listcol/>
+	      <listcol/><listcol/><listcol/><listcol/><listcol/><listcol/>
 	      <listcol flex="1"/><listcol flex="1"/><listcol flex="1"/><listcol flex="1"/>
 	    </listcols>
 	    <listhead>
 	      <listheader label="#"/><listheader label="艦種" onclick="ShipList.sort(0);"/><listheader label="艦名"/><listheader label="レベル" onclick="ShipList.sort(1);"/><listheader label="状態" onclick="ShipList.sort(2);"/>
+	      <listheader label="入渠時間" onclick="ShipList.sort(3);"/>
 	      <listheader label="装備1"/><listheader label="装備2"/><listheader label="装備3"/><listheader label="装備4"/>
 	    </listhead>
 	  </listbox>
@@ -112,4 +113,10 @@
     </tabbox>
   </vbox>
   
+  <popupset>
+    <menupopup id="popup-save-csv">
+      <menuitem label="CSVに保存..." oncommand="ShipList.saveCvs();"/>
+    </menupopup>
+  </popupset>
+
 </window>

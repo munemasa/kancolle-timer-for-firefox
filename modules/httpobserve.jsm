@@ -15,6 +15,7 @@ var KanColleRemainInfo = {
 
     ndock_memo: [], // 入渠ドック用のメモ
 
+    ndock_ship_id: [], // 入渠中の艦船ID
     // 終了時刻文字列
     fleet_time: [],
     ndock_time: [],
