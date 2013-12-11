@@ -140,23 +140,23 @@
 	    <rows>
 	      <row id="ndock-box1" class="ndock-box" context="popup-ndock-memo">
 		<label id="ndock-label1" value="No.1"/>
-		<label id="ndock1" class="ndock-time" value=""/>
-		<label id="ndockremain1" class="ndockremain" value=""/>
+		<timer id="ndock1" mode="target" class="ndock-time"/>
+		<timer id="ndockremain1" mode="time" class="ndockremain"/>
 	      </row>
 	      <row id="ndock-box2" class="ndock-box" context="popup-ndock-memo">
 		<label id="ndock-label2" value="No.2"/>
-		<label id="ndock2" class="ndock-time" value=""/>
-		<label id="ndockremain2" class="ndockremain" value=""/>
+		<timer id="ndock2" mode="target" class="ndock-time"/>
+		<timer id="ndockremain2" mode="time" class="ndockremain"/>
 	      </row>
 	      <row id="ndock-box3" class="ndock-box" context="popup-ndock-memo">
 		<label id="ndock-label3" value="No.3"/>
-		<label id="ndock3" class="ndock-time" value=""/>
-		<label id="ndockremain3" class="ndockremain" value=""/>
+		<timer id="ndock3" mode="target" class="ndock-time"/>
+		<timer id="ndockremain3" mode="time" class="ndockremain"/>
 	      </row>
 	      <row id="ndock-box4" class="ndock-box" context="popup-ndock-memo">
 		<label id="ndock-label4" value="No.4"/>
-		<label id="ndock4" class="ndock-time" value=""/>
-		<label id="ndockremain4" class="ndockremain" value=""/>
+		<timer id="ndock4" mode="target" class="ndock-time"/>
+		<timer id="ndockremain4" mode="time" class="ndockremain"/>
 	      </row>
 	    </rows>
 	  </grid>

@@ -124,7 +124,6 @@ var KanColleTimer = {
 	let i;
 	let now = GetCurrentTime();
 	let cur = (new Date).getTime();
-	let ndockremain = evaluateXPath(document,"//*[@class='ndockremain']");
 	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
 
 	function check_cookie(cookie,type,no,time) {
@@ -163,27 +162,18 @@ var KanColleTimer = {
 	    i = parseInt(i);
 	    let t = KanColleRemainInfo.ndock[i].finishedtime;
 	    if( t > 0 ){
-		let d = t - now;
-		if( d>=60 ){
-		    ndockremain[i].style.color = "black";
-		    ndockremain[i].value = GetTimeString( d );
-		} else if ( d>=0 ) {
-		    let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
-		    if (check_cookie(KanColleRemainInfo.cookie,'1min.ndock',i,t))
-			this.noticeRepair1min(i,str);
-		    ndockremain[i].style.color = "red";
-		    ndockremain[i].value = GetTimeString( d );
-		} else {
+		let d = t - cur;
+		if (d < 0) {
 		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
 		    if (check_cookie(this.cookie,'ndock',i,t))
 			AddLog(str);
 		    if (check_cookie(KanColleRemainInfo.cookie,'ndock',i,t))
 			this.noticeRepairFinished(i,str);
-		    ndockremain[i].style.color = "red";
-		    ndockremain[i].value = "00:00:00";
+		} else if (d < 60000) {
+		    let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
+		    if (check_cookie(KanColleRemainInfo.cookie,'1min.ndock',i,t))
+			this.noticeRepair1min(i,str);
 		}
-	    } else {
-		ndockremain[i].value = "";
 	    }
 	}
 

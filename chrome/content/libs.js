@@ -183,38 +183,33 @@ function KanColleTimerNdockHandler(){
     for( let i = 0; i < docks.length; i++ ){
 	let d = KanColleDatabase.memberNdock.get(docks[i]);
 	let k = d.api_id;
-	var ftime_str = 'ndock'+k;
+	var targetid = 'ndock'+k;
+	var timeid = 'ndockremain'+k;
 	KanColleRemainInfo.ndock[i] = new Object();
-	if( d.api_complete_time ){
+	if( d.api_state > 0 ){
 	    let ship_id = d.api_ship_id;
 	    let name = FindShipName( ship_id );
-	    KanColleRemainInfo.ndock_ship_id[i] = ship_id;
+	    let complete_time = d.api_complete_time;
+	    if (!complete_time)
+		complete_time = cur;
 	    $("ndock-label"+k).setAttribute('tooltiptext', name);
 	    if( name ){
 		$("ndock-label"+k).value = name;
 	    }
 
-	    try{
-		var tmp = d.api_complete_time_str;
-		var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
-		$(ftime_str).value = finishedtime_str;
-		KanColleRemainInfo.ndock_time[i] = finishedtime_str;
-	    } catch (x) {}
-
-	    var finishedtime = parseInt( d.api_complete_time/1000 );
-	    if( now<finishedtime ){
-		KanColleRemainInfo.ndock[i].finishedtime = finishedtime;
-	    }
-
-	    let diff = finishedtime - now;
-	    $(ftime_str).style.color = diff<60?"red":"black";
-	}else{
+	    KanColleRemainInfo.ndock_ship_id[i] = ship_id;
+	    KanColleRemainInfo.ndock[i].finishedtime = complete_time;
+	    $(targetid).finishTime = complete_time;
+	    $(timeid).finishTime = complete_time;
+	}else if(d.api_state == 0){
 	    $("ndock-label"+(i+1)).value = "No."+(i+1);
 	    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
 	    KanColleRemainInfo.ndock_ship_id[i] = 0;
-	    KanColleRemainInfo.ndock_time[i] = "";
-	    $(ftime_str).value = "";
-	    KanColleRemainInfo.ndock[i].finishedtime = -1;
+	    $(targetid).finishTime = '';
+	    $(timeid).finishTime = '';
+	    KanColleRemainInfo.ndock[i].finishedtime = Number.NaN;
+	}else{
+	    $('ndock-box'+(i+1)).style.display = 'none';
 	}
     }
 }
@@ -238,8 +233,9 @@ function KanColleTimerNdockRestore(){
 		$('ndock-box'+k).setAttribute('tooltiptext',
 					      KanColleRemainInfo.ndock_memo[i] );
 	    }
-	    if( KanColleRemainInfo.ndock_time[i] ){
-		$('ndock'+k).value = KanColleRemainInfo.ndock_time[i];
+	    if( KanColleRemainInfo.ndock[i] ){
+		$('ndock'+k).finishTime = KanColleRemainInfo.ndock[i].finishedtime;
+		$('ndockremain'+k).finishTime = KanColleRemainInfo.ndock[i].finishedtime;
 	    }
 	}
     } catch(x) {
