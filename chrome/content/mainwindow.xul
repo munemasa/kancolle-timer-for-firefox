@@ -34,6 +34,8 @@
     <menubar>
       <menu label="ツール">
 	<menupopup>
+	  <menuitem label="保存" oncommand="SaveShipList();" id="saveshiplist-menu" disabled="true"/>
+	  <menuseparator/>
 	  <menuitem label="所有艦艇リスト" oncommand="OpenShipList();"/>
 	  <menuseparator/>
 	  <menuitem id="window-stay-on-top" persist="checked"

@@ -568,6 +568,13 @@ function AddLog(str){
     $('log').value = str + $('log').value;
 }
 
+var ShipListView = null;
+function SaveShipList(){
+    if (!ShipListView)
+	return;
+    ShipListView.saveShipList();
+}
+
 function OpenShipList(){
     let feature="chrome,resizable=yes";
     let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);
@@ -775,6 +782,7 @@ var ShipInfoTree = {
 	    {
 		sortspec: '_stype',
 		label: '艦種',
+		skipdump: true,
 	    },
 	  ],
 	},
@@ -783,10 +791,12 @@ var ShipInfoTree = {
 	    {
 		sortspec: 'id',
 		label: 'ID',
+		skipdump: true,
 	    },
 	    {
 		sortspec: '_stype',
 		label: '艦種',
+		skipdump: true,
 	    },
 	    {
 		sortspec: '_yomi',
@@ -795,6 +805,7 @@ var ShipInfoTree = {
 	  ],
 	},
 	{ label: 'Lv', id: 'lv', flex: 1,
+	  subdump: true,
 	  sortspecs: [
 	    {
 		sortspec: '_lv',
@@ -811,6 +822,7 @@ var ShipInfoTree = {
 	  ],
 	},
 	{ label: '経験値', id: 'exp', flex: 2,
+	  subdump: true,
 	  sortspecs: [
 	    {
 		sortspec: '_exp',
@@ -835,6 +847,7 @@ var ShipInfoTree = {
 	  ],
 	},
 	{ label: 'HP', id: 'hp', flex: 1,
+	  subdump: true,
 	  sortspecs: [
 	    {
 		sortspec: '_hp',
@@ -851,6 +864,7 @@ var ShipInfoTree = {
 	  ],
 	},
 	{ label: '火力', id: 'karyoku', flex: 1,
+	  subdump: true,
 	  sortspecs: [
 	    {	sortspec: '_karyoku',	    label: '火力',	    },
 	    {	sortspec: '_karyokumax',    label: '最大火力',	    },
@@ -858,6 +872,7 @@ var ShipInfoTree = {
 	  ],
 	},
 	{ label: '雷装', id: 'raisou', flex: 1,
+	  subdump: true,
 	  sortspecs: [
 	    {	sortspec: '_raisou',	    label: '雷装',	    },
 	    {	sortspec: '_raisoumax',    label: '最大雷装',	    },
@@ -865,6 +880,7 @@ var ShipInfoTree = {
 	  ],
 	},
 	{ label: '対空', id: 'taiku', flex: 1,
+	  subdump: true,
 	  sortspecs: [
 	    {	sortspec: '_taiku',	    label: '対空',	    },
 	    {	sortspec: '_taikumax',	    label: '最大対空',	    },
@@ -872,6 +888,7 @@ var ShipInfoTree = {
 	  ],
 	},
 	{ label: '装甲', id: 'soukou', flex: 1,
+	  subdump: true,
 	  sortspecs: [
 	    {	sortspec: '_soukou',	    label: '装甲',	    },
 	    {	sortspec: '_soukoumax',	    label: '最大装甲',	    },
@@ -880,6 +897,7 @@ var ShipInfoTree = {
 	},
 	{ label: '士気', id: 'cond', flex: 1, },
 	{ label: '入渠', id: 'ndock', flex: 1,
+	  subdump: true,
 	  sortspecs: [
 	    {
 		sortspec: '_ndock',
@@ -1358,7 +1376,7 @@ function ShipInfoTreeSort(){
 
     //debugprint('key=' + ShipInfoTree.sortkey + ', order=' + ShipInfoTree.sortorder);
 
-    $('shipinfo-tree').view = new TreeView();
+    KanColleShipInfoSetView();
 }
 
 function getShipProperties(ship,name)
@@ -1543,6 +1561,18 @@ function TreeView(){
 	},
 	_exp: function(ship) {
 	    return ShipExp(ship);
+	},
+	_expnext: function(ship) {
+	    return ShipNextLvExp(ship);
+	},
+	_expnextremain: function(ship) {
+	    return ShipNextLvExp(ship) - ShipExp(ship);
+	},
+	_expupg: function(ship) {
+	    return ShipUpgradeableExp(ship);
+	},
+	_expupgremain: function(ship) {
+	    return ShipUpgradeableExp(ship) - ShipExp(ship);
 	},
 	hp: function(ship) {
 	    let info = FindShipStatus(ship.api_id);
@@ -1785,6 +1815,65 @@ function TreeView(){
 	return res * order;
     });
 
+    // our local interface
+    this.saveShipList = function(){
+	const nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+	let rv;
+	let cos;
+
+	fp.init(window, "艦船リストの保存...", nsIFilePicker.modeSave);
+	fp.appendFilters(nsIFilePicker.filterAll);
+	rv = fp.show();
+
+	if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
+	    let file = fp.file;
+	    let path = fp.file.path;
+	    let os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance(Components.interfaces.nsIFileOutputStream);
+	    let flags = 0x02|0x08|0x20;// writeonly|create|truncate
+	    os.init(file,flags,0664,0);
+	    cos = GetUTF8ConverterOutputStream(os);
+	}
+
+	for (let i = 0; i < shiplist.length; i++) {
+	    let a = [];
+	    let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
+	    for (let j = 0; j < ShipInfoTree.COLLIST.length; j++){
+		if (!ShipInfoTree.COLLIST[j].subdump) {
+		    let val;
+		    if (!i)
+			val = ShipInfoTree.COLLIST[j].label;
+		    else
+			val = '' + shipcellfunc[ShipInfoTree.COLLIST[j].id](ship);
+		    val = '' + val;
+		    val.replace(/,/g,'_');
+		    val.replace(/"/g,'_');
+		    a.push(val);
+		}
+		if (!ShipInfoTree.COLLIST[j].sortspecs)
+		    continue;
+		for (let k = 0; k < ShipInfoTree.COLLIST[j].sortspecs.length; k++) {
+		    let val;
+		    if (ShipInfoTree.COLLIST[j].sortspecs[k].skipdump)
+			continue;
+		    if (!shipcellfunc[ShipInfoTree.COLLIST[j].sortspecs[k].sortspec]) {
+			a.push('<'+ShipInfoTree.COLLIST[j].sortspecs[k].sortspec+'>');
+			continue;
+		    }
+		    if (!i)
+			val = ShipInfoTree.COLLIST[j].sortspecs[k].label;
+		    else
+			val = '' + shipcellfunc[ShipInfoTree.COLLIST[j].sortspecs[k].sortspec](ship);
+		    val.replace(/,/g,'_');
+		    val.replace(/"/g,'_');
+		    a.push(val);
+		}
+	    }
+	    cos.writeString(a.join(',')+'\n');
+	}
+	cos.close();
+    };
+
     //
     // the nsITreeView object interface
     //
@@ -1821,8 +1910,12 @@ function TreeView(){
 };
 
 function KanColleShipInfoSetView(){
+    let menu = $('saveshiplist-menu');
     debugprint('KanColleShipInfoSetView()');
-    $('shipinfo-tree').view = new TreeView();
+    ShipListView = new TreeView();
+    if (menu)
+	menu.setAttribute('disabled', 'false');
+    $('shipinfo-tree').view = ShipListView;
 }
 
 function ShipInfoTreeMenuPopup(){
