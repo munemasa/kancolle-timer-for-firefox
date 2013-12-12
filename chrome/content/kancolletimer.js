@@ -182,27 +182,18 @@ var KanColleTimer = {
 	    i = parseInt(i);
 	    let t = KanColleRemainInfo.kdock[i].finishedtime;
 	    if( t > 0 ){
-		let d = t - now;
-		if( d>=60 ){
-		    kdockremain[i].style.color = "black";
-		    kdockremain[i].value = GetTimeString( d );
-		} else if ( d>=0 ) {
-		    let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
-		    if (check_cookie(KanColleRemainInfo.cookie,'1min.kdock',i,t))
-			this.noticeRepair1min(i,str);
-		    kdockremain[i].style.color = "red";
-		    kdockremain[i].value = GetTimeString( d );
-		} else {
+		let d = t - cur;
+		if (d < 0) {
 		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
 		    if (check_cookie(this.cookie,'kdock',i,t))
 			AddLog(str);
 		    if (check_cookie(KanColleRemainInfo.cookie,'kdock',i,t))
 			this.noticeRepairFinished(i,str);
-		    kdockremain[i].style.color = "red";
-		    kdockremain[i].value = "00:00:00";
+		} else if (d < 60000) {
+		    let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
+		    if (check_cookie(KanColleRemainInfo.cookie,'1min.kdock',i,t))
+			this.noticeRepair1min(i,str);
 		}
-	    } else {
-		kdockremain[i].value = "";
 	    }
 	}
     },

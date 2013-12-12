@@ -155,23 +155,23 @@
 	  <caption>建造ドック</caption>
 	  <hbox id="kdock-box1" class="kdock-box">
 	    <label id="kdock-label1" value="No.1"/>
-	    <label id="kdock1" class="kdock-time" value=""/>
-	    <label id="kdockremain1" class="kdockremain" value=""/>
+	    <timer id="kdock1" mode="target" class="kdock-time"/>
+	    <timer id="kdockremain1" mode="time" class="kdockremain"/>
 	  </hbox>
 	  <hbox id="kdock-box2" class="kdock-box">
 	    <label id="kdock-label2" value="No.2"/>
-	    <label id="kdock2" class="kdock-time" value=""/>
-	    <label id="kdockremain2" class="kdockremain" value=""/>
+	    <timer id="kdock2" mode="target" class="kdock-time"/>
+	    <timer id="kdockremain2" mode="time" class="kdockremain"/>
 	  </hbox>
 	  <hbox id="kdock-box3" class="kdock-box">
 	    <label id="kdock-label3" value="No.3"/>
-	    <label id="kdock3" class="kdock-time" value=""/>
-	    <label id="kdockremain3" class="kdockremain" value=""/>
+	    <timer id="kdock3" mode="target" class="kdock-time"/>
+	    <timer id="kdockremain3" mode="time" class="kdockremain"/>
 	  </hbox>
 	  <hbox id="kdock-box4" class="kdock-box">
 	    <label id="kdock-label4" value="No.4"/>
-	    <label id="kdock4" class="kdock-time" value=""/>
-	    <label id="kdockremain4" class="kdockremain" value=""/>
+	    <timer id="kdock4" mode="target" class="kdock-time"/>
+	    <timer id="kdockremain4" mode="time" class="kdockremain"/>
 	  </hbox>
 	</groupbox>
 	<textbox id="log" placeholder="" multiline="true" flex="1" style="max-height:10em;"/>

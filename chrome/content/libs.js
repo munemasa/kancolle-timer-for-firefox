@@ -248,57 +248,67 @@ function KanColleTimerNdockRestore(){
  */
 function KanColleTimerKdockHandler(){
     let docks = KanColleDatabase.memberKdock.list();
-    let now = Math.floor(KanColleDatabase.memberKdock.timestamp()/1000);
+    let cur = KanColleDatabase.memberKdock.timestamp();
+    let now = Math.floor(cur);
 
     // 建造ドック
     for( let i = 0; i < docks.length; i++ ){
 	let d = KanColleDatabase.memberKdock.get(docks[i]);
 	let k = d.api_id;
-	let ftime_str = 'kdock'+k;
+	let targetid = 'kdock'+k;
+	let timeid = 'kdockremain'+k;
 	KanColleRemainInfo.kdock[i] = new Object();
-	if( d.api_complete_time ){
-	    // 建造完了時刻の表示
-	    try{
-		var tmp = d.api_complete_time_str;
-		var finishedtime_str = tmp.substring( tmp.indexOf('-')+1 );
-		$(ftime_str).value = finishedtime_str;
-		KanColleRemainInfo.kdock_time[i] = finishedtime_str;
-	    } catch (x) {}
 
-	    // 残り時間とツールチップの設定
-	    var finishedtime = parseInt( d.api_complete_time/1000 );
-	    if( now < finishedtime ){
-		// 建造予定艦をツールチップで表示
-		let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k);
-		if( !created_time ){
-		    // ブラウザを起動して初回タイマー起動時に
-		    // 建造開始時刻を復元するため
-		    created_time = now;
-		    KanColleTimerConfig.setInt( "kdock-created-time"+k, now );
-		}
-		let name = GetConstructionShipName(created_time,finishedtime);
-		KanColleRemainInfo.construction_shipname[i] = name;
-		$('kdock-label'+k).setAttribute('tooltiptext',name);
-
-		KanColleRemainInfo.kdock[i].finishedtime = finishedtime;
-	    }
-
-	    let diff = finishedtime - now;
-	    $(ftime_str).style.color = diff<60?"red":"black";
-
+	if( d.api_state > 0 ){
+	    // 建造艦の推定
 	    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
 	    /*
-	    let ship_id = parseInt( d.api_created_ship_id );
-	    let ship_name = FindShipNameByCatId(ship_id);
-	    $('kdock-box'+k).setAttribute('tooltiptext',ship_name);
+	    let ship_id = parseInt( d.api_created_ship_id, 10 );
+	    let ship_name = FindShipNameByCatId(d.api_created_ship_id);
 	     */
-	}else{
+	    let ship_name = '???';
+	    let complete_time = d.api_complete_time;
+
+	    if (d.api_state == 3)
+		complete_time = cur;
+
+	    if (cur < complete_time) {
+		// ブラウザを起動して初回タイマー起動時に
+		// 建造開始時刻を復元するため
+		// Note: Configにはms単位の時刻は保存できないので
+		//       分けて保存する。
+		let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k) * 1000 +
+				   KanColleTimerConfig.getInt("kdock-created-timems"+k);
+		if( !created_time ){
+		    created_time = cur;
+		    KanColleTimerConfig.setInt( "kdock-created-time"+k, Math.floor(cur/1000) );
+		    KanColleTimerConfig.setInt( "kdock-created-timems"+k, cur % 1000);
+		}
+
+		ship_name = GetConstructionShipName(Math.floor(created_time/1000),
+						    Math.floor(complete_time/1000));
+		KanColleRemainInfo.construction_shipname[i] = ship_name;
+	    } else {
+		ship_name = KanColleRemainInfo.construction_shipname[i];
+	    }
+	    if (ship_name) {
+		$('kdock-label'+k).setAttribute('tooltiptext', ship_name);
+	    }
+
+	    KanColleRemainInfo.kdock[i].finishedtime = complete_time;
+	    $(targetid).finishTime = complete_time;
+	    $(timeid).finishTime = complete_time;
+	}else if (d.api_state == 0) {
 	    // 建造していない
-	    KanColleRemainInfo.kdock_time[i] = "";
-	    $(ftime_str).value = "";
-	    KanColleRemainInfo.kdock[i].finishedtime = -1;
 	    $('kdock-label'+k).setAttribute('tooltiptext','');
+	    $(targetid).finishTime = '';
+	    $(timeid).finishTime = '';
+	    KanColleRemainInfo.kdock[i].finishedtime = Number.NaN;
 	    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
+	    KanColleTimerConfig.setInt( "kdock-created-timems"+k, 0 );
+	    KanColleRemainInfo.construction_shipname[i] = null;
+	}else{
+	    $('kdock-box'+k).style.display = 'none';
 	}
     }
 }
@@ -318,8 +328,9 @@ function KanColleTimerKdockRestore(){
     try{
 	for(let i=0; i<4; i++){
 	    let k = i+1;
-	    if( KanColleRemainInfo.kdock_time[i] ){
-		$('kdock'+k).value = KanColleRemainInfo.kdock_time[i];
+	    if( KanColleRemainInfo.kdock[i] ){
+		$('kdock'+k).finishTime = KanColleRemainInfo.kdock[i].finishedtime;
+		$('kdockremain'+k).finishTime = KanColleRemainInfo.kdock[i].finishedtime;
 	    }
 	    // 建造中艦艇の表示復元
 	    if( KanColleRemainInfo.construction_shipname[i] ){
