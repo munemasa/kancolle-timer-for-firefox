@@ -632,6 +632,7 @@ function TakeKanColleScreenshot(isjpeg){
     var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
 
     var game_frame = win.window.document.getElementById("game_frame");
+    if (!game_frame) return null;
     var offset_x = game_frame.offsetLeft;
     var offset_y = game_frame.offsetTop;
     var flash = game_frame.contentWindow.document.getElementById("flashWrap");
