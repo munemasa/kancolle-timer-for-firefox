@@ -228,18 +228,40 @@ var KanColleTimer = {
     },
 
     /**
+     * スクリーンショット保存
+     * @param file 保存ファイル名(nsIFile)
+     * @param url 保存オブジェクト
+     */
+    _saveScreenshot: function(file,url){
+	if (!file || !url)
+	    return;
+	Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
+	    .createInstance(Components.interfaces.nsIWebBrowserPersist)
+	    .saveURI(url, null, null, null, null, file, null);
+    },
+    /**
+     * スクリーンショット撮影
+     * @param isjpeg JPEGかどうか
+     */
+    _takeScreenshot: function(isjpeg){
+	let url = TakeKanColleScreenshot(isjpeg);
+	if (!url) {
+	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
+	    return null;
+	}
+	return url;
+    },
+
+    /**
      * スクリーンショット撮影
      * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
      */
     takeScreenshot: function(path){
 	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
-	var url = TakeKanColleScreenshot( isjpeg );
-	if( !url ){
-	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
-	    return null;
-	}
-
+	let url = this._takeScreenshot(isjpeg);
 	var file = null;
+	if (!url)
+	    return;
 	if( !path ){
 	    var fp = Components.classes['@mozilla.org/filepicker;1']
 		.createInstance(Components.interfaces.nsIFilePicker);
@@ -264,11 +286,8 @@ var KanColleTimer = {
 	    var filename = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
 	    file.append(filename);
 	}
-	
-	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-            .createInstance(Components.interfaces.nsIWebBrowserPersist);
-	wbp.saveURI(url, null, null, null, null, file, null);
-	return true;
+
+	this._saveScreenshot(file,url);
     },
 
     takeScreenshotSeriography:function(){
