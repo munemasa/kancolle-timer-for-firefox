@@ -254,45 +254,96 @@ var KanColleTimer = {
 
     /**
      * スクリーンショット撮影
-     * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
      */
-    takeScreenshot: function(path){
+    takeScreenshot: function(){
+	let ret;
+	let defaultdir = KanColleTimerConfig.getUnichar("screenshot.path");
 	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+	let nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
 	let url = this._takeScreenshot(isjpeg);
-	var file = null;
+
 	if (!url)
 	    return;
-	if( !path ){
-	    var fp = Components.classes['@mozilla.org/filepicker;1']
-		.createInstance(Components.interfaces.nsIFilePicker);
-	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
-	    fp.appendFilters(fp.filterImages);
-	    fp.defaultExtension = isjpeg?"jpg":"png";
-	    if( KanColleTimerConfig.getUnichar("screenshot.path") ){
-		fp.displayDirectory = OpenFile(KanColleTimerConfig.getUnichar("screenshot.path"));
-	    }
 
-	    var datestr = this.getNowDateString();
-	    fp.defaultString = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
-	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
-	    
-	    file = fp.file;
-	}else{
-	    let localfileCID = '@mozilla.org/file/local;1';
-	    let localfileIID =Components.interfaces.nsILocalFile;
-	    file = Components.classes[localfileCID].createInstance(localfileIID);
-	    file.initWithPath(path);
-	    var datestr = this.getNowDateString();
-	    var filename = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
-	    file.append(filename);
+	fp.init(window, "保存ファイルを選んでください", nsIFilePicker.modeSave);
+	if (defaultdir) {
+	    let file = Components.classes['@mozilla.org/file/local;1']
+		       .createInstance(Components.interfaces.nsILocalFile);
+	    file.initWithPath(defaultdir);
+	    if (file.exists() && file.isDirectory())
+		fp.displayDirectory = file;
 	}
+	fp.appendFilters(nsIFilePicker.filterImages);
+	fp.defaultString = "screenshot-"+ this.getNowDateString() + (isjpeg?".jpg":".png");
+	fp.defaultExtension = isjpeg ? "jpg" : "png";
+	ret = fp.show();
+	if ((ret != nsIFilePicker.returnOK && ret != nsIFilePicker.returnReplace) || !fp.file)
+	    return null;
 
-	this._saveScreenshot(file,url);
+	this._saveScreenshot(fp.file, url);
     },
 
-    takeScreenshotSeriography:function(){
-	var path = KanColleTimerConfig.getUnichar("screenshot.path");
-	this.takeScreenshot(path);
+    /**
+     * スクリーンショット連続撮影用フォルダ選択
+     * @return nsIFile
+     */
+    takeScreenshotSeriographySelectFolder: function(){
+	let defaultdir = KanColleTimerConfig.getUnichar("screenshot.path");
+	let ret;
+	let nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+
+	fp.init(window, "保存フォルダを選んでください", nsIFilePicker.modeGetFolder);
+	if (defaultdir) {
+	    let file = Components.classes['@mozilla.org/file/local;1']
+		       .createInstance(Components.interfaces.nsILocalFile);
+	    file.initWithPath(defaultdir);
+	    if (file.exists() && file.isDirectory())
+		fp.displayDirectory = file;
+	}
+	ret = fp.show();
+	if (ret != nsIFilePicker.returnOK || !fp.file)
+	    return null;
+
+	KanColleTimerConfig.setUnichar("screenshot.path", fp.file.path);
+
+	return fp.file;
+    },
+
+    /**
+     * スクリーンショット連続撮影
+     */
+    takeScreenshotSeriography: function(){
+	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+	let url = this._takeScreenshot(isjpeg);
+	let file = null;
+	let dir;
+
+	if (!url)
+	    return;
+
+	dir = KanColleTimerConfig.getUnichar("screenshot.path");
+	if (dir) {
+	    file = Components.classes['@mozilla.org/file/local;1']
+		   .createInstance(Components.interfaces.nsILocalFile);
+	    file.initWithPath(dir);
+	}
+
+	// フォルダのチェック。フォルダでなければ、(再)選択
+	do {
+	    if (file && file.exists() && file.isDirectory())
+		break;
+	    file = this.takeScreenshotSeriographySelectFolder();
+	} while(file);
+
+	// エラー
+	if (!file)
+	    return null;
+
+	file.append("screenshot-" + this.getNowDateString() + (isjpeg ? '.jpg' : '.png'));
+
+	this._saveScreenshot(file, url);
     },
 
     getNowDateString: function(){

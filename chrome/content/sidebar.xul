@@ -37,8 +37,9 @@
 	<menupopup>
 	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
 	  <menuseparator/>
-	  <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimerSidebar.takeScreenshot();"/>
-	  <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimerSidebar.takeScreenshotSeriography();"/>
+	  <menuitem label="ファイルを指定して保存" oncommand="KanColleTimerSidebar.takeScreenshot();" tooltiptext="ファイルを指定して保存します。"/>
+	  <menuitem label="フォルダに保存" oncommand="KanColleTimerSidebar.takeScreenshotSeriography();" tooltiptext="選択されたフォルダに保存します。ファイル名は自動的につけられます。"/>
+	  <menuitem label="保存フォルダを選択" oncommand="KanColleTimerSidebar.takeScreenshotSeriographySelectFolder();" tooltiptext="保存用のフォルダを選択します。"/>
 	</menupopup>
       </menu>
     </menubar>
