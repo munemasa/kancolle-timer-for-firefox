@@ -24,7 +24,7 @@
     <menubar>
       <menu label="ツール">
 	<menupopup>
-	  <menuitem label="保存" oncommand="SaveShipList();" id="saveshiplist-menu" disabled="true"/>
+	  <menuitem label="艦船リストの保存" oncommand="SaveShipList();" id="saveshiplist-menu" disabled="true"/>
 	  <menuseparator/>
 	  <menuitem label="所有艦艇リスト" oncommand="OpenShipList();"/>
 	  <menuseparator/>
