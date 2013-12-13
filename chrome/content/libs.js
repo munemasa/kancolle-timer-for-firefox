@@ -1823,6 +1823,9 @@ function TreeView(){
 	let cos;
 
 	fp.init(window, "艦船リストの保存...", nsIFilePicker.modeSave);
+	fp.defaultExtension = 'txt';
+	fp.appendFilter("テキストCSV","*.csv; *.txt");
+	fp.appendFilters(nsIFilePicker.filterText);
 	fp.appendFilters(nsIFilePicker.filterAll);
 	rv = fp.show();
 
