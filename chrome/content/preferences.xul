@@ -182,14 +182,6 @@
     </preferences>
 
     <checkbox preference="pref-screenshot-jpeg" label="JPEGで保存する"/>
-    <groupbox>
-      <caption>スクリーンショット保存先</caption>
-      <hbox>
-	<textbox flex="1" preference="pref-screenshot-path"/>
-	<button label="選択..."
-		oncommand="KanColleTimerPreference.refDirectory('pref-screenshot-path');"/>
-      </hbox>
-    </groupbox>
   </prefpane>
 
   <html:audio id="audio-playback" src=""/>
