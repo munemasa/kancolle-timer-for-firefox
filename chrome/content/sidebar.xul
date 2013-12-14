@@ -21,25 +21,31 @@
 	  src="chrome://kancolletimer/content/sidebar.js" />
 
   <toolbox>
-    <menubar>
-      <menu label="ツール">
+    <toolbar>
+      <toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	<menupopup>
 	  <menuitem label="所有艦艇リスト" oncommand="OpenShipList();"/>
 	  <menuseparator/>
+	  <menuitem id="window-stay-on-top" persist="checked"
+		    label="常に最前面に表示"
+		    type="checkbox" autocheck="true"
+		    tooltiptext="Windows/Firefox 17以降でのみ有効"
+		    oncommand="KanColleTimer.setWindowOnTop();"/>
 	  <menuitem label="設定..." oncommand="OpenSettingsDialog();"/>
 	  <menuseparator/>
 	  <menuitem label="About" oncommand="OpenAboutDialog();"/>
 	</menupopup>
-      </menu>
-      <menu label="撮影">
+      </toolbarbutton>
+      <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
 	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
 	  <menuseparator/>
-	  <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimerSidebar.takeScreenshot();"/>
-	  <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimerSidebar.takeScreenshotSeriography();"/>
+	  <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimer.takeScreenshot();"/>
+	  <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimer.takeScreenshotSeriography();"/>
 	</menupopup>
-      </menu>
-    </menubar>
+      </toolbarbutton>
+      <toolbarbutton tooltiptext="所有艦艇リスト" image="data/ship.png" oncommand="OpenShipList();"/>
+    </toolbar>
   </toolbox>
 
   <stack flex="1">

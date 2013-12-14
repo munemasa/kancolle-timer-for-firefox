@@ -31,8 +31,8 @@
 	  src="chrome://kancolletimer/content/kancolletimer.js" />
 
   <toolbox>
-    <menubar>
-      <menu label="ツール">
+    <toolbar>
+      <toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	<menupopup>
 	  <menuitem label="所有艦艇リスト" oncommand="OpenShipList();"/>
 	  <menuseparator/>
@@ -45,16 +45,17 @@
 	  <menuseparator/>
 	  <menuitem label="About" oncommand="OpenAboutDialog();"/>
 	</menupopup>
-      </menu>
-      <menu label="撮影">
+      </toolbarbutton>
+      <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
 	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
 	  <menuseparator/>
 	  <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimer.takeScreenshot();"/>
 	  <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimer.takeScreenshotSeriography();"/>
 	</menupopup>
-      </menu>
-    </menubar>
+      </toolbarbutton>
+      <toolbarbutton tooltiptext="所有艦艇リスト" image="data/ship.png" oncommand="OpenShipList();"/>
+    </toolbar>
   </toolbox>
 
   <stack flex="1">
