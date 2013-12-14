@@ -275,6 +275,22 @@ var KanColleTimer = {
 	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
+    createMissionBalanceTable:function(){
+	let balance = KanColleData.mission_hourly_balance;
+	let rows = $('hourly_balance');
+	for( let i in balance ){
+	    let row = CreateElement('row');
+	    let name = KanColleData.mission_name[i];
+	    name = name.substring(0,7);
+	    row.appendChild( CreateLabel( name ) );
+	    for( let j=0; j<4; j++ ){
+		row.appendChild( CreateLabel(balance[i][j]) );
+	    }
+	    row.setAttribute("style","border-bottom: 1px solid gray;");
+	    rows.appendChild( row );
+	}
+    },
+
     initWallpaper:function(){
     },
 
@@ -318,11 +334,9 @@ var KanColleTimer = {
 	} catch (x) {
 	}
 
+	this.createMissionBalanceTable();
 	this.initWallpaper();
-
 	this.audios = document.getElementsByTagName('html:audio');
-
-	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
     },
 
     destroy: function(){
@@ -332,5 +346,5 @@ var KanColleTimer = {
 };
 
 
-window.addEventListener("load", function(e){ KanColleTimer.init(); }, false);
+window.addEventListener("load", function(e){ KanColleTimer.init(); WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') ); }, false);
 window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);

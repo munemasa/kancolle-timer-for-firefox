@@ -18,10 +18,26 @@
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/data.js" />
   <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/kancolletimer.js" />
+  <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/sidebar.js" />
 
   <toolbox>
     <toolbar>
+      <toolbarbutton tooltiptext="タイマー" image="data/alarm.png"
+		     oncommand="$('deck').selectedIndex=0;"/>
+      <toolbarbutton tooltiptext="情報" image="data/info1.png"
+		     oncommand="$('deck').selectedIndex=1;"/>
+      <toolbarbutton tooltiptext="情報" image="data/info2.png"/>
+      <toolbarbutton tooltiptext="所有艦艇リスト" image="data/ship.png" oncommand="OpenShipList();"/>
+      <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
+	<menupopup>
+	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
+	  <menuseparator/>
+	  <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimer.takeScreenshot();"/>
+	  <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimer.takeScreenshotSeriography();"/>
+	</menupopup>
+      </toolbarbutton>
       <toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	<menupopup>
 	  <menuitem label="所有艦艇リスト" oncommand="OpenShipList();"/>
@@ -36,137 +52,141 @@
 	  <menuitem label="About" oncommand="OpenAboutDialog();"/>
 	</menupopup>
       </toolbarbutton>
-      <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
-	<menupopup>
-	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
-	  <menuseparator/>
-	  <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimer.takeScreenshot();"/>
-	  <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimer.takeScreenshotSeriography();"/>
-	</menupopup>
-      </toolbarbutton>
-      <toolbarbutton tooltiptext="所有艦艇リスト" image="data/ship.png" oncommand="OpenShipList();"/>
     </toolbar>
   </toolbox>
 
   <stack flex="1">
     <vbox id="wallpaper" flex="1">
     </vbox>
-    <vbox>
-      <groupbox id="group-mission">
-	<caption>遠征</caption>
+    <deck id="deck">
+      <vbox flex="1" style="overflow:auto;">
+	<groupbox id="group-mission">
+	  <caption>遠征</caption>
+	  
+	  <vbox class="fleet" style="display:none;">
+	    <hbox>
+	      <label value="■第1艦隊"/>
+	      <label id="mission_name1" value=""/>
+	    </hbox>
+	    <hbox>
+	      <label id="fleetname1" class="fleetname" value="第1艦隊"/><!-- 艦隊名 -->
+	      <label id="fleet1" class="fleet-time" value=""/><!-- 帰還時刻 -->
+	      <label id="fleetremain1" class="fleetremain" value=""/><!-- 残り時間 -->
+	    </hbox>
+	  </vbox>
+	  
+	  <vbox class="fleet">
+	    <hbox>
+	      <label value="■第2艦隊"/>
+	      <label id="mission_name2" value=""/>
+	    </hbox>
+	    <hbox>
+	      <label id="fleetname2" class="fleetname" value="第2艦隊"/>
+	      <label id="fleet2" class="fleet-time" value=""/>
+	      <label id="fleetremain2" class="fleetremain" value=""/>
+	    </hbox>
+	  </vbox>
+	  
+	  <vbox class="fleet">
+	    <hbox>
+	      <label value="■第3艦隊"/>
+	      <label id="mission_name3" value=""/>
+	    </hbox>
+	    <hbox>
+	      <label id="fleetname3" class="fleetname" value="第3艦隊"/>
+	      <label id="fleet3" class="fleet-time" value=""/>
+	      <label id="fleetremain3" class="fleetremain" value=""/>
+	    </hbox>
+	  </vbox>
+	  
+	  <vbox class="fleet">
+	    <hbox>
+	      <label value="■第4艦隊"/>
+	      <label id="mission_name4" value=""/>
+	    </hbox>
+	    <hbox>
+	      <label id="fleetname4" class="fleetname" value="第4艦隊"/>
+	      <label id="fleet4" class="fleet-time" value=""/>
+	      <label id="fleetremain4" class="fleetremain" value=""/>
+	    </hbox>
+	  </vbox>
+	  
+	</groupbox>
 	
-	<vbox class="fleet" style="display:none;">
-	  <hbox>
-	    <label value="■第1艦隊"/>
-	    <label id="mission_name1" value=""/>
-	  </hbox>
-	  <hbox>
-	    <label id="fleetname1" class="fleetname" value="第1艦隊"/><!-- 艦隊名 -->
-	    <label id="fleet1" class="fleet-time" value=""/><!-- 帰還時刻 -->
-	    <label id="fleetremain1" class="fleetremain" value=""/><!-- 残り時間 -->
-	  </hbox>
-	</vbox>
+	<groupbox>
+	  <caption>入渠ドック</caption>
+	  <grid>
+	    <columns>
+	      <column/>
+	      <column/>
+	      <column/>
+	    </columns>
+	    <rows>
+	      <row id="ndock-box1" class="ndock-box" context="popup-ndock-memo">
+		<label id="ndock-label1" value="No.1"/>
+		<label id="ndock1" class="ndock-time" value=""/>
+		<label id="ndockremain1" class="ndockremain" value=""/>
+	      </row>
+	      <row id="ndock-box2" class="ndock-box" context="popup-ndock-memo">
+		<label id="ndock-label2" value="No.2"/>
+		<label id="ndock2" class="ndock-time" value=""/>
+		<label id="ndockremain2" class="ndockremain" value=""/>
+	      </row>
+	      <row id="ndock-box3" class="ndock-box" context="popup-ndock-memo">
+		<label id="ndock-label3" value="No.3"/>
+		<label id="ndock3" class="ndock-time" value=""/>
+		<label id="ndockremain3" class="ndockremain" value=""/>
+	      </row>
+	      <row id="ndock-box4" class="ndock-box" context="popup-ndock-memo">
+		<label id="ndock-label4" value="No.4"/>
+		<label id="ndock4" class="ndock-time" value=""/>
+		<label id="ndockremain4" class="ndockremain" value=""/>
+	      </row>
+	    </rows>
+	  </grid>
+	</groupbox>
 	
-	<vbox class="fleet">
-	  <hbox>
-	    <label value="■第2艦隊"/>
-	    <label id="mission_name2" value=""/>
+	<groupbox>
+	  <caption>建造ドック</caption>
+	  <hbox id="kdock-box1" class="kdock-box">
+	    <label value="No.1"/>
+	    <label id="kdock1" class="kdock-time" value=""/>
+	    <label id="kdockremain1" class="kdockremain" value=""/>
 	  </hbox>
-	  <hbox>
-	    <label id="fleetname2" class="fleetname" value="第2艦隊"/>
-	    <label id="fleet2" class="fleet-time" value=""/>
-	    <label id="fleetremain2" class="fleetremain" value=""/>
+	  <hbox id="kdock-box2" class="kdock-box">
+	    <label value="No.2"/>
+	    <label id="kdock2" class="kdock-time" value=""/>
+	    <label id="kdockremain2" class="kdockremain" value=""/>
 	  </hbox>
-	</vbox>
-	
-	<vbox class="fleet">
-	  <hbox>
-	    <label value="■第3艦隊"/>
-	    <label id="mission_name3" value=""/>
+	  <hbox id="kdock-box3" class="kdock-box">
+	    <label value="No.3"/>
+	    <label id="kdock3" class="kdock-time" value=""/>
+	    <label id="kdockremain3" class="kdockremain" value=""/>
 	  </hbox>
-	  <hbox>
-	    <label id="fleetname3" class="fleetname" value="第3艦隊"/>
-	    <label id="fleet3" class="fleet-time" value=""/>
-	    <label id="fleetremain3" class="fleetremain" value=""/>
+	  <hbox id="kdock-box4" class="kdock-box">
+	    <label value="No.4"/>
+	    <label id="kdock4" class="kdock-time" value=""/>
+	    <label id="kdockremain4" class="kdockremain" value=""/>
 	  </hbox>
-	</vbox>
-	
-	<vbox class="fleet">
-	  <hbox>
-	    <label value="■第4艦隊"/>
-	    <label id="mission_name4" value=""/>
-	  </hbox>
-	  <hbox>
-	    <label id="fleetname4" class="fleetname" value="第4艦隊"/>
-	    <label id="fleet4" class="fleet-time" value=""/>
-	    <label id="fleetremain4" class="fleetremain" value=""/>
-	  </hbox>
-	</vbox>
-	
-      </groupbox>
-      
-      <groupbox>
-	<caption>入渠ドック</caption>
+	</groupbox>
+	<textbox id="log" placeholder="" multiline="true" flex="1" style="max-height:10em;"/>
+      </vbox>
+      <!-- 遠征収支表(時給) -->
+      <vbox>
+	<label value="遠征収支表(時給)"/>
 	<grid>
 	  <columns>
-	    <column/>
-	    <column/>
-	    <column/>
+	    <column/><column/><column/><column/><column/>
 	  </columns>
-	  <rows>
-	    <row id="ndock-box1" class="ndock-box" context="popup-ndock-memo">
-	      <label id="ndock-label1" value="No.1"/>
-	      <label id="ndock1" class="ndock-time" value=""/>
-	      <label id="ndockremain1" class="ndockremain" value=""/>
-	    </row>
-	    <row id="ndock-box2" class="ndock-box" context="popup-ndock-memo">
-	      <label id="ndock-label2" value="No.2"/>
-	      <label id="ndock2" class="ndock-time" value=""/>
-	      <label id="ndockremain2" class="ndockremain" value=""/>
-	    </row>
-	    <row id="ndock-box3" class="ndock-box" context="popup-ndock-memo">
-	      <label id="ndock-label3" value="No.3"/>
-	      <label id="ndock3" class="ndock-time" value=""/>
-	      <label id="ndockremain3" class="ndockremain" value=""/>
-	    </row>
-	    <row id="ndock-box4" class="ndock-box" context="popup-ndock-memo">
-	      <label id="ndock-label4" value="No.4"/>
-	      <label id="ndock4" class="ndock-time" value=""/>
-	      <label id="ndockremain4" class="ndockremain" value=""/>
-	    </row>
+	  <rows id="hourly_balance">
 	  </rows>
 	</grid>
-      </groupbox>
-      
-      <groupbox>
-	<caption>建造ドック</caption>
-	<hbox id="kdock-box1" class="kdock-box">
-	  <label value="No.1"/>
-	  <label id="kdock1" class="kdock-time" value=""/>
-	  <label id="kdockremain1" class="kdockremain" value=""/>
-	</hbox>
-	<hbox id="kdock-box2" class="kdock-box">
-	  <label value="No.2"/>
-	  <label id="kdock2" class="kdock-time" value=""/>
-	  <label id="kdockremain2" class="kdockremain" value=""/>
-	</hbox>
-	<hbox id="kdock-box3" class="kdock-box">
-	  <label value="No.3"/>
-	  <label id="kdock3" class="kdock-time" value=""/>
-	  <label id="kdockremain3" class="kdockremain" value=""/>
-	</hbox>
-	<hbox id="kdock-box4" class="kdock-box">
-	  <label value="No.4"/>
-	  <label id="kdock4" class="kdock-time" value=""/>
-	  <label id="kdockremain4" class="kdockremain" value=""/>
-	</hbox>
-      </groupbox>
-      <textbox id="log" placeholder="" multiline="true" flex="1" />
-    </vbox>
+      </vbox>
+    </deck>
   </stack>
   
   <button label="ウィンドウを開く" oncommand="KanColleTimerSidebar.open();"/>
-  
+
   <html:audio src=""/>
   <html:audio src=""/>
   <html:audio src=""/>
