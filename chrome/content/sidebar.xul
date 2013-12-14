@@ -26,10 +26,9 @@
     <toolbar>
       <toolbarbutton tooltiptext="タイマー" image="data/alarm.png"
 		     oncommand="$('deck').selectedIndex=0;"/>
-      <toolbarbutton tooltiptext="情報" image="data/info1.png"
+      <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
 		     oncommand="$('deck').selectedIndex=1;"/>
-      <toolbarbutton tooltiptext="情報" image="data/info2.png"/>
-      <toolbarbutton tooltiptext="所有艦艇リスト" image="data/ship.png" oncommand="OpenShipList();"/>
+      <toolbarbutton tooltiptext="所有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
       <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
 	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
@@ -54,11 +53,10 @@
       </toolbarbutton>
     </toolbar>
   </toolbox>
-
   <stack flex="1">
     <vbox id="wallpaper" flex="1">
     </vbox>
-    <deck id="deck">
+    <deck id="deck" persist="selectedIndex">
       <vbox flex="1" style="overflow:auto;">
 	<groupbox id="group-mission">
 	  <caption>遠征</caption>
@@ -172,15 +170,25 @@
 	<textbox id="log" placeholder="" multiline="true" flex="1" style="max-height:10em;"/>
       </vbox>
       <!-- 遠征収支表(時給) -->
-      <vbox>
+      <vbox flex="1" style="overflow:auto;">
 	<label value="遠征収支表(時給)"/>
 	<grid>
 	  <columns>
-	    <column/><column/><column/><column/><column/>
+	    <column flex="1"/><column/><column/><column/><column/>
 	  </columns>
 	  <rows id="hourly_balance">
+	    <row style="border-bottom: 1px solid gray;">
+	      <label value="遠征名"/>
+	      <label value="燃"/>
+	      <label value="弾"/>
+	      <label value="鋼"/>
+	      <label value="ボ"/>
+	    </row>
 	  </rows>
 	</grid>
+	<description>
+	  Referenced from 艦隊これくしょん ～艦これ～ 攻略＆2chまとめwiki
+	</description>
       </vbox>
     </deck>
   </stack>
