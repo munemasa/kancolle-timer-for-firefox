@@ -60,6 +60,14 @@ TMP_DIR=build
 rm -f $APP_NAME.jar $APP_NAME.xpi files
 rm -rf $TMP_DIR
 
+if [ x"$BUILD_CHECK" != x"" ]; then
+	$BUILD_CHECK
+	if [ $? -ne 0 ]; then
+		echo "Abort."
+		exit -1
+	fi
+fi
+
 $BEFORE_BUILD
 
 mkdir --parents --verbose $TMP_DIR/chrome

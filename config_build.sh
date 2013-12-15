@@ -7,5 +7,6 @@ CHROME_PROVIDERS="chrome"
 CLEAN_UP=1
 ROOT_FILES=""
 ROOT_DIRS="defaults modules"
+BUILD_CHECK=./cleancheck.sh
 BEFORE_BUILD=
 AFTER_BUILD=
