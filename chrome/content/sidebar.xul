@@ -167,7 +167,7 @@
 	    <label id="kdockremain4" class="kdockremain" value=""/>
 	  </hbox>
 	</groupbox>
-	<textbox id="log" placeholder="" multiline="true" flex="1" style="max-height:10em;"/>
+	<textbox id="log" placeholder="" multiline="true" flex="1"/>
       </vbox>
       <!-- 遠征収支表(時給) -->
       <vbox flex="1" style="overflow:auto;">
