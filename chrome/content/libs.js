@@ -185,6 +185,8 @@ function KanColleTimerCallback(request,s){
 	let kdocks = document.getElementsByClassName("kdock-box");
 	f( ndocks, parseInt(d.api_count_ndock) );
 	f( kdocks, parseInt(d.api_count_kdock) );
+    }else if( url.match(/kcsapi\/api_get_member\/material/) ){
+	$('repairkit-number').value = data.api_data[5].api_value;
     }
 }
 
