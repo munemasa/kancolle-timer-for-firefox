@@ -1533,14 +1533,14 @@ function TreeView(){
 	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
 	    let nextlv = shiptype ? shiptype.api_afterlv : 0;
 	    if (!nextlv)
-		nextlv = 99999;	// FIXME
+		nextlv = '';
 	    return nextlv;
 	},
 	_lvupgremain: function(ship) {
 	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
 	    let nextlv = shiptype ? shiptype.api_afterlv : 0;
 	    if (!nextlv)
-		return 99999;	// FIXME
+		return '';
 	    return nextlv - ship.api_lv;
 	},
 	exp: function(ship) {
@@ -1564,16 +1564,28 @@ function TreeView(){
 	    return ShipExp(ship);
 	},
 	_expnext: function(ship) {
-	    return ShipNextLvExp(ship);
+	    let expnext = ShipNextLvExp(ship);
+	    if (expnext != Number.POSITIVE_INFINITY)
+		return expnext;
+	    return '';
 	},
 	_expnextremain: function(ship) {
-	    return ShipNextLvExp(ship) - ShipExp(ship);
+	    let expnextremain = ShipNextLvExp(ship) - ShipExp(ship);
+	    if (expnextremain != Number.POSITIVE_INFINITY)
+		return expnextremain;
+	    return '';
 	},
 	_expupg: function(ship) {
-	    return ShipUpgradeableExp(ship);
+	    let expnext = ShipUpgradeableExp(ship);
+	    if (expnext != Number.POSITIVE_INFINITY)
+		return expnext;
+	    return '';
 	},
 	_expupgremain: function(ship) {
-	    return ShipUpgradeableExp(ship) - ShipExp(ship);
+	    let expnextremain = ShipUpgradeableExp(ship) - ShipExp(ship);
+	    if (expnextremain != Number.POSITIVE_INFINITY)
+		return expnextremain;
+	    return '';
 	},
 	hp: function(ship) {
 	    let info = FindShipStatus(ship.api_id);
@@ -1728,6 +1740,36 @@ function TreeView(){
 	},
 	_stype: function(ship_a,ship_b){
 	    return DefaultSortFunc(ship_a,ship_b,order);
+	},
+	_lvupg: function(ship_a,ship_b){
+	    let shiptype_a = KanColleDatabase.masterShip.get(ship_a.api_ship_id);
+	    let lv_a = shiptype ? shiptype_a.api_afterlv : 0;
+	    let shiptype_b = KanColleDatabase.masterShip.get(ship_b.api_ship_id);
+	    let lv_b = shiptype ? shiptype_b.api_afterlv : 0;
+	    if (!lv_a)
+		lv_a = Number.POSITIVE_INFINITY;
+	    if (!lv_b)
+		lv_b = Number.POSITIVE_INFINITY;
+	    if (lv_a == Number.POSITIVE_INFINITY &&
+		lv_b == Number.POSITIVE_INFINITY)
+		return 0;
+	    return lv_a - lv_b;
+	},
+	_lvupgremain: function(ship_a,ship_b){
+	    let shiptype_a = KanColleDatabase.masterShip.get(ship_a.api_ship_id);
+	    let lv_a = shiptype_a ? shiptype_a.api_afterlv : 0;
+	    let shiptype_b = KanColleDatabase.masterShip.get(ship_b.api_ship_id);
+	    let lv_b = shiptype_b ? shiptype_b.api_afterlv : 0;
+	    if (!lv_a)
+		lv_a = Number.POSITIVE_INFINITY;
+	    if (!lv_b)
+		lv_b = Number.POSITIVE_INFINITY;
+	    if (lv_a == Number.POSITIVE_INFINITY &&
+		lv_b == Number.POSITIVE_INFINITY)
+		return 0;
+	    lv_a -= ship_a.api_lv;
+	    lv_b -= ship_b.api_lv;
+	    return lv_a - lv_b;
 	},
 	_expnext: function(ship_a,ship_b) {
 	    let nextexp_a = ShipNextLvExp(ship_a);
