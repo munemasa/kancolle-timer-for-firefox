@@ -1843,13 +1843,13 @@ function TreeView(){
 	// とある表計算ソフトでは、UTF-8な.csvファイルにはこれがないと
 	// "文字化け"する。一方、.txtなら問題ない。
 	//cos.writeString('\ufeff');
-	for (let i = 0; i < shiplist.length; i++) {
+	for (let i = -1; i < shiplist.length; i++) {
 	    let a = [];
 	    let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
 	    for (let j = 0; j < ShipInfoTree.COLLIST.length; j++){
 		if (!ShipInfoTree.COLLIST[j].subdump) {
 		    let val;
-		    if (!i)
+		    if (i < 0)
 			val = ShipInfoTree.COLLIST[j].label;
 		    else
 			val = '' + shipcellfunc[ShipInfoTree.COLLIST[j].id](ship);
@@ -1868,7 +1868,7 @@ function TreeView(){
 			a.push('<'+ShipInfoTree.COLLIST[j].sortspecs[k].sortspec+'>');
 			continue;
 		    }
-		    if (!i)
+		    if (i < 0)
 			val = ShipInfoTree.COLLIST[j].sortspecs[k].label;
 		    else
 			val = '' + shipcellfunc[ShipInfoTree.COLLIST[j].sortspecs[k].sortspec](ship);
