@@ -1895,10 +1895,7 @@ function TreeView(){
 			val = ShipInfoTree.COLLIST[j].label;
 		    else
 			val = '' + shipcellfunc[ShipInfoTree.COLLIST[j].id](ship);
-		    val = '' + val;
-		    val.replace(/,/g,'_');
-		    val.replace(/"/g,'_');
-		    a.push(val);
+		    a.push(val.replace(/,/g,'_').replace(/"/g,'_'));
 		}
 		if (!ShipInfoTree.COLLIST[j].sortspecs)
 		    continue;
@@ -1914,9 +1911,7 @@ function TreeView(){
 			val = ShipInfoTree.COLLIST[j].sortspecs[k].label;
 		    else
 			val = '' + shipcellfunc[ShipInfoTree.COLLIST[j].sortspecs[k].sortspec](ship);
-		    val.replace(/,/g,'_');
-		    val.replace(/"/g,'_');
-		    a.push(val);
+		    a.push(val.replace(/,/g,'_').replace(/"/g,'_'));
 		}
 	    }
 	    cos.writeString(a.join(',')+'\n');
