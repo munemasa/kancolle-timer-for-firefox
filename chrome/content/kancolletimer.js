@@ -104,15 +104,17 @@ var KanColleTimer = {
 	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
 	this.playNotice( this.audios[5], path );
 
-	if( KanColleTimerConfig.getBool('popup.1min-before') &&
-	    KanColleTimerConfig.getBool('popup.mission') ){
+	if( KanColleTimerConfig.getBool('popup.mission') &&
+	    KanColleTimerConfig.getBool('popup.1min-before') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
 	}
     },
 
     // ウィンドウを最前面にする
     setWindowOnTop:function(){
-	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
+	let checkbox = $('window-stay-on-top');
+	if (checkbox)
+	    WindowOnTop( window, checkbox.hasAttribute('checked') );
     },
 
     update: function(){
@@ -121,9 +123,6 @@ var KanColleTimer = {
 	let fleetremain = evaluateXPath(document,"//*[@class='fleetremain']");
 	let ndockremain = evaluateXPath(document,"//*[@class='ndockremain']");
 	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
-	let fleet_time = evaluateXPath(document,"//*[@class='fleet-time']");
-	let ndock_time = evaluateXPath(document,"//*[@class='ndock-time']");
-	let kdock_time = evaluateXPath(document,"//*[@class='kdock-time']");
 
 	// 遠征
 	for(i in KanColleRemainInfo.fleet){
@@ -131,13 +130,13 @@ var KanColleTimer = {
 	    let t = KanColleRemainInfo.fleet[i].mission_finishedtime;
 	    if( t > 0 ){
 		let d = t - now;
-		if( fleet_time[i].style.color=="black" ){
+		if( fleetremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
 			this.noticeMission1min(i,str);
 		    }
 		}
-		fleet_time[i].style.color = d<60?"red":"black";
+		fleetremain[i].style.color = d<60?"red":"black";
 
 		if( d<0 ){
 		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
@@ -148,7 +147,7 @@ var KanColleTimer = {
 		    fleetremain[i].value = GetTimeString( d );
 		}
 	    }else{
-		fleetremain[i].value = "";
+		fleetremain[i].value = t==0?"00:00:00":"";
 	    }
 	}
 
@@ -157,15 +156,15 @@ var KanColleTimer = {
 	    i = parseInt(i);
 	    let t = KanColleRemainInfo.ndock[i].finishedtime;
 	    if( t > 0 ){
-		let d = KanColleRemainInfo.ndock[i].finishedtime - now;
+		let d = t - now;
 
-		if( ndock_time[i].style.color=="black" ){
+		if( ndockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
 			this.noticeRepair1min(i,str);
 		    }
 		}
-		ndock_time[i].style.color = d<60?"red":"black";
+		ndockremain[i].style.color = d<60?"red":"black";
 		if( d<0 ){
 		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
 		    AddLog(str);
@@ -175,7 +174,7 @@ var KanColleTimer = {
 		    ndockremain[i].value = GetTimeString( d );
 		}
 	    }else{
-		ndockremain[i].value = "";
+		ndockremain[i].value = t==0?"00:00:00":"";
 	    }
 	}
 
@@ -184,15 +183,15 @@ var KanColleTimer = {
 	    i = parseInt(i);
 	    let t = KanColleRemainInfo.kdock[i].finishedtime;
 	    if( t > 0 ){
-		let d = KanColleRemainInfo.kdock[i].finishedtime - now;
+		let d = t - now;
 
-		if( kdock_time[i].style.color=="black" ){
+		if( kdockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
 			this.noticeConstruction1min(i,str);
 		    }
 		}
-		kdock_time[i].style.color = d<60?"red":"black";
+		kdockremain[i].style.color = d<60?"red":"black";
 		if( d<0 ){
 		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
 		    AddLog(str);
@@ -202,9 +201,28 @@ var KanColleTimer = {
 		    kdockremain[i].value = GetTimeString( d );
 		}
 	    }else{
-		kdockremain[i].value = "";
+		kdockremain[i].value = t==0?"00:00:00":"";
 	    }
 	}
+    },
+
+    getNowDateString: function(){
+	var d = new Date();
+	var month = d.getMonth()+1;
+	month = month<10 ? "0"+month : month;
+	var date = d.getDate()<10 ? "0"+d.getDate() : d.getDate();
+	var hour = d.getHours()<10 ? "0"+d.getHours() : d.getHours();
+	var min = d.getMinutes()<10 ? "0"+d.getMinutes() : d.getMinutes();
+	var sec = d.getSeconds()<10 ? "0"+d.getSeconds() : d.getSeconds();
+	var ms = d.getMilliseconds();
+	if( ms<10 ){
+	    ms = "000" + ms;
+	}else if( ms<100 ){
+	    ms = "00" + ms;
+	}else if( ms<1000 ){
+	    ms = "0" + ms;
+	}
+	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
     /**
@@ -256,23 +274,25 @@ var KanColleTimer = {
 	this.takeScreenshot(path);
     },
 
-    getNowDateString: function(){
-	var d = new Date();
-	var month = d.getMonth()+1;
-	month = month<10 ? "0"+month : month;
-	var date = d.getDate()<10 ? "0"+d.getDate() : d.getDate();
-	var hour = d.getHours()<10 ? "0"+d.getHours() : d.getHours();
-	var min = d.getMinutes()<10 ? "0"+d.getMinutes() : d.getMinutes();
-	var sec = d.getSeconds()<10 ? "0"+d.getSeconds() : d.getSeconds();
-	var ms = d.getMilliseconds();
-	if( ms<10 ){
-	    ms = "000" + ms;
-	}else if( ms<100 ){
-	    ms = "00" + ms;
-	}else if( ms<1000 ){
-	    ms = "0" + ms;
+    findWindow:function(){
+	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
+	return win;
+    },
+
+    /**
+     * 艦これタイマーを開く
+     */
+    open:function(){
+	let feature="chrome,resizable=yes";
+
+	let win = this.findWindow();
+	if(win){
+	    win.focus();
+	}else{
+	    let w = window.open("chrome://kancolletimer/content/mainwindow.xul","KanColleTimer",feature);
+	    w.focus();
 	}
-	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
     createMissionBalanceTable:function(){
@@ -289,9 +309,6 @@ var KanColleTimer = {
 	    row.setAttribute("style","border-bottom: 1px solid gray;");
 	    rows.appendChild( row );
 	}
-    },
-
-    initWallpaper:function(){
     },
 
     init: function(){
@@ -335,8 +352,9 @@ var KanColleTimer = {
 	}
 
 	this.createMissionBalanceTable();
-	this.initWallpaper();
 	this.audios = document.getElementsByTagName('html:audio');
+
+	this.setWindowOnTop();
     },
 
     destroy: function(){
@@ -346,5 +364,5 @@ var KanColleTimer = {
 };
 
 
-window.addEventListener("load", function(e){ KanColleTimer.init(); WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') ); }, false);
+window.addEventListener("load", function(e){ KanColleTimer.init(); }, false);
 window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);

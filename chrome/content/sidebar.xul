@@ -19,8 +19,6 @@
 	  src="chrome://kancolletimer/content/data.js" />
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/kancolletimer.js" />
-  <script type="application/javascript;version=1.7"
-	  src="chrome://kancolletimer/content/sidebar.js" />
 
   <toolbox>
     <toolbar>
@@ -40,8 +38,6 @@
       </toolbarbutton>
       <toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	<menupopup>
-	  <menuitem label="所有艦艇リスト" oncommand="OpenShipList();"/>
-	  <menuseparator/>
 	  <menuitem id="window-stay-on-top" persist="checked"
 		    label="常に最前面に表示"
 		    type="checkbox" autocheck="true"
@@ -185,8 +181,8 @@
     </deck>
   </stack>
   
-  <button label="ウィンドウを開く" oncommand="KanColleTimerSidebar.open();"/>
-
+  <button label="ウィンドウを開く" oncommand="KanColleTimer.open();"/>
+  
   <html:audio src=""/>
   <html:audio src=""/>
   <html:audio src=""/>
