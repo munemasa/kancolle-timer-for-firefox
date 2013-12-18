@@ -11,8 +11,6 @@ var KanColleTimer = {
     kdock: [],
     fleet: [],
 
-    audios:[],
-
     // 入渠ドックのメモ作成
     createRepairMemo: function(){
 	let elem = $('popup-ndock-memo').triggerNode;
@@ -60,7 +58,7 @@ var KanColleTimer = {
     // 完了の通知
     noticeRepairFinished: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.ndock');
-	this.playNotice( this.audios[0], path );
+	this.playNotice( $('sound.ndock'), path );
 
 	if( KanColleTimerConfig.getBool('popup.ndock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
@@ -68,7 +66,7 @@ var KanColleTimer = {
     },
     noticeConstructionFinished: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.kdock');
-	this.playNotice( this.audios[1], path );
+	this.playNotice( $('sound.kdock'), path );
 
 	if( KanColleTimerConfig.getBool('popup.kdock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
@@ -76,7 +74,7 @@ var KanColleTimer = {
     },
     noticeMissionFinished: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.mission');
-	this.playNotice( this.audios[2], path );
+	this.playNotice( $('sound.mission'), path );
 
 	if( KanColleTimerConfig.getBool('popup.mission') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
@@ -86,7 +84,7 @@ var KanColleTimer = {
     // 1分前の通知
     noticeRepair1min: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
-	this.playNotice( this.audios[3], path );
+	this.playNotice( $('sound.1min.ndock'), path );
 
 	if( KanColleTimerConfig.getBool('popup.ndock') &&
 	    KanColleTimerConfig.getBool('popup.1min-before') ){
@@ -95,7 +93,7 @@ var KanColleTimer = {
     },
     noticeConstruction1min: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
-	this.playNotice( this.audios[4], path );
+	this.playNotice( $('sound.1min.kdock'), path );
 
 	if( KanColleTimerConfig.getBool('popup.kdock') &&
 	    KanColleTimerConfig.getBool('popup.1min-before') ){
@@ -104,7 +102,7 @@ var KanColleTimer = {
     },
     noticeMission1min: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
-	this.playNotice( this.audios[5], path );
+	this.playNotice( $('sound.1min.mission'), path );
 
 	if( KanColleTimerConfig.getBool('popup.mission') &&
 	    KanColleTimerConfig.getBool('popup.1min-before') ){
@@ -416,8 +414,6 @@ var KanColleTimer = {
 	KanColleTimerLibInit();
 
 	this.createMissionBalanceTable();
-	this.audios = document.getElementsByTagName('html:audio');
-
 	this.setWindowOnTop();
     },
 
