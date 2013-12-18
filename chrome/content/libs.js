@@ -72,9 +72,11 @@ function KanColleTimerBasicInformationPanel(){
 	if (typeof(d) == 'object')
 	    burner = d.api_value;
 
-	d = KanColleDatabase.memberMaterial.get(6);
+	d = KanColleDatabase.memberMaterial.get(6); {
 	if (typeof(d) == 'object')
 	    bucket = d.api_value;
+	    $('repairkit-number').value = d.api_value;
+	}
     }
 
     $('basic-information-shipcount').value = ships + ' / ' + maxships;

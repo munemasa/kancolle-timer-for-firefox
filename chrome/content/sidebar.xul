@@ -118,7 +118,7 @@
 	</groupbox>
 	
 	<groupbox>
-	  <caption>入渠ドック</caption>
+	  <caption>入渠ドック[<image style="vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>]</caption>
 	  <grid>
 	    <columns>
 	      <column/>
