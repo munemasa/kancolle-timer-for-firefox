@@ -337,6 +337,9 @@ var KanColleTimer = {
 	this.createMissionBalanceTable();
 	this.initWallpaper();
 	this.audios = document.getElementsByTagName('html:audio');
+
+	SetMissionName();
+	SetFirstFleetOrganization( KanColleRemainInfo.gDeckList );
     },
 
     destroy: function(){

@@ -30,6 +30,7 @@ function KanColleTimerCallback(request,s){
 	      url.match(/kcsapi\/api_get_member\/deck/) ){
 	try{
 	    KanColleRemainInfo.gDeckList = data.api_data;
+	    SetFirstFleetOrganization( data.api_data );
 	}catch(e){}
 
 	// 遠征リスト
@@ -43,6 +44,10 @@ function KanColleTimerCallback(request,s){
 		KanColleRemainInfo.fleet[i] = new Object();
 		KanColleRemainInfo.fleet_name[i] = d.api_name;
 		$(nameid).value = d.api_name; // 艦隊名
+		if( k==1 ){
+		    // 第1艦隊の名前
+		    $('first-fleet-name').value = d.api_name;
+		}
 		if( d.api_mission[0] ){
 		    let mission_id = d.api_mission[1]; // 遠征ID
 		    // 遠征名を表示
@@ -165,6 +170,8 @@ function KanColleTimerCallback(request,s){
 	KanColleRemainInfo.gShipList = data.api_data;
     }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
 	KanColleRemainInfo.gOwnedShipList = data.api_data.api_ship_data || data.api_data;
+	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
+
     }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
 	KanColleRemainInfo.gOwnedItem = data.api_data;
     }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
@@ -185,8 +192,70 @@ function KanColleTimerCallback(request,s){
 	let kdocks = document.getElementsByClassName("kdock-box");
 	f( ndocks, parseInt(d.api_count_ndock) );
 	f( kdocks, parseInt(d.api_count_kdock) );
+
+	$('max-number-of-ships').value = "/"+d.api_max_chara+"隻";
     }else if( url.match(/kcsapi\/api_get_member\/material/) ){
 	$('repairkit-number').value = data.api_data[5].api_value;
+    }else if( url.match(/kcsapi\/api_get_member\/questlist/) ){
+	for( let i in data.api_data.api_list ){
+	    let mission = data.api_data.api_list[i];
+	    let no = mission.api_no;
+	    let state = mission.api_state; // 2だと遂行中,3だと達成
+	    switch(state){
+	    case 3:
+		delete KanColleRemainInfo.gMission[no];
+		break;
+	    default:
+		KanColleRemainInfo.gMission[no] = mission;
+		break;
+	    }
+	}
+
+	SetMissionName();
+    }
+}
+
+// 第1艦隊編成
+function SetFirstFleetOrganization( fleets ){
+    // 第1艦隊編成
+    let fleet = fleets[0];
+    let rows = $('fleet-1');
+    RemoveChildren(rows);
+    for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
+	let row = CreateElement('row');
+	let data = FindOwnShipData( fleet.api_ship[i] );
+	let masterdata = FindShipData( fleet.api_ship[i] );
+	row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
+	row.appendChild( CreateLabel(masterdata.api_name) );
+	row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
+	row.appendChild( CreateLabel(""+data.api_cond) );
+	
+	let maxhp = parseInt(data.api_maxhp);
+	let nowhp = parseInt(data.api_nowhp);
+	if( nowhp-1 <= maxhp*0.25 ){
+	    row.style.backgroundColor = '#ff8080';
+	}else{
+		    row.style.backgroundColor = '';
+	}
+	rows.appendChild( row );
+    }
+}
+
+// 任務名称を表示
+function SetMissionName(){
+    let quest_name = document.getElementsByClassName('quest-name');
+    let cnt=0;
+    for( let i in KanColleRemainInfo.gMission ){
+	let mission = KanColleRemainInfo.gMission[i];
+	if( mission && mission.api_state==2 ){
+	    quest_name[cnt].value = mission.api_title;
+	    quest_name[cnt].setAttribute('tooltiptext', mission.api_detail);
+	    cnt++;
+	}
+    }
+    for( ; cnt<5;cnt++ ){
+	quest_name[cnt].value = "";
+	quest_name[cnt].removeAttribute('tooltiptext');
     }
 }
 

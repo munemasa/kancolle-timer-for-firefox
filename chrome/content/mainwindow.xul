@@ -36,6 +36,8 @@
 		     oncommand="$('deck').selectedIndex=0;"/>
       <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
 		     oncommand="$('deck').selectedIndex=1;"/>
+      <toolbarbutton tooltiptext="編成・任務" image="data/quest.png"
+		     oncommand="$('deck').selectedIndex=2;"/>
       <toolbarbutton tooltiptext="所有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
       <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
@@ -198,6 +200,31 @@
 	<description>
 	  Referenced from 艦隊これくしょん ～艦これ～ 攻略＆2chまとめwiki
 	</description>
+      </vbox>
+      <!-- 編成・任務表 -->
+      <vbox>
+	<hbox>
+	<label value="保有艦艇数"/><label id="number-of-ships" value=""/><label id="max-number-of-ships" value=""/>
+	</hbox>
+	<groupbox>
+	  <caption><label id="first-fleet-name" value="第1艦隊"/></caption>
+	  <grid>
+	    <columns>
+	      <column/><column/><column/>
+	    </columns>
+	    <rows id="fleet-1">
+	    </rows>
+	  </grid>
+	</groupbox>
+
+	<groupbox>
+	  <caption>遂行中任務</caption>
+	  <label class="quest-name" value=""/>
+	  <label class="quest-name" value=""/>
+	  <label class="quest-name" value=""/>
+	  <label class="quest-name" value=""/>
+	  <label class="quest-name" value=""/>
+	</groupbox>
       </vbox>
     </deck>
   </stack>
