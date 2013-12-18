@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- vim: set ts=8 sw=2 sts=2 : -->
+<!--
+ | Copyright (c)2013 YOSHIFUJI Hideaki
+ |
+ | Permission is hereby granted, free of charge, to any person obtaining a copy
+ | of this software and associated documentation files (the "Software"), to deal
+ | in the Software without restriction, including without limitation the rights
+ | to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ | copies of the Software, and to permit persons to whom the Software is
+ | furnished to do so, subject to the following conditions:
+ |
+ | The above copyright notice and this permission notice shall be included in
+ | all copies or substantial portions of the Software.
+ |
+ | THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ | IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ | FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ | AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ | LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ | OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ | THE SOFTWARE.
+-->
+<bindings xmlns="http://www.mozilla.org/xbl">
+  <binding id="sound">
+    <implementation>
+    <method name="setMethod">
+      <parameter name="method"/>
+      <body><![CDATA[
+	if (val == this._method)
+	  return;
+        if (val == 'html') {
+	  if (this._uri) {
+	    this._audio = new Audio(this._uri.spec);
+	  } else {
+	    this._audio = new Audio();
+	  }
+	} else if (val == 'nsisound') {
+	  this._audio = Components.classes["@mozilla.org/sound;1"]
+			.createInstance(Components.interfaces.nsISound);
+	} else {
+	  return;
+	}
+	this._method = val;
+      ]]></body>
+    </method>
+    <property name="method">
+      <setter><![CDATA[
+	this._setMethod(val);
+      ]]></setter>
+      <getter><![CDATA[
+        if (!this._method)
+	  return '';
+	return this._method;
+      ]]></getter>
+    </property>
+    <property name="path">
+      <setter><![CDATA[
+	let _IOService = Components.classes['@mozilla.org/network/io-service;1']
+			 .getService(Ci.nsIIOService);
+        let file = Components.classes['@mozilla.org/file/local;1']
+		   .createInstance(Components.interfaces.nsILocalFile);
+	file.initWithPath(val);
+	this._uri = _IOService.newFileURI(file);
+
+        if (this._method == 'html') {
+	  if (this._audio)
+	    this._audio.setAttribute('src', this._uri.spec);
+	}
+      ]]></setter>
+    </property>
+    <property name="uri">
+      <setter><![CDATA[
+	if (!val)
+	  this._uri = null;
+	try {
+	  let _IOService = Components.classes['@mozilla.org/network/io-service;1']
+			   .getService(Ci.nsIIOService);
+	  this._uri = _IOService.newURI(val,null,null);
+	  this._audio.setAttribute('src', this._uri.spec);
+	} catch(x) {
+	}
+      ]]></setter>
+      <getter><![CDATA[
+        if (!this._uri)
+	  return '';
+	return this._uri.spec;
+      ]]></getter>
+
+    </property>
+    <method name="play">
+      <body><![CDATA[
+	if (!this._method)
+	  this._setMethod('html');
+        if (this._method == 'html'){
+	  if (this._audio)
+	    this._audio.play();
+	} else if (this._method == 'nsisound') {
+	  if (this._audio)
+	    this._audio.play(this._uri);
+	}
+      ]]></body>
+    </method>
+    </implementation>
+  </binding>
+</bindings>
+
