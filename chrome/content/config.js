@@ -95,12 +95,11 @@ var KanColleTimerConfig = {
 
 
 	try{
-	    $('sound.ndock').src = "file://"+KanColleTimerConfig.getUnichar('sound.ndock');
-	    $('sound.kdock').src = "file://"+KanColleTimerConfig.getUnichar('sound.kdock');
-	    $('sound.mission').src = "file://"+KanColleTimerConfig.getUnichar('sound.mission');
-	    $('sound.1min.ndock').src = "file://"+KanColleTimerConfig.getUnichar('sound.1min.ndock');
-	    $('sound.1min.kdock').src = "file://"+KanColleTimerConfig.getUnichar('sound.1min.kdock');
-	    $('sound.1min.mission').src = "file://"+KanColleTimerConfig.getUnichar('sound.1min.mission');
+	    let method = KanColleTimerConfig.getInt('sound.api') ? 'nsisound' : 'html';
+	    for (let iter in ['ndock','kdock','mission','1min.ndock','1min.kdock','1min.mission']) {
+		$(iter).method = method;
+		$(iter).file = KanColleTimerConfig.getUnichar(iter);
+	    }
 	} catch (x) {
 	    //AddLog(x);
 	}

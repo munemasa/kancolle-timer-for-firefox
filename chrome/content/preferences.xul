@@ -3,6 +3,7 @@
 <?xml-stylesheet href="chrome://mozapps/content/preferences/preferences.css"?>
 <?xml-stylesheet href="chrome://browser/skin/preferences/preferences.css"?>
 <?xml-stylesheet href="chrome://kancolletimer/content/preferences.css" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/sound-binding.css" type="text/css"?>
 <prefwindow id="kancolletimer-settings"
 	    title="艦これタイマー設定" windowtype="prefwindow"
 	    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -52,8 +53,8 @@
       <groupbox>
 	<caption>音声再生方式</caption>
 	<radiogroup preference="pref-sound-api">
-	  <radio id="play-html5-audio" label="HTML5 audio" value="0"/>
-	  <radio id="play-nsisound" label="nsISound" value="1"/>
+	  <radio id="play-html5-audio" label="HTML5 audio" value="0" oncommand="$('audio-playback').method = 'html';"/>
+	  <radio id="play-nsisound" label="nsISound" value="1" oncommand="$('audio-playback').method = 'nsisound';"/>
 	</radiogroup>
       </groupbox>
     </vbox>
@@ -184,7 +185,7 @@
     <checkbox preference="pref-screenshot-jpeg" label="JPEGで保存する"/>
   </prefpane>
 
-  <html:audio id="audio-playback" src=""/>
+  <sound id="audio-playback"/>
 
   <script type="application/x-javascript" src="chrome://mozapps/content/preferences/fontbuilder.js"/>
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/libs.js" />
