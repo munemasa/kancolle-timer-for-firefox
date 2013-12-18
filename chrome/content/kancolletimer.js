@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 // http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/
 
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
@@ -124,6 +126,18 @@ var KanColleTimer = {
 	let ndockremain = evaluateXPath(document,"//*[@class='ndockremain']");
 	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
 
+	function check_cookie(type,no,time) {
+	    let k;
+	    let v;
+	    let ret;
+	    k = type + '_' + no;
+	    v = KanColleRemainInfo.cookie[k];
+	    ret = v != time;
+	    if (ret)
+		KanColleRemainInfo.cookie[k] = time;
+	    return ret;
+	}
+
 	// 遠征
 	for(i in KanColleRemainInfo.fleet){
 	    i = parseInt(i);
@@ -133,7 +147,8 @@ var KanColleTimer = {
 		if( fleetremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
-			this.noticeMission1min(i,str);
+			if (check_cookie('1min.mission',i,t))
+			    this.noticeMission1min(i,str);
 		    }
 		}
 		fleetremain[i].style.color = d<60?"red":"black";
@@ -142,7 +157,8 @@ var KanColleTimer = {
 		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.fleet[i].mission_finishedtime = 0;
-		    this.noticeMissionFinished(i, str);
+		    if (check_cookie('mission',i,t))
+			this.noticeMissionFinished(i, str);
 		}else{
 		    fleetremain[i].value = GetTimeString( d );
 		}
@@ -161,7 +177,8 @@ var KanColleTimer = {
 		if( ndockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
-			this.noticeRepair1min(i,str);
+			if (check_cookie('1min.ndock',i,t))
+			    this.noticeRepair1min(i,str);
 		    }
 		}
 		ndockremain[i].style.color = d<60?"red":"black";
@@ -169,7 +186,8 @@ var KanColleTimer = {
 		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.ndock[i].finishedtime = 0;
-		    this.noticeRepairFinished(i,str);
+		    if (check_cookie('ndock',i,t))
+			this.noticeRepairFinished(i,str);
 		}else{
 		    ndockremain[i].value = GetTimeString( d );
 		}
@@ -188,7 +206,8 @@ var KanColleTimer = {
 		if( kdockremain[i].style.color=="black" ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
-			this.noticeConstruction1min(i,str);
+			if (check_cookie('1min.kdock',i,t))
+			    this.noticeConstruction1min(i,str);
 		    }
 		}
 		kdockremain[i].style.color = d<60?"red":"black";
@@ -196,7 +215,8 @@ var KanColleTimer = {
 		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
 		    AddLog(str);
 		    KanColleRemainInfo.kdock[i].finishedtime = 0;
-		    this.noticeConstructionFinished(i,str);
+		    if (check_cookie('kdock',i,t))
+			this.noticeConstructionFinished(i,str);
 		}else{
 		    kdockremain[i].value = GetTimeString( d );
 		}
@@ -226,52 +246,122 @@ var KanColleTimer = {
     },
 
     /**
-     * スクリーンショット撮影
-     * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
+     * スクリーンショット保存
+     * @param file 保存ファイル名(nsIFile)
+     * @param url 保存オブジェクト
      */
-    takeScreenshot: function(path){
-	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
-	var url = TakeKanColleScreenshot( isjpeg );
-	if( !url ){
+    _saveScreenshot: function(file,url){
+	if (!file || !url)
+	    return;
+	Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
+	    .createInstance(Components.interfaces.nsIWebBrowserPersist)
+	    .saveURI(url, null, null, null, null, file, null);
+    },
+    /**
+     * スクリーンショット撮影
+     * @param isjpeg JPEGかどうか
+     */
+    _takeScreenshot: function(isjpeg){
+	let url = TakeKanColleScreenshot(isjpeg);
+	if (!url) {
 	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
 	    return null;
 	}
-
-	var file = null;
-	if( !path ){
-	    var fp = Components.classes['@mozilla.org/filepicker;1']
-		.createInstance(Components.interfaces.nsIFilePicker);
-	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
-	    fp.appendFilters(fp.filterImages);
-	    fp.defaultExtension = isjpeg?"jpg":"png";
-	    if( KanColleTimerConfig.getUnichar("screenshot.path") ){
-		fp.displayDirectory = OpenFile(KanColleTimerConfig.getUnichar("screenshot.path"));
-	    }
-
-	    var datestr = this.getNowDateString();
-	    fp.defaultString = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
-	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
-	    
-	    file = fp.file;
-	}else{
-	    let localfileCID = '@mozilla.org/file/local;1';
-	    let localfileIID =Components.interfaces.nsILocalFile;
-	    file = Components.classes[localfileCID].createInstance(localfileIID);
-	    file.initWithPath(path);
-	    var datestr = this.getNowDateString();
-	    var filename = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
-	    file.append(filename);
-	}
-	
-	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-            .createInstance(Components.interfaces.nsIWebBrowserPersist);
-	wbp.saveURI(url, null, null, null, null, file, null);
-	return true;
+	return url;
     },
 
-    takeScreenshotSeriography:function(){
-	var path = KanColleTimerConfig.getUnichar("screenshot.path");
-	this.takeScreenshot(path);
+    /**
+     * スクリーンショット撮影
+     */
+    takeScreenshot: function(){
+	let ret;
+	let defaultdir = KanColleTimerConfig.getUnichar("screenshot.path");
+	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+	let nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+	let url = this._takeScreenshot(isjpeg);
+
+	if (!url)
+	    return;
+
+	fp.init(window, "保存ファイルを選んでください", nsIFilePicker.modeSave);
+	if (defaultdir) {
+	    let file = Components.classes['@mozilla.org/file/local;1']
+		       .createInstance(Components.interfaces.nsILocalFile);
+	    file.initWithPath(defaultdir);
+	    if (file.exists() && file.isDirectory())
+		fp.displayDirectory = file;
+	}
+	fp.appendFilters(nsIFilePicker.filterImages);
+	fp.defaultString = "screenshot-"+ this.getNowDateString() + (isjpeg?".jpg":".png");
+	fp.defaultExtension = isjpeg ? "jpg" : "png";
+	ret = fp.show();
+	if ((ret != nsIFilePicker.returnOK && ret != nsIFilePicker.returnReplace) || !fp.file)
+	    return null;
+
+	this._saveScreenshot(fp.file, url);
+    },
+
+    /**
+     * スクリーンショット連続撮影用フォルダ選択
+     * @return nsIFile
+     */
+    takeScreenshotSeriographySelectFolder: function(){
+	let defaultdir = KanColleTimerConfig.getUnichar("screenshot.path");
+	let ret;
+	let nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+
+	fp.init(window, "保存フォルダを選んでください", nsIFilePicker.modeGetFolder);
+	if (defaultdir) {
+	    let file = Components.classes['@mozilla.org/file/local;1']
+		       .createInstance(Components.interfaces.nsILocalFile);
+	    file.initWithPath(defaultdir);
+	    if (file.exists() && file.isDirectory())
+		fp.displayDirectory = file;
+	}
+	ret = fp.show();
+	if (ret != nsIFilePicker.returnOK || !fp.file)
+	    return null;
+
+	KanColleTimerConfig.setUnichar("screenshot.path", fp.file.path);
+
+	return fp.file;
+    },
+
+    /**
+     * スクリーンショット連続撮影
+     */
+    takeScreenshotSeriography: function(){
+	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+	let url = this._takeScreenshot(isjpeg);
+	let file = null;
+	let dir;
+
+	if (!url)
+	    return;
+
+	dir = KanColleTimerConfig.getUnichar("screenshot.path");
+	if (dir) {
+	    file = Components.classes['@mozilla.org/file/local;1']
+		   .createInstance(Components.interfaces.nsILocalFile);
+	    file.initWithPath(dir);
+	}
+
+	// フォルダのチェック。フォルダでなければ、(再)選択
+	do {
+	    if (file && file.exists() && file.isDirectory())
+		break;
+	    file = this.takeScreenshotSeriographySelectFolder();
+	} while(file);
+
+	// エラー
+	if (!file)
+	    return null;
+
+	file.append("screenshot-" + this.getNowDateString() + (isjpeg ? '.jpg' : '.png'));
+
+	this._saveScreenshot(file, url);
     },
 
     findWindow:function(){
@@ -313,7 +403,7 @@ var KanColleTimer = {
 
     init: function(){
 	KanColleHttpRequestObserver.init();
-	KanColleHttpRequestObserver.addCallback( KanColleTimerCallback );
+	KanColleTimerRegisterCallback();
 
 	setInterval( function(){
 			 KanColleTimer.update();
@@ -351,6 +441,8 @@ var KanColleTimer = {
 	} catch (x) {
 	}
 
+	KanColleTimerLibInit();
+
 	this.createMissionBalanceTable();
 	this.audios = document.getElementsByTagName('html:audio');
 
@@ -358,7 +450,8 @@ var KanColleTimer = {
     },
 
     destroy: function(){
-	KanColleHttpRequestObserver.removeCallback( KanColleTimerCallback );
+	KanColleTimerLibExit();
+	KanColleTimerUnregisterCallback();
 	KanColleHttpRequestObserver.destroy();
     }
 };
