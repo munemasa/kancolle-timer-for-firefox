@@ -28,7 +28,7 @@
 	<hbox>
 	  <textbox flex="1" preference="pref-sound-default"/>
 	  <button label="選択..."
-		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-default);"/>
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-default');"/>
 	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-default');"/>
 	</hbox>
       </groupbox>

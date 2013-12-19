@@ -217,6 +217,21 @@
       </vbox>
       <!-- 編成・任務表 -->
       <vbox>
+	<hbox align="center">
+	  <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
+	    <menupopup>
+	      <menuitem label="0分" value="0" />
+	      <menuitem label="3分" value="180" />
+	      <menuitem label="6分" value="360"/>
+	      <menuitem label="9分" value="540"/>
+	      <menuitem label="12分" value="720"/>
+	      <menuitem label="15分" value="900"/>
+	      <menuitem label="30分" value="1800"/>
+	    </menupopup>
+	  </menulist>
+	  <label id="general-timer" value="00:00:00"/>
+	</hbox>
+
 	<groupbox>
 	  <caption>艦隊司令部情報</caption>
 	  <hbox>

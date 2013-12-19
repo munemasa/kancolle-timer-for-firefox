@@ -97,6 +97,7 @@ var KanColleTimerConfig = {
 	    audios[3].src = "file://"+KanColleTimerConfig.getUnichar('sound.1min.ndock');
 	    audios[4].src = "file://"+KanColleTimerConfig.getUnichar('sound.1min.kdock');
 	    audios[5].src = "file://"+KanColleTimerConfig.getUnichar('sound.1min.mission');
+	    audios[6].src = "file://"+KanColleTimerConfig.getUnichar('sound.default');
 
 	} catch (x) {
 	    //AddLog(x);

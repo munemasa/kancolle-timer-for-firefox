@@ -110,12 +110,37 @@ var KanColleTimer = {
 	}
     },
 
+    playDefaultSound: function(){
+	let path = KanColleTimerConfig.getUnichar('sound.default');
+	this.playNotice( this.audios[6], path );
+    },
+
     // ウィンドウを最前面にする
     setWindowOnTop:function(){
 	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
     },
 
+    // 汎用タイマーの時間設定
+    setGeneralTimer: function(sec){
+	sec = parseInt(sec);
+	this.general_timer = GetCurrentTime() + sec;
+    },
+
+    updateGeneralTimer:function(){
+	let now = GetCurrentTime();
+	if( !this.general_timer ) return;
+	let remain = this.general_timer-now;
+	if( remain<0 ){
+	    remain = 0;
+	    this.general_timer = 0;
+	    this.playDefaultSound();
+	}
+	$('general-timer').value = GetTimeString( remain );
+    },
+
     update: function(){
+	this.updateGeneralTimer();
+
 	let i;
 	let now = GetCurrentTime();
 	let fleetremain = evaluateXPath(document,"//*[@class='fleetremain']");
