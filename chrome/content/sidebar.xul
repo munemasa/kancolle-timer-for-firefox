@@ -79,10 +79,12 @@
 	    <label value="&#x231A;" popup="general-timer-popup"/><timer id="general-timer" mode="time"/>
 	    <timer id="general-timer" mode="time"/>
 	  </caption>
-          <hbox><label value="艦船数"/><label id="basic-information-shipcount" value=""/></hbox>
-          <hbox><label value="装備数"/><label id="basic-information-slotitemcount" value=""/></hbox>
-          <hbox><label value="高速建造材数"/><label id="basic-information-burnercount" value=""/></hbox>
-          <hbox><label value="高速修復材数"/><label id="basic-information-bucketcount" value=""/></hbox>
+          <hbox>
+	    <image src="data/ship.png"/><label id="basic-information-shipcount" value="-"/>
+	    <image src="data/slotitem.png"/><label id="basic-information-slotitemcount" value="-"/>
+	    <image src="data/burner.png"/><label id="basic-information-burnercount" value="-"/>
+            <image src="data/repairkit.png"/><label id="basic-information-bucketcount" value="-"/>
+	  </hbox>
 	</groupbox>
 	
 	<groupbox id="group-mission">

@@ -77,8 +77,10 @@ function KanColleTimerBasicInformationPanel(){
 	    bucket = d.api_value;
     }
 
-    $('basic-information-shipcount').value = ships + ' / ' + maxships;
-    $('basic-information-slotitemcount').value = slotitems + ' / ' + maxslotitems;
+    $('basic-information-shipcount').value = ships;
+    $('basic-information-shipcount').setAttribute('tooltiptext', ships + ' / ' + maxships);
+    $('basic-information-slotitemcount').value = slotitems;
+    $('basic-information-slotitemcount').setAttribute('tooltiptext', slotitems + ' / ' + maxslotitems);
     $('basic-information-burnercount').value = burner;
     $('basic-information-bucketcount').value = bucket;
 
