@@ -196,7 +196,10 @@
       <!-- 編成・任務表 -->
       <vbox>
 	<hbox>
-	<label value="保有艦艇数"/><label id="number-of-ships" value=""/><label id="max-number-of-ships" value=""/>
+	<label value="保有艦艇数"/><label id="number-of-ships" value=""/><label value="/"/><label id="max-number-of-ships" value=""/>
+	</hbox>
+	<hbox>
+	<label value="装備アイテム数"/><label id="number-of-items" value=""/><label value="/"/><label id="max-number-of-items" value=""/>
 	</hbox>
 	<groupbox>
 	  <caption><label id="first-fleet-name" value="第1艦隊"/></caption>
@@ -229,7 +232,7 @@
   <html:audio src=""/>
   <html:audio src=""/>
   <html:audio src=""/>
-  
+
   <scrollbox width="1" height="1">
     <html:canvas id="KanColleTimerCapture" display="none" />
   </scrollbox>

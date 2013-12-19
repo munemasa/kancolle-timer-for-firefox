@@ -171,9 +171,9 @@ function KanColleTimerCallback(request,s){
     }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
 	KanColleRemainInfo.gOwnedShipList = data.api_data.api_ship_data || data.api_data;
 	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
-
     }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
 	KanColleRemainInfo.gOwnedItem = data.api_data;
+	$('number-of-items').value = KanColleRemainInfo.gOwnedItem.length;
     }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
 	let d = data.api_data;
 	let f = function( elems, n ){
@@ -193,7 +193,8 @@ function KanColleTimerCallback(request,s){
 	f( ndocks, parseInt(d.api_count_ndock) );
 	f( kdocks, parseInt(d.api_count_kdock) );
 
-	$('max-number-of-ships').value = "/"+d.api_max_chara+"隻";
+	$('max-number-of-ships').value = d.api_max_chara+"隻";
+	$('max-number-of-items').value = d.api_max_slotitem;
     }else if( url.match(/kcsapi\/api_get_member\/material/) ){
 	$('repairkit-number').value = data.api_data[5].api_value;
     }else if( url.match(/kcsapi\/api_get_member\/questlist/) ){

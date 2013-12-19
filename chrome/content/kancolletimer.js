@@ -340,6 +340,9 @@ var KanColleTimer = {
 
 	SetMissionName();
 	SetFirstFleetOrganization( KanColleRemainInfo.gDeckList );
+
+	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
+	$('number-of-items').value = KanColleRemainInfo.gOwnedItem.length;
     },
 
     destroy: function(){
