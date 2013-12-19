@@ -16,6 +16,14 @@
   <keyset>
     <!-- CTRL+W: Close this window -->
     <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+    <!-- CTRL+Num: Change the tab -->
+    <key id="tab-move-1" key="1" modifiers="accel"
+	 oncommand="$('deck').selectedIndex=0;"/>
+    <key id="tab-move-2" key="2" modifiers="accel"
+	 oncommand="$('deck').selectedIndex=1;"/>
+    <key id="tab-move-3" key="3" modifiers="accel"
+	 oncommand="$('deck').selectedIndex=2;"/>
+
   </keyset>
 
   <script type="application/javascript;version=1.7"
@@ -29,6 +37,12 @@
 	  src="chrome://kancolletimer/content/data.js" />
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/kancolletimer.js" />
+  <script>
+  <![CDATA[
+    window.addEventListener("load", function(e){ KanColleTimer.init(); WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') ); }, false);
+    window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);
+  ]]>
+  </script>
 
   <toolbox>
     <toolbar>

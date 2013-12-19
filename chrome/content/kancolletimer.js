@@ -350,7 +350,3 @@ var KanColleTimer = {
 	KanColleHttpRequestObserver.destroy();
     }
 };
-
-
-window.addEventListener("load", function(e){ KanColleTimer.init(); WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') ); }, false);
-window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);

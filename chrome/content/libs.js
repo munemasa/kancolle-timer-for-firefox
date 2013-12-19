@@ -220,6 +220,7 @@ function KanColleTimerCallback(request,s){
 function SetFirstFleetOrganization( fleets ){
     // 第1艦隊編成
     let fleet = fleets[0];
+    if( !fleet ) return;
     let rows = $('fleet-1');
     RemoveChildren(rows);
     for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){

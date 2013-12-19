@@ -19,5 +19,3 @@ KanColleTimerSidebar.open = function(){
 	w.focus();
     }
 };
-
-window.addEventListener("unload", function(e){ KanColleTimerSidebar.destroy(); }, false);
