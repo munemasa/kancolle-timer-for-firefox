@@ -20,5 +20,4 @@ KanColleTimerSidebar.open = function(){
     }
 };
 
-window.addEventListener("load", function(e){ KanColleTimerSidebar.init(); }, false);
 window.addEventListener("unload", function(e){ KanColleTimerSidebar.destroy(); }, false);
