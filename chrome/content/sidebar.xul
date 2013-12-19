@@ -25,8 +25,8 @@
   <script>
   <![CDATA[
 
-    window.addEventListener("load", function(e){ KanColleTimerSidebar.init(); }, false);
-    window.addEventListener("unload", function(e){ KanColleTimerSidebar.destroy(); }, false);
+    window.addEventListener("load", function(e){ KanColleTimer.init(); }, false);
+    window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);
   ]]>
   </script>
 
@@ -203,12 +203,31 @@
       </vbox>
       <!-- 編成・任務表 -->
       <vbox>
-	<hbox>
-	<label value="保有艦艇数"/><label id="number-of-ships" value=""/><label value="/"/><label id="max-number-of-ships" value=""/>
+	<hbox align="center">
+	  <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
+	    <menupopup>
+	      <menuitem label="0分" value="0" />
+	      <menuitem label="3分" value="180" />
+	      <menuitem label="6分" value="360"/>
+	      <menuitem label="9分" value="540"/>
+	      <menuitem label="12分" value="720"/>
+	      <menuitem label="15分" value="900"/>
+	      <menuitem label="30分" value="1800"/>
+	    </menupopup>
+	  </menulist>
+	  <label id="general-timer" value="00:00:00"/>
 	</hbox>
-	<hbox>
-	<label value="装備アイテム数"/><label id="number-of-items" value=""/><label value="/"/><label id="max-number-of-items" value=""/>
-	</hbox>
+
+	<groupbox>
+	  <caption>艦隊司令部情報</caption>
+	  <hbox>
+	    <label value="保有艦艇数"/><label id="number-of-ships" value=""/><label value="/"/><label id="max-number-of-ships" value=""/>
+	  </hbox>
+	  <hbox>
+	    <label value="装備アイテム数"/><label id="number-of-items" value=""/><label value="/"/><label id="max-number-of-items" value=""/>
+	  </hbox>
+	</groupbox>
+
 	<groupbox>
 	  <caption><label id="first-fleet-name" value="第1艦隊"/></caption>
 	  <grid>
@@ -231,8 +250,8 @@
       </vbox>
     </deck>
   </stack>
-  
-  <button label="ウィンドウを開く" oncommand="KanColleTimerSidebar.open();"/>
+
+  <button label="ウィンドウを開く" oncommand="KanColleTimer.open();"/>
 
   <html:audio src=""/>
   <html:audio src=""/>
