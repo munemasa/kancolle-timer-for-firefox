@@ -256,6 +256,7 @@
   <html:audio src=""/>
   <html:audio src=""/>
   <html:audio src=""/>
+  <html:audio src=""/><!-- default -->
 
   <scrollbox width="1" height="1">
     <html:canvas id="KanColleTimerCapture" display="none" />

@@ -13,6 +13,8 @@ pref("extensions.kancolletimer.wallpaper.alpha",100);
 
 pref("extensions.kancolletimer.sound.api",0);
 
+pref("extensions.kancolletimer.sound.default","");
+
 pref("extensions.kancolletimer.sound.mission","");
 pref("extensions.kancolletimer.sound.ndock","");
 pref("extensions.kancolletimer.sound.kdock","");
