@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/sound-binding.css" type="text/css"?>
 
 <!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
 
@@ -303,12 +304,12 @@
     </menupopup>
   </groupbox>
   
-  <html:audio id="sound.ndock" src=""/>
-  <html:audio id="sound.kdock" src=""/>
-  <html:audio id="sound.mission" src=""/>
-  <html:audio id="sound.1min.ndock" src=""/>
-  <html:audio id="sound.1min.kdock" src=""/>
-  <html:audio id="sound.1min.mission" src=""/>
+  <sound id="sound.ndock" src=""/>
+  <sound id="sound.kdock" src=""/>
+  <sound id="sound.mission" src=""/>
+  <sound id="sound.1min.ndock" src=""/>
+  <sound id="sound.1min.kdock" src=""/>
+  <sound id="sound.1min.mission" src=""/>
 
   <scrollbox width="1" height="1">
     <html:canvas id="KanColleTimerCapture" display="none" />
