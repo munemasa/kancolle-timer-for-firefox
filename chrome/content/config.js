@@ -98,7 +98,7 @@ var KanColleTimerConfig = {
 	    let method = KanColleTimerConfig.getInt('sound.api') ? 'nsisound' : 'html';
 	    for (let iter in ['ndock','kdock','mission','1min.ndock','1min.kdock','1min.mission']) {
 		$(iter).method = method;
-		$(iter).file = KanColleTimerConfig.getUnichar(iter);
+		$(iter).path = KanColleTimerConfig.getUnichar(iter);
 	    }
 	} catch (x) {
 	    //AddLog(x);
