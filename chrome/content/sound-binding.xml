@@ -27,9 +27,9 @@
     <method name="setMethod">
       <parameter name="method"/>
       <body><![CDATA[
-	if (val == this._method)
+	if (method == this._method)
 	  return;
-	if (val == 'nsisound') {
+	if (method == 'nsisound') {
 	  this._audio = Components.classes["@mozilla.org/sound;1"]
 			.createInstance(Components.interfaces.nsISound);
 	} else {
@@ -39,7 +39,7 @@
 	    this._audio = new Audio();
 	  }
 	}
-	this._method = val;
+	this._method = method;
       ]]></body>
     </method>
     <property name="method">
