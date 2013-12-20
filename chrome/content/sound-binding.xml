@@ -32,7 +32,7 @@
 	if (method == 'nsisound') {
 	  this._audio = Components.classes["@mozilla.org/sound;1"]
 			.createInstance(Components.interfaces.nsISound);
-        } else {
+	} else {
 	  if (this._uri) {
 	    this._audio = new Audio(this._uri.spec);
 	  } else {
@@ -99,12 +99,12 @@
       <body><![CDATA[
 	if (!this._method)
 	  this.setMethod('html');
-        if (this._method == 'html'){
-	  if (this._audio)
-	    this._audio.play();
-	} else if (this._method == 'nsisound') {
+	if (this._method == 'nsisound'){
 	  if (this._audio)
 	    this._audio.play(this._uri);
+	} else {
+	  if (this._audio)
+	    this._audio.play();
 	}
       ]]></body>
     </method>
