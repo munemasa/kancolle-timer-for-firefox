@@ -171,6 +171,7 @@ function KanColleTimerCallback(request,s){
     }else if( url.match(/kcsapi\/api_get_member\/ship/) ){
 	KanColleRemainInfo.gOwnedShipList = data.api_data.api_ship_data || data.api_data;
 	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
+	SetFirstFleetOrganization( KanColleRemainInfo.gDeckList );
     }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
 	KanColleRemainInfo.gOwnedItem = data.api_data;
 	$('number-of-items').value = KanColleRemainInfo.gOwnedItem.length;
