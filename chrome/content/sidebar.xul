@@ -28,6 +28,8 @@
 		     oncommand="$('deck').selectedIndex=0;"/>
       <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
 		     oncommand="$('deck').selectedIndex=1;"/>
+      <toolbarbutton tooltiptext="任務" image="data/quest.png"
+		     oncommand="$('deck').selectedIndex=2;"/>
       <toolbarbutton tooltiptext="所有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
       <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
@@ -54,6 +56,7 @@
       </toolbarbutton>
     </toolbar>
   </toolbox>
+
   <stack flex="1">
     <vbox id="wallpaper" flex="1">
     </vbox>
@@ -198,6 +201,32 @@
 	  Referenced from 艦隊これくしょん ～艦これ～ 攻略＆2chまとめwiki
 	</description>
       </vbox>
+      <!-- 任務表 -->
+      <vbox>
+	<hbox align="center">
+	  <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
+	    <menupopup>
+	      <menuitem label="0分" value="0" />
+	      <menuitem label="3分" value="180" />
+	      <menuitem label="6分" value="360"/>
+	      <menuitem label="9分" value="540"/>
+	      <menuitem label="12分" value="720"/>
+	      <menuitem label="15分" value="900"/>
+	      <menuitem label="30分" value="1800"/>
+	    </menupopup>
+	  </menulist>
+	  <timer id="general-timer" mode="time"/>
+	</hbox>
+	
+	<groupbox>
+	  <caption>遂行中任務</caption>
+	  <label class="quest-name" value=""/>
+	  <label class="quest-name" value=""/>
+	  <label class="quest-name" value=""/>
+	  <label class="quest-name" value=""/>
+	  <label class="quest-name" value=""/>
+	</groupbox>
+      </vbox>
     </deck>
   </stack>
 
@@ -302,6 +331,7 @@
   <sound id="sound.1min.ndock" src=""/>
   <sound id="sound.1min.kdock" src=""/>
   <sound id="sound.1min.mission" src=""/>
+  <sound id="sound.default" src=""/>
   
   <scrollbox width="1" height="1">
     <html:canvas id="KanColleTimerCapture" display="none" />

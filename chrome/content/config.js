@@ -96,7 +96,7 @@ var KanColleTimerConfig = {
 
 	try{
 	    let method = KanColleTimerConfig.getInt('sound.api') ? 'nsisound' : 'html';
-	    const sounds = ['ndock','kdock','mission','1min.ndock','1min.kdock','1min.mission'];
+	    const sounds = ['ndock','kdock','mission','1min.ndock','1min.kdock','1min.mission','default'];
 	    for (let i = 0; i < sounds.length; i++) {
 		let soundid = 'sound.' + sounds[i];
 		$(soundid).method = method;

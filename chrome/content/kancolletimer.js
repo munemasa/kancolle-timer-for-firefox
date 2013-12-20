@@ -12,6 +12,7 @@ var KanColleTimer = {
     fleet: [],
 
     cookie:{},
+    general_timer: 0,
 
     // 入渠ドックのメモ作成
     createRepairMemo: function(){
@@ -95,11 +96,35 @@ var KanColleTimer = {
 	}
     },
 
+    playDefaultSound: function(){
+	$('sound.default').play();
+    },
+
     // ウィンドウを最前面にする
     setWindowOnTop:function(){
 	let checkbox = $('window-stay-on-top');
 	if (checkbox)
 	    WindowOnTop( window, checkbox.hasAttribute('checked') );
+    },
+
+    setGeneralTimer: function(sec){
+	sec = parseInt(sec,10);
+	if (sec) {
+	    this.general_timer = (new Date).getTime() + sec * 1000;
+	    $('general-timer').finishTime = (new Date().getTime()) + sec * 1000;
+	} else {
+	    this.general_timer = 0;
+	    $('general-timer').finishTime = '';
+	}
+    },
+
+    updateGeneralTimer: function(){
+	let now = (new Date).getTime();
+	if( !this.general_timer) return;
+	if (now > this.general_timer) {
+	    this.general_timer = 0;
+	    this.playDefaultSound();
+	}
     },
 
     update: function(){
@@ -118,6 +143,8 @@ var KanColleTimer = {
 		cookie[k] = time;
 	    return ret;
 	}
+
+	this.updateGeneralTimer();
 
 	// 遠征
 	for(i in KanColleRemainInfo.fleet){
@@ -371,6 +398,8 @@ var KanColleTimer = {
 
 	this.createMissionBalanceTable();
 	this.setWindowOnTop();
+
+	SetMissionName();
     },
 
     destroy: function(){

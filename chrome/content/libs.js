@@ -605,6 +605,43 @@ function KanColleTimerMemberShip2FleetHandler(){
     }
 }
 
+function KanColleTimerQuestlistHandler(){
+    let d = KanColleDatabase.memberQuestlist.get();
+    for( let i in d.api_list ){
+	let mission = d.api_list[i];
+	let no = mission.api_no;
+	let state = mission.api_state; // 2だと遂行中,3だと達成
+	switch(state){
+	case 3:
+	    delete KanColleRemainInfo.gMission[no];
+	    break;
+	default:
+	    KanColleRemainInfo.gMission[no] = mission;
+	    break;
+	}
+    }
+
+    SetMissionName();
+}
+
+// 任務名称を表示
+function SetMissionName(){
+    let quest_name = document.getElementsByClassName('quest-name');
+    let cnt=0;
+    for( let i in KanColleRemainInfo.gMission ){
+	let mission = KanColleRemainInfo.gMission[i];
+	if( mission && mission.api_state==2 ){
+	    quest_name[cnt].value = mission.api_title;
+	    quest_name[cnt].setAttribute('tooltiptext', mission.api_detail);
+	    cnt++;
+	}
+    }
+    for( ; cnt<5;cnt++ ){
+	quest_name[cnt].value = "";
+	quest_name[cnt].removeAttribute('tooltiptext');
+    }
+}
+
 function KanColleTimerRegisterCallback(){
     let db = KanColleDatabase;
     db.memberBasic.appendCallback(KanColleTimerBasicInformationPanel);
@@ -622,6 +659,7 @@ function KanColleTimerRegisterCallback(){
     db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.appendCallback(KanColleTimerBasicInformationPanel);
+    db.memberQuestlist.appendCallback(KanColleTimerQuestlistHandler);
 }
 
 function KanColleTimerUnregisterCallback(){
@@ -641,6 +679,7 @@ function KanColleTimerUnregisterCallback(){
     db.memberDeck.removeCallback(KanColleTimerDeckHandler);
     db.memberRecord.removeCallback(KanColleTimerBasicInformationPanel);
     db.memberBasic.removeCallback(KanColleTimerBasicInformationPanel);
+    db.memberQuestlist.removeCallback(KanColleTimerQuestlistHandler);
 }
 
 function AddLog(str){
