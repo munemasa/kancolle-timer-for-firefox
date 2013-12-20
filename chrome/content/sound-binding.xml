@@ -29,17 +29,15 @@
       <body><![CDATA[
 	if (method == this._method)
 	  return;
-	if (method == 'html') {
+	if (method == 'nsisound') {
+	  this._audio = Components.classes["@mozilla.org/sound;1"]
+			.createInstance(Components.interfaces.nsISound);
+        } else {
 	  if (this._uri) {
 	    this._audio = new Audio(this._uri.spec);
 	  } else {
 	    this._audio = new Audio();
 	  }
-	} else if (method == 'nsisound') {
-	  this._audio = Components.classes["@mozilla.org/sound;1"]
-			.createInstance(Components.interfaces.nsISound);
-	} else {
-	  return;
 	}
 	this._method = method;
       ]]></body>
@@ -63,7 +61,8 @@
 	file.initWithPath(val);
 	this._uri = _IOService.newFileURI(file);
 
-        if (this._method == 'html') {
+        if (this._method == 'nsisound') {
+        } else {
 	  if (this._audio)
 	    this._audio.setAttribute('src', this._uri.spec);
 	}
