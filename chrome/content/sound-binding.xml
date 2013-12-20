@@ -54,17 +54,25 @@
     </property>
     <property name="path">
       <setter><![CDATA[
-	let _IOService = Components.classes['@mozilla.org/network/io-service;1']
-			 .getService(Ci.nsIIOService);
-        let file = Components.classes['@mozilla.org/file/local;1']
-		   .createInstance(Components.interfaces.nsILocalFile);
-	file.initWithPath(val);
-	this._uri = _IOService.newFileURI(file);
+	try{
+	  let _IOService = Components.classes['@mozilla.org/network/io-service;1']
+			   .getService(Ci.nsIIOService);
+          let file = Components.classes['@mozilla.org/file/local;1']
+		     .createInstance(Components.interfaces.nsILocalFile);
+	  file.initWithPath(val);
+	  this._uri = _IOService.newFileURI(file);
+	} catch(x) {
+	  this._uri = null;
+	}
 
-        if (this._method == 'nsisound') {
-        } else {
-	  if (this._audio)
-	    this._audio.setAttribute('src', this._uri.spec);
+	if (this._method == 'nsisound') {
+	} else {
+	  if (this._audio) {
+	    if (this._uri)
+	      this._audio.setAttribute('src', this._uri.spec);
+	    else
+	      this._audio.removeAttribute('src');
+	  }
 	}
       ]]></setter>
     </property>
