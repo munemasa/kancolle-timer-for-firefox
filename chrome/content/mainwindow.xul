@@ -216,7 +216,7 @@
 	</description>
       </vbox>
       <!-- 編成・任務表 -->
-      <vbox>
+      <vbox flex="1" style="overflow:auto;">
 	<hbox align="center">
 	  <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
 	    <menupopup>
