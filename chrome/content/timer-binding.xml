@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- vim: set ts=8 sw=2 sts=2 : -->
+<!--
+ | Copyright (c)2013 YOSHIFUJI Hideaki
+ |
+ | Permission is hereby granted, free of charge, to any person obtaining a copy
+ | of this software and associated documentation files (the "Software"), to deal
+ | in the Software without restriction, including without limitation the rights
+ | to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ | copies of the Software, and to permit persons to whom the Software is
+ | furnished to do so, subject to the following conditions:
+ |
+ | The above copyright notice and this permission notice shall be included in
+ | all copies or substantial portions of the Software.
+ |
+ | THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ | IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ | FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ | AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ | LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ | OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ | THE SOFTWARE.
+-->
+<bindings xmlns="http://www.mozilla.org/xbl"
+	  xmlns:xbl="http://www.mozilla.org/xbl"
+	  xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <binding id="timer">
+    <content>
+      <xul:label anonid="time" value=""/>
+    </content>
+
+    <implementation>
+      <property name="finishTime">
+	<getter><![CDATA[
+	  let val = this.getAttribute('finish-time');
+	  if (val == "")
+	    return Number.NaN;
+	  return parseInt(val, 10);
+	]]></getter>
+
+	<setter><![CDATA[
+	  var v = parseInt(val,10);
+	  this.setAttribute('finish-time',isNaN(v)?'':(''+v));
+	  this.update();
+	]]></setter>
+      </property>
+
+      <property name="mode">
+	<getter><![CDATA[
+	  let val = this.getAttribute('mode');
+	  return val != 'target' ? 'time' : 'target';
+	]]></getter>
+	<setter><![CDATA[
+	  if (val != 'time' && val != 'target')
+	    return;
+	  this.setAttribute('mode', val);
+	  this.update();
+	]]></setter>
+      </property>
+
+      <method name="$">
+	<parameter name="anonid"/>
+	<body><![CDATA[
+	    return document.getAnonymousElementByAttribute(this,'anonid',anonid);
+	]]></body>
+      </method>
+      <method name="update">
+	<body><![CDATA[
+	  let ft;
+	  let fstr;
+	  let rstr;
+	  let rcolor;
+	  let next = -1;
+
+	  ft = this.finishTime;
+
+	  if (!isNaN(ft) && ft) {
+	    let now = (new Date()).getTime();
+	    let diff;
+	    diff = ft - now;
+	    next = diff;
+	    if (diff < 0)
+	      diff = 0;
+
+	    if (this.mode == 'target') {
+	      if (diff > 60000)
+		next = diff - 60000;
+	      rstr = GetDateString(ft);
+	    } else {
+	      if (diff > 0) {
+		next %= 1000;
+		if (!next)
+		  next = 1000;
+	      }
+	      rstr = GetTimeString(Math.ceil(diff/1000));
+	    }
+
+	    rcolor = diff <= 60000 ? 'red' : null;
+	  } else {
+	    rstr = '';
+	    rcolor = null;
+	  }
+
+	  this.$('time').value = rstr;
+	  if (rcolor)
+	    this.$('time').style.setProperty('color', rcolor, '');
+	  else
+	    this.$('time').style.removeProperty('color');
+
+	  this._stopTimer();
+	  if (next > 0)
+	    this._startTimer(next);
+	]]></body>
+      </method>
+
+      <method name="_startTimer">
+	<parameter name="timeout"/>
+	<body><![CDATA[
+	  let t = parseInt(timeout, 10);
+	  if (isNaN(t) || t < 0)
+	    t = 0;
+	  if (!this._timerid)
+	    this._timerid = setTimeout(this.update.bind(this), timeout);
+	]]></body>
+      </method>
+
+      <method name="_stopTimer">
+	<body><![CDATA[
+	  if (this._timerid) {
+	    clearTimeout(this._timerid);
+	    this._timerid = null;
+	  }
+	]]></body>
+      </method>
+
+      <constructor><![CDATA[
+	setTimeout(this.update.bind(this), 0);
+      ]]></constructor>
+
+      <destructor><![CDATA[
+	this._stopTimer();
+      ]]></destructor>
+    </implementation>
+  </binding>
+</bindings>
