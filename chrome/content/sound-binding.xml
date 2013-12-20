@@ -46,7 +46,7 @@
     </method>
     <property name="method">
       <setter><![CDATA[
-	this._setMethod(val);
+	this.setMethod(val);
       ]]></setter>
       <getter><![CDATA[
         if (!this._method)
@@ -91,7 +91,7 @@
     <method name="play">
       <body><![CDATA[
 	if (!this._method)
-	  this._setMethod('html');
+	  this.setMethod('html');
         if (this._method == 'html'){
 	  if (this._audio)
 	    this._audio.play();
