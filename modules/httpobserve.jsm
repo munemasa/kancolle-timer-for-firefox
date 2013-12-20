@@ -126,6 +126,7 @@ var KanColleDatabase = {
     memberBasic: null,		// member/basic
     memberRecord: null,		// member/record
     memberMaterial: null,	// member/material
+    memberQuestlist: null,	// member/questlist
 
     // Initialization
     init: function(){
@@ -142,6 +143,7 @@ var KanColleDatabase = {
 	this.memberBasic = new KanColleSimpleDB();
 	this.memberRecord = new KanColleSimpleDB();
 	this.memberMaterial = new KanColleDB();
+	this.memberQuestlist = new KanColleSimpleDB();
 	debugprint("KanColleDatabase initialized.");
     },
     exit: function(){
@@ -157,6 +159,7 @@ var KanColleDatabase = {
 	this.memberBasic = null;
 	this.memberRecord = null;
 	this.memberMaterial = null;
+	this.memberQuestlist = null;
 	debugprint("KanColleDatabase cleared.");
     },
 };
@@ -197,6 +200,8 @@ function KanColleCallback(req,s){
 	KanColleDatabase.memberMaterial.update(data.api_data);
     }else if( url.match(/kcsapi\/api_get_member\/unsetslot/) ){
 	KanColleDatabase.memberUnsetslot.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_get_member\/questlist/) ){
+	KanColleDatabase.memberQuestlist.update(data.api_data);
     }
 }
 
@@ -205,6 +210,8 @@ var KanColleRemainInfo = {
     shipfleet: {},
 
     cookie: {},	//重複音対策
+
+    gMission: {},
 
     fleet_name: [], // 艦隊名
     mission_name:[],// 遠征名
