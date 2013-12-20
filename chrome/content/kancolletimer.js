@@ -30,35 +30,18 @@ var KanColleTimer = {
     },
 
     /**
-     * 音声再生を行う(nsISound)
-     * @param path ファイルのパス
-     */
-    playSound: function(path){
-	PlaySound( path );
-    },
-
-    /**
      * 音声通知を行う.
      * 設定によって再生方式を変えて再生する。
-     * @param elem audio要素
-     * @param path ファイルのパス
+     * @param elem sound要素
      */
-    playNotice: function( elem, path ){
-	let i = KanColleTimerConfig.getInt('sound.api');
-	switch( i ){
-	case 1:// nsISound
-	    this.playSound( path );
-	    break;
-	default:// HTML5 audio
-	    elem.play();
-	    break;
-	}
+    playNotice: function(elem){
+	elem.play();
     },
 
     // 完了の通知
     noticeRepairFinished: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.ndock');
-	this.playNotice( $('sound.ndock'), path );
+	this.playNotice( $('sound.ndock') );
 
 	if( KanColleTimerConfig.getBool('popup.ndock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
@@ -66,7 +49,7 @@ var KanColleTimer = {
     },
     noticeConstructionFinished: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.kdock');
-	this.playNotice( $('sound.kdock'), path );
+	this.playNotice( $('sound.kdock') );
 
 	if( KanColleTimerConfig.getBool('popup.kdock') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
@@ -74,7 +57,7 @@ var KanColleTimer = {
     },
     noticeMissionFinished: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.mission');
-	this.playNotice( $('sound.mission'), path );
+	this.playNotice( $('sound.mission') );
 
 	if( KanColleTimerConfig.getBool('popup.mission') ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
@@ -84,7 +67,7 @@ var KanColleTimer = {
     // 1分前の通知
     noticeRepair1min: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
-	this.playNotice( $('sound.1min.ndock'), path );
+	this.playNotice( $('sound.1min.ndock') );
 
 	if( KanColleTimerConfig.getBool('popup.ndock') &&
 	    KanColleTimerConfig.getBool('popup.1min-before') ){
@@ -93,7 +76,7 @@ var KanColleTimer = {
     },
     noticeConstruction1min: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
-	this.playNotice( $('sound.1min.kdock'), path );
+	this.playNotice( $('sound.1min.kdock') );
 
 	if( KanColleTimerConfig.getBool('popup.kdock') &&
 	    KanColleTimerConfig.getBool('popup.1min-before') ){
@@ -102,7 +85,7 @@ var KanColleTimer = {
     },
     noticeMission1min: function(i,str){
 	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
-	this.playNotice( $('sound.1min.mission'), path );
+	this.playNotice( $('sound.1min.mission') );
 
 	if( KanColleTimerConfig.getBool('popup.mission') &&
 	    KanColleTimerConfig.getBool('popup.1min-before') ){
