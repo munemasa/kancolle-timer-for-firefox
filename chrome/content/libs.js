@@ -629,6 +629,59 @@ function KanColleTimerQuestlistHandler(){
     SetMissionName();
 }
 
+function KanColleTimerQuestInformationUpdate(){
+    let t = KanColleDatabase.memberQuestlist.timestamp();
+    let d = KanColleDatabase.memberQuestlist.get();
+    let oldest = null;
+    let quests = KanColleRemainInfo.quests;
+
+    if (!t)
+	return;
+
+    quests.info = {
+	count: d.api_count,
+	page_count: d.api_page_count,
+    };
+    if (!quests.pages)
+	quests.pages = [];
+    quests.pages[d.api_disp_page] = t;
+
+    // Check oldest timestamp
+    oldest = null;
+    for (let i = 0; i < d.api_count && i < 10; i++) {
+	if (!quests.pages[i])
+	    continue;
+	if (!oldest || quests.pages[i] < oldest)
+	    oldest = quests.pages[i];
+    }
+
+    // First, clean-up "achived" quests.
+    if (quests.list) {
+	let ids = Object.keys(quests.list);
+	for (let i = 0; i < ids.length; i++) {
+	    let info = quests.list[ids[i]];
+	    if (oldest && info.timestamp < oldest)
+		delete quests.list[ids[i]];
+	}
+    } else
+	quests.list = {};
+
+    for (let i = 0; i < d.api_list.length; i++){
+	let q = d.api_list[i];
+	let no;
+	let state;
+	if (typeof(q) != 'object')
+	    continue;
+	no = q.api_no;
+	quests.list[no] = {
+	    timestamp: t,
+	    data: q,
+	};
+    }
+
+    KanColleTimerQuestInformationShow();
+}
+
 // 任務名称を表示
 function SetMissionName(){
     let quest_name = document.getElementsByClassName('quest-name');
@@ -644,6 +697,101 @@ function SetMissionName(){
     for( ; cnt<5;cnt++ ){
 	quest_name[cnt].value = "";
 	quest_name[cnt].removeAttribute('tooltiptext');
+    }
+}
+
+function KanColleTimerQuestInformationShow(){
+    let quests = KanColleRemainInfo.quests;
+    let ids = quests.list ? Object.keys(quests.list) : [];
+    let list = $('quest-list');
+    let listitem;
+    let staletime = KanColleDatabase.memberShip2.timestamp();
+
+    if (!ids.length)
+	return;
+
+    ids = ids.sort(function(a,b){
+	return quests.list[a].data.api_no - quests.list[b].data.api_no;
+    });
+
+    // clear
+    while(list.getRowCount())
+	list.removeItemAt(0);
+
+    for (let i = 0; i < ids.length; i++) {
+	let no = ids[i];
+	let listitem = CreateElement('listitem');
+	let cell;
+	let t;
+	let color = null;
+	let q = quests.list[ids[i]];
+
+	// title
+	cell = CreateListCell(q.data.api_title);
+	cell.tooltiptext = q.data.api_detail;
+	listitem.appendChild(cell);
+
+	// type
+	switch (q.data.api_type) {
+	case 1: t = 'なし'; break;
+	case 2: t = '当日'; break;
+	case 3: t = '週間'; break;
+	case 4: t = '限定'; break;
+	default: t = '不明(' + q.data.api_type + ')';
+	}
+	cell = CreateListCell(t);
+	listitem.appendChild(cell);
+
+	// progress
+	if (q.data.api_state == 1 ||
+	    q.data.api_state == 2) {
+	    switch (q.data.api_progress_flag) {
+	    case 0:
+		    t = '';
+		    color = null;
+		    break;
+	    case 1: //50%
+		    t = '50%-';
+		    color = '#88ff88';
+		    break;
+	    case 2: //80%
+		    t = '80%-';
+		    color = '#88ffff';
+		    break;
+	    }
+	} else if (q.data.api_state == 3) {
+	    t = '達成';
+	    color = '#8888ff';
+	} else {
+	    t = '?';
+	    color = 'red';
+	}
+
+	cell = CreateListCell(t);
+	listitem.appendChild(cell);
+
+	listitem.style.color = 'black';
+
+	if (q.data.api_state > 1)
+	    listitem.style.fontWeight = 'bold';
+	if (color) {
+	    listitem.style.border = color + ' 1px solid';
+	    listitem.style.backgroundColor = color;
+	}
+
+	// 古いときは背景を灰色に
+	if (!staletime || q.timestamp < staletime)
+	    listitem.style.backgroundColor = '#cccccc';
+	else
+	    listitem.style.backgroundColor = 'white';
+
+	//debugprint('no: ' + no +
+	//	   '[state: ' + q.data.api_state +
+	//	   ', flag:' + q.data.api_progress_flag +
+	//	   '] title: ' + q.data.api_title +
+	//	   '; detail: ' + q.data.api_detail);
+
+	list.appendChild(listitem);
     }
 }
 
@@ -665,6 +813,8 @@ function KanColleTimerRegisterCallback(){
     db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.appendCallback(KanColleTimerBasicInformationPanel);
     db.memberQuestlist.appendCallback(KanColleTimerQuestlistHandler);
+    db.memberQuestlist.appendCallback(KanColleTimerQuestInformationUpdate);
+    db.memberShip2.appendCallback(KanColleTimerQuestInformationShow);
 }
 
 function KanColleTimerUnregisterCallback(){
@@ -685,6 +835,8 @@ function KanColleTimerUnregisterCallback(){
     db.memberRecord.removeCallback(KanColleTimerBasicInformationPanel);
     db.memberBasic.removeCallback(KanColleTimerBasicInformationPanel);
     db.memberQuestlist.removeCallback(KanColleTimerQuestlistHandler);
+    db.memberQuestlist.removeCallback(KanColleTimerQuestInformationUpdate);
+    db.memberShip2.removeCallback(KanColleTimerQuestInformationShow);
 }
 
 function AddLog(str){

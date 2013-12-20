@@ -208,6 +208,7 @@ function KanColleCallback(req,s){
 var KanColleRemainInfo = {
     slotitemowners: {},
     shipfleet: {},
+    quests: {},
 
     cookie: {},	//重複音対策
 
