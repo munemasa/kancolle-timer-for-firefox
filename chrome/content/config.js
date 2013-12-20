@@ -96,9 +96,11 @@ var KanColleTimerConfig = {
 
 	try{
 	    let method = KanColleTimerConfig.getInt('sound.api') ? 'nsisound' : 'html';
-	    for (let iter in ['ndock','kdock','mission','1min.ndock','1min.kdock','1min.mission']) {
-		$(iter).method = method;
-		$(iter).file = KanColleTimerConfig.getUnichar(iter);
+	    const sounds = ['ndock','kdock','mission','1min.ndock','1min.kdock','1min.mission'];
+	    for (let i = 0; i < sounds.length; i++) {
+		let soundid = 'sound.' + sounds[i];
+		$(soundid).method = method;
+		$(soundid).path = KanColleTimerConfig.getUnichar(soundid);
 	    }
 	} catch (x) {
 	    //AddLog(x);
