@@ -11,6 +11,8 @@
 
   <prefpane id="prefpane-sound" label="音声通知" image="chrome://kancolletimer/content/data/sound.png">
     <preferences>
+      <preference id="pref-sound-default"
+		  name="extensions.kancolletimer.sound.default" type="string"/>
       <preference id="pref-sound-mission-completed"
 		  name="extensions.kancolletimer.sound.mission" type="string"/>
       <preference id="pref-sound-ndock-completed"
@@ -22,6 +24,15 @@
     </preferences>
 
     <vbox>
+      <groupbox>
+	<caption>汎用音声</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-default"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-default');"/>
+	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-default');"/>
+	</hbox>
+      </groupbox>
       <groupbox>
 	<caption>遠征終了</caption>
 	<hbox>

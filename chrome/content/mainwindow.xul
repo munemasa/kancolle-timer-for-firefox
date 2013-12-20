@@ -213,6 +213,21 @@
       </vbox>
       <!-- 任務表 -->
       <vbox>
+	<hbox align="center">
+          <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
+            <menupopup>
+              <menuitem label="0分" value="0" />
+              <menuitem label="3分" value="180" />
+              <menuitem label="6分" value="360"/>
+              <menuitem label="9分" value="540"/>
+              <menuitem label="12分" value="720"/>
+              <menuitem label="15分" value="900"/>
+              <menuitem label="30分" value="1800"/>
+            </menupopup>
+          </menulist>
+          <timer id="general-timer" mode="time"/>
+        </hbox>
+	
 	<groupbox>
 	  <caption>遂行中任務</caption>
 	  <label class="quest-name" value=""/>
@@ -317,13 +332,14 @@
 		label="装備4"	value="slotitem4"	id="shipinfo-colmenu-slotitem4"	checked="true"  disabled="false"/>
     </menupopup>
   </groupbox>
-  
+
   <sound id="sound.ndock" src=""/>
   <sound id="sound.kdock" src=""/>
   <sound id="sound.mission" src=""/>
   <sound id="sound.1min.ndock" src=""/>
   <sound id="sound.1min.kdock" src=""/>
   <sound id="sound.1min.mission" src=""/>
+  <sound id="sound.default" src=""/>
 
   <scrollbox width="1" height="1">
     <html:canvas id="KanColleTimerCapture" display="none" />
