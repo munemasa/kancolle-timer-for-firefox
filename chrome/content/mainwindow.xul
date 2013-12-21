@@ -136,7 +136,7 @@
 	  
 	</groupbox>
 	
-	<groupbox>
+	<groupbox id="group-ndock">
 	  <caption>入渠ドック[<image style="vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>]</caption>
 	  <grid>
 	    <columns>
@@ -169,7 +169,7 @@
 	  </grid>
 	</groupbox>
 	
-	<groupbox>
+	<groupbox id="group-kdock">
 	  <caption>建造ドック</caption>
 	  <hbox id="kdock-box1" class="kdock-box">
 	    <label value="No.1"/>
@@ -217,7 +217,7 @@
       </vbox>
       <!-- 編成・任務表 -->
       <vbox flex="1" style="overflow:auto;">
-	<hbox align="center">
+	<hbox align="center" id="group-general-timer">
 	  <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
 	    <menupopup>
 	      <menuitem label="0分" value="0" />
@@ -232,7 +232,7 @@
 	  <label id="general-timer" value="00:00:00"/>
 	</hbox>
 
-	<groupbox>
+	<groupbox id="group-info">
 	  <caption>艦隊司令部情報</caption>
 	  <hbox>
 	    <label value="保有艦艇数"/><label id="number-of-ships" value=""/><label value="/"/><label id="max-number-of-ships" value=""/>
@@ -242,7 +242,7 @@
 	  </hbox>
 	</groupbox>
 
-	<groupbox>
+	<groupbox id="group-1stfleet">
 	  <caption><label id="first-fleet-name" value="第1艦隊"/></caption>
 	  <grid>
 	    <columns>
@@ -253,7 +253,7 @@
 	  </grid>
 	</groupbox>
 
-	<groupbox>
+	<groupbox id="group-quest">
 	  <caption>遂行中任務</caption>
 	  <label class="quest-name" value=""/>
 	  <label class="quest-name" value=""/>
