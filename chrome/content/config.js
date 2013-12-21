@@ -59,7 +59,44 @@ var KanColleTimerConfig = {
 	this._branch.removeObserver("", this);
     },
 
+    // ウィンドウ内表示物の位置をデフォルト位置に戻す
+    setDefaultWidgetPosition: function(){
+	let f = function( elem, order ){
+	    for(let i=0,item; item=order[i]; i++){
+		let e = document.getElementById( item );
+		if( e ){
+		    elem.insertBefore( e, elem.firstChild );
+		}
+	    }
+	};
+
+	let def_order = ["log","group-kdock","group-ndock","group-mission"];
+	f( $('tab-timer'), def_order);
+	def_order = ["group-quest","group-1stfleet","group-info","group-general-timer"];
+	f( $('tab-organization'), def_order);
+    },
+
+    // ダッシュボードの表示物を再生
+    loadDashboardPrefs: function(){
+	this.setDefaultWidgetPosition();
+
+	let tmp = this.getUnichar('display.dashboard.order') || "";
+	if( !tmp ) return;
+
+	let order = JSON.parse(tmp);
+
+	let dashboard = $('id-dashboard');
+	for(let i=0,item; item=order[i]; i++){
+	    let elem = document.getElementById( item );
+	    if( elem ){
+		dashboard.insertBefore( elem, dashboard.firstChild );
+	    }
+	}
+    },
+
     loadPrefs: function(){
+	this.loadDashboardPrefs();
+
 	let b = KanColleTimerConfig.getBool('display.short');
 	// fleet-time, ndock-time, kdock-time
 	let classname = ['fleet-time','ndock-time','kdock-time'];

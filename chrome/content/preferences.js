@@ -1,7 +1,44 @@
-var KanColleTimerPreference = {
+function debugprint(txt){
+    Application.console.log(txt);
+}
 
-    debugprint:function(txt){
-	Application.console.log(txt);
+var KanColleTimerPreference = {
+    startDragging:function(event){
+	let dt = event.dataTransfer;
+	dt.mozSetDataAt('application/x-moz-node', event.target , 0 );
+    },
+    dropTab:function(event){
+	let dt = event.dataTransfer;
+	let target = event.target;
+
+	let node = dt.mozGetDataAt("application/x-moz-node", 0);
+	//debugprint( target.parentNode.tagName );
+	if( target.parentNode.tagName=='listbox' ){
+	    target.parentNode.insertBefore(node,target);
+	}else{
+	    $('order-of-dashboard').appendChild(node);
+	}
+	this.changeDashboardOrder();
+    },
+    checkDrag:function(event){
+	let b = event.dataTransfer.types.contains("application/x-moz-node");
+	if( b ){
+	    event.preventDefault();
+	}
+	return true;
+    },
+
+    changeDashboardOrder: function(){
+	let items = evaluateXPath2(document,"//xul:listbox[@id='order-of-dashboard']/xul:listitem");
+
+	let i = items.length-1;
+	let tmp = new Array();
+	for( ; i>=0; i--){
+	    if( items[i].checked ){
+		tmp.push( items[i].value );
+	    }
+	}
+	$('pref-dashboard-order').value = JSON.stringify( tmp );
     },
 
     /**
@@ -102,6 +139,17 @@ var KanColleTimerPreference = {
     init:function(){
 	let alpha = $('pref-wallpaper-alpha').value;
 	$('wallpaper-alpha').value = alpha;
+
+	try{
+	    let order = JSON.parse( $('pref-dashboard-order').value );
+	    let listbox = $('order-of-dashboard');
+	    for( let i in order ){
+		let elem = $( order[i] );
+		elem.checked = true;
+		listbox.insertBefore( elem, listbox.firstChild );
+	    }
+	}catch(x){
+	}
     },
     destroy:function(){
     }

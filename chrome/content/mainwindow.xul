@@ -48,10 +48,12 @@
     <toolbar>
       <toolbarbutton tooltiptext="タイマー" image="data/alarm.png"
 		     oncommand="$('deck').selectedIndex=0;"/>
-      <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
-		     oncommand="$('deck').selectedIndex=1;"/>
       <toolbarbutton tooltiptext="編成・任務" image="data/quest.png"
 		     oncommand="$('deck').selectedIndex=2;"/>
+      <toolbarbutton tooltiptext="ダッシュボード" image="data/sticky.png"
+		     oncommand="$('deck').selectedIndex=3;"/>
+      <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
+		     oncommand="$('deck').selectedIndex=1;"/>
       <toolbarbutton tooltiptext="保有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
       <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
@@ -82,7 +84,7 @@
     <vbox id="wallpaper" flex="1">
     </vbox>
     <deck id="deck" persist="selectedIndex">
-      <vbox flex="1" style="overflow:auto;">
+      <vbox id="tab-timer" flex="1" style="overflow:auto;">
 	<groupbox id="group-mission">
 	  <caption>遠征</caption>
 	  
@@ -216,7 +218,7 @@
 	</description>
       </vbox>
       <!-- 編成・任務表 -->
-      <vbox flex="1" style="overflow:auto;">
+      <vbox id="tab-organization" flex="1" style="overflow:auto;">
 	<hbox align="center" id="group-general-timer">
 	  <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
 	    <menupopup>
@@ -256,6 +258,10 @@
 	<groupbox id="group-quest">
 	  <caption>遂行中任務</caption>
 	</groupbox>
+      </vbox>
+
+      <!-- ダッシュボード -->
+      <vbox id="id-dashboard" style="overflow:auto;">
       </vbox>
     </deck>
   </stack>
