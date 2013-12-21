@@ -52,7 +52,7 @@
 		     oncommand="$('deck').selectedIndex=1;"/>
       <toolbarbutton tooltiptext="編成・任務" image="data/quest.png"
 		     oncommand="$('deck').selectedIndex=2;"/>
-      <toolbarbutton tooltiptext="所有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
+      <toolbarbutton tooltiptext="保有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
       <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
 	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
@@ -63,7 +63,7 @@
       </toolbarbutton>
       <toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	<menupopup>
-	  <menuitem label="所有艦艇リスト" oncommand="OpenShipList();"/>
+	  <menuitem label="保有艦艇リスト" oncommand="OpenShipList();"/>
 	  <menuseparator/>
 	  <menuitem id="window-stay-on-top" persist="checked"
 		    label="常に最前面に表示"
