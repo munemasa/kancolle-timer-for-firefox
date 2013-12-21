@@ -24,7 +24,6 @@
 
   <script>
   <![CDATA[
-
     window.addEventListener("load", function(e){ KanColleTimer.init(); }, false);
     window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);
   ]]>
@@ -34,11 +33,13 @@
     <toolbar>
       <toolbarbutton tooltiptext="タイマー" image="data/alarm.png"
 		     oncommand="$('deck').selectedIndex=0;"/>
-      <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
-		     oncommand="$('deck').selectedIndex=1;"/>
       <toolbarbutton tooltiptext="編成・任務" image="data/quest.png"
 		     oncommand="$('deck').selectedIndex=2;"/>
-      <toolbarbutton tooltiptext="所有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
+      <toolbarbutton tooltiptext="ダッシュボード" image="data/sticky.png"
+		     oncommand="$('deck').selectedIndex=3;"/>
+      <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
+		     oncommand="$('deck').selectedIndex=1;"/>
+      <toolbarbutton tooltiptext="保有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
       <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
 	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
@@ -49,7 +50,7 @@
       </toolbarbutton>
       <toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	<menupopup>
-	  <menuitem label="所有艦艇リスト" oncommand="OpenShipList();"/>
+	  <menuitem label="保有艦艇リスト" oncommand="OpenShipList();"/>
 	  <menuseparator/>
 	  <menuitem id="window-stay-on-top" persist="checked"
 		    label="常に最前面に表示"
@@ -68,7 +69,7 @@
     <vbox id="wallpaper" flex="1">
     </vbox>
     <deck id="deck" persist="selectedIndex">
-      <vbox flex="1" style="overflow:auto;">
+      <vbox id="tab-timer" flex="1" style="overflow:auto;">
 	<groupbox id="group-mission">
 	  <caption>遠征</caption>
 	  
@@ -122,7 +123,7 @@
 	  
 	</groupbox>
 	
-	<groupbox>
+	<groupbox id="group-ndock">
 	  <caption>入渠ドック[<image style="vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>]</caption>
 	  <grid>
 	    <columns>
@@ -155,7 +156,7 @@
 	  </grid>
 	</groupbox>
 	
-	<groupbox>
+	<groupbox id="group-kdock">
 	  <caption>建造ドック</caption>
 	  <hbox id="kdock-box1" class="kdock-box">
 	    <label value="No.1"/>
@@ -178,7 +179,7 @@
 	    <label id="kdockremain4" class="kdockremain" value=""/>
 	  </hbox>
 	</groupbox>
-	<textbox id="log" placeholder="" multiline="true" flex="1" style="max-height:10em;"/>
+	<textbox id="log" placeholder="" multiline="true" flex="1" style="min-height: 5em; max-height:10em;"/>
       </vbox>
       <!-- 遠征収支表(時給) -->
       <vbox flex="1" style="overflow:auto;">
@@ -202,8 +203,8 @@
 	</description>
       </vbox>
       <!-- 編成・任務表 -->
-      <vbox>
-	<hbox align="center">
+      <vbox id="tab-organization" flex="1" style="overflow:auto;">
+	<hbox align="center" id="group-general-timer">
 	  <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
 	    <menupopup>
 	      <menuitem label="0分" value="0" />
@@ -218,7 +219,7 @@
 	  <label id="general-timer" value="00:00:00"/>
 	</hbox>
 
-	<groupbox>
+	<groupbox id="group-info">
 	  <caption>艦隊司令部情報</caption>
 	  <hbox>
 	    <label value="保有艦艇数"/><label id="number-of-ships" value=""/><label value="/"/><label id="max-number-of-ships" value=""/>
@@ -228,7 +229,7 @@
 	  </hbox>
 	</groupbox>
 
-	<groupbox>
+	<groupbox id="group-1stfleet">
 	  <caption><label id="first-fleet-name" value="第1艦隊"/></caption>
 	  <grid>
 	    <columns>
@@ -239,14 +240,13 @@
 	  </grid>
 	</groupbox>
 
-	<groupbox>
+	<groupbox id="group-quest">
 	  <caption>遂行中任務</caption>
-	  <label class="quest-name" value=""/>
-	  <label class="quest-name" value=""/>
-	  <label class="quest-name" value=""/>
-	  <label class="quest-name" value=""/>
-	  <label class="quest-name" value=""/>
 	</groupbox>
+      </vbox>
+
+      <!-- ダッシュボード -->
+      <vbox id="id-dashboard" style="overflow:auto;">
       </vbox>
     </deck>
   </stack>
