@@ -20,9 +20,11 @@
     <key id="tab-move-1" key="1" modifiers="accel"
 	 oncommand="$('deck').selectedIndex=0;"/>
     <key id="tab-move-2" key="2" modifiers="accel"
-	 oncommand="$('deck').selectedIndex=1;"/>
-    <key id="tab-move-3" key="3" modifiers="accel"
 	 oncommand="$('deck').selectedIndex=2;"/>
+    <key id="tab-move-3" key="3" modifiers="accel"
+	 oncommand="$('deck').selectedIndex=3;"/>
+    <key id="tab-move-4" key="4" modifiers="accel"
+	 oncommand="$('deck').selectedIndex=1;"/>
 
   </keyset>
 
