@@ -609,8 +609,13 @@ function KanColleTimerQuestlistHandler(){
     let d = KanColleDatabase.memberQuestlist.get();
     for( let i in d.api_list ){
 	let mission = d.api_list[i];
-	let no = mission.api_no;
-	let state = mission.api_state; // 2だと遂行中,3だと達成
+	let no;
+	let state;
+	// 余ったスロットは-1になっている。念のためスキップ
+	if (typeof(mission) != 'object')
+	    continue;
+	no = mission.api_no;
+	state = mission.api_state; // 2だと遂行中,3だと達成
 	switch(state){
 	case 3:
 	    delete KanColleRemainInfo.gMission[no];
