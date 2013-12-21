@@ -124,6 +124,10 @@ var KanColleTimer = {
 	if (now > this.general_timer) {
 	    this.general_timer = 0;
 	    this.playDefaultSound();
+	    if( KanColleTimerConfig.getBool('popup.general-timer') ){
+		let str = "時間になりました。";
+		ShowPopupNotification(this.imageURL,"艦これタイマー",str,"general-timer");
+	    }
 	}
     },
 

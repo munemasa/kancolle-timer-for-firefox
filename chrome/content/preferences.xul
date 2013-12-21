@@ -116,6 +116,8 @@
 
   <prefpane id="prefpane-popup" label="ポップアップ通知" image="chrome://kancolletimer/content/data/popupnotification.png">
     <preferences>
+      <preference id="pref-popup-general-timer"
+		  name="extensions.kancolletimer.popup.general-timer" type="bool"/>
       <preference id="pref-popup-mission-completed"
 		  name="extensions.kancolletimer.popup.mission" type="bool"/>
       <preference id="pref-popup-ndock-completed"
@@ -129,6 +131,7 @@
     <vbox>
       <checkbox preference="pref-popup-1min-before" label="1分前にもポップアップ通知を行う"/>
       <groupbox>
+	<checkbox preference="pref-popup-general-timer" label="汎用タイマー(1分前の通知はなし)"/>
 	<checkbox preference="pref-popup-mission-completed" label="遠征完了"/>
 	<checkbox preference="pref-popup-ndock-completed" label="修理完了"/>
 	<checkbox preference="pref-popup-kdock-completed" label="建造完了"/>
