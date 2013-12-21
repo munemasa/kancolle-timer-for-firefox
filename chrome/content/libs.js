@@ -247,18 +247,19 @@ function SetFirstFleetOrganization( fleets ){
 // 任務名称を表示
 function SetMissionName(){
     let quest_name = document.getElementsByClassName('quest-name');
+    while(quest_name.length > 0){
+        quest_name[0].parentNode.removeChild(quest_name[0]);
+    }    
+
     let cnt=0;
     for( let i in KanColleRemainInfo.gMission ){
 	let mission = KanColleRemainInfo.gMission[i];
 	if( mission && mission.api_state==2 ){
-	    quest_name[cnt].value = mission.api_title;
-	    quest_name[cnt].setAttribute('tooltiptext', mission.api_detail);
-	    cnt++;
+	    let label = CreateLabel( mission.api_title );
+	    label.setAttribute('class','quest-name');
+	    label.setAttribute('tooltiptext', mission.api_detail);
+	    $('group-quest').appendChild( label );
 	}
-    }
-    for( ; cnt<5;cnt++ ){
-	quest_name[cnt].value = "";
-	quest_name[cnt].removeAttribute('tooltiptext');
     }
 }
 

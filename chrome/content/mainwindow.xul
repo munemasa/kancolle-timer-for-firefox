@@ -255,11 +255,6 @@
 
 	<groupbox id="group-quest">
 	  <caption>遂行中任務</caption>
-	  <label class="quest-name" value=""/>
-	  <label class="quest-name" value=""/>
-	  <label class="quest-name" value=""/>
-	  <label class="quest-name" value=""/>
-	  <label class="quest-name" value=""/>
 	</groupbox>
       </vbox>
     </deck>
