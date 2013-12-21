@@ -77,7 +77,7 @@ var KanColleTimerPreference = {
     },
 
     playSound: function(target){
-	this.debugprint(target);
+	debugprint(target);
 	let path = $(target).value;
 	$('audio-playback').src = "file://"+ path;
 
@@ -97,7 +97,7 @@ var KanColleTimerPreference = {
 	if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
 	    let file = fp.file;
 	    let path = fp.file.path;
-	    this.debugprint("「"+path+"」を通知に使用します");
+	    debugprint("「"+path+"」を通知に使用します");
 
 	    $(target).value = path;
 	}
