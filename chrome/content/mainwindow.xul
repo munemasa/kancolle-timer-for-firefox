@@ -73,12 +73,24 @@
     <deck id="deck" persist="selectedIndex">
       <vbox flex="1" style="overflow:auto;">
 	<groupbox id="basic-information">
-          <caption>基本情報</caption>
+	  <menupopup id="general-timer-popup">
+	    <menuitem label="0分" value="0" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label="3分" value="180" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label="6分" value="360" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label="9分" value="540" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label="12分" value="720" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label="15分" value="900" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label="30分" value="1800" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	  </menupopup>
+          <caption>基本情報
+	    <label value="&#x231A;" popup="general-timer-popup"/><timer id="general-timer" mode="time"/>
+	  </caption>
           <hbox><label value="艦船数"/><label id="basic-information-shipcount" value=""/></hbox>
           <hbox><label value="装備数"/><label id="basic-information-slotitemcount" value=""/></hbox>
           <hbox><label value="高速建造材数"/><label id="basic-information-burnercount" value=""/></hbox>
           <hbox><label value="高速修復材数"/><label id="basic-information-bucketcount" value=""/></hbox>
 	</groupbox>
+	
 	<groupbox id="group-mission">
 	  <caption>遠征</caption>
 	  
@@ -213,21 +225,6 @@
       </vbox>
       <!-- 任務表 -->
       <vbox>
-	<hbox align="center">
-          <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
-            <menupopup>
-              <menuitem label="0分" value="0" />
-              <menuitem label="3分" value="180" />
-              <menuitem label="6分" value="360"/>
-              <menuitem label="9分" value="540"/>
-              <menuitem label="12分" value="720"/>
-              <menuitem label="15分" value="900"/>
-              <menuitem label="30分" value="1800"/>
-            </menupopup>
-          </menulist>
-          <timer id="general-timer" mode="time"/>
-        </hbox>
-	
 	<groupbox>
 	  <caption>任務</caption>
 	  <listbox id="quest-list" flex="1">
