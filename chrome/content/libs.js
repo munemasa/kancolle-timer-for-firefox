@@ -764,7 +764,8 @@ function KanColleTimerQuestInformationShow(){
 	case 1: t = 'なし'; break;
 	case 2: t = '当日'; break;
 	case 3: t = '週間'; break;
-	case 4: t = '限定'; break;
+	case 4: t = '当日'; break;  //3,7,0の日
+	case 5: t = '当日'; break;  //2,8の日
 	default: t = '不明(' + q.data.api_type + ')';
 	}
 	cell = CreateListCell(t);
