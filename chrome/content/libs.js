@@ -469,6 +469,25 @@ function KanColleTimerShipInfoHandler(){
 
 function KanColleTimerMemberShip2FleetHandler(){
     let l = KanColleDatabase.memberDeck.list();
+    let min_cond = 100;
+
+    function timestr(t){
+	let d = new Date;
+	let h;
+	let m;
+
+	d.setTime(t);
+
+	h = d.getHours();
+	if (h < 10)
+	    h = '0' + h;
+
+	m = d.getMinutes();
+	if (m < 10)
+	    m = '0' + m;
+
+	return h + ':' + m;
+    }
 
     // 艦隊/遠征情報
     for ( let i = 0; i < l.length; i++ ){
@@ -525,24 +544,11 @@ function KanColleTimerMemberShip2FleetHandler(){
 	    }
 
 	    if (ship_cond < 49) {
-		let d;
-		let t;
-		let h;
-		let m;
+		let t = KanColleDatabase.memberShip2.timestamp();
+		ship_text += ' ' + timestr(t + Math.ceil((49 - ship_cond) / 3) * 180000);
 
-		t = KanColleDatabase.memberShip2.timestamp();
-		if (t) {
-		    t += Math.ceil((49 - ship_cond) / 3) * 180000;
-		    (d = new Date).setTime(t);
-
-		    h = d.getHours();
-		    if (h < 10)
-			h = '0' + h;
-		    m = d.getMinutes();
-		    if (m < 10)
-			m = '0' + m;
-		}
-		ship_text += ' ' + h + ':' + m;
+		if (ship_cond < min_cond)
+		    min_cond = ship_cond;
 	    }
 
 	    if (ship_info === undefined) {
@@ -588,9 +594,22 @@ function KanColleTimerMemberShip2FleetHandler(){
 	if (fleet_flagship_lv > 0) {
 	    let stypes;
 	    let fleetinfo = [];
+	    let t;
+	    let timercmd = null;
+
 	    stypes = Object.keys(fleet_stypes).sort(function(a,b){
 		return fleet_stypes[b] - fleet_stypes[a];
 	    });
+
+	    if (min_cond < 49) {
+		let cur = (new Date).getTime();
+		let t = KanColleDatabase.memberShip2.timestamp();
+		let time = t + Math.ceil((49 - min_cond) / 3) * 180000;
+		let str = timestr(time);
+
+		fleet_text += ' ' + timestr(time);
+	    }
+
 	    fleet_text += '\n旗艦Lv' + fleet_flagship_lv;
 	    for( let j = 0; j < stypes.length; j++ ){
 		let stypename = KanColleData.type_name[stypes[j]];
