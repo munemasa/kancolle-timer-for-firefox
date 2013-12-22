@@ -388,6 +388,7 @@ var KanColleTimer = {
 		row.appendChild( CreateLabel(balance[i][j]) );
 	    }
 	    row.setAttribute("style","border-bottom: 1px solid gray;");
+	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
 	    rows.appendChild( row );
 	}
     },
