@@ -107,15 +107,21 @@ var KanColleTimer = {
 	    WindowOnTop( window, checkbox.hasAttribute('checked') );
     },
 
-    setGeneralTimer: function(sec){
-	sec = parseInt(sec,10);
-	if (sec) {
-	    this.general_timer = (new Date).getTime() + sec * 1000;
-	    $('general-timer').finishTime = (new Date().getTime()) + sec * 1000;
+    setGeneralTimerByTime: function(timeout){
+	if (timeout) {
+	    this.general_timer = timeout;
+	    $('general-timer').finishTime = timeout;
 	} else {
 	    this.general_timer = 0;
 	    $('general-timer').finishTime = '';
 	}
+    },
+
+    setGeneralTimer: function(sec){
+	let s = parseInt(sec,10);
+	if (isNaN(s))
+	    s = 0;
+	this.setGeneralTimerByTime(s ? (new Date).getTime() + s * 1000 : 0);
     },
 
     updateGeneralTimer: function(){
