@@ -250,7 +250,7 @@
 	  <caption><label id="first-fleet-name" value="第1艦隊"/></caption>
 	  <grid>
 	    <columns>
-	      <column/><column/><column/>
+	      <column/><column/><column/><column/>
 	    </columns>
 	    <rows id="fleet-1">
 	    </rows>
