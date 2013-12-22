@@ -185,7 +185,14 @@ var ShipList = {
 		row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
 		row.appendChild( CreateLabel(masterdata.api_name) );
 		row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
-		row.appendChild( CreateLabel(""+data.api_cond) );
+
+		let hbox = CreateElement('hbox');
+		hbox.appendChild( CreateLabel(""+data.api_cond) );
+		row.appendChild( hbox );
+		if( masterdata.api_fuel_max!=data.api_fuel ||
+		    masterdata.api_bull_max!=data.api_bull ){
+			hbox.setAttribute('warning','1');
+		}
 
 		let maxhp = parseInt(data.api_maxhp);
 		let nowhp = parseInt(data.api_nowhp);
