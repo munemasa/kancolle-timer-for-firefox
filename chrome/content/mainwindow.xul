@@ -74,13 +74,16 @@
       <vbox flex="1" style="overflow:auto;">
 	<groupbox id="basic-information">
 	  <menupopup id="general-timer-popup">
-	    <menuitem label="0分" value="0" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label=""/>
+	    <menuitem label="停止" value="0" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="3分" value="180" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="6分" value="360" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="9分" value="540" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="12分" value="720" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="15分" value="900" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="30分" value="1800" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label="45分" value="2700" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label="60分" value="3600" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	  </menupopup>
           <caption>基本情報
 	    <label value="&#x231A;" popup="general-timer-popup"/><timer id="general-timer" mode="time"/>
