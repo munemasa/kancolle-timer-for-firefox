@@ -4,7 +4,7 @@ var SSTweet = {
 
     getTempFile:function(){
         let file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("TmpD", Components.interfaces.nsIFile);
-        file.append("kancolletimer-ss-temp.png");
+        file.append("kancolletimer-ss-temp.jpg");
 	return file;
     },
 
@@ -31,7 +31,7 @@ var SSTweet = {
 
     init:function(){
 	try{
-	    let data = TakeKanColleScreenshot();
+	    let data = TakeKanColleScreenshot(true);
 	    // data:image/png;base64,......
 	    $('ss-image').src = data.spec;
 	} catch (x) {
