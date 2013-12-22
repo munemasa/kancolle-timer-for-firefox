@@ -254,6 +254,10 @@
 
   <groupbox>
     <caption label="艦隊"/>
+    <menupopup id="shipstatus-1-popup"><menuitem id="shipstatus-1-popup-1" label="タイマー設定" disabled="true"/></menupopup>
+    <menupopup id="shipstatus-2-popup"><menuitem id="shipstatus-2-popup-1" label="タイマー設定" disabled="true"/></menupopup>
+    <menupopup id="shipstatus-3-popup"><menuitem id="shipstatus-3-popup-1" label="タイマー設定" disabled="true"/></menupopup>
+    <menupopup id="shipstatus-4-popup"><menuitem id="shipstatus-4-popup-1" label="タイマー設定" disabled="true"/></menupopup>
     <grid>
       <rows>
 	<row/>
@@ -266,7 +270,7 @@
       </rows>
       <columns>
 	<column id="shipstatus-fleet-1">
-	  <label id="shipstatus-1-0" class="shipstatus-fleetname" value="#1"/>
+	  <label id="shipstatus-1-0" class="shipstatus-fleetname" value="#1" context="shipstatus-1-popup"/>
 	  <label id="shipstatus-1-1" class="shipstatus-ship" value=""/>
 	  <label id="shipstatus-1-2" class="shipstatus-ship" value=""/>
 	  <label id="shipstatus-1-3" class="shipstatus-ship" value=""/>
@@ -275,7 +279,7 @@
 	  <label id="shipstatus-1-6" class="shipstatus-ship" value=""/>
 	</column>
 	<column id="shipstatus-fleet-2">
-	  <label id="shipstatus-2-0" class="shipstatus-fleetname" value="#2"/>
+	  <label id="shipstatus-2-0" class="shipstatus-fleetname" value="#2" context="shipstatus-2-popup"/>
 	  <label id="shipstatus-2-1" class="shipstatus-ship" value=""/>
 	  <label id="shipstatus-2-2" class="shipstatus-ship" value=""/>
 	  <label id="shipstatus-2-3" class="shipstatus-ship" value=""/>
@@ -284,7 +288,7 @@
 	  <label id="shipstatus-2-6" class="shipstatus-ship" value=""/>
 	</column>
 	<column id="shipstatus-fleet-3">
-	  <label id="shipstatus-3-0" class="shipstatus-fleetname" value="#3"/>
+	  <label id="shipstatus-3-0" class="shipstatus-fleetname" value="#3" context="shipstatus-3-popup"/>
 	  <label id="shipstatus-3-1" class="shipstatus-ship" value=""/>
 	  <label id="shipstatus-3-2" class="shipstatus-ship" value=""/>
 	  <label id="shipstatus-3-3" class="shipstatus-ship" value=""/>
@@ -293,7 +297,7 @@
 	  <label id="shipstatus-3-6" class="shipstatus-ship" value=""/>
 	</column>
 	<column id="shipstatus-fleet-4">
-	  <label id="shipstatus-4-0" class="shipstatus-fleetname" value="#4"/>
+	  <label id="shipstatus-4-0" class="shipstatus-fleetname" value="#4" context="shipstatus-4-popup"/>
 	  <label id="shipstatus-4-1" class="shipstatus-ship" value=""/>
 	  <label id="shipstatus-4-2" class="shipstatus-ship" value=""/>
 	  <label id="shipstatus-4-3" class="shipstatus-ship" value=""/>

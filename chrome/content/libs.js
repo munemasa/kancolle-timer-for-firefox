@@ -608,6 +608,15 @@ function KanColleTimerMemberShip2FleetHandler(){
 		let str = timestr(time);
 
 		fleet_text += ' ' + timestr(time);
+
+		if (cur < time) {
+		    $('shipstatus-' + id + '-popup-1').label = 'タイマー設定(' + str + ')';
+		    $('shipstatus-' + id + '-popup-1').setAttribute('oncommand', 'KanColleTimer.setGeneralTimerByTime(' + time + ')');
+		    $('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'false');
+		} else {
+		    $('shipstatus-' + id + '-popup-1').label = 'タイマー';
+		    $('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'true');
+		}
 	    }
 
 	    fleet_text += '\n旗艦Lv' + fleet_flagship_lv;
