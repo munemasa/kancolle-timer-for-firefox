@@ -697,15 +697,7 @@ function KanColleTimerQuestInformationUpdate(){
 	    oldest = quests.pages[i];
     }
 
-    // First, clean-up "achived" quests.
-    if (quests.list) {
-	let ids = Object.keys(quests.list);
-	for (let i = 0; i < ids.length; i++) {
-	    let info = quests.list[ids[i]];
-	    if (oldest && info.timestamp < oldest)
-		delete quests.list[ids[i]];
-	}
-    } else
+    if (!quests.list)
 	quests.list = {};
 
     for (let i = 0; i < d.api_list.length; i++){
@@ -719,6 +711,16 @@ function KanColleTimerQuestInformationUpdate(){
 	    timestamp: t,
 	    data: q,
 	};
+    }
+
+    // Clean-up "achived" quests.
+    if (quests.list) {
+	let ids = Object.keys(quests.list);
+	for (let i = 0; i < ids.length; i++) {
+	    let info = quests.list[ids[i]];
+	    if (oldest && info.timestamp < oldest)
+		delete quests.list[ids[i]];
+	}
     }
 
     KanColleTimerQuestInformationShow();
