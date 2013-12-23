@@ -28,8 +28,6 @@
 		     oncommand="$('deck').selectedIndex=0;"/>
       <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
 		     oncommand="$('deck').selectedIndex=1;"/>
-      <toolbarbutton tooltiptext="任務" image="data/quest.png"
-		     oncommand="$('deck').selectedIndex=2;"/>
       <toolbarbutton tooltiptext="所有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
       <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
@@ -206,6 +204,23 @@
 	    <timer id="kdockremain4" mode="time" class="kdockremain"/>
 	  </hbox>
 	</groupbox>
+	<!-- 任務表 -->
+	<groupbox>
+	  <caption>任務(<label id="quest-information-mode" value="-" context="quest-information-mode-popup"/>)</caption>
+	  <menupopup id="quest-information-mode-popup">
+	    <menuitem label=""/>
+	    <menuitem label="全て"               value="0" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
+	    <menuitem label="遂行中/進捗有"      value="1" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
+	    <menuitem label="遂行中"             value="2" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
+	    <menuitem label="遂行中&#183;未達成" value="3" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
+	  </menupopup>
+	  <grid id="quest-list">
+	    <columns>
+	      <column flex="1" crop="end"/><column/><column/>
+	    </columns>
+	    <rows id="quest-list-rows"/>
+	  </grid>
+	</groupbox>
 	<html:textarea id="log" style="min-height: 5em;"/>
       </vbox>
       <!-- 遠征収支表(時給) -->
@@ -228,25 +243,6 @@
 	<description>
 	  Referenced from 艦隊これくしょん ～艦これ～ 攻略＆2chまとめwiki
 	</description>
-      </vbox>
-      <!-- 任務表 -->
-      <vbox>
-	<groupbox>
-	  <caption>任務(<label id="quest-information-mode" value="-" context="quest-information-mode-popup"/>)</caption>
-	  <menupopup id="quest-information-mode-popup">
-	    <menuitem label=""/>
-	    <menuitem label="全て"               value="0" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
-	    <menuitem label="遂行中/進捗有"      value="1" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
-	    <menuitem label="遂行中"             value="2" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
-	    <menuitem label="遂行中&#183;未達成" value="3" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
-	  </menupopup>
-	  <grid id="quest-list">
-	    <columns>
-	      <column flex="1" crop="end"/><column/><column/>
-	    </columns>
-	    <rows id="quest-list-rows"/>
-	  </grid>
-	</groupbox>
       </vbox>
     </deck>
   </stack>
