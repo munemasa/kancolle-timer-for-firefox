@@ -730,6 +730,25 @@ function KanColleTimerQuestInformationShow(){
     let list = $('quest-list');
     let listitem;
     let staletime = KanColleDatabase.memberShip2.timestamp();
+    let mode = KanColleTimerConfig.getInt('quest-info.mode');
+    let modenode = $('quest-information-mode');
+
+    if (modenode) {
+	let str = '-';
+	let menunodename = modenode.getAttribute('context');
+	let menunode = menunodename ? $(menunodename) : null;
+	let children = menunode ? menunode.childNodes : null;
+	if (children) {
+	    for (let i = 0; i < children.length; i++) {
+		let val = parseInt(children[i].value, 10);
+		if (mode == val) {
+		    str = children[i].label;
+		    break;
+		}
+	    }
+	}
+	modenode.value = str;
+    }
 
     if (!ids.length)
 	return;
@@ -821,8 +840,33 @@ function KanColleTimerQuestInformationShow(){
 	//	   '] title: ' + q.data.api_title +
 	//	   '; detail: ' + q.data.api_detail);
 
+	if (mode == 1) {
+	    // 遂行していないかつ進捗なし(-50%)
+	    if (q.data.api_state == 1 &&
+	        q.data.api_progress_flag == 0)
+		continue;
+	} else if (mode == 2) {
+	    // 遂行中でも達成済でもない
+	    if (q.data.api_state != 2 && q.data.api_state != 3)
+		continue;
+	} else if (mode == 3) {
+	    // 遂行中でない
+	    if (q.data.api_state != 2)
+		continue;
+	}
+
 	list.appendChild(listitem);
     }
+}
+
+function KanColleTimerQuestInformationChangeMode(node){
+    let id = node.id;
+    let val = parseInt(node.value, 10);
+
+    if (!isNaN(val))
+	KanColleTimerConfig.setInt('quest-info.mode', val);
+
+    KanColleTimerQuestInformationShow();
 }
 
 function KanColleTimerRegisterCallback(){

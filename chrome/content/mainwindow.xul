@@ -241,7 +241,14 @@
       <!-- 任務表 -->
       <vbox>
 	<groupbox>
-	  <caption>任務</caption>
+	  <caption>任務(<label id="quest-information-mode" value="-" context="quest-information-mode-popup"/>)</caption>
+	  <menupopup id="quest-information-mode-popup">
+	    <menuitem label=""/>
+	    <menuitem label="全て"               value="0" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
+	    <menuitem label="遂行中/進捗有"      value="1" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
+	    <menuitem label="遂行中"             value="2" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
+	    <menuitem label="遂行中&#183;未達成" value="3" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
+	  </menupopup>
 	  <listbox id="quest-list" flex="1">
 	    <listcols>
 	      <listcol flex="1"/>

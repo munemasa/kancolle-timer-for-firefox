@@ -403,6 +403,7 @@ var KanColleTimer = {
 	KanColleTimerDeckRestore();
 	KanColleTimerNdockRestore();
 	KanColleTimerKdockRestore();
+	KanColleTimerQuestInformationShow();
 
 	KanColleTimerLibInit();
 
