@@ -132,11 +132,17 @@ var KanColleTimerConfig = {
 	try{
 	    this.register();
 	    this.loadPrefs();
+
+	    let h = this.getUnichar("display.log.height");
+	    if( h ){
+		$('log').style.height = h;
+	    }
 	} catch (x) {
 	}
     },
     destroy: function(){
 	this.unregister();
+	this.setUnichar("display.log.height", $('log').style.height );
     }
 };
 
