@@ -81,9 +81,18 @@ var KanColleTimerPreference = {
 	}
     },
 
+    buildFontList:function(){
+	FontBuilder.buildFontList($('font.language.group').value,null,$('select-font'));
+	let elem = evaluateXPath2(document,"//xul:menulist[@id='select-font']//xul:menuitem[@value='"+$('e.n.font').value+"']");
+	if(elem.length==1){
+	    $('select-font').selectedItem = elem[0];
+	}
+    },
+
     init:function(){
 	let alpha = $('pref-wallpaper-alpha').value;
 	$('wallpaper-alpha').value = alpha;
+	this.buildFontList();
 
 	$('audio-playback').method = $('pref-sound-api') ? 'nsisound' : 'html';
     },

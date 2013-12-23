@@ -61,7 +61,33 @@ var KanColleTimerConfig = {
 	this._branch.removeObserver("", this);
     },
 
+    loadFonts:function(){
+	let col = this.getUnichar('display.font-color') || "";
+	try{
+	    $('sbKanColleTimerSidebar').style.color = col;
+	} catch (x) {}
+	try{
+	    $('kancolletimermainwindow').style.color = col;
+	} catch (x) {}
+
+	let font = this.getUnichar("display.font");
+	try{
+	    $('sbKanColleTimerSidebar').style.fontFamily = font;
+	} catch (x) {
+	    $('kancolletimermainwindow').style.fontFamily = font;
+	}
+
+	font = this.getUnichar('display.font-size') || "";
+	try{
+	    $('sbKanColleTimerSidebar').style.fontSize = font;
+	} catch (x) {
+	    $('kancolletimermainwindow').style.fontSize = font;
+	}
+    },
+
     loadPrefs: function(){
+	this.loadFonts();
+
 	let b = KanColleTimerConfig.getBool('display.short');
 	// fleet-time, ndock-time, kdock-time
 	let classname = ['fleet-time','ndock-time','kdock-time'];
@@ -81,18 +107,6 @@ var KanColleTimerConfig = {
 	    $('wallpaper').setAttribute('style',rule);
 	    //sheet.insertRule(rule,1);
 	}
-
-	let col = this.getUnichar('display.font-color') || "";
-	let size = this.getUnichar('display.font-size') || "";
-	try{
-	    $('sbKanColleTimerSidebar').style.color = col;
-	    $('sbKanColleTimerSidebar').style.fontSize = size;
-	} catch (x) {}
-	try{
-	    $('kancolletimermainwindow').style.color = col;
-	    $('kancolletimermainwindow').style.fontSize = size;
-	} catch (x) {}
-
 
 	try{
 	    let method = KanColleTimerConfig.getInt('sound.api') ? 'nsisound' : 'html';

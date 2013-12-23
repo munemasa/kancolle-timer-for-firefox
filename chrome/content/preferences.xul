@@ -149,17 +149,21 @@
 		  name="extensions.kancolletimer.wallpaper.alpha" type="int"/>
       <preference id="e.n.font-color"
 		  name="extensions.kancolletimer.display.font-color" type="unichar"/>
+      <preference id="e.n.font"
+		  name="extensions.kancolletimer.display.font" type="unichar"/>
       <preference id="e.n.font-size"
 		  name="extensions.kancolletimer.display.font-size" type="unichar"/>
       <preference id="pref-ship-num-free"
 		  name="extensions.kancolletimer.display.ship-num-free" type="int"/>
+      <!-- to obtain font group from browser settings -->
+      <preference id="font.language.group" name="font.language.group" type="wstring"/>
     </preferences>
 
     <checkbox preference="pref-display-short" label="省スペース表示にする" tooltiptext="ウィンドウ表示時に終了時刻の表示をなくします。"/>
 
-    <hbox>
-      <label value="文字色"/>
-      <colorpicker id="select-font-color" type="button" preference="e.n.font-color"/>
+    <hbox align="center">
+      <label value="フォント"/>
+      <menulist id="select-font" preference="e.n.font"/>
       <label value="サイズ"/>
       <button id="fontsize" type="menu" preference="e.n.font-size" label="" value="">
 	<menupopup>
@@ -173,6 +177,10 @@
 	  <menuitem type="radio" name="fontsize" label="xx-large" oncommand="KanColleTimerPreference.refFontSize('fontsize','xx-large','xx-large');"/>
 	</menupopup>
       </button>
+    </hbox>
+    <hbox align="center">
+      <label value="文字色"/>
+      <colorpicker id="select-font-color" type="button" preference="e.n.font-color"/>
     </hbox>
     <groupbox>
       <caption>壁紙</caption>
