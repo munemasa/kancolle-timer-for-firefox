@@ -151,6 +151,8 @@
 		  name="extensions.kancolletimer.display.font-color" type="unichar"/>
       <preference id="e.n.font-size"
 		  name="extensions.kancolletimer.display.font-size" type="unichar"/>
+      <preference id="pref-ship-num-free"
+		  name="extensions.kancolletimer.display.ship-num-free" type="int"/>
     </preferences>
 
     <checkbox preference="pref-display-short" label="省スペース表示にする" tooltiptext="ウィンドウ表示時に終了時刻の表示をなくします。"/>
@@ -186,6 +188,15 @@
 	<label id="alpha-label" value="100" style="width:3em;"/>
       </hbox>
     </groupbox>
+    <groupbox>
+      <caption>警告表示</caption>
+      <hbox>
+	<label value="艦船数余裕"/>
+	<textbox preference="pref-ship-num-free" type="number" min="0"/>
+	<label value="以下"/>
+      </hbox>
+    </groupbox>
+
   </prefpane>
 
   <prefpane id="prefpane-camera" label="撮影" image="chrome://kancolletimer/content/data/camera.png">

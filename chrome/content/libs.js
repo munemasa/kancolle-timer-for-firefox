@@ -31,6 +31,9 @@ function KanColleTimerBasicInformationPanel(){
     let slotitems = '-';
     let burner = '-';
     let bucket = '-';
+    let shipnumfree = KanColleTimerConfig.getInt('display.ship-num-free');
+    let ship_color = null;
+    let slotitem_color = null;
 
     if (record) {
 	timestamp = KanColleDatabase.memberRecord.timestamp();
@@ -57,6 +60,28 @@ function KanColleTimerBasicInformationPanel(){
 	    slotitems = count;
     }
 
+    if (ships != '-' && maxships != '-' && shipnumfree >= 0) {
+	let ship_room = maxships - ships;
+	if (ship_room <= 0) {
+	    ship_color = 'red';
+	} else if (ship_room <= shipnumfree) {
+	    ship_color = 'orange';
+	} else {
+	    ship_color = 'black';
+	}
+    }
+
+    if (slotitems != '-' && maxslotitems != '-' && shipnumfree >= 0) {
+	let slotitem_room = maxslotitems - slotitems;
+	if (slotitem_room <= 0) {
+	    slotitem_color = 'red';
+	} else if (slotitem_room <= shipnumfree * 4) {
+	    slotitem_color = 'orange';
+	} else {
+	    slotitem_color = 'black';
+	}
+    }
+
     if (KanColleDatabase.memberMaterial.timestamp()) {
 	let d;
 	/*
@@ -77,10 +102,20 @@ function KanColleTimerBasicInformationPanel(){
 	    bucket = d.api_value;
     }
 
+
     $('basic-information-shipcount').value = ships;
+    if (ship_color)
+	$('basic-information-shipcount').style.setProperty('color', ship_color);
+    else
+	$('basic-information-shipcount').style.removeProperty('color');
     $('basic-information-shipcount').setAttribute('tooltiptext', ships + ' / ' + maxships);
     $('basic-information-slotitemcount').value = slotitems;
+    if (slotitem_color)
+	$('basic-information-slotitemcount').style.setProperty('color', slotitem_color);
+    else
+	$('basic-information-slotitemcount').style.removeProperty('color');
     $('basic-information-slotitemcount').setAttribute('tooltiptext', slotitems + ' / ' + maxslotitems);
+    $('basic-information-slotitemcount').value = slotitems;
     $('basic-information-burnercount').value = burner;
     $('basic-information-bucketcount').value = bucket;
 
