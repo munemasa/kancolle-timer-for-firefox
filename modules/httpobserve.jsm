@@ -210,8 +210,7 @@ var KanColleRemainInfo = {
     shipfleet: {},
 
     cookie: {},	//重複音対策
-
-    gMission: {},
+    quests: {},
 
     fleet_name: [], // 艦隊名
     mission_name:[],// 遠征名
