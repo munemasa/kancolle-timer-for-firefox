@@ -254,6 +254,8 @@ function SetFirstFleetOrganization( fleets ){
 		image = "greenbar.png";
 	    }else if( percentage<=25 ){
 		image = "redbar.png";
+	    }else if( percentage<=50 ){
+		image = "orangebar.png";
 	    }else if( percentage<=75 ){
 		image = "yellowbar.png";
 	    }else{
