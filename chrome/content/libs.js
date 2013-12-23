@@ -469,7 +469,6 @@ function KanColleTimerShipInfoHandler(){
 
 function KanColleTimerMemberShip2FleetHandler(){
     let l = KanColleDatabase.memberDeck.list();
-    let min_cond = 100;
 
     function timestr(t){
 	let d = new Date;
@@ -496,6 +495,7 @@ function KanColleTimerMemberShip2FleetHandler(){
 	let fleet_text = fi.api_name;
 	let fleet_flagship_lv = 0;
 	let fleet_stypes = {};
+	let min_cond = 100;
 	for ( let j = 0; j < fi.api_ship.length; j++ ){
 	    let ship_id = fi.api_ship[j];
 	    let ship_name = FindShipName(ship_id);
