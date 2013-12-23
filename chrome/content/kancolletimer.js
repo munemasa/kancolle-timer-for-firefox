@@ -408,8 +408,6 @@ var KanColleTimer = {
 
 	this.createMissionBalanceTable();
 	this.setWindowOnTop();
-
-	SetMissionName();
     },
 
     destroy: function(){
