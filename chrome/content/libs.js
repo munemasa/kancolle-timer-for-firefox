@@ -633,30 +633,6 @@ function KanColleTimerMemberShip2FleetHandler(){
     }
 }
 
-function KanColleTimerQuestlistHandler(){
-    let d = KanColleDatabase.memberQuestlist.get();
-    for( let i in d.api_list ){
-	let mission = d.api_list[i];
-	let no;
-	let state;
-	// 余ったスロットは-1になっている。念のためスキップ
-	if (typeof(mission) != 'object')
-	    continue;
-	no = mission.api_no;
-	state = mission.api_state; // 2だと遂行中,3だと達成
-	switch(state){
-	case 3:
-	    delete KanColleRemainInfo.gMission[no];
-	    break;
-	default:
-	    KanColleRemainInfo.gMission[no] = mission;
-	    break;
-	}
-    }
-
-    SetMissionName();
-}
-
 function KanColleTimerQuestInformationUpdate(){
     let t = KanColleDatabase.memberQuestlist.timestamp();
     let d = KanColleDatabase.memberQuestlist.get();
@@ -708,24 +684,6 @@ function KanColleTimerQuestInformationUpdate(){
     }
 
     KanColleTimerQuestInformationShow();
-}
-
-// 任務名称を表示
-function SetMissionName(){
-    let quest_name = document.getElementsByClassName('quest-name');
-    let cnt=0;
-    for( let i in KanColleRemainInfo.gMission ){
-	let mission = KanColleRemainInfo.gMission[i];
-	if( mission && mission.api_state==2 ){
-	    quest_name[cnt].value = mission.api_title;
-	    quest_name[cnt].setAttribute('tooltiptext', mission.api_detail);
-	    cnt++;
-	}
-    }
-    for( ; cnt<5;cnt++ ){
-	quest_name[cnt].value = "";
-	quest_name[cnt].removeAttribute('tooltiptext');
-    }
 }
 
 function KanColleTimerQuestInformationShow(){
@@ -841,7 +799,6 @@ function KanColleTimerRegisterCallback(){
     db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.appendCallback(KanColleTimerBasicInformationPanel);
-    db.memberQuestlist.appendCallback(KanColleTimerQuestlistHandler);
     db.memberQuestlist.appendCallback(KanColleTimerQuestInformationUpdate);
     db.memberShip2.appendCallback(KanColleTimerQuestInformationShow);
 }
@@ -863,7 +820,6 @@ function KanColleTimerUnregisterCallback(){
     db.memberDeck.removeCallback(KanColleTimerDeckHandler);
     db.memberRecord.removeCallback(KanColleTimerBasicInformationPanel);
     db.memberBasic.removeCallback(KanColleTimerBasicInformationPanel);
-    db.memberQuestlist.removeCallback(KanColleTimerQuestlistHandler);
     db.memberQuestlist.removeCallback(KanColleTimerQuestInformationUpdate);
     db.memberShip2.removeCallback(KanColleTimerQuestInformationShow);
 }
