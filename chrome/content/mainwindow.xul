@@ -214,13 +214,13 @@
 	  </hbox>
 	</groupbox>
 	<groupbox>
-	  <caption>任務(<label id="quest-information-mode" value="-" context="quest-information-mode-popup"/>)</caption>
+	  <caption>任務(<label id="quest-information-mode" value="-" popup="quest-information-mode-popup"/>)</caption>
 	  <menupopup id="quest-information-mode-popup">
 	    <menuitem label=""/>
 	    <menuitem label="全て"               value="0" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
 	    <menuitem label="遂行中/進捗有"      value="1" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
 	    <menuitem label="遂行中"             value="2" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
-	    <menuitem label="遂行中&#183;未達成" value="3" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
+	    <menuitem label="未達成遂行中"       value="3" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
 	  </menupopup>
 	  <grid id="quest-list">
 	    <columns>

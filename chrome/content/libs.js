@@ -737,7 +737,7 @@ function KanColleTimerQuestInformationShow(){
 
     if (modenode) {
 	let str = '-';
-	let menunodename = modenode.getAttribute('context');
+	let menunodename = modenode.getAttribute('popup');
 	let menunode = menunodename ? $(menunodename) : null;
 	let children = menunode ? menunode.childNodes : null;
 	if (children) {
