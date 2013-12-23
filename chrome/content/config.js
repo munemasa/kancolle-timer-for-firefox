@@ -105,6 +105,8 @@ var KanColleTimerConfig = {
 	} catch (x) {
 	    //AddLog(x);
 	}
+
+	KanColleTimerBasicInformationPanel();
     },
 
     observe:function(aSubject, aTopic, aData){
