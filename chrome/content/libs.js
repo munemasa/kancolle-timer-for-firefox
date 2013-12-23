@@ -797,8 +797,13 @@ function KanColleTimerQuestInformationShow(){
 
 	listitem.style.color = 'black';
 
-	if (q.data.api_state > 1)
+	if (q.data.api_state > 1) {
 	    listitem.style.fontWeight = 'bold';
+	    listitem.style.color = 'black';
+	} else {
+	    listitem.style.fontWeight = 'normal';
+	    listitem.style.color = '#444444';
+	}
 	if (color) {
 	    listitem.style.border = color + ' 1px solid';
 	    listitem.style.backgroundColor = color;
@@ -806,7 +811,7 @@ function KanColleTimerQuestInformationShow(){
 
 	// 古いときは背景を灰色に
 	if (!staletime || q.timestamp < staletime)
-	    listitem.style.backgroundColor = '#cccccc';
+	    listitem.style.backgroundColor = '#dddddd';
 	else
 	    listitem.style.backgroundColor = 'white';
 
