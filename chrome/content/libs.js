@@ -85,6 +85,7 @@ function KanColleTimerBasicInformationPanel(){
     $('basic-information-bucketcount').value = bucket;
 
     $('repairkit-number').value = bucket;
+    $('burner-number').value = burner;
 }
 
 /*

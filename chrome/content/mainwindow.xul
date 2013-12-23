@@ -149,8 +149,13 @@
 	  
 	</groupbox>
 	
-	<groupbox>
-	  <caption>入渠ドック[<image style="vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>]</caption>
+	<groupbox tooltip="ndock-tooltip">
+	  <caption>入渠ドック</caption>
+	  <tooltip id="ndock-tooltip">
+	    <box>
+	      <image style="background-color: white; vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>
+	    </box>
+	  </tooltip>
 	  <grid>
 	    <columns>
 	      <column/>
@@ -182,8 +187,13 @@
 	  </grid>
 	</groupbox>
 	
-	<groupbox>
+	<groupbox tooltip="kdock-tooltip">
 	  <caption>建造ドック</caption>
+	  <tooltip id="kdock-tooltip">
+	    <box>
+	      <image style="background-color: white; vertical-align:middle;" src="data/burner.png"/><label id="burner-number" value="---"/>
+	    </box>
+	  </tooltip>
 	  <hbox id="kdock-box1" class="kdock-box">
 	    <label id="kdock-label1" value="No.1"/>
 	    <timer id="kdock1" mode="target" class="kdock-time"/>
