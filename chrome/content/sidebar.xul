@@ -180,7 +180,7 @@
 	    <label id="kdockremain4" class="kdockremain" value=""/>
 	  </hbox>
 	</groupbox>
-	<textbox id="log" placeholder="" multiline="true" flex="1" style="min-height: 5em; max-height:10em;"/>
+	<html:textarea id="log" style="min-height: 5em;"/>
       </vbox>
       <!-- 遠征収支表(時給) -->
       <vbox flex="1" style="overflow:auto;">
@@ -234,7 +234,7 @@
 	  <caption><label id="first-fleet-name" value="第1艦隊"/></caption>
 	  <grid>
 	    <columns>
-	      <column/><column/><column/>
+	      <column/><column/><column/><column/>
 	    </columns>
 	    <rows id="fleet-1">
 	    </rows>
