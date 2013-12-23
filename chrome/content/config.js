@@ -94,8 +94,26 @@ var KanColleTimerConfig = {
 	}
     },
 
+    loadFonts:function(){
+	let col = this.getUnichar('display.font-color') || "";
+	try{
+	    $('sbKanColleTimerSidebar').style.color = col;
+	} catch (x) {}
+	try{
+	    $('kancolletimermainwindow').style.color = col;
+	} catch (x) {}
+
+	let font = this.getUnichar("display.font");
+	try{
+	    $('sbKanColleTimerSidebar').style.fontFamily = font;
+	} catch (x) {
+	    $('kancolletimermainwindow').style.fontFamily = font;
+	}
+    },
+
     loadPrefs: function(){
 	this.loadDashboardPrefs();
+	this.loadFonts();
 
 	let b = KanColleTimerConfig.getBool('display.short');
 	// fleet-time, ndock-time, kdock-time
@@ -116,14 +134,6 @@ var KanColleTimerConfig = {
 	    $('wallpaper').setAttribute('style',rule);
 	    //sheet.insertRule(rule,1);
 	}
-
-	let col = this.getUnichar('display.font-color') || "";
-	try{
-	    $('sbKanColleTimerSidebar').style.color = col;
-	} catch (x) {}
-	try{
-	    $('kancolletimermainwindow').style.color = col;
-	} catch (x) {}
 
 	try{
 	    let audios = document.getElementsByTagName('html:audio');

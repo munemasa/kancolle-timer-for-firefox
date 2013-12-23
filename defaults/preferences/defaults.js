@@ -4,6 +4,7 @@ pref("extensions.kancolletimer.display.dashboard.order","");
 
 pref("extensions.kancolletimer.display.short",false);
 pref("extensions.kancolletimer.display.font-color","");
+pref("extensions.kancolletimer.display.font","");
 
 pref("extensions.kancolletimer.default-action.toolbar", 0);
 

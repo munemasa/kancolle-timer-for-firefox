@@ -177,11 +177,17 @@
 		  name="extensions.kancolletimer.wallpaper.alpha" type="int"/>
       <preference id="e.n.font-color"
 		  name="extensions.kancolletimer.display.font-color" type="unichar"/>
+      <preference id="e.n.font"
+		  name="extensions.kancolletimer.display.font" type="unichar"/>
+      <!-- to obtain font group from browser settings -->
+      <preference id="font.language.group" name="font.language.group" type="wstring"/>
     </preferences>
 
     <checkbox preference="pref-display-short" label="省スペース表示にする" tooltiptext="ウィンドウ表示時に終了時刻の表示をなくします。"/>
 
-    <hbox>
+    <hbox align="center">
+      <label value="フォント"/>
+      <menulist id="select-font" preference="e.n.font"/>
       <label value="文字色"/>
       <colorpicker id="select-font-color" type="button" preference="e.n.font-color"/>
     </hbox>
