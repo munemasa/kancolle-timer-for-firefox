@@ -727,7 +727,7 @@ function KanColleTimerQuestInformationUpdate(){
 function KanColleTimerQuestInformationShow(){
     let quests = KanColleRemainInfo.quests;
     let ids = quests.list ? Object.keys(quests.list) : [];
-    let list = $('quest-list');
+    let list = $('quest-list-rows');
     let listitem;
     let staletime = KanColleDatabase.memberShip2.timestamp();
     let mode = KanColleTimerConfig.getInt('quest-info.mode');
@@ -758,32 +758,34 @@ function KanColleTimerQuestInformationShow(){
     });
 
     // clear
-    while(list.getRowCount())
-	list.removeItemAt(0);
+    RemoveChildren(list);
 
     for (let i = 0; i < ids.length; i++) {
 	let no = ids[i];
-	let listitem = CreateElement('listitem');
+	let listitem = CreateElement('row');
 	let cell;
 	let t;
 	let color = null;
 	let q = quests.list[ids[i]];
 
 	// title
-	cell = CreateListCell(q.data.api_title);
-	cell.tooltiptext = q.data.api_detail;
+	cell = CreateElement('label');
+	cell.setAttribute('value', q.data.api_title);
+	cell.setAttribute('crop', 'end');
+	cell.setAttribute('tooltiptext', q.data.api_detail);
 	listitem.appendChild(cell);
 
 	// type
 	switch (q.data.api_type) {
-	case 1: t = 'なし'; break;
-	case 2: t = '当日'; break;
-	case 3: t = '週間'; break;
-	case 4: t = '当日'; break;  //3,7,0の日
-	case 5: t = '当日'; break;  //2,8の日
-	default: t = '不明(' + q.data.api_type + ')';
+	case 1: t = ''; break;
+	case 2: t = '[日]'; break;
+	case 3: t = '[週]'; break;
+	case 4: t = '[日]'; break;  //3,7,0の日
+	case 5: t = '[日]'; break;  //2,8の日
+	default: t = '[' + q.data.api_type + ']';
 	}
-	cell = CreateListCell(t);
+	cell = CreateElement('label');
+	cell.setAttribute('value', t);
 	listitem.appendChild(cell);
 
 	// progress
@@ -791,27 +793,28 @@ function KanColleTimerQuestInformationShow(){
 	    q.data.api_state == 2) {
 	    switch (q.data.api_progress_flag) {
 	    case 0:
-		    t = '';
+		    t = '  ';
 		    color = null;
 		    break;
 	    case 1: //50%
-		    t = '50%-';
+		    t = '50';
 		    color = '#88ff88';
 		    break;
 	    case 2: //80%
-		    t = '80%-';
+		    t = '80';
 		    color = '#88ffff';
 		    break;
 	    }
 	} else if (q.data.api_state == 3) {
-	    t = '達成';
+	    t = '\u2713';	//check mark
 	    color = '#8888ff';
 	} else {
 	    t = '?';
 	    color = 'red';
 	}
 
-	cell = CreateListCell(t);
+	cell = CreateElement('label');
+	cell.setAttribute('value', t);
 	listitem.appendChild(cell);
 
 	listitem.style.color = 'black';
@@ -824,15 +827,17 @@ function KanColleTimerQuestInformationShow(){
 	    listitem.style.color = '#444444';
 	}
 	if (color) {
-	    listitem.style.border = color + ' 1px solid';
-	    listitem.style.backgroundColor = color;
+	    cell.style.border = color + ' 1px solid';
+	    cell.style.backgroundColor = color;
+	    //listitem.style.border = color + ' 1px solid';
+	    //listitem.style.backgroundColor = color;
 	}
 
-	// 古いときは背景を灰色に
-	if (!staletime || q.timestamp < staletime)
+	// 古いときは灰色に。
+	if (!staletime || q.timestamp < staletime) {
 	    listitem.style.backgroundColor = '#dddddd';
-	else
-	    listitem.style.backgroundColor = 'white';
+	    //listitem.style.fontStyle = 'italic';
+	}
 
 	//debugprint('no: ' + no +
 	//	   '[state: ' + q.data.api_state +

@@ -240,18 +240,12 @@
 	    <menuitem label="遂行中"             value="2" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
 	    <menuitem label="遂行中&#183;未達成" value="3" oncommand="KanColleTimerQuestInformationChangeMode(this);"/>
 	  </menupopup>
-          <listbox id="quest-list" flex="1">
-            <listcols>
-	      <listcol flex="1"/>
-	      <listcol/>
-	      <listcol/>
-            </listcols>
-            <listhead>
-	      <listheader label="任務"/>
-	      <listheader label="期限"/>
-	      <listheader label="状況"/>
-            </listhead>
-          </listbox>
+	  <grid id="quest-list">
+	    <columns>
+	      <column flex="1" crop="end"/><column/><column/>
+	    </columns>
+	    <rows id="quest-list-rows"/>
+	  </grid>
 	</groupbox>
       </vbox>
     </deck>
