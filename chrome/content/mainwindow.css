@@ -20,6 +20,9 @@ table{
 hbox[warning]:after{
     content: url("chrome://kancolletimer/content/data/alert.png");
 }
+hbox[repair]:after{
+    content: url("chrome://kancolletimer/content/data/cross.png");
+}
 
 /* テキスト範囲選択できるクラス */
 .selection {

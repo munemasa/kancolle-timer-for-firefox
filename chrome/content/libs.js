@@ -238,6 +238,9 @@ function SetFirstFleetOrganization( fleets ){
 	    masterdata.api_bull_max!=data.api_bull ){
 		hbox.setAttribute('warning','1');
 	}
+	if( IsRepairing( data.api_id ) ){
+	    hbox.setAttribute('repair','1');
+	}
 
 	let maxhp = parseInt(data.api_maxhp);
 	let nowhp = parseInt(data.api_nowhp);
@@ -249,6 +252,13 @@ function SetFirstFleetOrganization( fleets ){
 
 	rows.appendChild( row );
     }
+}
+
+function IsRepairing(ship_id){
+    for(let i in KanColleRemainInfo.ndock_ship_id ){
+	if( KanColleRemainInfo.ndock_ship_id[i]==ship_id ) return true;
+    }
+    return false;
 }
 
 // 任務名称を表示
