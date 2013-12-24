@@ -804,12 +804,12 @@ function KanColleTimerQuestInformationShow(){
 		    break;
 	    case 2: //80%
 		    t = '80';
-		    color = '#88ffff';
+		    color = '#3cb371';
 		    break;
 	    }
 	} else if (q.data.api_state == 3) {
 	    t = '\u2713';	//check mark
-	    color = '#8888ff';
+	    color = '#88ffff';
 	} else {
 	    t = '?';
 	    color = 'red';
