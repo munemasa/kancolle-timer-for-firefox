@@ -330,6 +330,16 @@
       <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="装甲"	value="soukou"		id="shipinfo-colmenu-soukou"	checked="false" disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="回避"	value="kaihi"		id="shipinfo-colmenu-kaihi"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="対潜"	value="taisen"		id="shipinfo-colmenu-taisen"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="索敵"	value="sakuteki"	id="shipinfo-colmenu-sakuteki"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="速力"	value="soku"		id="shipinfo-colmenu-soku"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="射程"	value="length"		id="shipinfo-colmenu-length"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="運"	value="lucky"		id="shipinfo-colmenu-lucky"	checked="false" disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="士気"	value="cond"		id="shipinfo-colmenu-cond"	checked="true"  disabled="false"/>
