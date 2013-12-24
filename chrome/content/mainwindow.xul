@@ -336,7 +336,9 @@
       <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="対空"	value="taiku"		id="shipinfo-colmenu-taiku"	checked="true"  disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"
-		label="装甲"	value="soukou"		id="shipinfo-colmenu-soukou"	checked="true"  disabled="false"/>
+		label="装甲"	value="soukou"		id="shipinfo-colmenu-soukou"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="運"	value="lucky"		id="shipinfo-colmenu-lucky"	checked="true"  disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"
 		label="士気"	value="cond"		id="shipinfo-colmenu-cond"	checked="true"  disabled="false"/>
       <menuitem type="checkbox" persist="checked" autoCheck="true"

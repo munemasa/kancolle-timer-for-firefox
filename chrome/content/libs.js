@@ -1250,6 +1250,14 @@ var ShipInfoTree = {
 	    {	sortspec: '_soukouremain',  label: '装甲強化余地',  },
 	  ],
 	},
+	{ label: '運', id: 'lucky', flex: 1,
+	  subdump: true,
+	  sortspecs: [
+	    {	sortspec: '_lucky',	    label: '運',	    },
+	    {	sortspec: '_luckymax',	    label: '最大運',	    },
+	    {	sortspec: '_luckyremain',   label: '運強化余地',    },
+	  ],
+	},
 	{ label: '士気', id: 'cond', flex: 1, },
 	{ label: '入渠', id: 'ndock', flex: 1,
 	  subdump: true,
@@ -1419,6 +1427,13 @@ function KanColleUpgradeFilterTemplate(){
 		},{
 		    label: '最高改造段階で改修可能',
 		    spec: 'upgrade1',
+		},
+		{
+		    label: '運改修可能',
+		    spec: 'upgrade2',
+		},{
+		    label: '最高改造段階で運改修可能',
+		    spec: 'upgrade3',
 		},
 	    ],
     };
@@ -1741,6 +1756,7 @@ function getShipProperties(ship,name)
 	raisou:  { kidx: 1, master: 'raig', },
 	taiku:   { kidx: 2, master: 'tyku', },
 	soukou:  { kidx: 3, master: 'souk', },
+	lucky:   { kidx: 4, master: 'luck', },
     };
     let prop = {
 	cur: null,
@@ -1969,6 +1985,10 @@ function TreeView(){
 	_soukou:	function(ship) { return getShipProperties(ship,'soukou').cur; },
 	_soukoumax:	function(ship) { return getShipProperties(ship,'soukou').max; },
 	_soukouremain:	function(ship) { return getShipProperties(ship,'soukou').remain; },
+	lucky:		function(ship) { return getShipProperties(ship,'lucky').str; },
+	_lucky:		function(ship) { return getShipProperties(ship,'lucky').cur; },
+	_luckymax:	function(ship) { return getShipProperties(ship,'lucky').max; },
+	_luckyremain:	function(ship) { return getShipProperties(ship,'lucky').remain; },
 	ndock: function(ship) {
 	    let ndocktime = ship.api_ndock_time;
 	    let hour;
@@ -2026,8 +2046,11 @@ function TreeView(){
 	    }
 	    shiplist = slist;
 	} else if (filterspec.match(/^upgrade(\d+)$/)) {
-	    const proplist = [ 'karyoku', 'raisou', 'taiku', 'soukou' ];
-	    let upgrade = parseInt(RegExp.$1, 10);
+	    const proplists = [ [ 'karyoku', 'raisou', 'taiku', 'soukou' ],
+			        [ 'lucky' ] ];
+	    let param = parseInt(RegExp.$1, 10);
+	    let upgrade = (param & 1) ? 1 : 0;
+	    let proplist = proplists[(param & 2) ? 1 : 0];
 	    let ships = [];
 	    for( let i = 0; i < shiplist.length; i++ ){
 		let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
