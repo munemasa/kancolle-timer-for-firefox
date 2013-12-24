@@ -231,7 +231,7 @@
 	</groupbox>
 
 	<groupbox id="group-1stfleet">
-	  <caption><label id="first-fleet-name" value="第1艦隊"/></caption>
+	  <caption><label id="first-fleet-name" value="第1艦隊"/><checkbox persist="checked" autoCheck="true" id="show-gage" label="ゲージ表示" style="margin:0;"/></caption>
 	  <grid>
 	    <columns>
 	      <column/><column/><column/><column/>
