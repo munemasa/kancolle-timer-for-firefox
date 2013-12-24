@@ -247,22 +247,25 @@ function SetFirstFleetOrganization( fleets ){
 	if( nowhp-1 <= maxhp*0.25 ){
 	    row.style.backgroundColor = '#ff8080';
 	}else{
-	    row.style.backgroundColor = '';
-	    let percentage = parseInt( nowhp/maxhp*100 );
-	    let image;
-	    if(nowhp==maxhp){
-		image = "greenbar.png";
-	    }else if( percentage<=25 ){
-		image = "redbar.png";
-	    }else if( percentage<=50 ){
-		image = "orangebar.png";
-	    }else if( percentage<=75 ){
-		image = "yellowbar.png";
+	    if( $('show-gage').hasAttribute('checked') ){
+		let percentage = parseInt( nowhp/maxhp*100 );
+		let image;
+		if(nowhp==maxhp){
+		    image = "greenbar.png";
+		}else if( percentage<=25 ){
+		    image = "redbar.png";
+		}else if( percentage<=50 ){
+		    image = "orangebar.png";
+		}else if( percentage<=75 ){
+		    image = "yellowbar.png";
+		}else{
+		    image = "lightgreenbar.png";
+		}
+		let style = 'background-image: url("chrome://kancolletimer/content/data/'+image+'"); background-position:left bottom; background-repeat:no-repeat; background-size:'+percentage+'% 4px;';
+		row.setAttribute('style',style);
 	    }else{
-		image = "lightgreenbar.png";
+		row.removeAttribute('style');
 	    }
-	    let style = 'background-image: url("chrome://kancolletimer/content/data/'+image+'"); background-position:left bottom; background-repeat:no-repeat; background-size:'+percentage+'% 4px;';
-	    row.setAttribute('style',style);
 	}
 
 	rows.appendChild( row );
