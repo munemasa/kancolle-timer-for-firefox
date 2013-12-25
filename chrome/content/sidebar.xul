@@ -74,7 +74,7 @@
 	    <menuitem label="60分" value="3600" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	  </menupopup>
 	  <caption>基本情報
-	    <label value="&#x231A;" popup="general-timer-popup"/><timer id="general-timer" mode="time"/>
+	    <label popup="general-timer-popup"><image src="data/clock.png" style="width: 1em; height: 1em;"/></label><timer id="general-timer" mode="time"/>
 	    <timer id="general-timer" mode="time"/>
 	  </caption>
           <hbox>

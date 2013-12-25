@@ -845,7 +845,8 @@ function KanColleTimerQuestInformationShow(){
 		    break;
 	    }
 	} else if (q.data.api_state == 3) {
-	    t = '\u2713';	//check mark
+	    //t = '\u2713';	//check mark
+	    t = 'OK';
 	    color = '#88ffff';
 	} else {
 	    t = '?';
