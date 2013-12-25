@@ -690,7 +690,7 @@ function KanColleTimerQuestInformationUpdate(){
 
     // Check oldest timestamp
     oldest = null;
-    for (let i = 0; i < d.api_page_count && i < 10; i++) {
+    for (let i = 1; i <= d.api_page_count && i <= 10; i++) {
 	if (!quests.pages[i])
 	    continue;
 	if (!oldest || quests.pages[i] < oldest)
