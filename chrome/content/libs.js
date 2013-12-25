@@ -632,30 +632,26 @@ function KanColleTimerMemberShip2FleetHandler(){
 	if (fleet_flagship_lv > 0) {
 	    let stypes;
 	    let fleetinfo = [];
-	    let t;
 	    let timercmd = null;
+
+	    let cur = (new Date).getTime();
+	    let t = KanColleDatabase.memberShip2.timestamp();
+	    let time = t + Math.ceil((49 - min_cond) / 3) * 180000;
+	    let str = timestr(time);
+
+	    if (time >= cur) {
+		fleet_text += ' ' + timestr(time);
+		$('shipstatus-' + id + '-popup-1').label = 'タイマー設定(' + str + ')';
+		$('shipstatus-' + id + '-popup-1').setAttribute('oncommand', 'KanColleTimer.setGeneralTimerByTime(' + time + ')');
+		$('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'false');
+	    } else {
+		$('shipstatus-' + id + '-popup-1').label = 'タイマー';
+		$('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'true');
+	    }
 
 	    stypes = Object.keys(fleet_stypes).sort(function(a,b){
 		return fleet_stypes[b] - fleet_stypes[a];
 	    });
-
-	    if (min_cond < 49) {
-		let cur = (new Date).getTime();
-		let t = KanColleDatabase.memberShip2.timestamp();
-		let time = t + Math.ceil((49 - min_cond) / 3) * 180000;
-		let str = timestr(time);
-
-		fleet_text += ' ' + timestr(time);
-
-		if (cur < time) {
-		    $('shipstatus-' + id + '-popup-1').label = 'タイマー設定(' + str + ')';
-		    $('shipstatus-' + id + '-popup-1').setAttribute('oncommand', 'KanColleTimer.setGeneralTimerByTime(' + time + ')');
-		    $('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'false');
-		} else {
-		    $('shipstatus-' + id + '-popup-1').label = 'タイマー';
-		    $('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'true');
-		}
-	    }
 
 	    fleet_text += '\n旗艦Lv' + fleet_flagship_lv;
 	    for( let j = 0; j < stypes.length; j++ ){
