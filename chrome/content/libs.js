@@ -727,6 +727,7 @@ function KanColleTimerQuestInformationUpdate(){
 }
 
 function KanColleTimerQuestInformationShow(){
+    let questbox = $('quest-list-box');
     let quests = KanColleRemainInfo.quests;
     let ids = quests.list ? Object.keys(quests.list) : [];
     let list = $('quest-list-rows');
@@ -734,6 +735,24 @@ function KanColleTimerQuestInformationShow(){
     let staletime = KanColleDatabase.memberShip2.timestamp();
     let mode = KanColleTimerConfig.getInt('quest-info.mode');
     let modenode = $('quest-information-mode');
+    let tooltips = {};
+
+    function deadline(t,weekly){
+	const base = 331200000;	// 1970/1/4 20:00 UTC = 1970/1/5(月) 5:00 JST
+	const fuzz = 60000;
+	const span = 86400000 * (weekly ? 7 : 1);
+	let d;
+	let elapsed;	// 期間開始からの経過時間
+
+	if (!t || t < 0)
+	    return -1;	// エラー
+
+	elapsed = (t - base) % span;
+	if (elapsed < fuzz)
+	    return 0;	// 時計ずれを考慮
+
+	return t + span - elapsed;
+    }
 
     if (modenode) {
 	let str = '-';
@@ -769,6 +788,8 @@ function KanColleTimerQuestInformationShow(){
 	let t;
 	let color = null;
 	let q = quests.list[ids[i]];
+	let type = 0;
+	let tid = 'quest-information-deadline-tooltip-' + i;
 
 	// title
 	cell = CreateElement('label');
@@ -779,16 +800,32 @@ function KanColleTimerQuestInformationShow(){
 
 	// type
 	switch (q.data.api_type) {
-	case 1: t = ''; break;
-	case 2: t = '[日]'; break;
-	case 3: t = '[週]'; break;
-	case 4: t = '[日]'; break;  //3,7,0の日
-	case 5: t = '[日]'; break;  //2,8の日
-	default: t = '[' + q.data.api_type + ']';
+	case 1: t = '';	    type = 0; break;
+	case 2: t = '[日]'; type = 1; break;
+	case 3: t = '[週]'; type = 2; break;
+	case 4: t = '[日]'; type = 1; break;  //3,7,0の日
+	case 5: t = '[日]'; type = 1; break;  //2,8の日
+	default:
+		t = '[' + q.data.api_type + ']';
 	}
 	cell = CreateElement('label');
 	cell.setAttribute('value', t);
+	cell.setAttribute('tooltip', tid);
 	listitem.appendChild(cell);
+
+	t = type ? deadline(q.timestamp, type == 2) : -1;
+	if (t > 0) {
+	    let tooltip = CreateElement('tooltip');
+	    let timer;
+	    tooltip.setAttribute('id', tid);
+
+	    timer = CreateElement('timer');
+	    timer.mode = 'time';
+	    timer.finishTime = '' + t;
+	    tooltip.appendChild(timer);
+
+	    tooltips[tid] = tooltip;
+	}
 
 	// progress
 	if (q.data.api_state == 1 ||
@@ -863,6 +900,16 @@ function KanColleTimerQuestInformationShow(){
 	}
 
 	list.appendChild(listitem);
+    }
+
+    if (questbox) {
+	for (let tid in tooltips) {
+	    let node = $(tid);
+	    if (node)
+		node.parentNode.replaceChild(tooltips[tid], node);
+	    else
+		questbox.appendChild(tooltips[tid]);
+	}
     }
 }
 

@@ -205,7 +205,7 @@
 	  </hbox>
 	</groupbox>
 	<!-- 任務表 -->
-	<groupbox>
+	<groupbox id="quest-list-box">
 	  <caption>任務(<label id="quest-information-mode" value="-" popup="quest-information-mode-popup"/>)</caption>
 	  <menupopup id="quest-information-mode-popup">
 	    <menuitem label=""/>
