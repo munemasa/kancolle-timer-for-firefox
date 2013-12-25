@@ -87,10 +87,10 @@
 	    <label popup="general-timer-popup"><image src="data/clock.png" style="width: 1em; height: 1em;"/></label><timer id="general-timer" mode="time"/>
 	  </caption>
           <hbox>
-	    <image src="data/ship.png"/><label id="basic-information-shipcount" value="-"/>
-	    <image src="data/slotitem.png"/><label id="basic-information-slotitemcount" value="-"/>
-	    <image src="data/burner.png"/><label id="basic-information-burnercount" value="-"/>
-            <image src="data/repairkit.png"/><label id="basic-information-bucketcount" value="-"/>
+	    <image src="data/ship.png" style="width: 1em; height: 1em;"/><label id="basic-information-shipcount" value="-"/>
+	    <image src="data/slotitem.png" style="width: 1em; height: 1em;"/><label id="basic-information-slotitemcount" value="-"/>
+	    <image src="data/burner.png" style="width: 1em; height: 1em;"/><label id="basic-information-burnercount" value="-"/>
+	    <image src="data/repairkit.png" style="width: 1em; height: 1em;"/><label id="basic-information-bucketcount" value="-"/>
 	  </hbox>
 	</groupbox>
 	
