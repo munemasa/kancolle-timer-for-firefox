@@ -1189,13 +1189,6 @@ function FindShipStatus( ship_id ){
     return undefined;
 }
 
-function CreateListCell(label){
-    let elem;
-    elem = document.createElementNS(XUL_NS,'listcell');
-    elem.setAttribute('label',label);
-    return elem;
-}
-
 /*
  * Tree
  */
