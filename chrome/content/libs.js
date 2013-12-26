@@ -806,7 +806,6 @@ function KanColleTimerQuestInformationShow(){
 	}
 	cell = CreateElement('label');
 	cell.setAttribute('value', t);
-	cell.setAttribute('tooltip', tid);
 	listitem.appendChild(cell);
 
 	t = type ? deadline(q.timestamp, type == 2) : -1;
@@ -821,6 +820,8 @@ function KanColleTimerQuestInformationShow(){
 	    tooltip.appendChild(timer);
 
 	    tooltips[tid] = tooltip;
+
+	    cell.setAttribute('tooltip', tid);
 	}
 
 	// progress
