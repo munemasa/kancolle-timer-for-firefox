@@ -681,7 +681,10 @@ function KanColleTimerQuestInformationUpdate(){
     cleared = KanColleDatabase.questClearitemget.timestamp();
     if (!quests.info || !quests.pages ||
 	!quests.info.last_page ||
-	quests.info.last_page != d.api_disp_page ||
+	!(d.api_disp_page == quests.info.last_page ||
+	  (quests.info.last_page == quests.info.page_count &&
+	   d.api_disp_page == d.api_page_count ||
+	   d.api_disp_page + 1 == quests.info.last_page)) ||
 	!quests.pages[quests.info.last_page] > cleared) {
 	cleared = 0;
     }
