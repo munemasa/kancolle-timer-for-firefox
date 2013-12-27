@@ -672,13 +672,24 @@ function KanColleTimerQuestInformationUpdate(){
     let d = KanColleDatabase.memberQuestlist.get();
     let oldest = null;
     let quests = KanColleRemainInfo.quests;
+    let cleared;
 
     if (!t)
 	return;
 
+    // Check last clearitem
+    cleared = KanColleDatabase.questClearitemget.timestamp();
+    if (!quests.info || !quests.pages ||
+	!quests.info.last_page ||
+	quests.info.last_page != d.api_disp_page ||
+	!quests.pages[quests.info.last_page] > cleared) {
+	cleared = 0;
+    }
+
     quests.info = {
 	count: d.api_count,
 	page_count: d.api_page_count,
+	last_page: d.api_disp_page,
     };
     if (!quests.pages)
 	quests.pages = [];
@@ -705,6 +716,7 @@ function KanColleTimerQuestInformationUpdate(){
 	no = q.api_no;
 	quests.list[no] = {
 	    timestamp: t,
+	    page: d.api_disp_page,
 	    data: q,
 	};
     }
@@ -714,8 +726,15 @@ function KanColleTimerQuestInformationUpdate(){
 	let ids = Object.keys(quests.list);
 	for (let i = 0; i < ids.length; i++) {
 	    let info = quests.list[ids[i]];
-	    if (oldest && info.timestamp < oldest)
+	    // - エントリの最終更新が全ページの更新より古ければ、
+	    //   もう表示されないエントリ。
+	    // - アイテム取得前後に同一ページが表示されたなら、
+	    //   アイテム取得はそのページ上のどれかで行われたと
+	    //   みなし、古いエントリは消してよい。
+	    if ((oldest && info.timestamp < oldest) ||
+		(cleared && info.page == d.api_disp_page && info.timestamp < t)) {
 		delete quests.list[ids[i]];
+	    }
 	}
     }
 

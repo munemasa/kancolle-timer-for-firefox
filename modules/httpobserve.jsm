@@ -127,6 +127,7 @@ var KanColleDatabase = {
     memberRecord: null,		// member/record
     memberMaterial: null,	// member/material
     memberQuestlist: null,	// member/questlist
+    questClearitemget: null,	// quest/clearitemget
 
     // Initialization
     init: function(){
@@ -144,6 +145,7 @@ var KanColleDatabase = {
 	this.memberRecord = new KanColleSimpleDB();
 	this.memberMaterial = new KanColleDB();
 	this.memberQuestlist = new KanColleSimpleDB();
+	this.questClearitemget = new KanColleSimpleDB();
 	debugprint("KanColleDatabase initialized.");
     },
     exit: function(){
@@ -160,6 +162,7 @@ var KanColleDatabase = {
 	this.memberRecord = null;
 	this.memberMaterial = null;
 	this.memberQuestlist = null;
+	this.questClearitemget = null;
 	debugprint("KanColleDatabase cleared.");
     },
 };
@@ -202,6 +205,8 @@ function KanColleCallback(req,s){
 	KanColleDatabase.memberUnsetslot.update(data.api_data);
     }else if( url.match(/kcsapi\/api_get_member\/questlist/) ){
 	KanColleDatabase.memberQuestlist.update(data.api_data);
+    }else if( url.match(/kcsapi\/api_req_quest\/clearitemget/) ){
+	KanColleDatabase.questClearitemget.update(data.api_data);
     }
 }
 
