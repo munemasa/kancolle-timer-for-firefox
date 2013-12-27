@@ -111,6 +111,10 @@ var KanColleTimerConfig = {
 	}
     },
 
+    isShortDisplay: function(){
+	return KanColleTimerConfig.getBool('display.short');
+    },
+
     loadPrefs: function(){
 	this.loadDashboardPrefs();
 	this.loadFonts();

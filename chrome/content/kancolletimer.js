@@ -166,7 +166,13 @@ var KanColleTimer = {
 			this.noticeMission1min(i,str);
 		    }
 		}
-		fleet_time[i].style.color = d<60?"red":"black";
+		if( d<60 ){
+		    fleet_time[i].style.color = "red";
+		    fleetremain[i].style.color = KanColleTimerConfig.isShortDisplay()?"red":"black";
+		}else{
+		    fleet_time[i].style.color = "black";
+		    fleetremain[i].style.color = "black";
+		}
 
 		if( d<0 ){
 		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
@@ -194,7 +200,15 @@ var KanColleTimer = {
 			this.noticeRepair1min(i,str);
 		    }
 		}
-		ndock_time[i].style.color = d<60?"red":"black";
+
+		if( d<60 ){
+		    ndock_time[i].style.color = "red";
+		    ndockremain[i].style.color = KanColleTimerConfig.isShortDisplay()?"red":"black";
+		}else{
+		    ndock_time[i].style.color = "black";
+		    ndockremain[i].style.color = "black";
+		}
+
 		if( d<0 ){
 		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
 		    AddLog(str);
@@ -221,7 +235,14 @@ var KanColleTimer = {
 			this.noticeConstruction1min(i,str);
 		    }
 		}
-		kdock_time[i].style.color = d<60?"red":"black";
+
+		if( d<60 ){
+		    kdock_time[i].style.color = "red";
+		    kdockremain[i].style.color = KanColleTimerConfig.isShortDisplay()?"red":"black";
+		}else{
+		    kdock_time[i].style.color = "black";
+		    kdockremain[i].style.color = "black";
+		}
 		if( d<0 ){
 		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
 		    AddLog(str);
