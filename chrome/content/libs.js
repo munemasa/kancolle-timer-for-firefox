@@ -389,6 +389,12 @@ function TakeKanColleScreenshot(isjpeg){
     ctx.drawWindow(win, x, y, w, h, "rgb(255,255,255)");
     ctx.restore();
 
+    let mask_admiral_name = KanColleTimerConfig.getBool("screenshot.mask-name");
+    if( mask_admiral_name ){
+	ctx.fillStyle = "rgb(0,0,0)";
+	ctx.fillRect(120, 5, 145, 20);
+    }
+
     var url;
     if( isjpeg ){
 	url = canvas.toDataURL("image/jpeg");
