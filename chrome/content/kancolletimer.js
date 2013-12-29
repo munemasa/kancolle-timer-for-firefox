@@ -425,6 +425,7 @@ var KanColleTimer = {
 
 	SetQuestName();
 	SetFirstFleetOrganization( KanColleRemainInfo.gDeckList );
+	SetFleetsCondition();
 
 	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
 	$('number-of-items').value = KanColleRemainInfo.gOwnedItem.length;

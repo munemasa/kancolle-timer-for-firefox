@@ -31,6 +31,7 @@ function KanColleTimerCallback(request,s){
 	try{
 	    KanColleRemainInfo.gDeckList = data.api_data;
 	    SetFirstFleetOrganization( data.api_data );
+	    SetFleetsCondition();
 	}catch(e){}
 
 	// 遠征リスト
@@ -172,6 +173,7 @@ function KanColleTimerCallback(request,s){
 	KanColleRemainInfo.gOwnedShipList = data.api_data.api_ship_data || data.api_data;
 	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
 	SetFirstFleetOrganization( KanColleRemainInfo.gDeckList );
+	SetFleetsCondition();
     }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
 	KanColleRemainInfo.gOwnedItem = data.api_data;
 	$('number-of-items').value = KanColleRemainInfo.gOwnedItem.length;
@@ -273,10 +275,32 @@ function SetFirstFleetOrganization( fleets ){
 
 // 第1〜第3艦隊のコンディション表示
 function SetFleetsCondition(){
-    // color="#d36363" // red
-    // color="#f3a473" // orange
-}
+    // color="#d36363" // red 0-19
+    // color="#f3a473" // orange 20-29
 
+    let table = $('fleet-condition');
+    RemoveChildren( table );
+
+    let fleets = KanColleRemainInfo.gDeckList;
+    for( let f in fleets ){
+	f = parseInt(f);
+	let fleet = fleets[f];
+
+	let row = CreateElement('row');
+	row.appendChild( CreateLabel('第'+(f+1)+'艦隊') );
+	for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
+	    let data = FindOwnShipData( fleet.api_ship[i] );
+	    let cond = CreateLabel(""+data.api_cond);
+	    if( data.api_cond<=19 ){
+		cond.style.backgroundColor = "#d36363";
+	    }else if( data.api_cond<=29 ){
+		cond.style.backgroundColor = "#f3a473";
+	    }
+	    row.appendChild( cond );
+	}
+	table.appendChild( row );
+    }
+}
 
 function IsRepairing(ship_id){
     for(let i in KanColleRemainInfo.ndock_ship_id ){

@@ -257,6 +257,17 @@
 	  </grid>
 	</groupbox>
 
+	<groupbox id="group-condition">
+	  <caption>コンディション</caption>
+	  <grid>
+	    <columns>
+	      <column/><column/><column/><column/><column/><column/><column/>
+	    </columns>
+	    <rows id="fleet-condition">
+	    </rows>
+	  </grid>
+	</groupbox>
+
 	<groupbox id="group-quest">
 	  <caption>遂行中任務</caption>
 	</groupbox>
