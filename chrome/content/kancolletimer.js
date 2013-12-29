@@ -142,7 +142,23 @@ var KanColleTimer = {
 	$('general-timer').value = GetTimeString( remain );
     },
 
+    updateDailyJob: function(){
+	let now = new Date();
+	let d = now.getDate();
+	let h = now.getHours();
+	let m = now.getMinutes();
+	let s = now.getSeconds();
+	// 毎日午前5時になったときに任務を一旦クリアする
+	if( h==5 && m==0 && this._date!=d ){
+	    for( let i in KanColleRemainInfo.gMission ){
+		delete KanColleRemainInfo.gMission[i];
+	    }
+	    this._date = d;
+	}
+    },
+
     update: function(){
+	this.updateDailyJob();
 	this.updateGeneralTimer();
 
 	let i;
