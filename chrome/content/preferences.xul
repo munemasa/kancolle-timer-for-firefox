@@ -213,9 +213,12 @@
 		  name="extensions.kancolletimer.screenshot.path" type="string"/>
       <preference id="pref-screenshot-jpeg"
 		  name="extensions.kancolletimer.screenshot.jpeg" type="bool"/>
+      <preference id="pref-screenshot-mask-name"
+		  name="extensions.kancolletimer.screenshot.mask-name" type="bool"/>
     </preferences>
 
     <checkbox preference="pref-screenshot-jpeg" label="JPEGで保存する"/>
+    <checkbox preference="pref-screenshot-mask-name" label="提督名をマスクする" tooltiptext="スクリーンショット撮影時に提督名を検閲処理します。"/>
   </prefpane>
 
   <sound id="audio-playback"/>
