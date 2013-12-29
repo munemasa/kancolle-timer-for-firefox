@@ -154,6 +154,7 @@ var KanColleTimer = {
 		delete KanColleRemainInfo.gMission[i];
 	    }
 	    this._date = d;
+	    SetQuestName();
 	}
     },
 
@@ -422,7 +423,7 @@ var KanColleTimer = {
 	this.initWallpaper();
 	this.audios = document.getElementsByTagName('html:audio');
 
-	SetMissionName();
+	SetQuestName();
 	SetFirstFleetOrganization( KanColleRemainInfo.gDeckList );
 
 	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";

@@ -212,8 +212,7 @@ function KanColleTimerCallback(request,s){
 		break;
 	    }
 	}
-
-	SetMissionName();
+	SetQuestName();
     }
 }
 
@@ -272,6 +271,13 @@ function SetFirstFleetOrganization( fleets ){
     }
 }
 
+// 第1〜第3艦隊のコンディション表示
+function SetFleetsCondition(){
+    // color="#d36363" // red
+    // color="#f3a473" // orange
+}
+
+
 function IsRepairing(ship_id){
     for(let i in KanColleRemainInfo.ndock_ship_id ){
 	if( KanColleRemainInfo.ndock_ship_id[i]==ship_id ) return true;
@@ -280,7 +286,7 @@ function IsRepairing(ship_id){
 }
 
 // 任務名称を表示
-function SetMissionName(){
+function SetQuestName(){
     let quest_name = document.getElementsByClassName('quest-name');
     while(quest_name.length > 0){
         quest_name[0].parentNode.removeChild(quest_name[0]);
