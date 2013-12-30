@@ -211,4 +211,7 @@ var ShipList = {
 };
 
 
-window.addEventListener("load", function(e){ ShipList.init(); }, false);
+window.addEventListener("load", function(e){
+    ShipList.init();
+    WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
+}, false);

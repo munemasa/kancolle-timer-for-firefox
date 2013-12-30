@@ -116,6 +116,12 @@
   <popupset>
     <menupopup id="popup-save-csv">
       <menuitem label="CSVに保存..." oncommand="ShipList.saveCvs();"/>
+      <menuseparator/>
+      <menuitem id="window-stay-on-top" persist="checked"
+		label="常に最前面に表示"
+		type="checkbox" autocheck="true"
+		tooltiptext="Windows/Firefox 17以降でのみ有効"
+		oncommand="WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );"/>
     </menupopup>
   </popupset>
 
