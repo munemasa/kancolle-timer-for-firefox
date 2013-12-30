@@ -200,7 +200,9 @@ var KanColleTimer = {
 		    fleetremain[i].value = GetTimeString( d );
 		}
 	    }else{
-		fleetremain[i].value = "";
+		if( !KanColleTimerConfig.isShortDisplay() ){
+		    fleetremain[i].value = "";
+		}
 	    }
 	}
 
@@ -235,7 +237,9 @@ var KanColleTimer = {
 		    ndockremain[i].value = GetTimeString( d );
 		}
 	    }else{
-		ndockremain[i].value = "";
+		if( !KanColleTimerConfig.isShortDisplay() ){
+		    ndockremain[i].value = "";
+		}
 	    }
 	}
 
@@ -269,7 +273,9 @@ var KanColleTimer = {
 		    kdockremain[i].value = GetTimeString( d );
 		}
 	    }else{
-		kdockremain[i].value = "";
+		if( !KanColleTimerConfig.isShortDisplay() ){
+		    kdockremain[i].value = "";
+		}
 	    }
 	}
     },
