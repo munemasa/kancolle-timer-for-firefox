@@ -244,6 +244,53 @@
 	<groupbox id="group-quest">
 	  <caption>遂行中任務</caption>
 	</groupbox>
+
+	<groupbox id="group-fleets">
+	  <caption><label value="第2〜4艦隊"/></caption>
+	  <hbox>
+	    <menulist oncommand="$('fleet-info').selectedIndex=this.value;">
+	      <menupopup>
+		<menuitem label="第2艦隊" value="0"/>
+		<menuitem label="第3艦隊" value="1"/>
+		<menuitem label="第4艦隊" value="2"/>
+	      </menupopup>
+	    </menulist>
+	  </hbox>
+	  <deck id="fleet-info">
+	    <grid>
+	      <columns>
+		<column/><column/><column/><column/>
+	      </columns>
+	      <rows id="fleet-2">
+	      </rows>
+	    </grid>
+	    <grid>
+	      <columns>
+		<column/><column/><column/><column/>
+	      </columns>
+	      <rows id="fleet-3">
+	      </rows>
+	    </grid>
+	    <grid>
+	      <columns>
+		<column/><column/><column/><column/>
+	      </columns>
+	      <rows id="fleet-4">
+	      </rows>
+	    </grid>
+	  </deck>
+	</groupbox>
+
+	<groupbox id="group-condition">
+	  <caption>コンディション</caption>
+	  <grid>
+	    <columns>
+	      <column/><column/><column/><column/><column/><column/><column/>
+	    </columns>
+	    <rows id="fleet-condition">
+	    </rows>
+	  </grid>
+	</groupbox>
       </vbox>
 
       <!-- ダッシュボード -->

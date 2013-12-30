@@ -72,7 +72,7 @@ var KanColleTimerConfig = {
 
 	let def_order = ["log","group-kdock","group-ndock","group-mission"];
 	f( $('tab-timer'), def_order);
-	def_order = ["group-condition","group-quest","group-1stfleet","group-info","group-general-timer"];
+	def_order = ["group-condition","group-fleets","group-quest","group-1stfleet","group-info","group-general-timer"];
 	f( $('tab-organization'), def_order);
     },
 

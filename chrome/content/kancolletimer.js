@@ -430,7 +430,7 @@ var KanColleTimer = {
 	this.audios = document.getElementsByTagName('html:audio');
 
 	SetQuestName();
-	SetFirstFleetOrganization( KanColleRemainInfo.gDeckList );
+	SetAllFleetOrganization();
 	SetFleetsCondition();
 
 	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
