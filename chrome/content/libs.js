@@ -1003,7 +1003,7 @@ function OpenShipList(){
 }
 
 function OpenAboutDialog(){
-    var f='chrome,toolbar,modal=yes,resizable=no,centerscreen';
+    var f='chrome,toolbar,modal=no,resizable=no,centerscreen';
     var w = window.openDialog('chrome://kancolletimer/content/about.xul','KanColleTimerAbout',f);
     w.focus();
 }
