@@ -673,20 +673,24 @@ function KanColleTimerQuestInformationUpdate(){
     let oldest = null;
     let quests = KanColleRemainInfo.quests;
     let cleared;
+    let cleared_page;
 
     if (!t)
 	return;
 
     // Check last clearitem
     cleared = KanColleDatabase.questClearitemget.timestamp();
-    if (!quests.info || !quests.pages ||
-	!quests.info.last_page ||
-	!(d.api_disp_page == quests.info.last_page ||
-	  (quests.info.last_page == quests.info.page_count &&
-	   d.api_disp_page == d.api_page_count ||
-	   d.api_disp_page + 1 == quests.info.last_page)) ||
-	!quests.pages[quests.info.last_page] > cleared) {
+    if (quests.info && quests.pages &&
+	quests.info.last_page &&
+	quests.pages[quests.info.last_page] < cleared &&
+	(d.api_disp_page == quests.info.last_page ||
+	 (quests.info.last_page == quests.info.page_count &&
+	 d.api_disp_page == d.api_page_count ||
+	 d.api_disp_page + 1 == quests.info.last_page))) {
+	cleared_page = quests.info.last_page;
+    } else {
 	cleared = 0;
+	cleared_page = 0;
     }
 
     quests.info = {
@@ -710,18 +714,22 @@ function KanColleTimerQuestInformationUpdate(){
     if (!quests.list)
 	quests.list = {};
 
-    for (let i = 0; i < d.api_list.length; i++){
-	let q = d.api_list[i];
-	let no;
-	let state;
-	if (typeof(q) != 'object')
-	    continue;
-	no = q.api_no;
-	quests.list[no] = {
-	    timestamp: t,
-	    page: d.api_disp_page,
-	    data: q,
-	};
+    if (d.api_list) {
+	for (let i = 0; i < d.api_list.length; i++){
+	    let q = d.api_list[i];
+	    let no;
+	    let state;
+	    if (typeof(q) != 'object')
+		continue;
+	    no = q.api_no;
+	    quests.list[no] = {
+		timestamp: t,
+		page: d.api_disp_page,
+		data: q,
+	    };
+	}
+    } else {
+	debugprint('d.api_list is null: ' + d.toSource());
     }
 
     // Clean-up "achived" quests.
@@ -734,8 +742,17 @@ function KanColleTimerQuestInformationUpdate(){
 	    // - アイテム取得前後に同一ページが表示されたなら、
 	    //   アイテム取得はそのページ上のどれかで行われたと
 	    //   みなし、古いエントリは消してよい。
+	    debugprint(
+		       't=' + t +
+		       ', oldest=' + oldest +
+		       ', cleared=' + cleared +
+		       ', cleared_page=' + cleared_page +
+		       ', info.timestamp=' + info.timestamp +
+		       ', info.page=' + info.page +
+	    '');
 	    if ((oldest && info.timestamp < oldest) ||
-		(cleared && info.page == d.api_disp_page && info.timestamp < t)) {
+		(cleared && cleared_page &&
+		 info.page == cleared_page && info.timestamp < t)) {
 		delete quests.list[ids[i]];
 	    }
 	}
