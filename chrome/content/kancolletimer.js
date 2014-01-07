@@ -102,6 +102,7 @@ var KanColleTimer = {
 	let i;
 	let now = GetCurrentTime();
 	let cur = (new Date).getTime();
+	let that = this;
 
 	function check_cookie(cookie,type,no,time) {
 	    let k;
@@ -114,67 +115,32 @@ var KanColleTimer = {
 	    return ret;
 	}
 
+	function check_timeout(type,list,titlefunc){
+	    for( i in KanColleRemainInfo[list] ){
+		i = parseInt(i,10);
+		let t = KanColleRemainInfo[list][i].finishedtime;
+		let d = t - cur;
+		if (t < 0)
+		    continue;
+		if (d < 0) {
+		    let str = titlefunc(i) + 'しました。\n';
+		    if (check_cookie(that.cookie,type,i,t))
+			AddLog(str);
+		    if (check_cookie(KanColleRemainInfo.cookie,type,i,t))
+			that.notify(type,i, str);
+		} else if (d < 60000) {
+		    let str = 'まもなく' + titlefunc(i) + 'します。\n';
+		    if (check_cookie(KanColleRemainInfo.cookie,'1min.' + type,i,t))
+			that.notify('1min.' + type,i,str);
+		}
+	    }
+	}
+
 	this.updateGeneralTimer();
 
-	// 遠征
-	for(i in KanColleRemainInfo.fleet){
-	    i = parseInt(i);
-	    let t = KanColleRemainInfo.fleet[i].finishedtime;
-	    if( t > 0 ){
-		let d = t - cur;
-		if (d < 0) {
-		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
-		    if (check_cookie(this.cookie,'mission',i,t))
-			AddLog(str);
-		    if (check_cookie(KanColleRemainInfo.cookie,'mission',i,t))
-			this.notify('mission',i, str);
-		} else if (d < 60000) {
-		    let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
-		    if (check_cookie(KanColleRemainInfo.cookie,'1min.mission',i,t))
-			this.notify('1min.mission',i,str);
-		}
-	    }
-	}
-
-	// 入渠ドック
-	for(i in KanColleRemainInfo.ndock){
-	    i = parseInt(i);
-	    let t = KanColleRemainInfo.ndock[i].finishedtime;
-	    if( t > 0 ){
-		let d = t - cur;
-		if (d < 0) {
-		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
-		    if (check_cookie(this.cookie,'ndock',i,t))
-			AddLog(str);
-		    if (check_cookie(KanColleRemainInfo.cookie,'ndock',i,t))
-			this.notify('ndock',i,str);
-		} else if (d < 60000) {
-		    let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
-		    if (check_cookie(KanColleRemainInfo.cookie,'1min.ndock',i,t))
-			this.notify('1min.ndock',i,str);
-		}
-	    }
-	}
-
-	// 建造ドック
-	for(i in KanColleRemainInfo.kdock){
-	    i = parseInt(i);
-	    let t = KanColleRemainInfo.kdock[i].finishedtime;
-	    if( t > 0 ){
-		let d = t - cur;
-		if (d < 0) {
-		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
-		    if (check_cookie(this.cookie,'kdock',i,t))
-			AddLog(str);
-		    if (check_cookie(KanColleRemainInfo.cookie,'kdock',i,t))
-			this.notify('kdock',i,str);
-		} else if (d < 60000) {
-		    let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
-		    if (check_cookie(KanColleRemainInfo.cookie,'1min.kdock',i,t))
-			this.notify('1min.kdock',i,str);
-		}
-	    }
-	}
+	check_timeout('mission', 'fleet', function(i){ return KanColleRemainInfo.fleet_name[i]; });
+	check_timeout('ndock',   'ndock', function(i){ return 'ドック' + (i+1) + 'の修理が完了'; });
+	check_timeout('kdock',   'kdock', function(i){ return 'ドック' + (i+1) + 'の建造が完了'; });
     },
 
     getNowDateString: function(){
