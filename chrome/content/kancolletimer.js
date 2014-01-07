@@ -41,58 +41,19 @@ var KanColleTimer = {
 	elem.play();
     },
 
-    // 完了の通知
-    noticeRepairFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.ndock');
-	this.playNotice( $('sound.ndock') );
+    // 通知
+    notify: function(type,i,str){
+	let coretype = type.replace(/^1min\./,'');
+	let sound_conf = 'sound.' + type;
+	let popup_conf = 'popup.' + coretype;
+	let is1min = type != coretype;
+	let cookie = 'kancolletimer.' + coretype + '.' + i;
+	let path = KanColleTimerConfig.getUnichar(sound_conf);
 
-	if( KanColleTimerConfig.getBool('popup.ndock') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
-	}
-    },
-    noticeConstructionFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.kdock');
-	this.playNotice( $('sound.kdock') );
-
-	if( KanColleTimerConfig.getBool('popup.kdock') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
-	}
-    },
-    noticeMissionFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.mission');
-	this.playNotice( $('sound.mission') );
-
-	if( KanColleTimerConfig.getBool('popup.mission') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
-	}
-    },
-
-    // 1分前の通知
-    noticeRepair1min: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
-	this.playNotice( $('sound.1min.ndock') );
-
-	if( KanColleTimerConfig.getBool('popup.ndock') &&
-	    KanColleTimerConfig.getBool('popup.1min-before') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
-	}
-    },
-    noticeConstruction1min: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
-	this.playNotice( $('sound.1min.kdock') );
-
-	if( KanColleTimerConfig.getBool('popup.kdock') &&
-	    KanColleTimerConfig.getBool('popup.1min-before') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
-	}
-    },
-    noticeMission1min: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
-	this.playNotice( $('sound.1min.mission') );
-
-	if( KanColleTimerConfig.getBool('popup.mission') &&
-	    KanColleTimerConfig.getBool('popup.1min-before') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
+	this.playNotice( $(sound_conf) );
+	if( KanColleTimerConfig.getBool(popup_conf) &&
+	    (!is1min || KanColleTimerConfig.getBool('popup.1min-before')) ){
+	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,cookie);
 	}
     },
 
@@ -167,11 +128,11 @@ var KanColleTimer = {
 		    if (check_cookie(this.cookie,'mission',i,t))
 			AddLog(str);
 		    if (check_cookie(KanColleRemainInfo.cookie,'mission',i,t))
-			this.noticeMissionFinished(i, str);
+			this.notify('mission',i, str);
 		} else if (d < 60000) {
 		    let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
 		    if (check_cookie(KanColleRemainInfo.cookie,'1min.mission',i,t))
-			this.noticeMission1min(i,str);
+			this.notify('1min.mission',i,str);
 		}
 	    }
 	}
@@ -187,11 +148,11 @@ var KanColleTimer = {
 		    if (check_cookie(this.cookie,'ndock',i,t))
 			AddLog(str);
 		    if (check_cookie(KanColleRemainInfo.cookie,'ndock',i,t))
-			this.noticeRepairFinished(i,str);
+			this.notify('ndock',i,str);
 		} else if (d < 60000) {
 		    let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
 		    if (check_cookie(KanColleRemainInfo.cookie,'1min.ndock',i,t))
-			this.noticeRepair1min(i,str);
+			this.notify('1min.ndock',i,str);
 		}
 	    }
 	}
@@ -207,11 +168,11 @@ var KanColleTimer = {
 		    if (check_cookie(this.cookie,'kdock',i,t))
 			AddLog(str);
 		    if (check_cookie(KanColleRemainInfo.cookie,'kdock',i,t))
-			this.noticeConstructionFinished(i,str);
+			this.notify('kdock',i,str);
 		} else if (d < 60000) {
 		    let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
 		    if (check_cookie(KanColleRemainInfo.cookie,'1min.kdock',i,t))
-			this.noticeConstruction1min(i,str);
+			this.notify('1min.kdock',i,str);
 		}
 	    }
 	}
