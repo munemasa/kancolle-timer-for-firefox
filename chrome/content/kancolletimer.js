@@ -207,11 +207,11 @@ var KanColleTimer = {
 		    if (check_cookie(this.cookie,'kdock',i,t))
 			AddLog(str);
 		    if (check_cookie(KanColleRemainInfo.cookie,'kdock',i,t))
-			this.noticeRepairFinished(i,str);
+			this.noticeConstructionFinished(i,str);
 		} else if (d < 60000) {
 		    let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
 		    if (check_cookie(KanColleRemainInfo.cookie,'1min.kdock',i,t))
-			this.noticeRepair1min(i,str);
+			this.noticeConstruction1min(i,str);
 		}
 	    }
 	}
