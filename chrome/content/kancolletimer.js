@@ -102,7 +102,6 @@ var KanColleTimer = {
 	let i;
 	let now = GetCurrentTime();
 	let cur = (new Date).getTime();
-	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
 
 	function check_cookie(cookie,type,no,time) {
 	    let k;
