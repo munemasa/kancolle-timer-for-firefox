@@ -138,7 +138,7 @@ var KanColleTimer = {
 
 	this.updateGeneralTimer();
 
-	check_timeout('mission', 'fleet', function(i){ return KanColleRemainInfo.fleet_name[i]; });
+	check_timeout('mission', 'fleet', function(i){ return KanColleRemainInfo.fleet_name[i] + 'が遠征から帰還'; });
 	check_timeout('ndock',   'ndock', function(i){ return 'ドック' + (i+1) + 'の修理が完了'; });
 	check_timeout('kdock',   'kdock', function(i){ return 'ドック' + (i+1) + 'の建造が完了'; });
     },
