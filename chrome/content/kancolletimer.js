@@ -99,8 +99,6 @@ var KanColleTimer = {
     },
 
     update: function(){
-	let i;
-	let now = GetCurrentTime();
 	let cur = (new Date).getTime();
 	let that = this;
 
@@ -116,7 +114,7 @@ var KanColleTimer = {
 	}
 
 	function check_timeout(type,list,titlefunc){
-	    for( i in KanColleRemainInfo[list] ){
+	    for( let i in KanColleRemainInfo[list] ){
 		i = parseInt(i,10);
 		let t = KanColleRemainInfo[list][i].finishedtime;
 		let d = t - cur;
