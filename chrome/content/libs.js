@@ -1652,12 +1652,17 @@ function KanColleCreateFilterMenuList(box,id)
 {
     let oldmenulist = $(id);
     let menulist = KanColleBuildFilterMenuList(id);
+    let hbox;
 
     // Replace existing one or add new one.
-    if (oldmenulist)
-	box.replaceChild(menulist, oldmenulist);
-    else
-	box.appendChild(menulist);
+    if (oldmenulist) {
+	hbox = oldmenulist.parentNode;
+	hbox.replaceChild(menulist, oldmenulist);
+    }else {
+	hbox = CreateElement('hbox');
+	hbox.appendChild(menulist);
+	box.appendChild(hbox);
+    }
 }
 
 function KanColleSortMenuPopup(that){
