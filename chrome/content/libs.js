@@ -732,7 +732,7 @@ function KanColleTimerQuestInformationUpdate(){
 	debugprint('d.api_list is null: ' + d.toSource());
     }
 
-    // Clean-up "achived" quests.
+    // Clean-up "achieved" quests.
     if (quests.list) {
 	let ids = Object.keys(quests.list);
 	for (let i = 0; i < ids.length; i++) {
