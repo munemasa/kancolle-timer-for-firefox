@@ -1411,6 +1411,11 @@ function KanColleStypeFilterTemplate(){
 	    { id: 14, },    //潜母
 	  ],
 	},
+	{ label: '輸送艦系',
+	  types: [
+	    { id: 17, },    //揚陸艦
+	  ],
+	},
     ];
     let menu = [];
     for( let i = 0; i < stypegroup.length; i++ ){
