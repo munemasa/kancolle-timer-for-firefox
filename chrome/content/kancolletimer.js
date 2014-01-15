@@ -107,9 +107,17 @@ var KanColleTimer = {
 	    let v;
 	    k = type + '_' + no;
 	    v = cookie[k];
-	    ret = v != time;
-	    if (ret)
+
+	    //debugprint('k=' + k + '; v=' + v + ', time=' + time);
+
+	    if (!v || time > cur) {
+		ret = v != time;
+		if (ret)
+		    cookie[k] = time;
+	    } else {
 		cookie[k] = time;
+		ret = false;
+	    }
 	    return ret;
 	}
 
@@ -118,8 +126,13 @@ var KanColleTimer = {
 		i = parseInt(i,10);
 		let t = KanColleRemainInfo[list][i].finishedtime;
 		let d = t - cur;
-		if (t < 0)
+
+		if (isNaN(t)) {
+		    check_cookie(that.cookie,type,i,0);
+		    check_cookie(KanColleRemainInfo.cookie,type,i,0);
 		    continue;
+		}
+
 		if (d < 0) {
 		    let str = titlefunc(i) + 'しました。\n';
 		    if (check_cookie(that.cookie,type,i,t))
@@ -130,6 +143,9 @@ var KanColleTimer = {
 		    let str = 'まもなく' + titlefunc(i) + 'します。\n';
 		    if (check_cookie(KanColleRemainInfo.cookie,'1min.' + type,i,t))
 			that.notify('1min.' + type,i,str);
+		} else {
+		    check_cookie(that.cookie,type,i,0);
+		    check_cookie(KanColleRemainInfo.cookie,type,i,0);
 		}
 	    }
 	}
