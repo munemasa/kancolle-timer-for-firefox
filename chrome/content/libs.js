@@ -1402,6 +1402,7 @@ function KanColleStypeFilterTemplate(){
 	    { id: 7, },	    //水母
 	    { id: 11, },    //軽水母
 	    { id: 16, },    //空母
+	    { id: 18, },    //装甲空母
 	  ],
 	},
 	{ label: '潜水艦系',
