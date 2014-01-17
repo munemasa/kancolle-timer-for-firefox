@@ -5,7 +5,7 @@
 APP_NAME=kancolletimer
 CHROME_PROVIDERS="chrome"
 CLEAN_UP=1
-ROOT_FILES=""
+ROOT_FILES="license.txt"
 ROOT_DIRS="defaults modules"
 BEFORE_BUILD=
 AFTER_BUILD=
