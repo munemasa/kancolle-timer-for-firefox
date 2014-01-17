@@ -20,8 +20,6 @@
 	  src="chrome://kancolletimer/content/data.js" />
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/kancolletimer.js" />
-  <script type="application/javascript;version=1.7"
-	  src="chrome://kancolletimer/content/sidebar.js" />
 
   <script>
   <![CDATA[
