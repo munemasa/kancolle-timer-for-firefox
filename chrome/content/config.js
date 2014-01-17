@@ -142,16 +142,14 @@ var KanColleTimerConfig = {
 	}
 
 	try{
-	    let audios = document.getElementsByTagName('html:audio');
-	    
-	    audios[0].src = "file://"+KanColleTimerConfig.getUnichar('sound.ndock');
-	    audios[1].src = "file://"+KanColleTimerConfig.getUnichar('sound.kdock');
-	    audios[2].src = "file://"+KanColleTimerConfig.getUnichar('sound.mission');
-	    audios[3].src = "file://"+KanColleTimerConfig.getUnichar('sound.1min.ndock');
-	    audios[4].src = "file://"+KanColleTimerConfig.getUnichar('sound.1min.kdock');
-	    audios[5].src = "file://"+KanColleTimerConfig.getUnichar('sound.1min.mission');
-	    audios[6].src = "file://"+KanColleTimerConfig.getUnichar('sound.default');
+	    const sounds = ['ndock', 'kdock', 'mission',
+			    '1min.ndock', '1min.kdock', '1min.mission',
+			    'default'];
 
+	    for (let i = 0; i < sounds.length; i++) {
+		let soundid = 'sound.' + sounds[i];
+		$(soundid).src = "file://" + KanColleTimerConfig.getUnichar(soundid);
+	    }
 	} catch (x) {
 	    //AddLog(x);
 	}
