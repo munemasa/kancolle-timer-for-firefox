@@ -7,7 +7,7 @@
     <em:version>0.19</em:version>
     <em:description>Kantai Collection -Kan Colle- Timer</em:description>
     <em:creator>amano</em:creator>
-<!--    <em:contributor>Richika</em:contributor> -->
+    <em:contributor>yoshfuji</em:contributor>
     <em:homepageURL>http://miku39.jp/blog/wp/?page_id=1705</em:homepageURL>
     <em:optionsURL>chrome://kancolletimer/content/preferences.xul</em:optionsURL>
 
@@ -21,6 +21,7 @@
 	<em:name>艦これタイマー</em:name>
 	<em:description>艦隊これくしょん-艦これ-のタイマー</em:description>
 	<em:creator>あまの</em:creator>
+	<em:contributor>yoshfuji</em:contributor>
 	<em:homepageURL>http://miku39.jp/blog/wp/?page_id=1705</em:homepageURL>
       </Description>
     </em:localized>
