@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 var KanColleTimerConfig = {
     getBranch:function(){
 	var prefs = new PrefsWrapper1("extensions.kancolletimer.");

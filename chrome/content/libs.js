@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 Components.utils.import("resource://gre/modules/ctypes.jsm");
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 

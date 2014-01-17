@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 // http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/
 
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");

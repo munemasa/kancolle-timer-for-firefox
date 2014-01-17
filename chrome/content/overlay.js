@@ -1,3 +1,5 @@
+// vim: set ts=8 sw=4 sts=4 ff=dos :
+
 var KanColleTimerOverlay = {
     debugprint:function(txt){
 	//Application.console.log(txt);
