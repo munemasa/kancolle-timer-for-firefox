@@ -32,15 +32,6 @@ var KanColleTimer = {
 	}
     },
 
-    /**
-     * 音声通知を行う.
-     * 設定によって再生方式を変えて再生する。
-     * @param elem sound要素
-     */
-    playNotice: function(elem){
-	elem.play();
-    },
-
     // 通知
     notify: function(type,i,str){
 	let coretype = type.replace(/^1min\./,'');
@@ -50,15 +41,11 @@ var KanColleTimer = {
 	let cookie = 'kancolletimer.' + coretype + '.' + i;
 	let path = KanColleTimerConfig.getUnichar(sound_conf);
 
-	this.playNotice( $(sound_conf) );
+	$(sound_conf).play();
 	if( KanColleTimerConfig.getBool(popup_conf) &&
 	    (!is1min || KanColleTimerConfig.getBool('popup.1min-before')) ){
 	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,cookie);
 	}
-    },
-
-    playDefaultSound: function(){
-	$('sound.default').play();
     },
 
     // ウィンドウを最前面にする
@@ -90,7 +77,7 @@ var KanColleTimer = {
 	if( !this.general_timer) return;
 	if (now > this.general_timer) {
 	    this.general_timer = 0;
-	    this.playDefaultSound();
+	    $('sound.default').play();
 	    if( KanColleTimerConfig.getBool('popup.general-timer') ){
 		let str = "時間になりました。";
 		ShowPopupNotification(this.imageURL,"艦これタイマー",str,"general-timer");

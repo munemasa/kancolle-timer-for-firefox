@@ -6,21 +6,12 @@ var KanColleTimerPreference = {
 	Application.console.log(txt);
     },
 
-    /**
-     * 音声通知を行う.
-     * 設定によって再生方式を変えて再生する。
-     * @param elem sound要素
-     */
-    playNotice: function( elem ){
-	elem.play();
-    },
-
-    playSound: function(target){
+    playSound: function(target) {
 	this.debugprint(target);
 	let path = $(target).value;
-	$('audio-playback').path = path;
-
-	this.playNotice( $('audio-playback') );
+	let elem = $('audio-playback');
+	elem.path = path;
+	elem.play();
     },
 
     /**
