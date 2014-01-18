@@ -28,7 +28,7 @@ var ResourceGraph = {
 	var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format("%m/%d %H:%M"));
 	var yAxis = d3.svg.axis().scale(y).orient("left");
 
-	var line = d3.svg.line().interpolate("liner")
+	var line = d3.svg.line().interpolate("step-after")
 	 .x(function(d) { return x(d.date); })
 	 .y(function(d) { return y(d.value); });
 
