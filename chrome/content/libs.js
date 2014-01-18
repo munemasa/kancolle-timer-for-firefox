@@ -427,6 +427,31 @@ var KanColleKdockMouseEventHandler = {
     },
 };
 
+// 資源情報
+function KanColleTimerMemberMaterialHandler(now, api_data) {
+    $('repairkit-number').value = api_data[5].api_value;
+
+    let res = KanColleRemainInfo.gResourceData;
+    let last_data = res[ res.length-1 ];
+
+    let fuel = api_data[0].api_value; // 燃料
+    let bullet = api_data[1].api_value; // 弾薬
+    let steel = api_data[2].api_value; // 鋼材
+    let bauxite = api_data[3].api_value; // ボーキサイト
+
+    if( res.length==0 ||
+	last_data.fuel!=fuel || last_data.bullet!=bullet ||
+	last_data.steel!=steel || last_data.bauxite!=bauxite ){
+	let data = new Object();
+	data.recorded_time = now; // 記録日時
+	data.fuel = fuel;
+	data.bullet = bullet;
+	data.steel = steel;
+	data.bauxite = bauxite;
+	res.push( data );
+    }
+}
+
 /*
  * 装備保持艦船の抽出
  * member/ship2 and member/slotitem
@@ -1017,6 +1042,10 @@ function OpenShipList(){
     let feature="chrome,resizable=yes";
     let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);
     w.focus();
+}
+
+function OpenResourceGraph(){
+    window.open('chrome://kancolletimer/content/resourcegraph.xul','KanColleTimerResourceGraph','chrome,resizable=yes').focus();
 }
 
 function OpenAboutDialog(){
@@ -2751,7 +2780,7 @@ function CreateListCell(label){
 function CreateFolder(path){
     let file = OpenFile(path);
     if( !file.exists() || !file.isDirectory() ) {   // if it doesn't exist, create
-	file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0777);
+	file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
 	return true;
     }
     return false;

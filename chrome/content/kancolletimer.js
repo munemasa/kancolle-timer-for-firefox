@@ -163,6 +163,23 @@ var KanColleTimer = {
 	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
+    createMissionBalanceTable:function(){
+	let balance = KanColleData.mission_hourly_balance;
+	let rows = $('hourly_balance');
+	for( let i in balance ){
+	    let row = CreateElement('row');
+	    let name = KanColleData.mission_name[i];
+	    name = name.substring(0,7);
+	    row.appendChild( CreateLabel( name ) );
+	    for( let j=0; j<4; j++ ){
+		row.appendChild( CreateLabel(balance[i][j]) );
+	    }
+	    row.setAttribute("style","border-bottom: 1px solid gray;");
+	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
+	    rows.appendChild( row );
+	}
+    },
+
     /**
      * スクリーンショット保存
      * @param file 保存ファイル名(nsIFile)
@@ -303,21 +320,18 @@ var KanColleTimer = {
 	}
     },
 
-    createMissionBalanceTable:function(){
-	let balance = KanColleData.mission_hourly_balance;
-	let rows = $('hourly_balance');
-	for( let i in balance ){
-	    let row = CreateElement('row');
-	    let name = KanColleData.mission_name[i];
-	    name = name.substring(0,7);
-	    row.appendChild( CreateLabel( name ) );
-	    for( let j=0; j<4; j++ ){
-		row.appendChild( CreateLabel(balance[i][j]) );
-	    }
-	    row.setAttribute("style","border-bottom: 1px solid gray;");
-	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
-	    rows.appendChild( row );
+    readResourceData: function(){
+	let data = Storage.readObject( "resourcehistory", [] );
+	KanColleRemainInfo.gResourceData = data;
+    },
+    writeResourceData: function(){
+	let data = KanColleRemainInfo.gResourceData;
+	if( data.length > 15000 ){
+	    // 自然回復が一日480回あるので、それを最低1ヶ月分記録するとしたら
+	    // 15000件保存できればいいので。
+	    data = data.slice(-15000);
 	}
+	Storage.writeObject( "resourcehistory", data );
     },
 
     init: function(){
@@ -337,12 +351,16 @@ var KanColleTimer = {
 
 	this.createMissionBalanceTable();
 	this.setWindowOnTop();
+
+	this.readResourceData();
     },
 
     destroy: function(){
 	KanColleTimerLibExit();
 	KanColleTimerUnregisterCallback();
 	KanColleHttpRequestObserver.destroy();
+
+	this.writeResourceData();
     }
 };
 
