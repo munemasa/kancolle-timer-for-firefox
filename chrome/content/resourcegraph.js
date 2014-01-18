@@ -25,7 +25,6 @@ var ResourceGraph = {
 
 	var x = d3.time.scale().range([0, width]);
 	var y = d3.scale.linear().range([height, 0]);
-	var color = d3.scale.category10();
 	var xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(d3.time.format("%m/%d %H:%M"));
 	var yAxis = d3.svg.axis().scale(y).orient("left");
 
@@ -96,10 +95,16 @@ var ResourceGraph = {
 	 .enter().append("g")
 	 .attr("class", "resource");
 
+	var color = {
+	    "fuel": "#69aa60",
+	    "bullet": "#ccbf8e",
+	    "steel": "#6d6d6d",
+	    "bauxite": "#e6a97a"
+	};
 	resource.append("path")
 	    .attr("class", "line")
 	    .attr("d", function(d) { return line(d.values); })
-	    .style("stroke", function(d) { return color(d.name); });
+	    .style("stroke", function(d) { return color[d.name]; });
 
 	var resource_name = {
 	    "fuel": "燃料",
