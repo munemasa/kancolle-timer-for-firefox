@@ -37,6 +37,8 @@
 	  src="chrome://kancolletimer/content/config.js" />
 
   <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/storage.js" />
+  <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/data.js" />
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/kancolletimer.js" />
@@ -69,6 +71,7 @@
       <toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	<menupopup>
 	  <menuitem label="保有艦艇リスト" oncommand="OpenShipList();"/>
+	  <menuitem label="資源グラフ" oncommand="OpenResourceGraph();"/>
 	  <menuseparator/>
 	  <menuitem id="window-stay-on-top" persist="checked"
 		    label="常に最前面に表示"

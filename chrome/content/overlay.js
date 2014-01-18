@@ -147,6 +147,10 @@ var KanColleTimerOverlay = {
 	w.focus();
     },
 
+    openResourceGraph: function(){
+	window.open('chrome://kancolletimer/content/resourcegraph.xul','KanColleTimerResourceGraph','chrome,resizable=yes').focus();
+    },
+
     getNowDateString: function(){
 	var d = new Date();
 	var month = d.getMonth()+1;

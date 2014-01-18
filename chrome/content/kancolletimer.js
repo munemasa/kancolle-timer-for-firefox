@@ -344,6 +344,19 @@ var KanColleTimer = {
 	}
     },
 
+    readResourceData: function(){
+	let data = Storage.readObject( "resourcehistory", [] );
+	KanColleRemainInfo.gResourceData = data;
+    },
+    writeResourceData: function(){
+	let data = KanColleRemainInfo.gResourceData;
+	if( data.length > 15000 ){
+	    // 自然回復が一日480回あるので、それを最低1ヶ月分記録するとしたら
+	    // 15000件保存できればいいので。
+	    data = data.slice(-15000);
+	}
+	Storage.writeObject( "resourcehistory", data );
+    },
 
     initWallpaper:function(){
     },
@@ -397,10 +410,14 @@ var KanColleTimer = {
 
 	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
 	$('number-of-items').value = KanColleRemainInfo.gOwnedItem.length;
+
+	this.readResourceData();
     },
 
     destroy: function(){
 	KanColleHttpRequestObserver.removeCallback( KanColleTimerCallback );
 	KanColleHttpRequestObserver.destroy();
+
+	this.writeResourceData();
     }
 };

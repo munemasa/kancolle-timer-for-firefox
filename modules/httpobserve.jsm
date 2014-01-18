@@ -11,6 +11,8 @@ var KanColleRemainInfo = {
     gDeckList:[],
     gMission: {},
 
+    gResourceData: [], // 資源の履歴
+
     fleet_name: [], // 艦隊名
     mission_name:[],// 遠征名
     construction_shipname:[], // 建造艦種

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/resourcegraph.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
+
+<window id="kancolletimer_resourcegraph"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	persist="screenX screenY width height sizemode"
+	width="640" height="480"
+	windowtype="KanColleTimerResourceGraphWindow"
+	title="資源グラフ">
+
+  <keyset>
+    <!-- CTRL+W: Close this window -->
+    <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+    <key id="reload" key="r" modifiers="accel" oncommand="OpenResourceGraph();"/>
+  </keyset>
+
+  <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8"></script>
+
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/libs.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/resourcegraph.js" />
+
+  <vbox flex="1" style="overflow:auto;">
+  </vbox>
+
+</window>
