@@ -428,28 +428,35 @@ var KanColleKdockMouseEventHandler = {
 };
 
 // 資源情報
-function KanColleTimerMemberMaterialHandler(now, api_data) {
-    $('repairkit-number').value = api_data[5].api_value;
-
+function KanColleTimerMemberMaterialHandler() {
+    let now = Math.floor(KanColleDatabase.memberMaterial.timestamp() / 1000);
     let res = KanColleRemainInfo.gResourceData;
     let last_data = res[ res.length-1 ];
+    let data = new Object();
+    let resnames = {
+	fuel: 1,
+	bullet: 2,
+	steel: 3,
+	bauxite: 4,
+    };
+    let count = 0;
 
-    let fuel = api_data[0].api_value; // 燃料
-    let bullet = api_data[1].api_value; // 弾薬
-    let steel = api_data[2].api_value; // 鋼材
-    let bauxite = api_data[3].api_value; // ボーキサイト
+    if (!now)
+	return;
 
-    if( res.length==0 ||
-	last_data.fuel!=fuel || last_data.bullet!=bullet ||
-	last_data.steel!=steel || last_data.bauxite!=bauxite ){
-	let data = new Object();
-	data.recorded_time = now; // 記録日時
-	data.fuel = fuel;
-	data.bullet = bullet;
-	data.steel = steel;
-	data.bauxite = bauxite;
-	res.push( data );
+    for (let k in resnames) {
+	let v = KanColleDatabase.memberMaterial.get(resnames[k]);
+	if (typeof(v) != 'object')
+	    continue;
+	data[k] = v.api_value;
+	if (!length || last_data[k] != data[k])
+	    count++;
     }
+
+    data.recorded_time = now; // 記録日時
+
+    if (count)
+	res.push( data );
 }
 
 /*
@@ -1004,10 +1011,12 @@ function KanColleTimerRegisterCallback(){
     db.memberSlotitem.appendCallback(KanColleTimerBasicInformationPanel);
     db.memberQuestlist.appendCallback(KanColleTimerQuestInformationUpdate);
     db.memberShip2.appendCallback(KanColleTimerQuestInformationShow);
+    db.memberMaterial.appendCallback(KanColleTimerMemberMaterialHandler);
 }
 
 function KanColleTimerUnregisterCallback(){
     let db = KanColleDatabase;
+    db.memberMaterial.removeCallback(KanColleTimerMemberMaterialHandler);
     db.memberSlotitem.removeCallback(KanColleTimerBasicInformationPanel);
     db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler);
