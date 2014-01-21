@@ -2165,7 +2165,7 @@ function TreeView(){
     };
 
     // Ship list
-    shiplist = KanColleDatabase.memberShip2.list();
+    shiplist = KanColleDatabase.memberShip2.list().slice();
     if (ShipInfoTree.shipfilterspec) {
 	let filterspec = ShipInfoTree.shipfilterspec;
 	if (filterspec.match(/^slotitem(\d+)$/)) {
