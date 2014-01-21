@@ -8,6 +8,8 @@ pref("extensions.kancolletimer.display.font","");
 
 pref("extensions.kancolletimer.default-action.toolbar", 0);
 
+pref("extensions.kancolletimer.record.resource-history",false);
+
 pref("extensions.kancolletimer.screenshot.path","");
 pref("extensions.kancolletimer.screenshot.jpeg",false);
 pref("extensions.kancolletimer.screenshot.mask-name",false);
