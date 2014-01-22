@@ -234,6 +234,14 @@
     </groupbox>
   </prefpane>
 
+  <prefpane id="prefpane-log" label="記録" image="chrome://kancolletimer/content/data/write.png">
+    <preferences>
+      <preference id="pref-record-resources"
+		  name="extensions.kancolletimer.record.resource-history" type="bool"/>
+    </preferences>
+    <checkbox preference="pref-record-resources" label="保有資源量の状態を記録する"/>
+  </prefpane>
+
   <sound id="audio-playback"/>
 
   <script type="application/x-javascript" src="chrome://mozapps/content/preferences/fontbuilder.js"/>
