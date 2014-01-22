@@ -349,12 +349,12 @@ var KanColleTimer = {
 	KanColleRemainInfo.gResourceData = data;
     },
     writeResourceData: function(){
-	let data = KanColleRemainInfo.gResourceData;
-	if( data.length > 15000 ){
-	    // 自然回復が一日480回あるので、それを最低1ヶ月分記録するとしたら
-	    // 15000件保存できればいいので。
-	    data = data.slice(-15000);
-	}
+	let month_ago = GetCurrentTime() - 60*60*24*31;
+	
+	let data = KanColleRemainInfo.gResourceData.filter(
+	    function( elem, index, array ){
+		return elem.recorded_time > month_ago;
+	});
 	Storage.writeObject( "resourcehistory", data );
     },
 
