@@ -20,7 +20,70 @@ var ResourceGraph = {
     width: 960,
     height: 500,
 
-    tweet: function(){
+    /**
+     * スクリーンショット撮影
+     * TODO:画面のキャプチャまわりは似通ったコードがあるので整理したい
+     * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
+     */
+    takeScreenshot: function(path){
+	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+	var url = this.takePicture( isjpeg );
+	if( !url ){
+	    AlertPrompt("画像データを生成できませんでした。","艦これタイマー");
+	    return null;
+	}
+
+	var file = null;
+	if( !path ){
+	    var fp = Components.classes['@mozilla.org/filepicker;1']
+		.createInstance(Components.interfaces.nsIFilePicker);
+	    fp.init(window, "画像の保存", fp.modeSave);
+	    fp.appendFilters(fp.filterImages);
+	    fp.defaultExtension = isjpeg?"jpg":"png";
+	    if( KanColleTimerConfig.getUnichar("screenshot.path") ){
+		fp.displayDirectory = OpenFile(KanColleTimerConfig.getUnichar("screenshot.path"));
+	    }
+
+	    var datestr = this.getNowDateString();
+	    fp.defaultString = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
+	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
+	    
+	    file = fp.file;
+	}else{
+	    let localfileCID = '@mozilla.org/file/local;1';
+	    let localfileIID =Components.interfaces.nsILocalFile;
+	    file = Components.classes[localfileCID].createInstance(localfileIID);
+	    file.initWithPath(path);
+	    var datestr = this.getNowDateString();
+	    var filename = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
+	    file.append(filename);
+	}
+	
+	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
+            .createInstance(Components.interfaces.nsIWebBrowserPersist);
+	wbp.saveURI(url, null, null, null, null, file, null);
+	return true;
+    },
+    getNowDateString: function(){
+	var d = new Date();
+	var month = d.getMonth()+1;
+	month = month<10 ? "0"+month : month;
+	var date = d.getDate()<10 ? "0"+d.getDate() : d.getDate();
+	var hour = d.getHours()<10 ? "0"+d.getHours() : d.getHours();
+	var min = d.getMinutes()<10 ? "0"+d.getMinutes() : d.getMinutes();
+	var sec = d.getSeconds()<10 ? "0"+d.getSeconds() : d.getSeconds();
+	var ms = d.getMilliseconds();
+	if( ms<10 ){
+	    ms = "000" + ms;
+	}else if( ms<100 ){
+	    ms = "00" + ms;
+	}else if( ms<1000 ){
+	    ms = "0" + ms;
+	}
+	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
+    },
+
+    takePicture: function( isjpeg ){
 	let canvas = document.getElementById("KanColleTimerCapture");
 	canvas.style.display = "inline";
 
@@ -40,7 +103,12 @@ var ResourceGraph = {
 	ctx.drawWindow(window, x, y, w, h, "rgb(255,255,255)");
 	ctx.restore();
 
-	let pic = canvas.toDataURL("image/jpeg");
+	let pic;
+	if( isjpeg ){
+	    pic = canvas.toDataURL("image/jpeg");
+	}else{
+	    pic = canvas.toDataURL("image/png");
+	}
 	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
            .getService(Components.interfaces.nsIIOService);
 	pic = IO_SERVICE.newURI(pic, null, null);
@@ -49,7 +117,12 @@ var ResourceGraph = {
 	canvas.width = 1;
 	canvas.height = 1;
 
-	OpenTweetDialog(true, pic);
+	return pic;
+    },
+
+    tweet: function(){
+	let pic = this.takePicture( true );
+	OpenTweetDialog( true, pic );
     },
 
     createGraph: function(){

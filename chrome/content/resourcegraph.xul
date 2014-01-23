@@ -22,6 +22,10 @@
   <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8"></script>
 
   <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/utils/prefutils.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/config.js" />
+  <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/libs.js" />
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/resourcegraph.js" />
@@ -31,7 +35,7 @@
       <menu label="ツール">
 	<menupopup>
 	  <menuitem label="CSVに保存"/>
-	  <menuitem label="画像に保存"/>
+	  <menuitem label="画像に保存" oncommand="ResourceGraph.takeScreenshot();"/>
 	  <menuitem label="つぶやく" oncommand="ResourceGraph.tweet();"/>
 	  <menuseparator/>
 	  <menuitem label="閉じる" oncommand="window.close();"/>
