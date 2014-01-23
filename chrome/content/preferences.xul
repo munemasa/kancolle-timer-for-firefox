@@ -108,8 +108,10 @@
 	  <groupbox>
 	    <caption>音声再生方式</caption>
 	    <radiogroup preference="pref-sound-api">
-	      <radio id="play-html5-audio" label="HTML5 audio" value="0" oncommand="$('audio-playback').method = 'html';"/>
-	      <radio id="play-nsisound" label="nsISound" value="1" oncommand="$('audio-playback').method = 'nsisound';"/>
+	      <hbox>
+		<radio id="play-html5-audio" label="HTML5 audio" value="0" oncommand="$('audio-playback').method = 'html';"/>
+		<radio id="play-nsisound" label="nsISound" value="1" oncommand="$('audio-playback').method = 'nsisound';"/>
+	      </hbox>
 	    </radiogroup>
 	  </groupbox>
 	</tabpanel>
