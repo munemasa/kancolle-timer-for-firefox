@@ -17,11 +17,46 @@ function make_y_axis(y) {
 }
 
 var ResourceGraph = {
+    width: 960,
+    height: 500,
+
+    tweet: function(){
+	let canvas = document.getElementById("KanColleTimerCapture");
+	canvas.style.display = "inline";
+
+	// document.getElementsByTagName('vbox')[0].boxObject
+	let x = $('box').boxObject.x;
+	let y = $('box').boxObject.y;
+	let w = parseInt( $('graph').getAttribute('width') );
+	let h = parseInt( $('graph').getAttribute('height') );
+	canvas.width = w;
+	canvas.height = h;
+
+	let ctx = canvas.getContext("2d");
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.save();
+	ctx.scale(1.0, 1.0);
+	// x,y,w,h
+	ctx.drawWindow(window, x, y, w, h, "rgb(255,255,255)");
+	ctx.restore();
+
+	let pic = canvas.toDataURL("image/jpeg");
+	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+           .getService(Components.interfaces.nsIIOService);
+	pic = IO_SERVICE.newURI(pic, null, null);
+
+	canvas.style.display = "none";
+	canvas.width = 1;
+	canvas.height = 1;
+
+	OpenTweetDialog(true, pic);
+    },
+
     createGraph: function(){
 	var data = KanColleRemainInfo.gResourceData;
 	var margin = {top: 20, right: 80, bottom: 30, left: 50};
-	var width = 960 - margin.left - margin.right;
-	var height = 500 - margin.top - margin.bottom;
+	var width = this.width - margin.left - margin.right;
+	var height = this.height - margin.top - margin.bottom;
 
 	var x = d3.time.scale().range([0, width]);
 	var y = d3.scale.linear().range([height, 0]);
@@ -32,7 +67,7 @@ var ResourceGraph = {
 	 .x(function(d) { return x(d.date); })
 	 .y(function(d) { return y(d.value); });
 
-	var svg = d3.select("vbox").append("svg")
+	var svg = d3.select("vbox").append("svg").attr("id","graph")
 	 .attr("width", width + margin.left + margin.right)
 	 .attr("height", height + margin.top + margin.bottom)
 	 .append("g")

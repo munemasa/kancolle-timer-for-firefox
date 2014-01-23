@@ -495,7 +495,7 @@ function OpenSettingsDialog(){
     w.focus();
 }
 
-function OpenTweetDialog(nomodal){
+function OpenTweetDialog(nomodal, param){
     var f;
     nomodal = true;
     if( nomodal ){
@@ -503,7 +503,7 @@ function OpenTweetDialog(nomodal){
     }else{
 	f='chrome,toolbar,modal=yes,resizable=no,centerscreen';
     }
-    var w = window.openDialog('chrome://kancolletimer/content/sstweet.xul','KanColleTimerTweet',f);
+    var w = window.openDialog('chrome://kancolletimer/content/sstweet.xul','KanColleTimerTweet',f, param);
     w.focus();
 }
 

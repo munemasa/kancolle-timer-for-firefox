@@ -26,7 +26,25 @@
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/resourcegraph.js" />
 
-  <vbox flex="1" style="overflow:auto;">
+  <toolbox>
+    <menubar>
+      <menu label="ツール">
+	<menupopup>
+	  <menuitem label="CSVに保存"/>
+	  <menuitem label="画像に保存"/>
+	  <menuitem label="つぶやく" oncommand="ResourceGraph.tweet();"/>
+	  <menuseparator/>
+	  <menuitem label="閉じる" oncommand="window.close();"/>
+	</menupopup>
+      </menu>
+    </menubar>
+  </toolbox>
+
+  <vbox id="box" flex="1" style="overflow:auto;">
   </vbox>
+
+  <scrollbox width="1" height="1">
+    <html:canvas id="KanColleTimerCapture" display="none" />
+  </scrollbox>
 
 </window>
