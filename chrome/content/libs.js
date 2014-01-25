@@ -208,6 +208,9 @@ function KanColleTimerMemberBasicHandler(now, api_data) {
 function KanColleTimerMemberMaterialHandler(now, api_data) {
     $('repairkit-number').value = api_data[5].api_value;
 
+    // TODO あとで、毎回この設定を見にいくのはやめるように修正する
+    if( !KanColleTimerConfig.getBool("record.resource-history") ) return;
+
     let res = KanColleRemainInfo.gResourceData;
     let last_data = res[ res.length-1 ];
 
