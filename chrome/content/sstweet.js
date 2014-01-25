@@ -35,11 +35,8 @@ var SSTweet = {
 	    let data = pic || TakeKanColleScreenshot(true);
 	    $('ss-image').src = data.spec;
 	}else{
-	    try{
-		let data = TakeKanColleScreenshot(true);
-		$('ss-image').src = data.spec;
-	    } catch (x) {
-	    }
+	    let data = TakeKanColleScreenshot(true);
+	    $('ss-image').src = data.spec;
 	}
 	$('text').focus();
 
