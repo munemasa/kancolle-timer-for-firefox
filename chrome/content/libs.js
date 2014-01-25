@@ -104,18 +104,13 @@ function KanColleTimerBasicInformationPanel(){
 
 
     $('basic-information-shipcount').value = ships;
-    if (ship_color)
-	$('basic-information-shipcount').style.setProperty('color', ship_color);
-    else
-	$('basic-information-shipcount').style.removeProperty('color');
+    SetStyleProperty($('basic-information-shipcount'), 'color', ship_color);
     $('basic-information-shipcount').setAttribute('tooltiptext', ships + ' / ' + maxships);
+
     $('basic-information-slotitemcount').value = slotitems;
-    if (slotitem_color)
-	$('basic-information-slotitemcount').style.setProperty('color', slotitem_color);
-    else
-	$('basic-information-slotitemcount').style.removeProperty('color');
+    SetStyleProperty($('basic-information-slotitemcount'), 'color', slotitem_color);
     $('basic-information-slotitemcount').setAttribute('tooltiptext', slotitems + ' / ' + maxslotitems);
-    $('basic-information-slotitemcount').value = slotitems;
+
     $('basic-information-burnercount').value = burner;
     $('basic-information-bucketcount').value = bucket;
 
