@@ -36,7 +36,7 @@
 	<menupopup>
 	  <menuitem label="表示を更新" oncommand="OpenResourceGraph();"/>
 	  <menuseparator/>
-	  <menuitem label="CSVに保存"/>
+	  <menuitem label="CSVに保存" oncommand="ResourceGraph.saveToFile();"/>
 	  <menuitem label="画像に保存" oncommand="ResourceGraph.takeScreenshot();"/>
 	  <menuitem label="つぶやく" oncommand="ResourceGraph.tweet();"/>
 	  <menuseparator/>

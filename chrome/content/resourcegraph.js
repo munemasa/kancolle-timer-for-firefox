@@ -20,6 +20,30 @@ var ResourceGraph = {
     width: 960,
     height: 500,
 
+    saveToFile: function(){
+	let file = OpenFileDialog( "CSVファイルに保存", MODE_SAVE );
+	if( !file ) return;
+
+	let os = Cc['@mozilla.org/network/file-output-stream;1'].createInstance(Ci.nsIFileOutputStream);
+	let flags = 0x02|0x08|0x20;// wronly|create|truncate
+	os.init( file, flags, 0644, 0 );
+	let cos = GetUTF8ConverterOutputStream( os );
+
+	cos.writeString("時刻,燃料,弾薬,鋼材,ボーキサイト\n");
+
+	var data = KanColleRemainInfo.gResourceData;
+	for( let i=0; i<data.length; i++ ){
+	    let d = data[i];
+	    let str = d.recorded_time+","+
+	     d.fuel+","+
+	     d.bullet+","+
+	     d.steel+","+
+	     d.bauxite+"\n";
+	    cos.writeString( str );
+	}
+	cos.close();
+    },
+
     /**
      * スクリーンショット撮影
      * TODO:画面のキャプチャまわりは似通ったコードがあるので整理したい

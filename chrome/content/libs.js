@@ -15,6 +15,8 @@ try{
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+const MODE_SAVE = Ci.nsIFilePicker.modeSave;
+
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
@@ -1015,6 +1017,23 @@ function InputPromptWithCheck(text,caption,input,checktext){
     }else{
 	return null;
     }
+}
+
+/**
+ * @return nsIFileを返す
+ */
+function OpenFileDialog( caption, mode )
+{
+    const nsIFilePicker = Ci.nsIFilePicker;
+    let fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+    fp.init( window, caption, mode );
+    fp.appendFilters(nsIFilePicker.filterAll);
+    let rv = fp.show();
+    if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
+	let file = fp.file;
+	return file;
+    }
+    return null;
 }
 
 /**
