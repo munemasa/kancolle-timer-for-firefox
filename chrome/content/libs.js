@@ -21,19 +21,91 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
 /*
  * 艦娘/装備数
  */
-function KanColleTimerBasicInformationPanel(){
-    let timestamp = 0;
-    let basic = KanColleDatabase.memberBasic.get();
+function KanColleTimerHeadQuarterRecordUpdate() {
+    let t = KanColleDatabase.memberRecord.timestamp();
     let record = KanColleDatabase.memberRecord.get();
-    let maxships = '-';
-    let maxslotitems = '-';
-    let ships = '-';
-    let slotitems = '-';
+
+    if (!t || !record)
+	return;
+
+    KanColleRemainInfo.headquarter.timestamp = t;
+    KanColleRemainInfo.headquarter.ship_cur = record.api_ship[0];
+    KanColleRemainInfo.headquarter.ship_max = record.api_ship[1];
+    KanColleRemainInfo.headquarter.slotitem_cur = record.api_slotitem[0];
+    KanColleRemainInfo.headquarter.slotitem_max = record.api_slotitem[1];
+
+    KanColleTimerBasicInformationPanel();
+}
+
+function KanColleTimerHeadQuarterBasicUpdate() {
+    let t = KanColleDatabase.memberBasic.timestamp();
+    let basic = KanColleDatabase.memberBasic.get();
+
+    if (!t || !basic)
+	return;
+
+    KanColleRemainInfo.headquarter.timestamp = t;
+    KanColleRemainInfo.headquarter.ship_max = basic.api_max_chara;
+    KanColleRemainInfo.headquarter.slotitem_max = basic.api_max_slotitem;
+
+    KanColleTimerBasicInformationPanel();
+}
+
+function KanColleTimerHeadQuarterShip2Update() {
+    let t = KanColleDatabase.memberShip2.timestamp();
+    let count = KanColleDatabase.memberShip2.count();
+
+    if (!t)
+	return;
+
+    KanColleRemainInfo.headquarter.timestamp = t;
+    KanColleRemainInfo.headquarter.ship_cur = count;
+
+    KanColleTimerBasicInformationPanel();
+}
+
+function KanColleTimerHeadQuarterSlotitemUpdate() {
+    let t = KanColleDatabase.memberSlotitem.timestamp();
+    let count = KanColleDatabase.memberSlotitem.count();
+
+    if (!t)
+	return;
+
+    KanColleRemainInfo.headquarter.timestamp = t;
+    KanColleRemainInfo.headquarter.slotitem_cur = count;
+
+    KanColleTimerBasicInformationPanel();
+}
+
+function KanColleTimerHeadQuarterInit() {
+    KanColleDatabase.memberRecord.appendCallback(KanColleTimerHeadQuarterRecordUpdate);
+    KanColleDatabase.memberBasic.appendCallback(KanColleTimerHeadQuarterBasicUpdate);
+    KanColleDatabase.memberShip2.appendCallback(KanColleTimerHeadQuarterShip2Update);
+    KanColleDatabase.memberSlotitem.appendCallback(KanColleTimerHeadQuarterSlotitemUpdate);
+}
+
+function KanColleTimerHeadQuarterExit() {
+    KanColleDatabase.memberSlotitem.removeCallback(KanColleTimerHeadQuarterSlotitemUpdate);
+    KanColleDatabase.memberShip2.removeCallback(KanColleTimerHeadQuarterShip2Update);
+    KanColleDatabase.memberBasic.removeCallback(KanColleTimerHeadQuarterBasicUpdate);
+    KanColleDatabase.memberRecord.removeCallback(KanColleTimerHeadQuarterRecordUpdate);
+}
+
+function KanColleTimerBasicInformationPanel(){
+    let timestamp;
+    let maxships;
+    let maxslotitems;
+    let ships;
+    let slotitems;
     let burner = '-';
     let bucket = '-';
     let shipnumfree = KanColleTimerConfig.getInt('display.ship-num-free');
     let ship_color = null;
     let slotitem_color = null;
+
+    function convundef(t) {
+	return t === undefined ? '-' : t;
+    }
 
     function numcolor(cur,mark,max) {
 	let col = null;
@@ -48,32 +120,14 @@ function KanColleTimerBasicInformationPanel(){
 	return col;
     }
 
-    if (record) {
-	timestamp = KanColleDatabase.memberRecord.timestamp();
-	ships = record.api_ship[0];
-	maxships = record.api_ship[1];
-	slotitems = record.api_slotitem[0];
-	maxslotitems = record.api_slotitem[1];
-    }
+    timestamp = KanColleRemainInfo.headquarter.timestamp;
 
-    if (timestamp < KanColleDatabase.memberBasic.timestamp()) {
-	maxships = basic.api_max_chara;
-	maxslotitems = basic.api_max_slotitem;
-    }
-
-    if (timestamp < KanColleDatabase.memberShip2.timestamp()) {
-	let count = KanColleDatabase.memberShip2.count();
-	if (count !== undefined)
-	    ships = count;
-    }
-
-    if (timestamp < KanColleDatabase.memberSlotitem.timestamp()) {
-	let count = KanColleDatabase.memberSlotitem.count();
-	if (count !== undefined)
-	    slotitems = count;
-    }
-
+    ships = convundef(KanColleRemainInfo.headquarter.ship_cur);
+    maxships = convundef(KanColleRemainInfo.headquarter.ship_max);
     ship_color = numcolor(ships, maxships - shipnumfree, maxships);
+
+    slotitems = convundef(KanColleRemainInfo.headquarter.slotitem_cur);
+    maxslotitems = convundef(KanColleRemainInfo.headquarter.slotitem_max);
     slotitem_color = numcolor(slotitems, maxslotitems - shipnumfree * 4, maxslotitems);
 
     if (KanColleDatabase.memberMaterial.timestamp()) {
@@ -90,7 +144,6 @@ function KanColleTimerBasicInformationPanel(){
 	d = KanColleDatabase.memberMaterial.get(5);
 	if (typeof(d) == 'object')
 	    burner = d.api_value;
-
 	d = KanColleDatabase.memberMaterial.get(6);
 	if (typeof(d) == 'object')
 	    bucket = d.api_value;
@@ -999,8 +1052,6 @@ function KanColleTimerQuestInformationChangeMode(node){
 
 function KanColleTimerRegisterCallback(){
     let db = KanColleDatabase;
-    db.memberBasic.appendCallback(KanColleTimerBasicInformationPanel);
-    db.memberRecord.appendCallback(KanColleTimerBasicInformationPanel);
     db.memberDeck.appendCallback(KanColleTimerDeckHandler);
     db.memberBasic.appendCallback(KanColleTimerDeckBasicHandler);
     db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap);
@@ -1010,22 +1061,22 @@ function KanColleTimerRegisterCallback(){
     db.memberKdock.appendCallback(KanColleTimerKdockHandler);
     db.memberBasic.appendCallback(KanColleTimerKdockBasicHandler);
     db.memberShip2.appendCallback(KanColleTimerShipInfoHandler);
-    db.memberShip2.appendCallback(KanColleTimerBasicInformationPanel);
     db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
-    db.memberSlotitem.appendCallback(KanColleTimerBasicInformationPanel);
     db.memberQuestlist.appendCallback(KanColleTimerQuestInformationUpdate);
     db.memberShip2.appendCallback(KanColleTimerQuestInformationShow);
     db.memberMaterial.appendCallback(KanColleTimerMemberMaterialHandler);
+    db.memberMaterial.appendCallback(KanColleTimerBasicInformationPanel);
+    KanColleTimerHeadQuarterInit();
 }
 
 function KanColleTimerUnregisterCallback(){
     let db = KanColleDatabase;
+    KanColleTimerHeadQuarterExit();
+    db.memberMaterial.removeCallback(KanColleTimerBasicInformationPanel);
     db.memberMaterial.removeCallback(KanColleTimerMemberMaterialHandler);
-    db.memberSlotitem.removeCallback(KanColleTimerBasicInformationPanel);
     db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler);
-    db.memberShip2.removeCallback(KanColleTimerBasicInformationPanel);
     db.memberShip2.removeCallback(KanColleTimerShipInfoHandler);
     db.memberBasic.removeCallback(KanColleTimerKdockBasicHandler);
     db.memberKdock.removeCallback(KanColleTimerKdockHandler);
@@ -1035,8 +1086,6 @@ function KanColleTimerUnregisterCallback(){
     db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap);
     db.memberBasic.removeCallback(KanColleTimerDeckBasicHandler);
     db.memberDeck.removeCallback(KanColleTimerDeckHandler);
-    db.memberRecord.removeCallback(KanColleTimerBasicInformationPanel);
-    db.memberBasic.removeCallback(KanColleTimerBasicInformationPanel);
     db.memberQuestlist.removeCallback(KanColleTimerQuestInformationUpdate);
     db.memberShip2.removeCallback(KanColleTimerQuestInformationShow);
 }
