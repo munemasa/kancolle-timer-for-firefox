@@ -266,16 +266,17 @@
 	</groupbox>
 
 	<groupbox id="group-fleets">
-	  <caption><label value="第2〜4艦隊"/></caption>
-	  <hbox>
-	    <menulist oncommand="$('fleet-info').selectedIndex=this.value;">
-	      <menupopup>
-		<menuitem label="第2艦隊" value="0"/>
-		<menuitem label="第3艦隊" value="1"/>
-		<menuitem label="第4艦隊" value="2"/>
-	      </menupopup>
-	    </menulist>
-	  </hbox>
+	  <caption>
+	    <hbox>
+	      <menulist oncommand="$('fleet-info').selectedIndex=this.value;">
+		<menupopup>
+		  <menuitem label="第2艦隊" value="0"/>
+		  <menuitem label="第3艦隊" value="1"/>
+		  <menuitem label="第4艦隊" value="2"/>
+		</menupopup>
+	      </menulist>
+	    </hbox>
+	  </caption>
 	  <deck id="fleet-info">
 	    <grid>
 	      <columns>
