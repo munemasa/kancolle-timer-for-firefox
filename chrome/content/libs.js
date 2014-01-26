@@ -35,6 +35,19 @@ function KanColleTimerBasicInformationPanel(){
     let ship_color = null;
     let slotitem_color = null;
 
+    function numcolor(cur,mark,max) {
+	let col = null;
+	if (!isNaN(cur)) {
+	    if (!isNaN(max) && cur >= max)
+		col = 'red';
+	    else if (!isNaN(mark) && cur >= mark)
+		col = 'orange';
+	    else
+		col = 'black';
+	}
+	return col;
+    }
+
     if (record) {
 	timestamp = KanColleDatabase.memberRecord.timestamp();
 	ships = record.api_ship[0];
@@ -60,27 +73,8 @@ function KanColleTimerBasicInformationPanel(){
 	    slotitems = count;
     }
 
-    if (ships != '-' && maxships != '-' && shipnumfree >= 0) {
-	let ship_room = maxships - ships;
-	if (ship_room <= 0) {
-	    ship_color = 'red';
-	} else if (ship_room <= shipnumfree) {
-	    ship_color = 'orange';
-	} else {
-	    ship_color = 'black';
-	}
-    }
-
-    if (slotitems != '-' && maxslotitems != '-' && shipnumfree >= 0) {
-	let slotitem_room = maxslotitems - slotitems;
-	if (slotitem_room <= 0) {
-	    slotitem_color = 'red';
-	} else if (slotitem_room <= shipnumfree * 4) {
-	    slotitem_color = 'orange';
-	} else {
-	    slotitem_color = 'black';
-	}
-    }
+    ship_color = numcolor(ships, maxships - shipnumfree, maxships);
+    slotitem_color = numcolor(slotitems, maxslotitems - shipnumfree * 4, maxslotitems);
 
     if (KanColleDatabase.memberMaterial.timestamp()) {
 	let d;
