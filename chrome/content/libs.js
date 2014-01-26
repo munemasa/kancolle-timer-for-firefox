@@ -102,6 +102,22 @@ function KanColleTimerBasicInformationPanel(){
 	    bucket = d.api_value;
     }
 
+    // 母港100、装備枠500から、母港拡張10ごとに装備枠40増加
+    //   装備枠 = 500 + (母港-100) * 4
+    //
+    // APIでから渡される装備数上限は、それ以上の数では新艦船/
+    // 新装備開発ができなくなる、という実際の制限値であり、
+    // 戦績表示の「最大保有可能装備アイテム数」から3減じた
+    // ものとなっている。
+    //
+    // このため、建造やドロップでの艦船取得によって装備数が
+    // 最大4つ増え、装備数がAPIによる最大装備数を上回ることは
+    // ある。
+    //
+    //if (!isNaN(maxslotitems) && !isNaN(maxships) &&
+    //	maxslotitems < 100 + maxships * 4) {
+    //	maxslotitems = 100 + maxships * 4;
+    //}
 
     $('basic-information-shipcount').value = ships;
     SetStyleProperty($('basic-information-shipcount'), 'color', ship_color);
