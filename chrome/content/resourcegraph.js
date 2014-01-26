@@ -195,7 +195,14 @@ var ResourceGraph = {
 	svg.append("g")
 	    .attr("class", "x axis")
 	    .attr("transform", "translate(0," + height + ")")
-	    .call(xAxis);
+	    .call(xAxis)
+	    .selectAll("text")
+	    .attr("transform","rotate(-30)")
+	    .attr("y", 0)
+	    .attr("x", 0)
+	    .attr("dy", "-1em")
+	    .attr("dx", "-1em")
+	    .style("text-anchor", "start");
 
 	svg.append("g")
 	    .attr("class", "y axis")
