@@ -322,7 +322,13 @@ var KanColleTimer = {
 
     readResourceData: function(){
 	let data = Storage.readObject( "resourcehistory", [] );
-	KanColleRemainInfo.gResourceData = data;
+	let d = KanColleRemainInfo.gResourceData;
+
+	let t1 = data.length && data[ data.length-1 ].recorded_time;
+	let t2 = d.length && d[ d.length-1 ].recorded_time;
+	if( t2 < t1 ){
+	    KanColleRemainInfo.gResourceData = data;
+	}
     },
     writeResourceData: function(){
 	let data = KanColleRemainInfo.gResourceData;
