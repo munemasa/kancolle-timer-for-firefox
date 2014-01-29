@@ -7,41 +7,99 @@ var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo",
 /*
  * Database
  */
-function KanColleSimpleDB(){
-    var _now = 0;
-    var _db = null;
-    var _callback = [];
+//
+// タイムスタンプ管理
+//
+var Timestamp = function() {};
+Timestamp.prototype = {
+    _ts: 0,
+    get: function() { return this._ts; },
+    set: function() { this._ts = (new Date).getTime(); return this._ts; },
+};
 
-    this.update = function(data){
-	_now = (new Date).getTime();
-	_db = data;
-	for( let i = 0; i < _callback.length; i++){
-	    if (_callback[i].compat)
-		_callback[i].func(Math.floor(_now/1000),data);
-	    else
-		_callback[i].func();
+//
+// ハンドラ管理
+//
+var Callback = function(opt) {
+    this._cb = [];
+    if (opt && opt.match)
+	this._match = opt.match;
+};
+Callback.prototype = {
+    _cb: null,
+    _match: function(f1, o1, f2, o2) {
+	return f1 == f2;
+    },
+    gen: function() {
+	for (let i = 0; i < this._cb.length; i++) {
+	    yield this._cb[i];
 	}
-    };
-    this.get = function(){
-	return _db;
-    };
-    this.timestamp = function(){
-	return _now;
-    };
-    this.appendCallback = function(f,c){
-	_callback.push({func: f, compat: c,});
-    };
-    this.removeCallback = function(f){
+	yield null;
+    },
+    append: function(f, o) {
+	this._cb.push({ func: f, opt: o, });
+    },
+    remove: function(f, o) {
 	let count = 0;
-	for( let i = 0; i < _callback.length; i++ ){
-	    if( _callback[i].func == f ){
-		_callback.splice(i,1);
-		count++;
+	for (let i = 0; i < this._cb.length; i++) {
+	    if (this._match(this._cb[i].func, this._cb[i].opt,
+			    f, o)) {
+		this._cb.splice(i, 1);
+		i--;
 	    }
 	}
 	return count;
-    };
-}
+    },
+    flush: function() {
+	let count = 0;
+	while (this._cb.length > 0) {
+	    let e = this._cb.shift();
+	    if (e)
+		count++;
+	}
+	return count;
+    },
+};
+
+//
+// 単純データベース(IDキーなし)
+//
+var KanColleSimpleDB = function() {
+    this._init.apply(this);
+};
+KanColleSimpleDB.prototype = {
+    _cb: null,
+    _ts: null,
+    _raw: null,
+
+    timestamp: function() { return this._ts.get(); },
+
+    update: function(data) {
+	let now = this._ts.set();
+	let g = this._cb.gen();
+	let e;
+
+	this._raw = data;
+
+	while ((e = g.next()) != null) {
+	    if (e.opt)
+		e.func(Math.floor(now / 1000), data);
+	    else
+		e.func();
+	}
+	g.close();
+    },
+
+    get: function() { return this._raw; },
+
+    appendCallback: function(f, c) { this._cb.append(f, c); },
+    removeCallback: function(f) { this._cb.remove(f); },
+
+    _init: function() {
+	this._ts = new Timestamp;
+	this._cb = new Callback;
+    },
+};
 
 function KanColleDB(opt){
     var _now = 0;
