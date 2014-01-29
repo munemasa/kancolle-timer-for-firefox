@@ -29,6 +29,8 @@
 
   </keyset>
 
+  <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8" />
+
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/utils/prefutils.js" />
   <script type="application/javascript;version=1.7"
