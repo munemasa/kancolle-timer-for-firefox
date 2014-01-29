@@ -371,7 +371,13 @@ function SetFleetOrganization( n ){
 	row.appendChild( CreateLabel(masterdata.api_name) );
 	row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
 	let hbox = CreateElement('hbox');
-	hbox.appendChild( CreateLabel(""+data.api_cond) );
+	let label = CreateLabel(""+data.api_cond);
+	if( data.api_cond<=19 ){
+	    label.setAttribute('cond', 'very-low');
+	}else if( data.api_cond<=29 ){
+	    label.setAttribute('cond','low');
+	}
+	hbox.appendChild( label );
 	row.appendChild( hbox );
 	if( masterdata.api_fuel_max!=data.api_fuel ||
 	    masterdata.api_bull_max!=data.api_bull ){
@@ -432,9 +438,9 @@ function SetFleetsCondition(){
 		continue;
 	    let cond = CreateLabel(""+data.api_cond);
 	    if( data.api_cond<=19 ){
-		cond.style.backgroundColor = "#d36363";
+		cond.setAttribute('cond','very-low');
 	    }else if( data.api_cond<=29 ){
-		cond.style.backgroundColor = "#f3a473";
+		cond.setAttribute('cond','low');
 	    }
 	    row.appendChild( cond );
 	}
