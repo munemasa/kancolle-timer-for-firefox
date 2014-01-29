@@ -232,7 +232,6 @@ var KanColleDatabase = {
 };
 
 function KanColleCallback(req,s){
-    let now = (new Date).getTime();
     let url = req.name;
     let data = JSON.parse(s.substring( s.indexOf('svdata=')+7 ));
 
