@@ -25,10 +25,10 @@ hbox[repair]:after{
 }
 
 label[cond='very-low'] {
-    background-color: #d36363;
+    background-color: #fa6b6a;
 }
 label[cond='low'] {
-    background-color: #f3a473;
+    background-color: #eea87a;
 }
 
 /* テキスト範囲選択できるクラス */
