@@ -101,73 +101,79 @@ KanColleSimpleDB.prototype = {
     },
 };
 
-function KanColleDB(opt){
-    var _now = 0;
-    var _raw = null;
-    var _db = null;
-    var _list = null;
-    var _callback = [];
-    var _pkey = 'api_' + (opt && opt.primary_key ? opt.primary_key : 'id');
+//
+// データベース(IDキーつき)
+//
+var KanColleDB = function() {
+    this._init.apply(this, arguments);
+};
+KanColleDB.prototype = {
+    _cb: null,
+    _ts: null,
+    _raw: null,
+    _db: null,
+    _keys: null,
+    _pkey: null,
 
-    function parse(){
-	let hash = {};
-	if (!_raw || _db)
-	    return;
-	for( let i = 0; i < _raw.length; i++ )
-	    hash[_raw[i][_pkey]] = _raw[i];
-	_db = hash;
-	_list = null;
-    }
+    timestamp: function() { return this._ts.get(); },
 
-    this.update = function(data){
-	_now = (new Date).getTime();
-	_raw = data;
-	_db = null;
-	_list = null;
-	for( let i = 0; i < _callback.length; i++ ){
-	    if (_callback[i].compat)
-		_callback[i].func(Math.floor(_now/1000),data);
+    update: function(data) {
+	let now = this._ts.set();
+	let g = this._cb.gen();
+	let e;
+
+	this._raw = data;
+	this._db = null;
+	this._keys = null;
+
+	while ((e = g.next()) != null) {
+	    if (e.opt)
+		e.func(Math.floor(now / 1000), data);
 	    else
-		_callback[i].func();
+		e.func();
 	}
-    };
-    this.count = function(){
-	if (!_raw)
-	    return undefined;
-	return this.list().length;
-    };
-    this.list = function(){
-	if (!_raw)
-	    return [];
-	if (!_list) {
-	    parse();
-	    _list = Object.keys(_db);
-	}
-	return _list;
-    };
-    this.get = function(id){
-	parse();
-	if (_db)
-	    return _db[id];
-	return null;
-    };
-    this.timestamp = function(){
-	return _now;
-    };
-    this.appendCallback = function(f,c){
-	_callback.push({func: f, compat: c,});
-    };
-    this.removeCallback = function(f){
-	let count = 0;
-	for( let i = 0; i < _callback.length; i++ ){
-	    if( _callback[i].func == f ){
-		_callback.splice(i,1);
-		count++;
-	    }
-	}
-	return count;
-    };
-}
+	g.close();
+    },
+
+    _parse: function() {
+	let hash = {};
+	if (!this._raw || this._db)
+	    return this._db;
+	for (let i = 0; i < this._raw.length; i++)
+	    hash[this._raw[i][this._pkey]] = this._raw[i];
+	this._db = hash;
+	this._keys = null;
+	return hash;
+    },
+
+    get: function(key) {
+	let db = this._parse();
+	return db ? db[key] : null;
+    },
+
+    _list: function() {
+	if (!this._keys)
+	    this._keys = Object.keys(this._parse());
+	return this._keys;
+    },
+
+    list: function() {
+	return this._raw ? this._list() : [];
+    },
+
+    count: function() {
+	return this._raw ? this._list().length : undefined;
+    },
+
+    appendCallback: function(f, c) { this._cb.append(f, c); },
+    removeCallback: function(f) { this._cb.remove(f); },
+
+    _init: function(opt) {
+	this._ts = new Timestamp;
+	this._cb = new Callback;
+	this._pkey = 'api_' + (opt && opt.primary_key ? opt_primary_key : 'id');
+    },
+};
 
 var KanColleDatabase = {
     // Database
