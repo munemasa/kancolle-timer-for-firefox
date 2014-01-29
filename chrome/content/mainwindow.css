@@ -24,6 +24,13 @@ hbox[repair]:after{
     content: url("chrome://kancolletimer/content/data/cross.png");
 }
 
+label[cond='very-low'] {
+    background-color: #d36363;
+}
+label[cond='low'] {
+    background-color: #f3a473;
+}
+
 /* テキスト範囲選択できるクラス */
 .selection {
     cursor: text ! important;
