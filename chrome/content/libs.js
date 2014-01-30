@@ -297,62 +297,6 @@ function KanColleTimerCallback(request, s) {
     }
 }
 
-// 第1艦隊編成
-function SetFirstFleetOrganization(){
-    // 第1艦隊編成
-    let fleets = KanColleRemainInfo.gDeckList;
-    let fleet = fleets[0];
-    if( !fleet ) return;
-    let rows = $('fleet-1');
-    RemoveChildren(rows);
-    for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
-	let row = CreateElement('row');
-	let data = FindOwnShipData( fleet.api_ship[i] );
-	let masterdata = FindShipData( fleet.api_ship[i] );
-	row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
-	row.appendChild( CreateLabel(masterdata.api_name) );
-	row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
-	let hbox = CreateElement('hbox');
-	hbox.appendChild( CreateLabel(""+data.api_cond) );
-	row.appendChild( hbox );
-	if( masterdata.api_fuel_max!=data.api_fuel ||
-	    masterdata.api_bull_max!=data.api_bull ){
-		hbox.setAttribute('warning','1');
-	}
-	if( IsRepairing( data.api_id ) ){
-	    hbox.setAttribute('repair','1');
-	}
-
-	let maxhp = parseInt(data.api_maxhp);
-	let nowhp = parseInt(data.api_nowhp);
-	if( nowhp-1 <= maxhp*0.25 ){
-	    row.style.backgroundColor = '#ff8080';
-	}else{
-	    if( $('show-gage').hasAttribute('checked') ){
-		let percentage = parseInt( nowhp/maxhp*100 );
-		let image;
-		if(nowhp==maxhp){
-		    image = "greenbar.png";
-		}else if( percentage<=25 ){
-		    image = "redbar.png";
-		}else if( percentage<=50 ){
-		    image = "orangebar.png";
-		}else if( percentage<=75 ){
-		    image = "yellowbar.png";
-		}else{
-		    image = "lightgreenbar.png";
-		}
-		let style = 'background-image: url("chrome://kancolletimer/content/data/'+image+'"); background-position:left bottom; background-repeat:no-repeat; background-size:'+percentage+'% 4px;';
-		row.setAttribute('style',style);
-	    }else{
-		row.removeAttribute('style');
-	    }
-	}
-
-	rows.appendChild( row );
-    }
-}
-
 function SetAllFleetOrganization(){
     for(let i=1;i<5;i++){
 	SetFleetOrganization(i);
