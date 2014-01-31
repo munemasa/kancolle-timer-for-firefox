@@ -21,78 +21,8 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
 /*
  * 艦娘/装備数
  */
-function KanColleTimerHeadQuarterRecordUpdate() {
-    let t = KanColleDatabase.memberRecord.timestamp();
-    let record = KanColleDatabase.memberRecord.get();
-
-    if (!t || !record)
-	return;
-
-    KanColleRemainInfo.headquarter.timestamp = t;
-    KanColleRemainInfo.headquarter.ship_cur = record.api_ship[0];
-    KanColleRemainInfo.headquarter.ship_max = record.api_ship[1];
-    KanColleRemainInfo.headquarter.slotitem_cur = record.api_slotitem[0];
-    KanColleRemainInfo.headquarter.slotitem_max = record.api_slotitem[1];
-
-    KanColleTimerBasicInformationPanel();
-}
-
-function KanColleTimerHeadQuarterBasicUpdate() {
-    let t = KanColleDatabase.memberBasic.timestamp();
-    let basic = KanColleDatabase.memberBasic.get();
-
-    if (!t || !basic)
-	return;
-
-    KanColleRemainInfo.headquarter.timestamp = t;
-    KanColleRemainInfo.headquarter.ship_max = basic.api_max_chara;
-    KanColleRemainInfo.headquarter.slotitem_max = basic.api_max_slotitem;
-
-    KanColleTimerBasicInformationPanel();
-}
-
-function KanColleTimerHeadQuarterShip2Update() {
-    let t = KanColleDatabase.memberShip2.timestamp();
-    let count = KanColleDatabase.memberShip2.count();
-
-    if (!t)
-	return;
-
-    KanColleRemainInfo.headquarter.timestamp = t;
-    KanColleRemainInfo.headquarter.ship_cur = count;
-
-    KanColleTimerBasicInformationPanel();
-}
-
-function KanColleTimerHeadQuarterSlotitemUpdate() {
-    let t = KanColleDatabase.memberSlotitem.timestamp();
-    let count = KanColleDatabase.memberSlotitem.count();
-
-    if (!t)
-	return;
-
-    KanColleRemainInfo.headquarter.timestamp = t;
-    KanColleRemainInfo.headquarter.slotitem_cur = count;
-
-    KanColleTimerBasicInformationPanel();
-}
-
-function KanColleTimerHeadQuarterInit() {
-    KanColleDatabase.memberRecord.appendCallback(KanColleTimerHeadQuarterRecordUpdate);
-    KanColleDatabase.memberBasic.appendCallback(KanColleTimerHeadQuarterBasicUpdate);
-    KanColleDatabase.memberShip2.appendCallback(KanColleTimerHeadQuarterShip2Update);
-    KanColleDatabase.memberSlotitem.appendCallback(KanColleTimerHeadQuarterSlotitemUpdate);
-}
-
-function KanColleTimerHeadQuarterExit() {
-    KanColleDatabase.memberSlotitem.removeCallback(KanColleTimerHeadQuarterSlotitemUpdate);
-    KanColleDatabase.memberShip2.removeCallback(KanColleTimerHeadQuarterShip2Update);
-    KanColleDatabase.memberBasic.removeCallback(KanColleTimerHeadQuarterBasicUpdate);
-    KanColleDatabase.memberRecord.removeCallback(KanColleTimerHeadQuarterRecordUpdate);
-}
-
 function KanColleTimerBasicInformationPanel(){
-    let timestamp;
+    let headquarter;
     let maxships;
     let maxslotitems;
     let ships;
@@ -103,8 +33,8 @@ function KanColleTimerBasicInformationPanel(){
     let ship_color = null;
     let slotitem_color = null;
 
-    function convundef(t) {
-	return t === undefined ? '-' : t;
+    function convnan(t) {
+	return isNaN(t) ? '-' : t;
     }
 
     function numcolor(cur,mark,max) {
@@ -120,14 +50,14 @@ function KanColleTimerBasicInformationPanel(){
 	return col;
     }
 
-    timestamp = KanColleRemainInfo.headquarter.timestamp;
+    headquarter = KanColleDatabase.headQuarter.get();
 
-    ships = convundef(KanColleRemainInfo.headquarter.ship_cur);
-    maxships = convundef(KanColleRemainInfo.headquarter.ship_max);
+    ships = convnan(headquarter.ship_cur);
+    maxships = convnan(headquarter.ship_max);
     ship_color = numcolor(ships, maxships - shipnumfree, maxships);
 
-    slotitems = convundef(KanColleRemainInfo.headquarter.slotitem_cur);
-    maxslotitems = convundef(KanColleRemainInfo.headquarter.slotitem_max);
+    slotitems = convnan(headquarter.slotitem_cur);
+    maxslotitems = convnan(headquarter.slotitem_max);
     slotitem_color = numcolor(slotitems, maxslotitems - shipnumfree * 4, maxslotitems);
 
     if (KanColleDatabase.memberMaterial.timestamp()) {
@@ -180,6 +110,15 @@ function KanColleTimerBasicInformationPanel(){
     $('repairkit-number').value = bucket;
     $('burner-number').value = burner;
 }
+
+function KanColleTimerHeadQuarterInit() {
+    KanColleDatabase.headQuarter.appendCallback(KanColleTimerBasicInformationPanel);
+}
+
+function KanColleTimerHeadQuarterExit() {
+    KanColleDatabase.headQuarter.removeCallback(KanColleTimerBasicInformationPanel);
+}
+
 
 /*
  * デッキ/遠征

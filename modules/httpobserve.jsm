@@ -174,6 +174,160 @@ KanColleDB.prototype = {
     },
 };
 
+//
+// 複合データベース
+//
+var KanColleCombinedDB = function() {
+    this._init.apply(this);
+};
+KanColleCombinedDB.prototype = {
+    _cb: null,
+    _ts: null,
+    _db: null,
+
+    timestamp: function() { return this._ts; },
+
+    _notify: function() {
+	let e;
+	let g = this._cb.gen();
+
+	while ((e = g.next()) != null) {
+	    if (e.opt)
+		e.func(Math.floor(t / 1000), this._db);
+	    else
+		e.func();
+	}
+	g.close();
+    },
+
+    _update: null,
+    _update_list: null,
+    _update_init: function() {
+	let _update;
+
+	if (this._update_list || !this._update)
+	    return;
+
+	_update  = {};
+
+	this._update_list = Object.keys(this._update);
+	for (let i = 0; i < this._update_list.length; i++) {
+	    let k = this._update_list[i];
+	    _update[k] = this._update[k].bind(this);
+	}
+
+	this._update = _update;
+    },
+
+    appendCallback: function(f, c) { this._cb.append(f, c); },
+    removeCallback: function(f) { this._cb.remove(f); },
+
+    init: function() {
+	if (this._update_list) {
+	    for (let i = 0; i < this._update_list.length; i++) {
+		let k = this._update_list[i];
+		KanColleDatabase[k].appendCallback(this._update[k]);
+	    }
+	}
+    },
+
+    exit: function() {
+	if (this._update_list) {
+	    for (let i = this._update_list.length - 1; i >= 0; i--) {
+		let k = this._update_list[i];
+		KanColleDatabase[k].removeCallback(this._update[k]);
+	    }
+	}
+    },
+
+    _init: function() {
+	this._ts = 0;
+	this._cb = new Callback;
+    },
+};
+
+//
+// 艦隊司令部(資源情報)データベース
+//
+var KanColleHeadQuarterDB = function() {
+    this._init();
+
+    this._db = {
+	ship_cur: Number.NaN,
+	ship_max: Number.NaN,
+	slotitem_cur: Number.NaN,
+	slotitem_max: Number.NaN,
+    };
+
+    this._update = {
+	memberRecord: function() {
+	    debugprint('memberRecord()()');
+	    let t = KanColleDatabase.memberRecord.timestamp();
+	    let d = KanColleDatabase.memberRecord.get();
+
+	    if (!t || !d)
+		return;
+
+	    this._ts = t;
+	    this._db.ship_cur = d.api_ship[0];
+	    this._db.ship_max = d.api_ship[1];
+	    this._db.slotitem_cur = d.api_slotitem[0];
+	    this._db.slotitem_max = d.api_slotitem[1];
+
+	    this._notify();
+	},
+
+	memberBasic: function() {
+	    debugprint('memberBasic()()');
+	    let t = KanColleDatabase.memberBasic.timestamp();
+	    let d = KanColleDatabase.memberBasic.get();
+
+	    if (!t || !d)
+		return;
+
+	    this._ts = t;
+	    this._db.ship_max = d.api_max_chara;
+	    this._db.slotitem_max = d.api_max_slotitem;
+
+	    this._notify();
+	},
+
+	memberShip2: function() {
+	    debugprint('memberShip2()()');
+	    let t = KanColleDatabase.memberShip2.timestamp();
+	    let n = KanColleDatabase.memberShip2.count();
+
+	    if (!t)
+		return;
+
+	    this._ts = t;
+	    this._db.ship_cur = n;
+
+	    this._notify();
+	},
+
+	memberSlotitem: function() {
+	    debugprint('memberSlotitem()()');
+	    let t = KanColleDatabase.memberSlotitem.timestamp();
+	    let n = KanColleDatabase.memberSlotitem.count();
+
+	    if (!t)
+		return;
+
+	    this._ts = t;
+	    this._db.slotitem_cur = n;
+
+	    this._notify();
+	},
+    };
+
+    this.get = function(id) { return this._db; };
+
+    this._update_init();
+};
+KanColleHeadQuarterDB.prototype = new KanColleCombinedDB();
+
+//
 var KanColleDatabase = {
     // Database
     masterShip: null,		// master/ship
@@ -191,6 +345,8 @@ var KanColleDatabase = {
     memberMaterial: null,	// member/material
     memberQuestlist: null,	// member/questlist
     questClearitemget: null,	// quest/clearitemget
+
+    headQuarter: null,		// 艦船/装備
 
     // Internal variable
     _refcnt: null,
@@ -264,6 +420,10 @@ var KanColleDatabase = {
 	    this.memberMaterial = new KanColleDB();
 	    this.memberQuestlist = new KanColleSimpleDB();
 	    this.questClearitemget = new KanColleSimpleDB();
+
+	    this.headQuarter = new KanColleHeadQuarterDB();
+	    this.headQuarter.init();
+
 	    debugprint("KanColleDatabase initialized.");
 
 	    // Start
@@ -277,6 +437,9 @@ var KanColleDatabase = {
 	    KanColleHttpRequestObserver.removeCallback(this._callback);
 
 	    // Clear
+	    this.headQuarter.exit();
+	    this.headQuarter = null;
+
 	    this.questClearitemget = null;
 	    this.memberQuestlist = null;
 	    this.memberMaterial = null;
@@ -301,7 +464,6 @@ var KanColleDatabase = {
 var KanColleRemainInfo = {
     slotitemowners: {},
     shipfleet: {},
-    headquarter: {},
 
     cookie: {},	//重複音対策
     quests: {},
