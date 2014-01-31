@@ -1,8 +1,7 @@
 /* -*- mode: js2;-*- */
 // vim: set ts=8 sw=4 sts=4 ff=dos :
 
-var EXPORTED_SYMBOLS = ["KanColleHttpRequestObserver","KanColleRemainInfo",
-			"KanColleDatabase"];
+var EXPORTED_SYMBOLS = ["KanColleRemainInfo", "KanColleDatabase"];
 
 /*
  * Database
@@ -193,85 +192,111 @@ var KanColleDatabase = {
     memberQuestlist: null,	// member/questlist
     questClearitemget: null,	// quest/clearitemget
 
-    // Initialization
-    init: function(){
-	if (!this.masterShip)
-	    this.masterShip = new KanColleDB();
-	if (!this.masterSlotitem)
-	    this.masterSlotitem = new KanColleDB();
-	this.memberShip2 = new KanColleDB();
-	this.memberUnsetslot = new KanColleSimpleDB();
-	this.memberSlotitem = new KanColleDB();
-	this.memberDeck = new KanColleDB();
-	this.memberNdock = new KanColleDB();
-	this.memberKdock = new KanColleDB();
-	this.memberBasic = new KanColleSimpleDB();
-	this.memberRecord = new KanColleSimpleDB();
-	this.memberMaterial = new KanColleDB();
-	this.memberQuestlist = new KanColleSimpleDB();
-	this.questClearitemget = new KanColleSimpleDB();
-	debugprint("KanColleDatabase initialized.");
+    // Internal variable
+    _refcnt: null,
+
+    // Callback
+    _callback: function(req, s) {
+	let url = req.name;
+	let data = JSON.parse(s.substring(s.indexOf('svdata=') + 7));
+
+	if (data.api_result != 1)
+	    return;
+
+	if (url.match(/kcsapi\/api_get_master\/ship/)) {
+	    this.masterShip.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_master\/slotitem/)) {
+	    this.masterSlotitem.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/basic/)) {
+	    this.memberBasic.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/record/)) {
+	    this.memberRecord.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
+		  url.match(/kcsapi\/api_get_member\/deck/) ) {
+	    this.memberDeck.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
+	    this.memberNdock.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/kdock/)) {
+	    this.memberKdock.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
+	    this.memberShip2.update(data.api_data);
+	    this.memberDeck.update(data.api_data_deck);
+	} else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
+	    this.memberShip2.update(data.api_data.api_ship_data);
+	    this.memberDeck.update(data.api_data.api_deck_data);
+	    this.memberUnsetslot.update(data.api_data.api_slot_data);
+	} else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
+	    this.memberSlotitem.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/material/)) {
+	    this.memberMaterial.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/unsetslot/)) {
+	    this.memberUnsetslot.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
+	    this.memberQuestlist.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
+	    this.questClearitemget.update(data.api_data);
+	}
     },
-    exit: function(){
-	//マスタ情報は再送されないので削除しない
-	//this.masterShip = null;
-	//this.masterSlotitem = null;
-	this.memberShip2 = null;
-	this.memberUnsetslot = null;
-	this.memberSlotitem = null;
-	this.memberDeck = null;
-	this.memberNdock = null;
-	this.memberKdock = null;
-	this.memberBasic = null;
-	this.memberRecord = null;
-	this.memberMaterial = null;
-	this.memberQuestlist = null;
-	this.questClearitemget = null;
-	debugprint("KanColleDatabase cleared.");
+
+    // Initialization
+    init: function() {
+	if (this._refcnt === null) {
+	    this._callback = this._callback.bind(this);
+	    this._refcnt = 0;
+	}
+
+	if (!this._refcnt++) {
+	    // Initialize
+	    KanColleHttpRequestObserver.init();
+
+	    if (!this.masterShip)
+		this.masterShip = new KanColleDB();
+	    if (!this.masterSlotitem)
+		this.masterSlotitem = new KanColleDB();
+	    this.memberShip2 = new KanColleDB();
+	    this.memberUnsetslot = new KanColleSimpleDB();
+	    this.memberSlotitem = new KanColleDB();
+	    this.memberDeck = new KanColleDB();
+	    this.memberNdock = new KanColleDB();
+	    this.memberKdock = new KanColleDB();
+	    this.memberBasic = new KanColleSimpleDB();
+	    this.memberRecord = new KanColleSimpleDB();
+	    this.memberMaterial = new KanColleDB();
+	    this.memberQuestlist = new KanColleSimpleDB();
+	    this.questClearitemget = new KanColleSimpleDB();
+	    debugprint("KanColleDatabase initialized.");
+
+	    // Start
+	    KanColleHttpRequestObserver.addCallback(this._callback);
+	}
+    },
+
+    exit: function() {
+	if (!--this._refcnt) {
+	    // Stop
+	    KanColleHttpRequestObserver.removeCallback(this._callback);
+
+	    // Clear
+	    this.questClearitemget = null;
+	    this.memberQuestlist = null;
+	    this.memberMaterial = null;
+	    this.memberRecord = null;
+	    this.memberBasic = null;
+	    this.memberKdock = null;
+	    this.memberNdock = null;
+	    this.memberDeck = null;
+	    this.memberSlotitem = null;
+	    this.memberUnsetslot = null;
+	    this.memberShip2 = null;
+	    //マスタ情報は再送されないので削除しない
+	    //this.masterSlotitem = null;
+	    //this.masterShip = null;
+	    debugprint("KanColleDatabase cleared.");
+
+	    KanColleHttpRequestObserver.destroy();
+	}
     },
 };
-
-function KanColleCallback(req,s){
-    let url = req.name;
-    let data = JSON.parse(s.substring( s.indexOf('svdata=')+7 ));
-
-    if( data.api_result!=1 )
-	return;
-
-    if( url.match(/kcsapi\/api_get_master\/ship/) ){
-	KanColleDatabase.masterShip.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_master\/slotitem/) ){
-	KanColleDatabase.masterSlotitem.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/basic/) ){
-	KanColleDatabase.memberBasic.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/record/) ){
-	KanColleDatabase.memberRecord.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/deck_port/) ||
-	      url.match(/kcsapi\/api_get_member\/deck/) ) {
-	KanColleDatabase.memberDeck.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/ndock/) ){
-	KanColleDatabase.memberNdock.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/kdock/) ){
-	KanColleDatabase.memberKdock.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/ship2/) ){
-	KanColleDatabase.memberShip2.update(data.api_data);
-	KanColleDatabase.memberDeck.update(data.api_data_deck);
-    }else if( url.match(/kcsapi\/api_get_member\/ship3/) ){
-	KanColleDatabase.memberShip2.update(data.api_data.api_ship_data);
-	KanColleDatabase.memberDeck.update(data.api_data.api_deck_data);
-	KanColleDatabase.memberUnsetslot.update(data.api_data.api_slot_data);
-    }else if( url.match(/kcsapi\/api_get_member\/slotitem/) ){
-	KanColleDatabase.memberSlotitem.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/material/) ){
-	KanColleDatabase.memberMaterial.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/unsetslot/) ){
-	KanColleDatabase.memberUnsetslot.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_get_member\/questlist/) ){
-	KanColleDatabase.memberQuestlist.update(data.api_data);
-    }else if( url.match(/kcsapi\/api_req_quest\/clearitemget/) ){
-	KanColleDatabase.questClearitemget.update(data.api_data);
-    }
-}
 
 var KanColleRemainInfo = {
     slotitemowners: {},
@@ -410,9 +435,6 @@ var KanColleHttpRequestObserver =
 		.getService(Components.interfaces.nsIObserverService);
 	    this.observerService.addObserver(this, "http-on-examine-response", false);
 	    debugprint("start kancolle observer.");
-
-	    KanColleDatabase.init();
-	    this.addCallback(KanColleCallback);
 	}
 	this.counter++;
     },
@@ -420,9 +442,6 @@ var KanColleHttpRequestObserver =
     destroy: function(){
 	this.counter--;
 	if( this.counter<=0 ){
-	    this.removeCallback(KanColleCallback);
-	    KanColleDatabase.exit();
-
 	    this.observerService.removeObserver(this, "http-on-examine-response");
 	    this.counter = 0;
 	    debugprint("stop kancolle observer.");

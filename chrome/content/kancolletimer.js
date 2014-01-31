@@ -341,7 +341,8 @@ var KanColleTimer = {
     },
 
     init: function(){
-	KanColleHttpRequestObserver.init();
+	KanColleDatabase.init();
+
 	KanColleTimerRegisterCallback();
 
 	setInterval( function(){
@@ -364,9 +365,9 @@ var KanColleTimer = {
     destroy: function(){
 	KanColleTimerLibExit();
 	KanColleTimerUnregisterCallback();
-	KanColleHttpRequestObserver.destroy();
 
 	this.writeResourceData();
+	KanColleDatabase.exit();
     }
 };
 
