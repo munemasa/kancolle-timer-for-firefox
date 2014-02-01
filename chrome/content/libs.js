@@ -193,20 +193,6 @@ function KanColleTimerDeckRestore(){
     }
 }
 
-function KanColleTimerMakeShipFleetMap(){
-    let decks = KanColleDatabase.memberDeck.list();
-    let db = {};
-    for( let i = 0; i < decks.length; i++ ){
-	let deck = KanColleDatabase.memberDeck.get(decks[i]);
-	for( let j = 0; j < deck.api_ship.length; j++ ){
-	    if (deck.api_ship[j] < 0)
-		continue;
-	    db[deck.api_ship[j]] = { fleet: deck.api_id, pos: j, };
-	}
-    }
-    KanColleRemainInfo.shipfleet = db;
-}
-
 /*
  * 入渠ドック
  *  member/ndock	: api_data
@@ -924,7 +910,6 @@ function KanColleTimerRegisterCallback(){
     let db = KanColleDatabase;
     db.memberDeck.appendCallback(KanColleTimerDeckHandler);
     db.memberBasic.appendCallback(KanColleTimerDeckBasicHandler);
-    db.memberDeck.appendCallback(KanColleTimerMakeShipFleetMap);
     db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler);
     db.memberNdock.appendCallback(KanColleTimerNdockHandler);
     db.memberBasic.appendCallback(KanColleTimerNdockBasicHandler);
@@ -953,7 +938,6 @@ function KanColleTimerUnregisterCallback(){
     db.memberBasic.removeCallback(KanColleTimerNdockBasicHandler);
     db.memberNdock.removeCallback(KanColleTimerNdockHandler);
     db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler);
-    db.memberDeck.removeCallback(KanColleTimerMakeShipFleetMap);
     db.memberBasic.removeCallback(KanColleTimerDeckBasicHandler);
     db.memberDeck.removeCallback(KanColleTimerDeckHandler);
     db.memberQuestlist.removeCallback(KanColleTimerQuestInformationUpdate);
@@ -1419,7 +1403,7 @@ function KanColleStypeFilterTemplate(){
 function KanColleSlotitemFilterTemplate(){
     let menu = [];
     let submenu = null;
-    let slotitemowners = KanColleDatabase.slotitemOwner.get();
+    let slotitemowners = KanColleDatabase.slotitem.get('owner');
 
     let itemlist = Object.keys(slotitemowners).sort(function(a,b){
 	let type_a = slotitemowners[a].type[2];
@@ -1925,7 +1909,8 @@ function TreeView(){
     // getCellText function table by column ID
     var shipcellfunc = {
 	fleet: function(ship) {
-	    let fleet = KanColleRemainInfo.shipfleet[ship.api_id];
+	    let shipfleet = KanColleDatabase.ship.get('fleet');
+	    let fleet = shipfleet[ship.api_id];
 	    if (fleet)
 		return fleet.fleet;
 	    return '';
@@ -2095,7 +2080,7 @@ function TreeView(){
 	let filterspec = ShipInfoTree.shipfilterspec;
 	if (filterspec.match(/^slotitem(\d+)$/)) {
 	    let slotitemid = RegExp.$1;
-	    let slotitemowners = KanColleDatabase.slotitemOwner.get();
+	    let slotitemowners = KanColleDatabase.slotitem.get('owner');
 	    let owners = slotitemowners[slotitemid];
 	    shiplist = owners ? Object.keys(owners.list) : [];
 	} else if (filterspec.match(/^stype((\d+-)*\d+)$/)) {
@@ -2168,8 +2153,9 @@ function TreeView(){
     // special comparision function: each function takes two 'ship's
     var shipcmpfunc = {
 	fleet: function(ship_a,ship_b){
-	    let fleet_a = KanColleRemainInfo.shipfleet[ship_a.api_id];
-	    let fleet_b = KanColleRemainInfo.shipfleet[ship_b.api_id];
+	    let shipfleet = KanColleDatabase.ship.get('fleet');
+	    let fleet_a = shipfleet[ship_a.api_id];
+	    let fleet_b = shipfleet[ship_b.api_id];
 	    let ret;
 	    if (!fleet_a || !fleet_b)
 		return ((fleet_b ? 1 : 0) - (fleet_a ? 1 : 0)) * order;
