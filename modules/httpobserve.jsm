@@ -328,6 +328,106 @@ var KanColleHeadQuarterDB = function() {
 KanColleHeadQuarterDB.prototype = new KanColleCombinedDB();
 
 //
+// 装備保持艦船データベース
+//
+var KanColleSlotitemOwnerDB = function() {
+    this._init();
+
+    this._db = {};
+
+    this._shipname = function(ship_id) {
+	try{
+	    // member/ship2 には艦名がない。艦艇型から取得
+	    let ship = KanColleDatabase.memberShip2.get(ship_id);
+	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+	    return shiptype.api_name;
+	} catch (x) {
+	}
+	return "";
+    },
+
+    this._update_common = function(t) {
+	let db = {};
+	let items;
+	let ships;
+
+	items = KanColleDatabase.memberSlotitem.list();
+	ships = KanColleDatabase.memberShip2.list();
+
+	if (items.length && ships.length) {
+	    for (let i = 0; i < items.length; i++) {
+		let item = KanColleDatabase.memberSlotitem.get(items[i]);
+		let itemtypeid = item.api_slotitem_id;
+		if (!db[itemtypeid]) {
+		    db[itemtypeid] = {
+					id: itemtypeid,
+					name: item.api_name,
+					type: item.api_type,
+					list: {},
+					totalnum: 0,
+					num: 0,
+		    };
+		}
+		db[itemtypeid].totalnum++;
+	    }
+
+	    for (let i = 0; i < ships.length; i++) {
+		let ship = KanColleDatabase.memberShip2.get(ships[i]);
+		let ship_slot = ship.api_slot;
+
+		//debugprint(this._shipname(ship.api_id) + ': ');
+
+		for (let j = 0; j < ship_slot.length; j++) {
+		    let item;
+		    let itemtypeid;
+
+		    if (ship_slot[j] < 0)
+			continue;
+
+		    item = KanColleDatabase.memberSlotitem.get(ship_slot[j]);
+		    // member/slotitem might be out-of-date for a while.
+		    if (!item)
+			continue;
+		    itemtypeid = item.api_slotitem_id;
+
+		    //debugprint(itemtypeid + ': ' + item.api_name);
+
+		    db[itemtypeid].list[ship.api_id]++;
+		    db[itemtypeid].num++;
+		}
+	    }
+
+	    for ( let k in db ){
+		let s = [];
+		for ( let l in db[k].list ){
+		    s.push(this._shipname(parseInt(l, 10)));
+		}
+		//debugprint(db[k].name + ': ' + s.join(','));
+	    }
+	}
+	//debugprint(db.toSource());
+	this._ts = t;
+	this._db = db;
+    };
+
+    this._update = {
+	memberShip2: function() {
+	    let t = KanColleDatabase.memberShip2.timestamp();
+	    this._update_common(t);
+	},
+
+	memberSlotitem: function() {
+	    let t = KanColleDatabase.memberSlotitem.timestamp();
+	    this._update_common(t);
+	},
+    };
+
+    this.get = function() { return this._db; };
+
+    this._update_init();
+};
+KanColleSlotitemOwnerDB.prototype = new KanColleCombinedDB();
+
 var KanColleDatabase = {
     // Database
     masterShip: null,		// master/ship
@@ -347,6 +447,7 @@ var KanColleDatabase = {
     questClearitemget: null,	// quest/clearitemget
 
     headQuarter: null,		// 艦船/装備
+    slotitemOwner: null,	// 装備保持艦船
 
     // Internal variable
     _refcnt: null,
@@ -423,6 +524,8 @@ var KanColleDatabase = {
 
 	    this.headQuarter = new KanColleHeadQuarterDB();
 	    this.headQuarter.init();
+	    this.slotitemOwner = new KanColleSlotitemOwnerDB();
+	    this.slotitemOwner.init();
 
 	    debugprint("KanColleDatabase initialized.");
 
@@ -437,6 +540,8 @@ var KanColleDatabase = {
 	    KanColleHttpRequestObserver.removeCallback(this._callback);
 
 	    // Clear
+	    this.slotitemOwner.exit();
+	    this.slotitemOwner = null;
 	    this.headQuarter.exit();
 	    this.headQuarter = null;
 
@@ -462,7 +567,6 @@ var KanColleDatabase = {
 };
 
 var KanColleRemainInfo = {
-    slotitemowners: {},
     shipfleet: {},
 
     cookie: {},	//重複音対策

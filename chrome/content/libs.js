@@ -457,79 +457,10 @@ function KanColleTimerMemberMaterialHandler() {
 }
 
 /*
- * 装備保持艦船の抽出
- * member/ship2 and member/slotitem
- */
-function KanColleUpdateSlotitem(){
-    let db;
-    let items;
-    let ships;
-
-    db = {};
-    items = KanColleDatabase.memberSlotitem.list();
-    ships = KanColleDatabase.memberShip2.list();
-
-    if ( items.length && ships.length ){
-	for ( let i = 0; i < items.length; i++ ){
-	    let item = KanColleDatabase.memberSlotitem.get(items[i]);
-	    let itemtypeid = item.api_slotitem_id;
-	    if (!db[itemtypeid]) {
-		db[itemtypeid] = {
-				    id: itemtypeid,
-				    name: item.api_name,
-				    type: item.api_type,
-				    list: {},
-				    totalnum: 0,
-				    num: 0,
-		};
-	    }
-	    db[itemtypeid].totalnum++;
-	}
-
-	for ( let i = 0; i < ships.length; i++ ){
-	    let ship = KanColleDatabase.memberShip2.get(ships[i]);
-	    let ship_slot = ship.api_slot;
-
-	    //debugprint(FindShipName(ship.api_id) + ': ');
-
-	    for ( let j = 0; j < ship_slot.length; j++ ){
-		let item;
-		let itemtypeid;
-
-		if (ship_slot[j] < 0)
-		    continue;
-
-		item = KanColleDatabase.memberSlotitem.get(ship_slot[j]);
-		// member/slotitem might be out-of-date for a while.
-		if (!item)
-		    continue;
-		itemtypeid = item.api_slotitem_id;
-
-		//debugprint(itemtypeid + ': ' + item.api_name);
-
-		db[itemtypeid].list[ship.api_id]++;
-		db[itemtypeid].num++;
-	    }
-	}
-
-	for ( let k in db ){
-	    let s = [];
-	    for ( let l in db[k].list ){
-		s.push(FindShipName(parseInt(l, 10)));
-	    }
-	    //debugprint(db[k].name + ': ' + s.join(','));
-	}
-    }
-    //debugprint(KanColleRemainInfo.slotitemowners.toSource());
-    KanColleRemainInfo.slotitemowners = db;
-}
-
-/*
  * 所有艦娘情報2
  *  member/ship2	: api_data
  */
 function KanColleTimerShipInfoHandler(){
-    KanColleUpdateSlotitem();
     KanColleCreateShipTree();
     KanColleShipInfoSetView();
 }
@@ -1488,12 +1419,13 @@ function KanColleStypeFilterTemplate(){
 function KanColleSlotitemFilterTemplate(){
     let menu = [];
     let submenu = null;
+    let slotitemowners = KanColleDatabase.slotitemOwner.get();
 
-    let itemlist = Object.keys(KanColleRemainInfo.slotitemowners).sort(function(a,b){
-	let type_a = KanColleRemainInfo.slotitemowners[a].type[2];
-	let type_b = KanColleRemainInfo.slotitemowners[b].type[2];
-	let id_a = KanColleRemainInfo.slotitemowners[a].id;
-	let id_b = KanColleRemainInfo.slotitemowners[b].id;
+    let itemlist = Object.keys(slotitemowners).sort(function(a,b){
+	let type_a = slotitemowners[a].type[2];
+	let type_b = slotitemowners[b].type[2];
+	let id_a = slotitemowners[a].id;
+	let id_b = slotitemowners[b].id;
 	let diff = type_a - type_b;
 	if (!diff)
 	    diff = id_a - id_b;
@@ -1502,11 +1434,11 @@ function KanColleSlotitemFilterTemplate(){
 
     for (let i = 0; i < itemlist.length; i++) {
 	let k = itemlist[i];
-	let itemname = KanColleRemainInfo.slotitemowners[k].name;
-	let itemtype = KanColleRemainInfo.slotitemowners[k].type[2];
+	let itemname = slotitemowners[k].name;
+	let itemtype = slotitemowners[k].type[2];
 	let itemtypename = KanColleData.slotitem_type[itemtype];
-	let itemnum = KanColleRemainInfo.slotitemowners[k].num;
-	let itemtotalnum = KanColleRemainInfo.slotitemowners[k].totalnum;
+	let itemnum = slotitemowners[k].num;
+	let itemtotalnum = slotitemowners[k].totalnum;
 	let itemmenutitle;
 	let itemval = 'slotitem' + k;
 
@@ -2163,7 +2095,8 @@ function TreeView(){
 	let filterspec = ShipInfoTree.shipfilterspec;
 	if (filterspec.match(/^slotitem(\d+)$/)) {
 	    let slotitemid = RegExp.$1;
-	    let owners = KanColleRemainInfo.slotitemowners[slotitemid];
+	    let slotitemowners = KanColleDatabase.slotitemOwner.get();
+	    let owners = slotitemowners[slotitemid];
 	    shiplist = owners ? Object.keys(owners.list) : [];
 	} else if (filterspec.match(/^stype((\d+-)*\d+)$/)) {
 	    let stypesearch = '-' + RegExp.$1 + '-';
