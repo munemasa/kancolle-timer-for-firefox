@@ -18,7 +18,7 @@ var ShipList = {
 
 	const nsIFilePicker = Components.interfaces.nsIFilePicker;
 	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-	fp.init(window, "艦艇リストの保存...", nsIFilePicker.modeSave);
+	fp.init(window, "艦娘リストの保存...", nsIFilePicker.modeSave);
 	fp.appendFilters(nsIFilePicker.filterAll);
 	let rv = fp.show();
 	if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
@@ -132,20 +132,88 @@ var ShipList = {
 	}
     },
 
+    createHistogram: function(){
+	let histogram = [0,0,0,0,0,0,0,0,0,0];
+	let ships = KanColleDatabase.memberShip2.list().map(function(k){ return KanColleDatabase.memberShip2.get(k); });
+	for( let i=0; i<ships.length; i++ ){
+	    let k = parseInt( ships[i].api_lv/10 );
+	    histogram[k]++;
+	}
+
+	let margin = {top: 20, right: 20, bottom: 30, left: 40},
+	    width = 640 - margin.left - margin.right,
+	    height = 480 - margin.top - margin.bottom;
+	
+	let x = d3.scale.ordinal()
+	    .rangeRoundBands([0, width], .1);
+	let y = d3.scale.linear()
+	    .range([height, 0]);
+
+	let xAxis = d3.svg.axis()
+		.scale(x)
+		.orient("bottom")
+		.tickFormat( function(d){ return d3.max([(d*10),1])+"-"+(d*10+9); } );
+
+	let yAxis = d3.svg.axis()
+		.scale(y)
+		.orient("left")
+		.tickFormat( function(d){ return d+"隻"; } )
+		.ticks(10);
+
+	let svg = d3.select("#histogram").append("svg")
+		.attr("id","svg-histogram")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	x.domain( d3.keys(histogram) );
+	y.domain([0, d3.max(histogram)]);
+
+	svg.append("g")
+	    .attr("class", "x axis")
+	    .attr("transform", "translate(0," + height + ")")
+	    .call(xAxis);
+
+	svg.append("g")
+	    .attr("class", "y axis")
+	    .call(yAxis);
+
+	svg.append("g")         
+            .attr("class", "grid")
+            .call(d3.svg.axis()
+		  .scale(y)
+		  .orient("left")
+		  .tickSize(-width, 0, 0)
+		  .tickFormat("")
+		 );
+
+	svg.selectAll(".bar")
+	    .data(histogram)
+	    .enter().append("rect")
+	    .attr("class", "bar")
+	    .attr("x", function(d,i) {
+		return x(i);
+	    })
+	    .attr("width", x.rangeBand())
+	    .attr("y", function(d) { return y(d); })
+	    .attr("height", function(d) { return height - y(d); });
+    },
+
     init: function(){
 	let now = GetCurrentTime();
 
-	// 艦艇リスト
-	let ships = KanColleDatabase.memberShip2.list();
+	this.createHistogram();
 
-	document.title = "保有艦艇リスト "+ships.length+"隻 ("+GetDateString(now*1000)+")";
+	// 艦艇リスト
+	let ships = KanColleDatabase.memberShip2.list().map(function(k){ return KanColleDatabase.memberShip2.get(k); });
 
 	this.allships = new Array();
 
 	let list = $('ship-list');
 	let no = 1;
 	for (let j = 0; j < ships.length; j++) {
-	    let ship = KanColleDatabase.memberShip2.get(ships[j]);
+	    let ship = ships[j];
 	    let data = FindShipData( ship.api_id );
 	    let fleet_no = this.getFleetNo( ship.api_id );
 
@@ -164,8 +232,9 @@ var ShipList = {
 	    for( let i in ship.api_slot ){
 		let slot_id = ship.api_slot[i];
 		if( slot_id==-1 ) continue;
-		let itemname = FindSlotItemNameById( slot_id );
-		obj.equips.push( itemname );
+		let item = FindSlotItem( slot_id );
+		item._owner_ship = obj.name;
+		obj.equips.push( item.api_name );
 	    }
 	    this.allships.push( obj );
 	}
@@ -204,6 +273,31 @@ var ShipList = {
 	    }
 
 	}
+
+	// 未装備品リストを作成する
+	let equipments = KanColleDatabase.memberSlotitem._raw.filter( function(d){ return !d._owner_ship; });
+	let count = new Object();
+	for( let e in equipments ){
+	    let k = equipments[e].api_name;
+	    if( !count[k] ) count[k] = 0;
+	    count[ k ]++;
+	}
+	let update = d3.select("#equipment-list")
+		.selectAll("row")
+		.data( d3.map(count).keys() );
+	update.enter()
+	    .append("row")
+	    .attr("style","border-bottom: #c0c0c0 1px solid;")
+	    .selectAll("label")
+	    .data( function(d){ return [d, count[d]]; } )
+	    .enter()
+	    .append("label")
+	    .attr("value", function(d){
+		return d;
+	    });
+
+	$("tab-ships").setAttribute("label","艦娘("+ships.length+")");
+	$("tab-equipment").setAttribute("label","未装備品("+equipments.length+")");
 
     }
 

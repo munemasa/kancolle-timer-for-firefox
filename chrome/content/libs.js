@@ -532,12 +532,15 @@ function TakeKanColleScreenshot(isjpeg){
 /*
  
  */
-
 function FindSlotItemNameById( api_id ){
     let item = KanColleDatabase.memberSlotitem.get(api_id);
     if (item)
 	return item.api_name;
     return "[Unknown]";
+}
+
+function FindSlotItem( api_id ){
+    return KanColleDatabase.memberSlotitem.get(api_id);
 }
 
 
