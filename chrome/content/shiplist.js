@@ -207,6 +207,9 @@ var ShipList = {
 
 	// 艦艇リスト
 	let ships = KanColleDatabase.memberShip2.list().map(function(k){ return KanColleDatabase.memberShip2.get(k); });
+	KanColleDatabase.memberSlotitem.list().map(function(k){ return KanColleDatabase.memberSlotitem.get(k); }).forEach( function(elem){
+	    elem._owner_ship = null;
+	} );
 
 	this.allships = new Array();
 
