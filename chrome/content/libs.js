@@ -538,7 +538,6 @@ function TakeKanColleScreenshot(isjpeg){
 /*
  
  */
-
 function FindSlotItemNameById( api_id ){
     let items = KanColleRemainInfo.gOwnedItem;
     for( let k in items ){
@@ -547,6 +546,16 @@ function FindSlotItemNameById( api_id ){
 	}
     }
     return "[Unknown]";
+}
+
+function FindSlotItem( api_id ){
+    let items = KanColleRemainInfo.gOwnedItem;
+    for( let k in items ){
+	if( items[k].api_id==api_id ){
+	    return items[k];
+	}
+    }
+    return null;
 }
 
 
