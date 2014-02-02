@@ -206,6 +206,9 @@ var ShipList = {
 
 	// 艦艇リスト
 	let ships = KanColleRemainInfo.gOwnedShipList;
+	KanColleRemainInfo.gOwnedItem.forEach( function(elem){
+	    elem._owner_ship = null;
+	} );
 
 	this.allships = new Array();
 
