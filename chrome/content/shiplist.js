@@ -299,6 +299,7 @@ var ShipList = {
 	$("tab-ships").setAttribute("label","艦娘("+ships.length+")");
 	$("tab-equipment").setAttribute("label","未装備品("+equipments.length+")");
 
+	document.title += " "+ new Date();
     }
 
 };
