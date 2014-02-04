@@ -20,6 +20,13 @@ var ResourceGraph = {
     width: 960,
     height: 500,
 
+    color: {
+	"fuel": "#69aa60",
+	"bullet": "#ccbf8e",
+	"steel": "#6d6d6d",
+	"bauxite": "#e6a97a"
+    },
+
     saveToFile: function(){
 	let file = OpenFileDialog( "CSVファイルに保存", MODE_SAVE );
 	if( !file ) return;
@@ -149,6 +156,15 @@ var ResourceGraph = {
 	OpenTweetDialog( true, pic );
     },
 
+    changeColor: function(){
+	let color = d3.scale.category10();
+	this._flg = !this._flg;
+
+	d3.selectAll(".line").style("stroke",function(d,i){
+	    return ResourceGraph._flg ? color(d.name) : ResourceGraph.color[ d.name ];
+	});
+    },
+
     createGraph: function(){
 	var data = KanColleRemainInfo.gResourceData;
 	var margin = {top: 20, right: 80, bottom: 30, left: 50};
@@ -234,16 +250,10 @@ var ResourceGraph = {
 	 .enter().append("g")
 	 .attr("class", "resource");
 
-	var color = {
-	    "fuel": "#69aa60",
-	    "bullet": "#ccbf8e",
-	    "steel": "#6d6d6d",
-	    "bauxite": "#e6a97a"
-	};
 	resource.append("path")
 	    .attr("class", "line")
 	    .attr("d", function(d) { return line(d.values); })
-	    .style("stroke", function(d) { return color[d.name]; });
+	    .style("stroke", function(d) { return ResourceGraph.color[d.name]; });
 
 	var resource_name = {
 	    "fuel": "燃料",

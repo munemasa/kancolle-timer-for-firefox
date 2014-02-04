@@ -43,6 +43,7 @@
 	  <menuitem label="閉じる" oncommand="window.close();"/>
 	</menupopup>
       </menu>
+      <menuitem label="!Change Color" oncommand="ResourceGraph.changeColor();"/>
     </menubar>
   </toolbox>
 
