@@ -207,7 +207,8 @@ var ShipList = {
 
 	// 艦艇リスト
 	let ships = KanColleDatabase.memberShip2.list().map(function(k){ return KanColleDatabase.memberShip2.get(k); });
-	KanColleDatabase.memberSlotitem.list().map(function(k){ return KanColleDatabase.memberSlotitem.get(k); }).forEach( function(elem){
+	let items = KanColleDatabase.memberSlotitem.list().map(function(k){ return KanColleDatabase.memberSlotitem.get(k); });
+	items.forEach( function(elem){
 	    elem._owner_ship = null;
 	} );
 
@@ -278,7 +279,7 @@ var ShipList = {
 	}
 
 	// 未装備品リストを作成する
-	let equipments = KanColleDatabase.memberSlotitem._raw.filter( function(d){ return !d._owner_ship; });
+	let equipments = items.filter( function(d){ return !d._owner_ship; });
 	let count = new Object();
 	for( let e in equipments ){
 	    let k = equipments[e].api_name;
