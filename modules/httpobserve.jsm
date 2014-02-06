@@ -80,6 +80,9 @@ var KanColleDatabase = {
     // Database
     masterShip: null,		// master/ship
     masterSlotitem: null,	// master/slotitem
+    memberDeck: null,		// member/deck,member/deck_port,
+				// or member/ship2[api_data_deck]
+				// or member/ship3[api_deck_data]
     memberShip2: null,		// member/ship2
     memberSlotitem: null,	// member/slotitem
 
@@ -98,8 +101,10 @@ var KanColleDatabase = {
 	    this.masterSlotitem.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
 	    this.memberShip2.update(data.api_data);
+	    this.memberDeck.update(data.api_data_deck);
 	} else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
 	    this.memberShip2.update(data.api_data.api_ship_data);
+	    this.memberDeck.update(data.api_data.api_deck_data);
 	} else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
 	    this.memberSlotitem.update(data.api_data);
 	}
@@ -114,6 +119,7 @@ var KanColleDatabase = {
 	    this.masterShip = new KanColleDB();
 	if (!this.masterSlotitem)
 	    this.masterSlotitem = new KanColleDB();
+	this.memberDeck = new KanColleDB();
 	this.memberShip2 = new KanColleDB();
 	this.memberSlotitem = new KanColleDB();
 	debugprint("KanColleDatabase initialized.");
@@ -121,6 +127,7 @@ var KanColleDatabase = {
     exit: function(){
 	this.memberSlotitem = null;
 	this.memberShip2 = null;
+	this.memberDeck = null;
 	//マスタ情報は再送されないので削除しない
 	//this.masterSlotitem = null;
 	//this.masterShip = null;
@@ -128,7 +135,6 @@ var KanColleDatabase = {
     },
 };
 var KanColleRemainInfo = {
-    gDeckList:[],
     gMission: {},
 
     gResourceData: [], // 資源の履歴

@@ -23,7 +23,6 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
 // 艦隊情報 / 遠征リスト
 function KanColleTimerMemberDeckHandler(now, api_data) {
     try{
-	KanColleRemainInfo.gDeckList = api_data;
 	SetAllFleetOrganization();
 	SetFleetsCondition();
     }catch(e){}
@@ -291,8 +290,8 @@ function KanColleTimerCallback(request, s) {
 // 第1艦隊編成
 function SetFirstFleetOrganization(){
     // 第1艦隊編成
-    let fleets = KanColleRemainInfo.gDeckList;
-    let fleet = fleets[0];
+    let fleets = KanColleDatabase.memberDeck.list();
+    let fleet = KanColleDatabase.memberDeck.get(1);
     if( !fleet ) return;
     let rows = $('fleet-1');
     RemoveChildren(rows);
@@ -356,8 +355,8 @@ function SetAllFleetOrganization(){
  */
 function SetFleetOrganization( n ){
     // 第1艦隊編成
-    let fleets = KanColleRemainInfo.gDeckList;
-    let fleet = fleets[ n-1 ];
+    let fleets = KanColleDatabase.memberDeck.list();
+    let fleet = KanColleDatabase.memberDeck.get(n);
     if( !fleet ) return;
     let rows = $('fleet-'+n);
     RemoveChildren(rows);
@@ -418,13 +417,12 @@ function SetFleetsCondition(){
     let table = $('fleet-condition');
     RemoveChildren( table );
 
-    let fleets = KanColleRemainInfo.gDeckList;
-    for( let f in fleets ){
-	f = parseInt(f);
-	let fleet = fleets[f];
+    let fleets = KanColleDatabase.memberDeck.list();
+    for (let i = 0; i < fleets.length; i++) {
+	let fleet = KanColleDatabase.memberDeck.get(fleets[i]);
 
 	let row = CreateElement('row');
-	row.appendChild( CreateLabel('第'+(f+1)+'艦隊') );
+	row.appendChild( CreateLabel('第'+fleet.api_id+'艦隊') );
 	for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
 	    let data = FindOwnShipData( fleet.api_ship[i] );
 	    let cond = CreateLabel(""+data.api_cond);

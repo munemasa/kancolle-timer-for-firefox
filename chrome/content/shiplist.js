@@ -42,11 +42,12 @@ var ShipList = {
     },
 
     getFleetNo: function( ship_id ){
-	let fleets = KanColleRemainInfo.gDeckList;
-	for( let i in fleets ){
-	    for( let j in fleets[i].api_ship ){
-		if( fleets[i].api_ship[j]==ship_id ){
-		    return parseInt(i)+1;
+	let fleets = KanColleDatabase.memberDeck.list();
+	for (let i = 0; i < fleets.length; i++) {
+	    let fleet = KanColleDatabase.memberDeck.get(fleets[i]);
+	    for( let j in fleet.api_ship ){
+		if( fleet.api_ship[j]==ship_id ){
+		    return fleet.api_id;
 		}
 	    }
 	}
@@ -171,12 +172,10 @@ var ShipList = {
 	this.setupListBox();
 
 	// 艦隊編成
-	let fleets = KanColleRemainInfo.gDeckList;
-	for( let f in fleets ){
-	    f = parseInt(f);
-	    let fleet = fleets[f];
-
-	    let rows = $('fleet-'+(f+1));
+	let fleets = KanColleDatabase.memberDeck.list();
+	for (let j = 0; j < fleets.length; j++) {
+	    let fleet = KanColleDatabase.memberDeck.get(fleets[j]);
+	    let rows = $('fleet-'+fleet.api_id);
 
 	    for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
 		let row = CreateElement('row');
