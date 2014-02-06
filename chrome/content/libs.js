@@ -270,11 +270,8 @@ function KanColleTimerCallback(request, s) {
     } else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
 	       url.match(/kcsapi\/api_get_member\/deck/)) {
 	// 艦隊情報 / 遠征リスト
-	try {
-	    // member/ship2未受信の可能性がある
-	    SetAllFleetOrganization();
-	    SetFleetsCondition();
-	} catch(x) {}
+	SetAllFleetOrganization();
+	SetFleetsCondition();
 	KanColleTimerMemberDeckHandler();
     } else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
 	// 入渠ドック
@@ -387,6 +384,8 @@ function SetFleetOrganization( n ){
 	let row = CreateElement('row');
 	let data = FindOwnShipData( fleet.api_ship[i] );
 	let masterdata = FindShipData( fleet.api_ship[i] );
+	if (!masterdata)
+	    continue;
 	row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
 	row.appendChild( CreateLabel(masterdata.api_name) );
 	row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
@@ -448,6 +447,8 @@ function SetFleetsCondition(){
 	row.appendChild( CreateLabel('第'+fleet.api_id+'艦隊') );
 	for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
 	    let data = FindOwnShipData( fleet.api_ship[i] );
+	    if (!data)
+		continue;
 	    let cond = CreateLabel(""+data.api_cond);
 	    if( data.api_cond<=19 ){
 		cond.style.backgroundColor = "#d36363";
