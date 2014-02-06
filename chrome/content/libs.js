@@ -177,8 +177,8 @@ function KanColleTimerSetHeadQuarterInformation() {
 }
 
 // 艦隊司令部情報
-function KanColleTimerMemberBasicHandler(now, api_data) {
-    let d = api_data;
+function KanColleTimerMemberBasicHandler() {
+    let d = KanColleDatabase.memberBasic.get();
     let f = function( elems, n ){
 	for( let i=1; i<4; i++ ){
 	    elems[i].style.display = i<n ? "":"none";
@@ -299,7 +299,7 @@ function KanColleTimerCallback(request, s) {
 	KanColleTimerSetHeadQuarterInformation();
     } else if (url.match(/kcsapi\/api_get_member\/basic/)) {
 	// 艦隊司令部情報
-	KanColleTimerMemberBasicHandler(now, data.api_data);
+	KanColleTimerMemberBasicHandler();
     } else if (url.match(/kcsapi\/api_get_member\/material/)) {
 	// 資源情報
 	KanColleTimerMemberMaterialHandler();

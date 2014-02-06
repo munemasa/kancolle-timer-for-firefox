@@ -179,6 +179,7 @@ var KanColleDatabase = {
     // Database
     masterShip: null,		// master/ship
     masterSlotitem: null,	// master/slotitem
+    memberBasic: null,		// member/basic
     memberDeck: null,		// member/deck,member/deck_port,
 				// or member/ship2[api_data_deck]
 				// or member/ship3[api_deck_data]
@@ -202,6 +203,8 @@ var KanColleDatabase = {
 	    this.masterShip.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_master\/slotitem/)) {
 	    this.masterSlotitem.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/basic/)) {
+	    this.memberBasic.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
 		   url.match(/kcsapi\/api_get_member\/deck/)) {
 	    this.memberDeck.update(data.api_data);
@@ -233,6 +236,7 @@ var KanColleDatabase = {
 	    this.masterShip = new KanColleDB();
 	if (!this.masterSlotitem)
 	    this.masterSlotitem = new KanColleDB();
+	this.memberBasic = new KanColleSimpleDB();
 	this.memberDeck = new KanColleDB();
 	this.memberKdock = new KanColleDB();
 	this.memberMaterial = new KanColleDB();
@@ -250,6 +254,7 @@ var KanColleDatabase = {
 	this.memberMaterial = null;
 	this.memberKdock = null;
 	this.memberDeck = null;
+	this.memberBasic = null;
 	//マスタ情報は再送されないので削除しない
 	//this.masterSlotitem = null;
 	//this.masterShip = null;
