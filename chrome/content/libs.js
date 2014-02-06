@@ -156,14 +156,13 @@ function KanColleTimerMemberKdockHandler(now, api_data) {
     }
 }
 
-// 所持艦船情報
-function KanColleTimerMemberShipHandler(now, api_data) {
-    $('number-of-ships').value = KanColleDatabase.memberShip2.list().length+"隻";
-}
-
-// 装備情報
-function KanColleTimerMemberSlotitemHandler(now, api_data) {
-    $('number-of-items').value = KanColleDatabase.memberSlotitem.list().length;
+// 所持艦船情報 / 装備情報
+function KanColleTimerSetHeadQuarterInformation() {
+    function convnan(v) {
+	return isNaN(v) ? '' : v;
+    }
+    $('number-of-ships').value = convnan(KanColleDatabase.memberShip2.count())+"隻";
+    $('number-of-items').value = convnan(KanColleDatabase.memberSlotitem.count());
 }
 
 // 艦隊司令部情報
@@ -266,17 +265,17 @@ function KanColleTimerCallback(request, s) {
 	KanColleTimerMemberKdockHandler(now, data.api_data);
     } else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
 	// 所持艦船情報 / 艦隊情報 / 遠征リスト
-	KanColleTimerMemberShipHandler(now, data.api_data);
+	KanColleTimerSetHeadQuarterInformation();
 	SetAllFleetOrganization();
 	SetFleetsCondition();
     } else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
 	// 所持艦船情報 / 艦隊情報 / 遠征リスト / 装備情報
-	KanColleTimerMemberShipHandler(now, data.api_data.api_ship_data);
+	KanColleTimerSetHeadQuarterInformation();
 	SetAllFleetOrganization();
 	SetFleetsCondition();
     } else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
 	// 装備情報
-	KanColleTimerMemberSlotitemHandler(now, data.api_data);
+	KanColleTimerSetHeadQuarterInformation();
     } else if (url.match(/kcsapi\/api_get_member\/basic/)) {
 	// 艦隊司令部情報
 	KanColleTimerMemberBasicHandler(now, data.api_data);
