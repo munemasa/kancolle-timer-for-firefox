@@ -147,7 +147,8 @@ function KanColleTimerMemberKdockHandler(now, api_data) {
 	    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
 	    /*
 	     let ship_id = parseInt( api_data[i].api_created_ship_id );
-	     let ship_name = KanColleRemainInfo.gShipList[ ship_id-1 ].api_name;
+	     let shiptype = KanColleDatabase.masterShip.get(ship_id);
+	     let ship_name = shiptype ? shiptype.api_name : ('UNKNOWN' + ship_id);
 	     $('kdock-box'+k).setAttribute('tooltiptext',ship_name);
 	     */
 	}else{
@@ -161,23 +162,16 @@ function KanColleTimerMemberKdockHandler(now, api_data) {
     }
 }
 
-// 艦船情報
-function KanColleTimerMasterShipHandler(now, api_data) {
-    KanColleRemainInfo.gShipList = api_data;
-}
-
 // 所持艦船情報
 function KanColleTimerMemberShipHandler(now, api_data) {
-    KanColleRemainInfo.gOwnedShipList = api_data;
-    $('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
+    $('number-of-ships').value = KanColleDatabase.memberShip2.list().length+"隻";
     SetAllFleetOrganization();
     SetFleetsCondition();
 }
 
 // 装備情報
 function KanColleTimerMemberSlotitemHandler(now, api_data) {
-    KanColleRemainInfo.gOwnedItem = api_data;
-    $('number-of-items').value = KanColleRemainInfo.gOwnedItem.length;
+    $('number-of-items').value = KanColleDatabase.memberSlotitem.list().length;
 }
 
 // 艦隊司令部情報
@@ -273,9 +267,6 @@ function KanColleTimerCallback(request, s) {
     } else if (url.match(/kcsapi\/api_get_member\/kdock/)) {
 	// 建造ドック
 	KanColleTimerMemberKdockHandler(now, data.api_data);
-    } else if (url.match(/kcsapi\/api_get_master\/ship/)) {
-	// 艦船情報
-	KanColleTimerMasterShipHandler(now, data.api_data);
     } else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
 	// 所持艦船情報 / 艦隊情報 / 遠征リスト
 	KanColleTimerMemberShipHandler(now, data.api_data);
@@ -590,12 +581,9 @@ function TakeKanColleScreenshot(isjpeg){
  */
 
 function FindSlotItemNameById( api_id ){
-    let items = KanColleRemainInfo.gOwnedItem;
-    for( let k in items ){
-	if( items[k].api_id==api_id ){
-	    return items[k].api_name;
-	}
-    }
+    let item = KanColleDatabase.memberSlotitem.get(api_id);
+    if (item)
+	return item.api_name;
     return "[Unknown]";
 }
 
@@ -604,34 +592,17 @@ function FindSlotItemNameById( api_id ){
  * 自分の保有している艦のデータを返す.
  */
 function FindOwnShipData( ship_id ){
-    for( let k in KanColleRemainInfo.gOwnedShipList ){
-	let ship = KanColleRemainInfo.gOwnedShipList[k];
-	let id = ship.api_id; // 所有艦艇の持つID
-	if( id==ship_id ) return ship;
-    }
-    return undefined;
+    return KanColleDatabase.memberShip2.get(ship_id);
 }
 
 /**
  * 艦のデータを返す
  */
 function FindShipData( ship_id ){
-    let sort;
-    try{
-	for( let k in KanColleRemainInfo.gOwnedShipList ){
-	    let ship = KanColleRemainInfo.gOwnedShipList[k];
-	    let id = ship.api_id; // 所有艦艇の持つID
-	    sort = ship.api_sortno;
-	    if( id==ship_id ) break;
-	}
-
-	for( let k in KanColleRemainInfo.gShipList ){
-	    let ship = KanColleRemainInfo.gShipList[k];
-	    if( ship.api_sortno==sort ){
-		return ship;
-	    }
-	}
-    } catch (x) {
+    let ship = KanColleDatabase.memberShip2.get(ship_id);
+    if (ship) {
+	let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+	return shiptype;
     }
     return undefined;
 }
@@ -640,25 +611,9 @@ function FindShipData( ship_id ){
  * 艦艇の名前を返す
  */
 function FindShipName( ship_id ){
-    let sort;
-    try{
-	for( let k in KanColleRemainInfo.gOwnedShipList ){
-	    let ship = KanColleRemainInfo.gOwnedShipList[k];
-	    let id = ship.api_id; // 所有艦艇の持つID
-	    sort = ship.api_sortno;
-	    if( id==ship_id ) break;
-	}
-
-	for( let k in KanColleRemainInfo.gShipList ){
-	    let ship = KanColleRemainInfo.gShipList[k];
-	    if( ship.api_sortno==sort ){
-		return ship.api_name;
-	    }
-	}
-	
-    } catch (x) {
-
-    }
+    let shiptype = FindShipData(ship_id);
+    if (shiptype)
+	return shiptype.api_name;
     return "";
 }
 

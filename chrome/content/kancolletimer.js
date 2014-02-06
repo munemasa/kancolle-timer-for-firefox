@@ -414,8 +414,8 @@ var KanColleTimer = {
 	SetAllFleetOrganization();
 	SetFleetsCondition();
 
-	$('number-of-ships').value = KanColleRemainInfo.gOwnedShipList.length+"隻";
-	$('number-of-items').value = KanColleRemainInfo.gOwnedItem.length;
+	$('number-of-ships').value = KanColleDatabase.memberShip2.list().length+"隻";
+	$('number-of-items').value = KanColleDatabase.memberSlotitem.list().length;
 
 	this.readResourceData();
     },
