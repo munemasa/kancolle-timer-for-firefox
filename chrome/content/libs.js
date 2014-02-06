@@ -202,7 +202,7 @@ function KanColleTimerMemberBasicHandler() {
 
 // 資源情報
 function KanColleTimerMemberMaterialHandler() {
-    let d = KanColleDatabase.memberMaterial.get(5);
+    let d = KanColleDatabase.memberMaterial.get(6);
     $('repairkit-number').value = d.api_value;
 }
 
