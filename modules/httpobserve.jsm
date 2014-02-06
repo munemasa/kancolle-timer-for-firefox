@@ -586,18 +586,19 @@ var KanColleDatabase = {
     // Database
     masterShip: null,		// master/ship
     masterSlotitem: null,	// master/slotitem
+    memberBasic: null,		// member/basic
+    memberDeck: null,		// member/deck,member/deck_port,
+				// or member/ship2[api_data_deck]
+				// or member/ship3[api_deck_data]
+    memberKdock: null,		// member/kdock
+    memberMaterial: null,	// member/material
+    memberNdock: null,		// member/ndock
+    memberQuestlist: null,	// member/questlist
+    memberRecord: null,		// member/record
     memberShip2: null,		// member/ship2
+    memberSlotitem: null,	// member/slotitem
     memberUnsetslot: null,	// member/unsetslot
 				// or member/ship3[api_data.api_slot_data]
-    memberSlotitem: null,	// member/slotitem
-    memberDeck: null,		// member/deck,member/deck_port,
-				// or member/ships[api_data_deck]
-    memberNdock: null,		// member/ndock
-    memberKdock: null,		// member/kdock
-    memberBasic: null,		// member/basic
-    memberRecord: null,		// member/record
-    memberMaterial: null,	// member/material
-    memberQuestlist: null,	// member/questlist
     questClearitemget: null,	// quest/clearitemget
 
     headQuarter: null,		// 艦船/装備
@@ -622,15 +623,19 @@ var KanColleDatabase = {
 	    this.masterSlotitem.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/basic/)) {
 	    this.memberBasic.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/record/)) {
-	    this.memberRecord.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
-		  url.match(/kcsapi\/api_get_member\/deck/) ) {
+		   url.match(/kcsapi\/api_get_member\/deck/)) {
 	    this.memberDeck.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
-	    this.memberNdock.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/kdock/)) {
 	    this.memberKdock.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/material/)) {
+	    this.memberMaterial.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
+	    this.memberNdock.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
+	    this.memberQuestlist.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/record/)) {
+	    this.memberRecord.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
 	    this.memberShip2.update(data.api_data);
 	    this.memberDeck.update(data.api_data_deck);
@@ -640,12 +645,8 @@ var KanColleDatabase = {
 	    this.memberUnsetslot.update(data.api_data.api_slot_data);
 	} else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
 	    this.memberSlotitem.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/material/)) {
-	    this.memberMaterial.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/unsetslot/)) {
 	    this.memberUnsetslot.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
-	    this.memberQuestlist.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 	    this.questClearitemget.update(data.api_data);
 	}
@@ -666,16 +667,16 @@ var KanColleDatabase = {
 		this.masterShip = new KanColleDB();
 	    if (!this.masterSlotitem)
 		this.masterSlotitem = new KanColleDB();
-	    this.memberShip2 = new KanColleDB();
-	    this.memberUnsetslot = new KanColleSimpleDB();
-	    this.memberSlotitem = new KanColleDB();
-	    this.memberDeck = new KanColleDB();
-	    this.memberNdock = new KanColleDB();
-	    this.memberKdock = new KanColleDB();
 	    this.memberBasic = new KanColleSimpleDB();
-	    this.memberRecord = new KanColleSimpleDB();
+	    this.memberDeck = new KanColleDB();
+	    this.memberKdock = new KanColleDB();
 	    this.memberMaterial = new KanColleDB();
+	    this.memberNdock = new KanColleDB();
 	    this.memberQuestlist = new KanColleSimpleDB();
+	    this.memberRecord = new KanColleSimpleDB();
+	    this.memberShip2 = new KanColleDB();
+	    this.memberSlotitem = new KanColleDB();
+	    this.memberUnsetslot = new KanColleSimpleDB();
 	    this.questClearitemget = new KanColleSimpleDB();
 
 	    this.headQuarter = new KanColleHeadQuarterDB();
