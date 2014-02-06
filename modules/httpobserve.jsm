@@ -83,6 +83,8 @@ var KanColleDatabase = {
     memberDeck: null,		// member/deck,member/deck_port,
 				// or member/ship2[api_data_deck]
 				// or member/ship3[api_deck_data]
+    memberKdock: null,		// member/kdock
+    memberNdock: null,		// member/ndock
     memberShip2: null,		// member/ship2
     memberSlotitem: null,	// member/slotitem
 
@@ -102,6 +104,10 @@ var KanColleDatabase = {
 	} else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
 		   url.match(/kcsapi\/api_get_member\/deck/)) {
 	    this.memberDeck.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/kdock/)) {
+	    this.memberKdock.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
+	    this.memberNdock.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
 	    this.memberShip2.update(data.api_data);
 	    this.memberDeck.update(data.api_data_deck);
@@ -123,6 +129,8 @@ var KanColleDatabase = {
 	if (!this.masterSlotitem)
 	    this.masterSlotitem = new KanColleDB();
 	this.memberDeck = new KanColleDB();
+	this.memberKdock = new KanColleDB();
+	this.memberNdock = new KanColleDB();
 	this.memberShip2 = new KanColleDB();
 	this.memberSlotitem = new KanColleDB();
 	debugprint("KanColleDatabase initialized.");
@@ -130,6 +138,8 @@ var KanColleDatabase = {
     exit: function(){
 	this.memberSlotitem = null;
 	this.memberShip2 = null;
+	this.memberNdock = null;
+	this.memberKdock = null;
 	this.memberDeck = null;
 	//マスタ情報は再送されないので削除しない
 	//this.masterSlotitem = null;
