@@ -235,7 +235,9 @@ function KanColleTimerMemberMaterialLogging() {
 }
 
 // 任務
-function KanColleTimerMemberQuestlistHandler(now, api_data) {
+function KanColleTimerMemberQuestlistHandler() {
+    let now = Math.floor(KanColleDatabase.memberQuestlist.timestamp() / 1000);
+    let api_data = KanColleDatabase.memberQuestlist.get();
     for( let i in api_data.api_list ){
 	let mission = api_data.api_list[i];
 	let no = mission.api_no;
@@ -304,7 +306,7 @@ function KanColleTimerCallback(request, s) {
 	KanColleTimerMemberMaterialLogging();
     } else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
 	// 任務
-	KanColleTimerMemberQuestlistHandler(now, data.api_data);
+	KanColleTimerMemberQuestlistHandler();
     }
 }
 

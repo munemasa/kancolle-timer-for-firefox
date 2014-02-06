@@ -62,6 +62,46 @@ Callback.prototype = {
 };
 
 //
+// 単純データベース(IDキーなし)
+//
+var KanColleSimpleDB = function() {
+    this._init.apply(this);
+};
+KanColleSimpleDB.prototype = {
+    _cb: null,
+    _ts: null,
+    _raw: null,
+
+    timestamp: function() { return this._ts.get(); },
+
+    update: function(data) {
+	let now = this._ts.set();
+	let g = this._cb.gen();
+	let e;
+
+	this._raw = data;
+
+	while ((e = g.next()) != null) {
+	    if (e.opt)
+		e.func(Math.floor(now / 1000), data);
+	    else
+		e.func();
+	}
+	g.close();
+    },
+
+    get: function() { return this._raw; },
+
+    appendCallback: function(f, c) { this._cb.append(f, c); },
+    removeCallback: function(f) { this._cb.remove(f); },
+
+    _init: function() {
+	this._ts = new Timestamp;
+	this._cb = new Callback;
+    },
+};
+
+//
 // データベース(IDキーつき)
 //
 var KanColleDB = function() {
@@ -145,6 +185,7 @@ var KanColleDatabase = {
     memberKdock: null,		// member/kdock
     memberMaterial: null,	// member/material
     memberNdock: null,		// member/ndock
+    memberQuestlist: null,	// member/questlist
     memberShip2: null,		// member/ship2
     memberSlotitem: null,	// member/slotitem
 
@@ -170,6 +211,8 @@ var KanColleDatabase = {
 	    this.memberMaterial.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
 	    this.memberNdock.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
+	    this.memberQuestlist.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
 	    this.memberShip2.update(data.api_data);
 	    this.memberDeck.update(data.api_data_deck);
@@ -194,6 +237,7 @@ var KanColleDatabase = {
 	this.memberKdock = new KanColleDB();
 	this.memberMaterial = new KanColleDB();
 	this.memberNdock = new KanColleDB();
+	this.memberQuestlist = new KanColleSimpleDB();
 	this.memberShip2 = new KanColleDB();
 	this.memberSlotitem = new KanColleDB();
 	debugprint("KanColleDatabase initialized.");
@@ -201,6 +245,7 @@ var KanColleDatabase = {
     exit: function(){
 	this.memberSlotitem = null;
 	this.memberShip2 = null;
+	this.memberQuestlist = null;
 	this.memberNdock = null;
 	this.memberMaterial = null;
 	this.memberKdock = null;
