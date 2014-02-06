@@ -22,11 +22,6 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
 
 // 艦隊情報 / 遠征リスト
 function KanColleTimerMemberDeckHandler(now, api_data) {
-    try{
-	SetAllFleetOrganization();
-	SetFleetsCondition();
-    }catch(e){}
-
     // 遠征リスト
     for( let i in api_data ){
 	i = parseInt(i);
@@ -164,8 +159,6 @@ function KanColleTimerMemberKdockHandler(now, api_data) {
 // 所持艦船情報
 function KanColleTimerMemberShipHandler(now, api_data) {
     $('number-of-ships').value = KanColleDatabase.memberShip2.list().length+"隻";
-    SetAllFleetOrganization();
-    SetFleetsCondition();
 }
 
 // 装備情報
@@ -259,6 +252,11 @@ function KanColleTimerCallback(request, s) {
     } else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
 	       url.match(/kcsapi\/api_get_member\/deck/)) {
 	// 艦隊情報 / 遠征リスト
+	try {
+	    // member/ship2未受信の可能性がある
+	    SetAllFleetOrganization();
+	    SetFleetsCondition();
+	} catch(x) {}
 	KanColleTimerMemberDeckHandler(now, data.api_data);
     } else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
 	// 入渠ドック
@@ -269,9 +267,13 @@ function KanColleTimerCallback(request, s) {
     } else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
 	// 所持艦船情報 / 艦隊情報 / 遠征リスト
 	KanColleTimerMemberShipHandler(now, data.api_data);
+	SetAllFleetOrganization();
+	SetFleetsCondition();
     } else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
 	// 所持艦船情報 / 艦隊情報 / 遠征リスト / 装備情報
 	KanColleTimerMemberShipHandler(now, data.api_data.api_ship_data);
+	SetAllFleetOrganization();
+	SetFleetsCondition();
     } else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
 	// 装備情報
 	KanColleTimerMemberSlotitemHandler(now, data.api_data);
