@@ -473,6 +473,115 @@ var KanColleSlotitemDB = function() {
 };
 KanColleSlotitemDB.prototype = new KanColleCombinedDB();
 
+var KanColleQuestDB = function() {
+    this._init();
+
+    this._db = {};
+
+    this._update = {
+	memberQuestlist: function() {
+	    let t = KanColleDatabase.memberQuestlist.timestamp();
+	    let d = KanColleDatabase.memberQuestlist.get();
+	    let oldest = null;
+	    let quests = this._db;
+	    let cleared;
+	    let cleared_page;
+
+	    if (!t)
+		return;
+
+	    // Check last clearitem
+	    cleared = KanColleDatabase.questClearitemget.timestamp();
+	    if (quests.info && quests.pages &&
+		quests.info.last_page &&
+		quests.pages[quests.info.last_page] < cleared &&
+		(d.api_disp_page == quests.info.last_page ||
+		 (quests.info.last_page == quests.info.page_count &&
+		 d.api_disp_page == d.api_page_count ||
+		 d.api_disp_page + 1 == quests.info.last_page))) {
+		cleared_page = quests.info.last_page;
+	    } else {
+		cleared = 0;
+		cleared_page = 0;
+	    }
+
+	    quests.info = {
+		count: d.api_count,
+		page_count: d.api_page_count,
+		last_page: d.api_disp_page,
+	    };
+	    if (!quests.pages)
+		quests.pages = [];
+	    quests.pages[d.api_disp_page] = t;
+
+	    // Check oldest timestamp
+	    oldest = null;
+	    for (let i = 1; i <= d.api_page_count && i <= 10; i++) {
+		if (!quests.pages[i])
+		    continue;
+		if (!oldest || quests.pages[i] < oldest)
+		    oldest = quests.pages[i];
+	    }
+
+	    if (!quests.list)
+		quests.list = {};
+
+	    if (d.api_list) {
+		for (let i = 0; i < d.api_list.length; i++){
+		    let q = d.api_list[i];
+		    let no;
+		    let state;
+		    if (typeof(q) != 'object')
+			continue;
+		    no = q.api_no;
+		    quests.list[no] = {
+			timestamp: t,
+			page: d.api_disp_page,
+			data: q,
+		    };
+		}
+	    } else {
+		debugprint('d.api_list is null: ' + d.toSource());
+	    }
+
+	    // Clean-up "achieved" quests.
+	    if (quests.list) {
+		let ids = Object.keys(quests.list);
+		for (let i = 0; i < ids.length; i++) {
+		    let info = quests.list[ids[i]];
+		    // - エントリの最終更新が全ページの更新より古ければ、
+		    //   もう表示されないエントリ。
+		    // - アイテム取得前後に同一ページが表示されたなら、
+		    //   アイテム取得はそのページ上のどれかで行われたと
+		    //   みなし、古いエントリは消してよい。
+		    debugprint(
+			       't=' + t +
+			       ', oldest=' + oldest +
+			       ', cleared=' + cleared +
+			       ', cleared_page=' + cleared_page +
+			       ', info.timestamp=' + info.timestamp +
+			       ', info.page=' + info.page +
+		    '');
+		    if ((oldest && info.timestamp < oldest) ||
+			(cleared && cleared_page &&
+			 info.page == cleared_page && info.timestamp < t)) {
+			delete quests.list[ids[i]];
+		    }
+		}
+	    }
+
+	    this._notify();
+	},
+    };
+
+    this.get = function() {
+	return this._db;
+    };
+
+    this._update_init();
+}
+KanColleQuestDB.prototype = new KanColleCombinedDB();
+
 var KanColleDatabase = {
     // Database
     masterShip: null,		// master/ship
@@ -494,6 +603,7 @@ var KanColleDatabase = {
     headQuarter: null,		// 艦船/装備
     ship: null,			// 艦船
     slotitem: null,		// 装備保持艦船
+    quest: null,		// 任務(クエスト)
 
     // Internal variable
     _refcnt: null,
@@ -574,6 +684,8 @@ var KanColleDatabase = {
 	    this.ship .init();
 	    this.slotitem = new KanColleSlotitemDB();
 	    this.slotitem .init();
+	    this.quest = new KanColleQuestDB();
+	    this.quest.init();
 
 	    debugprint("KanColleDatabase initialized.");
 
@@ -588,6 +700,8 @@ var KanColleDatabase = {
 	    KanColleHttpRequestObserver.removeCallback(this._callback);
 
 	    // Clear
+	    this.quest.exit();
+	    this.quest = null;
 	    this.slotitem.exit();
 	    this.slotitem = null;
 	    this.ship.exit();
@@ -618,7 +732,6 @@ var KanColleDatabase = {
 
 var KanColleRemainInfo = {
     cookie: {},	//重複音対策
-    quests: {},
 
     gResourceData: [], // 資源の履歴
 

@@ -613,103 +613,9 @@ function KanColleTimerMemberShip2FleetHandler(){
     }
 }
 
-function KanColleTimerQuestInformationUpdate(){
-    let t = KanColleDatabase.memberQuestlist.timestamp();
-    let d = KanColleDatabase.memberQuestlist.get();
-    let oldest = null;
-    let quests = KanColleRemainInfo.quests;
-    let cleared;
-    let cleared_page;
-
-    if (!t)
-	return;
-
-    // Check last clearitem
-    cleared = KanColleDatabase.questClearitemget.timestamp();
-    if (quests.info && quests.pages &&
-	quests.info.last_page &&
-	quests.pages[quests.info.last_page] < cleared &&
-	(d.api_disp_page == quests.info.last_page ||
-	 (quests.info.last_page == quests.info.page_count &&
-	 d.api_disp_page == d.api_page_count ||
-	 d.api_disp_page + 1 == quests.info.last_page))) {
-	cleared_page = quests.info.last_page;
-    } else {
-	cleared = 0;
-	cleared_page = 0;
-    }
-
-    quests.info = {
-	count: d.api_count,
-	page_count: d.api_page_count,
-	last_page: d.api_disp_page,
-    };
-    if (!quests.pages)
-	quests.pages = [];
-    quests.pages[d.api_disp_page] = t;
-
-    // Check oldest timestamp
-    oldest = null;
-    for (let i = 1; i <= d.api_page_count && i <= 10; i++) {
-	if (!quests.pages[i])
-	    continue;
-	if (!oldest || quests.pages[i] < oldest)
-	    oldest = quests.pages[i];
-    }
-
-    if (!quests.list)
-	quests.list = {};
-
-    if (d.api_list) {
-	for (let i = 0; i < d.api_list.length; i++){
-	    let q = d.api_list[i];
-	    let no;
-	    let state;
-	    if (typeof(q) != 'object')
-		continue;
-	    no = q.api_no;
-	    quests.list[no] = {
-		timestamp: t,
-		page: d.api_disp_page,
-		data: q,
-	    };
-	}
-    } else {
-	debugprint('d.api_list is null: ' + d.toSource());
-    }
-
-    // Clean-up "achieved" quests.
-    if (quests.list) {
-	let ids = Object.keys(quests.list);
-	for (let i = 0; i < ids.length; i++) {
-	    let info = quests.list[ids[i]];
-	    // - エントリの最終更新が全ページの更新より古ければ、
-	    //   もう表示されないエントリ。
-	    // - アイテム取得前後に同一ページが表示されたなら、
-	    //   アイテム取得はそのページ上のどれかで行われたと
-	    //   みなし、古いエントリは消してよい。
-	    debugprint(
-		       't=' + t +
-		       ', oldest=' + oldest +
-		       ', cleared=' + cleared +
-		       ', cleared_page=' + cleared_page +
-		       ', info.timestamp=' + info.timestamp +
-		       ', info.page=' + info.page +
-	    '');
-	    if ((oldest && info.timestamp < oldest) ||
-		(cleared && cleared_page &&
-		 info.page == cleared_page && info.timestamp < t)) {
-		delete quests.list[ids[i]];
-	    }
-	}
-    }
-
-    KanColleTimerQuestInformationShow();
-}
-
 function KanColleTimerQuestInformationShow(){
     let questbox = $('quest-list-box');
-    let quests = KanColleRemainInfo.quests;
+    let quests = KanColleDatabase.quest.get();
     let ids = quests.list ? Object.keys(quests.list) : [];
     let list = $('quest-list-rows');
     let listitem;
@@ -906,6 +812,7 @@ function KanColleTimerQuestInformationChangeMode(node){
     KanColleTimerQuestInformationShow();
 }
 
+
 function KanColleTimerRegisterCallback(){
     let db = KanColleDatabase;
     db.memberDeck.appendCallback(KanColleTimerDeckHandler);
@@ -918,7 +825,7 @@ function KanColleTimerRegisterCallback(){
     db.memberShip2.appendCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
-    db.memberQuestlist.appendCallback(KanColleTimerQuestInformationUpdate);
+    db.quest.appendCallback(KanColleTimerQuestInformationShow);
     db.memberShip2.appendCallback(KanColleTimerQuestInformationShow);
     db.memberMaterial.appendCallback(KanColleTimerMemberMaterialHandler);
     db.memberMaterial.appendCallback(KanColleTimerBasicInformationPanel);
@@ -940,8 +847,8 @@ function KanColleTimerUnregisterCallback(){
     db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler);
     db.memberBasic.removeCallback(KanColleTimerDeckBasicHandler);
     db.memberDeck.removeCallback(KanColleTimerDeckHandler);
-    db.memberQuestlist.removeCallback(KanColleTimerQuestInformationUpdate);
     db.memberShip2.removeCallback(KanColleTimerQuestInformationShow);
+    db.quest.removeCallback(KanColleTimerQuestInformationShow);
 }
 
 function AddLog(str){
