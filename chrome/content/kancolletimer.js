@@ -364,9 +364,6 @@ var KanColleTimer = {
 	Storage.writeObject( "resourcehistory", data );
     },
 
-    initWallpaper:function(){
-    },
-
     init: function(){
 	KanColleHttpRequestObserver.init();
 	KanColleTimerCallbackInit();
@@ -408,7 +405,6 @@ var KanColleTimer = {
 	}
 
 	this.createMissionBalanceTable();
-	this.initWallpaper();
 
 	SetQuestName();
 	SetAllFleetOrganization();
