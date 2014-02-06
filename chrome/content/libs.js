@@ -192,7 +192,9 @@ function KanColleTimerMemberBasicHandler(now, api_data) {
 // 資源情報
 function KanColleTimerMemberMaterialHandler(now, api_data) {
     $('repairkit-number').value = api_data[5].api_value;
+}
 
+function KanColleTimerMemberMaterialLogging(now, api_data) {
     // TODO あとで、毎回この設定を見にいくのはやめるように修正する
     if( !KanColleTimerConfig.getBool("record.resource-history") ) return;
 
@@ -282,6 +284,7 @@ function KanColleTimerCallback(request, s) {
     } else if (url.match(/kcsapi\/api_get_member\/material/)) {
 	// 資源情報
 	KanColleTimerMemberMaterialHandler(now, data.api_data);
+	KanColleTimerMemberMaterialLogging(now, data.api_data);
     } else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
 	// 任務
 	KanColleTimerMemberQuestlistHandler(now, data.api_data);
