@@ -21,14 +21,16 @@ const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
 // 艦隊情報 / 遠征リスト
-function KanColleTimerMemberDeckHandler(now, api_data) {
+function KanColleTimerMemberDeckHandler() {
+    let now = Math.floor(KanColleDatabase.memberDeck.timestamp() / 1000);
+    let decks = KanColleDatabase.memberDeck.list();
     // 遠征リスト
-    for( let i in api_data ){
-	i = parseInt(i);
-	var k = i+1;
+    for (let j = 0; j < decks.length; j++) {
+	let d = KanColleDatabase.memberDeck.get(decks[j]);
+	let k = d.api_id;
+	let i = k - 1;
 	var nameid = 'fleetname'+k;
 	var ftime_str = 'fleet'+k;
-	var d = api_data[i];
 	KanColleRemainInfo.fleet[i] = new Object();
 	KanColleRemainInfo.fleet_name[i] = d.api_name;
 	$(nameid).value = d.api_name; // 艦隊名
@@ -258,7 +260,7 @@ function KanColleTimerCallback(request, s) {
 	    SetAllFleetOrganization();
 	    SetFleetsCondition();
 	} catch(x) {}
-	KanColleTimerMemberDeckHandler(now, data.api_data);
+	KanColleTimerMemberDeckHandler();
     } else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
 	// 入渠ドック
 	KanColleTimerMemberNdockHandler(now, data.api_data);
@@ -268,11 +270,13 @@ function KanColleTimerCallback(request, s) {
     } else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
 	// 所持艦船情報 / 艦隊情報 / 遠征リスト
 	KanColleTimerSetHeadQuarterInformation();
+	KanColleTimerMemberDeckHandler();
 	SetAllFleetOrganization();
 	SetFleetsCondition();
     } else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
 	// 所持艦船情報 / 艦隊情報 / 遠征リスト / 装備情報
 	KanColleTimerSetHeadQuarterInformation();
+	KanColleTimerMemberDeckHandler();
 	SetAllFleetOrganization();
 	SetFleetsCondition();
     } else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {

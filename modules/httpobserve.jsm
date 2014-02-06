@@ -99,6 +99,9 @@ var KanColleDatabase = {
 	    this.masterShip.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_master\/slotitem/)) {
 	    this.masterSlotitem.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
+		   url.match(/kcsapi\/api_get_member\/deck/)) {
+	    this.memberDeck.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
 	    this.memberShip2.update(data.api_data);
 	    this.memberDeck.update(data.api_data_deck);
