@@ -111,12 +111,16 @@ function KanColleTimerBasicInformationPanel(){
     $('burner-number').value = burner;
 }
 
-function KanColleTimerHeadQuarterInit() {
-    KanColleDatabase.headQuarter.appendCallback(KanColleTimerBasicInformationPanel);
+function KanColleTimerHeadQuarterInfoStart() {
+    let db = KanColleDatabase;
+    db.headQuarter.appendCallback(KanColleTimerBasicInformationPanel);
+    db.memberMaterial.appendCallback(KanColleTimerBasicInformationPanel);
 }
 
-function KanColleTimerHeadQuarterExit() {
-    KanColleDatabase.headQuarter.removeCallback(KanColleTimerBasicInformationPanel);
+function KanColleTimerHeadQuarterInfoStop() {
+    let db = KanColleDatabase;
+    db.memberMaterial.removeCallback(KanColleTimerBasicInformationPanel);
+    db.headQuarter.removeCallback(KanColleTimerBasicInformationPanel);
 }
 
 
@@ -193,6 +197,18 @@ function KanColleTimerDeckRestore(){
     }
 }
 
+function KanColleTimerDeckStart() {
+    let db = KanColleDatabase;
+    db.memberDeck.appendCallback(KanColleTimerDeckHandler);
+    db.memberBasic.appendCallback(KanColleTimerDeckBasicHandler);
+}
+
+function KanColleTimerDeckStop() {
+    let db = KanColleDatabase;
+    db.memberBasic.appendCallback(KanColleTimerDeckBasicHandler);
+    db.memberDeck.appendCallback(KanColleTimerDeckHandler);
+}
+
 /*
  * 入渠ドック
  *  member/ndock	: api_data
@@ -261,6 +277,18 @@ function KanColleTimerNdockRestore(){
 	}
     } catch(x) {
     }
+}
+
+function KanColleTimerNdockStart() {
+    let db = KanColleDatabase;
+    db.memberNdock.appendCallback(KanColleTimerNdockHandler);
+    db.memberBasic.appendCallback(KanColleTimerNdockBasicHandler);
+}
+
+function KanColleTimerNdockStop() {
+    let db = KanColleDatabase;
+    db.memberBasic.removeCallback(KanColleTimerNdockBasicHandler);
+    db.memberNdock.removeCallback(KanColleTimerNdockHandler);
 }
 
 /*
@@ -410,6 +438,18 @@ var KanColleKdockMouseEventHandler = {
     },
 };
 
+function KanColleTimerKdockStart() {
+    let db = KanColleDatabase;
+    db.memberKdock.appendCallback(KanColleTimerKdockHandler);
+    db.memberBasic.appendCallback(KanColleTimerKdockBasicHandler);
+}
+
+function KanColleTimerKdockStop() {
+    let db = KanColleDatabase;
+    db.memberBasic.removeCallback(KanColleTimerKdockBasicHandler);
+    db.memberKdock.removeCallback(KanColleTimerKdockHandler);
+}
+
 // 資源情報
 function KanColleTimerMemberMaterialHandler() {
     let now = Math.floor(KanColleDatabase.memberMaterial.timestamp() / 1000);
@@ -441,6 +481,17 @@ function KanColleTimerMemberMaterialHandler() {
     if (count)
 	res.push( data );
 }
+
+function KanColleTimerMaterialLogStart() {
+    let db = KanColleDatabase;
+    db.memberMaterial.appendCallback(KanColleTimerMemberMaterialHandler);
+}
+
+function KanColleTimerMaterialLogStop() {
+    let db = KanColleDatabase;
+    db.memberMaterial.removeCallback(KanColleTimerMemberMaterialHandler);
+}
+
 
 /*
  * 所有艦娘情報2
@@ -611,6 +662,16 @@ function KanColleTimerMemberShip2FleetHandler(){
 
 	$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
     }
+}
+
+function KanColleTimerFleetInfoStart() {
+    let db = KanColleDatabase;
+    db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler);
+}
+
+function KanColleTimerFleetInfoStop() {
+    let db = KanColleDatabase;
+    db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler);
 }
 
 function KanColleTimerQuestInformationShow(){
@@ -812,43 +873,38 @@ function KanColleTimerQuestInformationChangeMode(node){
     KanColleTimerQuestInformationShow();
 }
 
-
-function KanColleTimerRegisterCallback(){
+function KanColleTimerQuestInformationStart() {
     let db = KanColleDatabase;
-    db.memberDeck.appendCallback(KanColleTimerDeckHandler);
-    db.memberBasic.appendCallback(KanColleTimerDeckBasicHandler);
-    db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler);
-    db.memberNdock.appendCallback(KanColleTimerNdockHandler);
-    db.memberBasic.appendCallback(KanColleTimerNdockBasicHandler);
-    db.memberKdock.appendCallback(KanColleTimerKdockHandler);
-    db.memberBasic.appendCallback(KanColleTimerKdockBasicHandler);
-    db.memberShip2.appendCallback(KanColleTimerShipInfoHandler);
-    db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
-    db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.quest.appendCallback(KanColleTimerQuestInformationShow);
     db.memberShip2.appendCallback(KanColleTimerQuestInformationShow);
-    db.memberMaterial.appendCallback(KanColleTimerMemberMaterialHandler);
-    db.memberMaterial.appendCallback(KanColleTimerBasicInformationPanel);
-    KanColleTimerHeadQuarterInit();
+}
+
+function KanColleTimerQuestInformationStop() {
+    let db = KanColleDatabase;
+    db.memberShip2.removeCallback(KanColleTimerQuestInformationShow);
+    db.quest.removeCallback(KanColleTimerQuestInformationShow);
+}
+
+function KanColleTimerRegisterCallback(){
+    KanColleTimerDeckStart();
+    KanColleTimerFleetInfoStart();
+    KanColleTimerHeadQuarterInfoStart();
+    KanColleTimerKdockStart();
+    KanColleTimerMaterialLogStart();
+    KanColleTimerNdockStart();
+    KanColleTimerQuestInformationStart();
+    KanColleTimerShipInfoStart();
 }
 
 function KanColleTimerUnregisterCallback(){
-    let db = KanColleDatabase;
-    KanColleTimerHeadQuarterExit();
-    db.memberMaterial.removeCallback(KanColleTimerBasicInformationPanel);
-    db.memberMaterial.removeCallback(KanColleTimerMemberMaterialHandler);
-    db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler);
-    db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler);
-    db.memberShip2.removeCallback(KanColleTimerShipInfoHandler);
-    db.memberBasic.removeCallback(KanColleTimerKdockBasicHandler);
-    db.memberKdock.removeCallback(KanColleTimerKdockHandler);
-    db.memberBasic.removeCallback(KanColleTimerNdockBasicHandler);
-    db.memberNdock.removeCallback(KanColleTimerNdockHandler);
-    db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler);
-    db.memberBasic.removeCallback(KanColleTimerDeckBasicHandler);
-    db.memberDeck.removeCallback(KanColleTimerDeckHandler);
-    db.memberShip2.removeCallback(KanColleTimerQuestInformationShow);
-    db.quest.removeCallback(KanColleTimerQuestInformationShow);
+    KanColleTimerShipInfoStop();
+    KanColleTimerQuestInformationStop();
+    KanColleTimerNdockStop();
+    KanColleTimerMaterialLogStop();
+    KanColleTimerKdockStop();
+    KanColleTimerHeadQuarterInfoStop();
+    KanColleTimerFleetInfoStop();
+    KanColleTimerDeckStop();
 }
 
 function AddLog(str){
@@ -2305,6 +2361,20 @@ function ShipInfoTreeMenuPopup(){
     debugprint('ShipInfoTreeMenuPopup()');
     KanColleCreateShipTree();
     KanColleShipInfoSetView();
+}
+
+function KanColleTimerShipInfoStart() {
+    let db = KanColleDatabase;
+    db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
+    db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
+    db.memberShip2.appendCallback(KanColleTimerShipInfoHandler);
+}
+
+function KanColleTimerShipInfoStop() {
+    let db = KanColleDatabase;
+    db.memberShip2.removeCallback(KanColleTimerShipInfoHandler);
+    db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler);
+    db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler);
 }
 
 function KanColleShipInfoInit(){
