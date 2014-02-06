@@ -254,57 +254,38 @@ function KanColleTimerMemberQuestlistHandler() {
     SetQuestName();
 }
 
-function KanColleTimerCallback(request, s) {
-    var now = GetCurrentTime();
-    var url = request.name;
+function KanColleTimerCallbackInit() {
+    KanColleDatabase.memberDeck.appendCallback(SetAllFleetOrganization);
+    KanColleDatabase.memberDeck.appendCallback(SetFleetsCondition);
+    KanColleDatabase.memberDeck.appendCallback(KanColleTimerMemberDeckHandler);
+    KanColleDatabase.memberNdock.appendCallback(KanColleTimerMemberNdockHandler);
+    KanColleDatabase.memberKdock.appendCallback(KanColleTimerMemberKdockHandler);
+    KanColleDatabase.memberShip2.appendCallback(KanColleTimerSetHeadQuarterInformation);
+    KanColleDatabase.memberShip2.appendCallback(KanColleTimerMemberDeckHandler);
+    KanColleDatabase.memberShip2.appendCallback(SetAllFleetOrganization);
+    KanColleDatabase.memberShip2.appendCallback(SetFleetsCondition);
+    KanColleDatabase.memberSlotitem.appendCallback(KanColleTimerSetHeadQuarterInformation);
+    KanColleDatabase.memberBasic.appendCallback(KanColleTimerMemberBasicHandler);
+    KanColleDatabase.memberMaterial.appendCallback(KanColleTimerMemberMaterialHandler);
+    KanColleDatabase.memberMaterial.appendCallback(KanColleTimerMemberMaterialLogging);
+    KanColleDatabase.memberQuestlist.appendCallback(KanColleTimerMemberQuestlistHandler);
+}
 
-    s = s.substring(s.indexOf('svdata=') + 7);
-    var data = JSON.parse(s);
-
-    if (data.api_result != 1)
-	return;
-
-    if (url.match(/kcsapi\/api_req_mission\/start/)) {
-	// 遠征開始
-	// 遠征開始後にdeckが呼ばれるので見る必要なさそう
-    } else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
-	       url.match(/kcsapi\/api_get_member\/deck/)) {
-	// 艦隊情報 / 遠征リスト
-	SetAllFleetOrganization();
-	SetFleetsCondition();
-	KanColleTimerMemberDeckHandler();
-    } else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
-	// 入渠ドック
-	KanColleTimerMemberNdockHandler();
-    } else if (url.match(/kcsapi\/api_get_member\/kdock/)) {
-	// 建造ドック
-	KanColleTimerMemberKdockHandler();
-    } else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
-	// 所持艦船情報 / 艦隊情報 / 遠征リスト
-	KanColleTimerSetHeadQuarterInformation();
-	KanColleTimerMemberDeckHandler();
-	SetAllFleetOrganization();
-	SetFleetsCondition();
-    } else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
-	// 所持艦船情報 / 艦隊情報 / 遠征リスト / 装備情報
-	KanColleTimerSetHeadQuarterInformation();
-	KanColleTimerMemberDeckHandler();
-	SetAllFleetOrganization();
-	SetFleetsCondition();
-    } else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
-	// 装備情報
-	KanColleTimerSetHeadQuarterInformation();
-    } else if (url.match(/kcsapi\/api_get_member\/basic/)) {
-	// 艦隊司令部情報
-	KanColleTimerMemberBasicHandler();
-    } else if (url.match(/kcsapi\/api_get_member\/material/)) {
-	// 資源情報
-	KanColleTimerMemberMaterialHandler();
-	KanColleTimerMemberMaterialLogging();
-    } else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
-	// 任務
-	KanColleTimerMemberQuestlistHandler();
-    }
+function KanColleTimerCallbackExit() {
+    KanColleDatabase.memberQuestlist.removeCallback(KanColleTimerMemberQuestlistHandler);
+    KanColleDatabase.memberMaterial.removeCallback(KanColleTimerMemberMaterialLogging);
+    KanColleDatabase.memberMaterial.removeCallback(KanColleTimerMemberMaterialHandler);
+    KanColleDatabase.memberBasic.removeCallback(KanColleTimerMemberBasicHandler);
+    KanColleDatabase.memberSlotitem.removeCallback(KanColleTimerSetHeadQuarterInformation);
+    KanColleDatabase.memberShip2.removeCallback(SetFleetsCondition);
+    KanColleDatabase.memberShip2.removeCallback(SetAllFleetOrganization);
+    KanColleDatabase.memberShip2.removeCallback(KanColleTimerMemberDeckHandler);
+    KanColleDatabase.memberShip2.removeCallback(KanColleTimerSetHeadQuarterInformation);
+    KanColleDatabase.memberKdock.removeCallback(KanColleTimerMemberKdockHandler);
+    KanColleDatabase.memberNdock.removeCallback(KanColleTimerMemberNdockHandler);
+    KanColleDatabase.memberDeck.removeCallback(KanColleTimerMemberDeckHandler);
+    KanColleDatabase.memberDeck.removeCallback(SetFleetsCondition);
+    KanColleDatabase.memberDeck.removeCallback(SetAllFleetOrganization);
 }
 
 // 第1艦隊編成

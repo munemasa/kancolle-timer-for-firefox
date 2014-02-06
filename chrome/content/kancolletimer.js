@@ -369,7 +369,7 @@ var KanColleTimer = {
 
     init: function(){
 	KanColleHttpRequestObserver.init();
-	KanColleHttpRequestObserver.addCallback( KanColleTimerCallback );
+	KanColleTimerCallbackInit();
 
 	setInterval( function(){
 			 KanColleTimer.update();
@@ -421,7 +421,7 @@ var KanColleTimer = {
     },
 
     destroy: function(){
-	KanColleHttpRequestObserver.removeCallback( KanColleTimerCallback );
+	KanColleTimerCallbackExit();
 	KanColleHttpRequestObserver.destroy();
 
 	this.writeResourceData();
