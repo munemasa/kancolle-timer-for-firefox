@@ -2384,18 +2384,6 @@ function KanColleShipInfoInit(){
 }
 
 /**
- * ライブラリ初期化/後始末
- */
-function KanColleTimerLibInit(){
-    KanColleShipInfoInit();
-    KanColleKdockMouseEventHandler.init();
-}
-
-function KanColleTimerLibExit(){
-    KanColleKdockMouseEventHandler.exit();
-}
-
-/**
  * Style
  */
 function SetStyleProperty(node, prop, value, prio){

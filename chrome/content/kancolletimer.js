@@ -354,7 +354,8 @@ var KanColleTimer = {
 	KanColleTimerKdockRestore();
 	KanColleTimerQuestInformationShow();
 
-	KanColleTimerLibInit();
+	KanColleShipInfoInit();
+	KanColleKdockMouseEventHandler.init();
 
 	this.createMissionBalanceTable();
 	this.setWindowOnTop();
@@ -363,7 +364,8 @@ var KanColleTimer = {
     },
 
     destroy: function(){
-	KanColleTimerLibExit();
+	KanColleKdockMouseEventHandler.exit();
+
 	KanColleTimerUnregisterCallback();
 
 	this.writeResourceData();
