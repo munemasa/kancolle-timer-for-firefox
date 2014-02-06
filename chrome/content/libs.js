@@ -201,32 +201,36 @@ function KanColleTimerMemberBasicHandler(now, api_data) {
 }
 
 // 資源情報
-function KanColleTimerMemberMaterialHandler(now, api_data) {
-    $('repairkit-number').value = api_data[5].api_value;
+function KanColleTimerMemberMaterialHandler() {
+    let d = KanColleDatabase.memberMaterial.get(5);
+    $('repairkit-number').value = d.api_value;
 }
 
-function KanColleTimerMemberMaterialLogging(now, api_data) {
+function KanColleTimerMemberMaterialLogging() {
     // TODO あとで、毎回この設定を見にいくのはやめるように修正する
     if( !KanColleTimerConfig.getBool("record.resource-history") ) return;
 
     let res = KanColleRemainInfo.gResourceData;
     let last_data = res[ res.length-1 ];
+    let data = new Object();
+    let count = 0;
+    let resnames = {
+	fuel: 1,    // 燃料
+	bullet: 2,  // 弾薬
+	steel: 3,   // 鋼材
+	bauxite: 4, // ボーキサイト
+    };
 
-    let fuel = api_data[0].api_value; // 燃料
-    let bullet = api_data[1].api_value; // 弾薬
-    let steel = api_data[2].api_value; // 鋼材
-    let bauxite = api_data[3].api_value; // ボーキサイト
+    for (let k in resnames) {
+	let v = KanColleDatabase.memberMaterial.get(resnames[k]);
+	data[k] = v.api_value;
+	if (!length || last_data[k] != data[k])
+	    count++;
+    }
 
-    if( res.length==0 ||
-	last_data.fuel!=fuel || last_data.bullet!=bullet ||
-	last_data.steel!=steel || last_data.bauxite!=bauxite ){
-	let data = new Object();
-	data.recorded_time = now; // 記録日時
-	data.fuel = fuel;
-	data.bullet = bullet;
-	data.steel = steel;
-	data.bauxite = bauxite;
-	res.push( data );
+    if (count) {
+	data.recorded_time = Math.floor(KanColleDatabase.memberMaterial.timestamp() / 1000);
+	res.push(data);
     }
 }
 
@@ -296,8 +300,8 @@ function KanColleTimerCallback(request, s) {
 	KanColleTimerMemberBasicHandler(now, data.api_data);
     } else if (url.match(/kcsapi\/api_get_member\/material/)) {
 	// 資源情報
-	KanColleTimerMemberMaterialHandler(now, data.api_data);
-	KanColleTimerMemberMaterialLogging(now, data.api_data);
+	KanColleTimerMemberMaterialHandler();
+	KanColleTimerMemberMaterialLogging();
     } else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
 	// 任務
 	KanColleTimerMemberQuestlistHandler(now, data.api_data);
