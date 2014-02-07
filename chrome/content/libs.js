@@ -106,9 +106,6 @@ function KanColleTimerBasicInformationPanel(){
 
     $('basic-information-burnercount').value = burner;
     $('basic-information-bucketcount').value = bucket;
-
-    $('repairkit-number').value = bucket;
-    $('burner-number').value = burner;
 }
 
 function KanColleTimerHeadQuarterInfoStart() {
@@ -261,6 +258,12 @@ function KanColleTimerNdockBasicHandler(){
 	SetStyleProperty(ndocks[i], 'display', i < d.api_count_ndock ? "":"none");
 }
 
+function KanColleTimerNdockMaterialHandler() {
+    let d = KanColleDatabase.memberMaterial.get(6);
+    if (typeof(d) == 'object')
+	$('repairkit-number').value = d.api_value;
+}
+
 function KanColleTimerNdockRestore(){
     KanColleTimerNdockBasicHandler();
     try{
@@ -283,10 +286,12 @@ function KanColleTimerNdockStart() {
     let db = KanColleDatabase;
     db.memberNdock.appendCallback(KanColleTimerNdockHandler);
     db.memberBasic.appendCallback(KanColleTimerNdockBasicHandler);
+    db.memberMaterial.appendCallback(KanColleTimerNdockMaterialHandler);
 }
 
 function KanColleTimerNdockStop() {
     let db = KanColleDatabase;
+    db.memberMaterial.removeCallback(KanColleTimerNdockMaterialHandler);
     db.memberBasic.removeCallback(KanColleTimerNdockBasicHandler);
     db.memberNdock.removeCallback(KanColleTimerNdockHandler);
 }
@@ -372,6 +377,12 @@ function KanColleTimerKdockBasicHandler(){
 	SetStyleProperty(ndocks[i], 'display', i < d.api_count_kdock ? "":"none");
 }
 
+function KanColleTimerKdockMaterialHandler() {
+    let d = KanColleDatabase.memberMaterial.get(5);
+    if (typeof(d) == 'object')
+	$('burner-number').value = d.api_value;
+}
+
 function KanColleTimerKdockRestore(){
     KanColleTimerKdockBasicHandler();
     try{
@@ -442,10 +453,12 @@ function KanColleTimerKdockStart() {
     let db = KanColleDatabase;
     db.memberKdock.appendCallback(KanColleTimerKdockHandler);
     db.memberBasic.appendCallback(KanColleTimerKdockBasicHandler);
+    db.memberMaterial.appendCallback(KanColleTimerKdockMaterialHandler);
 }
 
 function KanColleTimerKdockStop() {
     let db = KanColleDatabase;
+    db.memberMaterial.removeCallback(KanColleTimerKdockMaterialHandler);
     db.memberBasic.removeCallback(KanColleTimerKdockBasicHandler);
     db.memberKdock.removeCallback(KanColleTimerKdockHandler);
 }
