@@ -77,68 +77,73 @@
 	  </grid>
 	</vbox>
 
-	<hbox style="overflow:auto;"><!-- tab 4 -->
-	  <grid>
-	    <columns>
-	      <column/><column/>
-	    </columns>
-	    <rows>
-	      <row>
-		<groupbox>
-		  <caption>第1艦隊</caption>
-		  <grid>
-		    <columns>
-		      <column/><column/><column/>
-		    </columns>
-		    <rows id="fleet-1">
-		    </rows>
-		  </grid>
-		</groupbox>
-		
-		<groupbox>
-		  <caption>第2艦隊</caption>
-		  <grid>
-		    <columns>
-		      <column/><column/><column/>
-		    </columns>
-		    <rows id="fleet-2">
-		    </rows>
-		  </grid>
-		</groupbox>
-	      </row>
-	      
-	      <row>
-		<groupbox>
-		  <caption>第3艦隊</caption>
-		  <grid>
-		    <columns>
-		      <column/><column/><column/>
-		    </columns>
-		    <rows id="fleet-3">
-		    </rows>
-		  </grid>
-		</groupbox>
-		
-		<groupbox>
-		  <caption>第4艦隊</caption>
-		  <grid>
-		    <columns>
-		      <column/><column/><column/><column/>
-		    </columns>
-		    <rows id="fleet-4">
-		    </rows>
-		  </grid>
-		</groupbox>
-	      </row>
-	      
-	    </rows>
-	  </grid>
+	<vbox style="overflow:auto;"><!-- tab 4 -->
 	  <hbox>
-	    <vbox>
-	      <image src="data/sync.png" style="cursor:pointer;" tooltiptext="表示を更新" onclick="OpenShipList();"/>
-	    </vbox>
+	    <groupbox>
+	      <caption>第1艦隊</caption>
+	      <grid>
+		<columns>
+		  <column/><column/><column/>
+		</columns>
+		<rows id="fleet-1">
+		</rows>
+	      </grid>
+	    </groupbox>
+	    <groupbox>
+	      <caption>第2艦隊</caption>
+	      <grid>
+		<columns>
+		  <column/><column/><column/>
+		</columns>
+		<rows id="fleet-2">
+		</rows>
+	      </grid>
+	    </groupbox>
+	    <groupbox>
+	      <caption>第3艦隊</caption>
+	      <grid>
+		<columns>
+		  <column/><column/><column/>
+		</columns>
+		<rows id="fleet-3">
+		</rows>
+	      </grid>
+	    </groupbox>
+	    <groupbox>
+	      <caption>第4艦隊</caption>
+	      <grid>
+		<columns>
+		  <column/><column/><column/><column/>
+		</columns>
+		<rows id="fleet-4">
+		</rows>
+	      </grid>
+	    </groupbox>
 	  </hbox>
-	</hbox><!-- tab 2 -->
+
+	  <hbox>
+	    <menulist oncommand="ShipList.setFleetOrganization(this.value);">
+	      <menupopup>
+		<menuitem label="第1艦隊" value="1"/>
+		<menuitem label="第2艦隊" value="2"/>
+		<menuitem label="第3艦隊" value="3"/>
+		<menuitem label="第4艦隊" value="4"/>
+	      </menupopup>
+	    </menulist>
+	  </hbox>
+	  <listbox id="fleet-organization" rows="6">
+	    <listcols>
+	      <listcol/><listcol/><listcol/><listcol/><listcol/>
+	      <listcol flex="1"/><listcol flex="1"/><listcol flex="1"/><listcol flex="1"/>
+	    </listcols>
+	    <listhead>
+	      <listheader label="艦種"/><listheader label="艦名"/><listheader label="レベル"/><listheader label="状態"/>
+	      <listheader label="入渠時間"/>
+	      <listheader label="装備1"/><listheader label="装備2"/><listheader label="装備3"/><listheader label="装備4"/>
+	    </listhead>
+	  </listbox>
+
+	</vbox><!-- tab 4 -->
       </tabpanels>
     </tabbox>
   </vbox>

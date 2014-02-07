@@ -33,8 +33,7 @@ var ShipList = {
 	}
     },
 
-    clearListBox:function(){
-	let list = $('ship-list');
+    clearListBox:function( list ){
 
 	while( list.getRowCount() ){
 	    list.removeItemAt(0);
@@ -89,10 +88,56 @@ var ShipList = {
 	this.setupListBox();
     },
 
+    /**
+     * 艦隊編成のリストを作成する
+     */
+    setFleetOrganization: function(n){
+	let list = $('fleet-organization');
+	this.clearListBox( list );
+	// 艦隊編成
+	let fleet = KanColleDatabase.memberDeck.get(n);
+
+	let no = 1;
+	for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
+	    let data = FindOwnShipData( fleet.api_ship[i] );
+	    let masterdata = FindShipData( fleet.api_ship[i] );
+
+	    let elem = CreateElement('listitem');
+
+	    elem.appendChild( CreateListCell(KanColleData.type_name[masterdata.api_stype],'') );
+	    elem.appendChild( CreateListCell( masterdata.api_name ) );
+	    elem.appendChild( CreateListCell( data.api_lv ) );
+	    elem.appendChild( CreateListCell( data.api_cond ) );
+
+	    if( data.api_cond >=50 ){
+		elem.setAttribute('style','background-color: #ffffc0;');
+	    }else{
+		elem.setAttribute('style','background-color: white;');
+	    }
+
+	    let cell = CreateListCell( data.api_ndock_time ? GetTimeString(data.api_ndock_time/1000):"---" );
+	    if( this.isRepairing(data.api_ship_id) ){
+		cell.setAttribute('style','color: gray;');
+	    }else{
+	    }
+	    elem.appendChild( cell );
+
+	    for( let i in data.api_slot ){
+		if( data.api_slot[i]<0 ) continue;
+		let name = FindSlotItemNameById( data.api_slot[i] );
+		elem.appendChild( CreateListCell( name ) );
+	    }
+	    list.appendChild(elem);
+	}
+    },
+
+    /**
+     * 艦娘リストを作成する
+     */
     setupListBox:function(){
 	let list = $('ship-list');
 	
-	this.clearListBox();
+	this.clearListBox( list );
 
 	let no = 1;
 	for( let k in this.allships ){
@@ -302,6 +347,8 @@ var ShipList = {
 
 	$("tab-ships").setAttribute("label","艦娘("+ships.length+")");
 	$("tab-equipment").setAttribute("label","未装備品("+equipments.length+")");
+
+	this.setFleetOrganization(1);
 
 	document.title += " "+ new Date();
     }
