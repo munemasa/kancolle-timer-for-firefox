@@ -18,11 +18,58 @@ const Ci = Components.interfaces;
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
+var __KanColleTimerPanel = {
+    update: null,
+    _update_bound: null,
+
+    _update_start: function() {
+	for (let k in this._update_bound)
+	    KanColleDatabase[k].appendCallback(this._update_bound[k]);
+    },
+    _update_stop: function() {
+	for (let k in this._update_bound)
+	    KanColleDatabase[k].removeCallback(this._update_bound[k]);
+    },
+
+    _update_init: function() {
+	if (!this._update_bound) {
+	    this._update_bound = {};
+	    if (this.update) {
+		for (let k in this.update) {
+		    let f = this.update[k];
+		    let visited = {};   // loop detection
+		    while (typeof(f) == 'string' && !visited[f]) {
+			visited[f] = true;
+			f = this.update[f];
+		    }
+		    this._update_bound[k] = f.bind(this);
+		}
+	    }
+	}
+    },
+    _update_exit: function() {
+	this._update_bound = null;
+    },
+
+    start: function() {
+	this._update_start();
+    },
+    stop: function() {
+	this._update_stop();
+    },
+
+    init: function() {
+	this._update_init();
+    },
+    exit: function() {
+	this._update_exit();
+    },
+};
+
 /*
  * 艦娘/装備数
  */
 var KanColleTimerHeadQuarterInfo = {
-    _update_bound: null,
     update: {
 	headQuarter: function() {
 	    let headquarter;
@@ -112,38 +159,8 @@ var KanColleTimerHeadQuarterInfo = {
 	    $('basic-information-bucketcount').value = bucket;
 	},
     },
-
-    start: function() {
-	let keys = [];
-	for (let k in this._update_bound) {
-	    if (KanColleDatabase[k]) {
-		keys.push(k);
-		KanColleDatabase[k].appendCallback(this._update_bound[k]);
-	    }
-	}
-	if (this._updte_bound._common) {
-	    for (let k in keys)
-		KanColleDatabase[k].appendCallback(this._update_bound._common);
-	}
-    },
-    stop: function() {
-	for (let k in this._update_bound)
-	    if (KanColleDatabase[k])
-		KanColleDatabase[k].removeCallback(k);
-    },
-
-    init: function() {
-	if (!this._update_bound) {
-	    this._update_bound = {};
-	    for (let k in this.update)
-		this._update_bound[k] = this.update[k].bind(this);
-	}
-    },
-
-    exit: function() {
-	this._update_bound = null;
-    },
 };
+KanColleTimerHeadQuarterInfo.__proto__ = __KanColleTimerPanel;
 
 /*
  * デッキ/遠征
