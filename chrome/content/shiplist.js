@@ -116,7 +116,7 @@ var ShipList = {
 	    }
 
 	    let cell = CreateListCell( data.api_ndock_time ? GetTimeString(data.api_ndock_time/1000):"---" );
-	    if( this.isRepairing(data.api_ship_id) ){
+	    if( this.isRepairing(data.api_id) ){
 		cell.setAttribute('style','color: gray;');
 	    }else{
 	    }
