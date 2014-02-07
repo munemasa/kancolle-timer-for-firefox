@@ -126,7 +126,7 @@ var KanColleTimerConfig = {
 	    //AddLog(x);
 	}
 
-	KanColleTimerBasicInformationPanel();
+	KanColleTimerHeadQuarterInfo.update.headQuarter();
     },
 
     observe:function(aSubject, aTopic, aData){

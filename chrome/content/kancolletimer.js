@@ -355,6 +355,7 @@ var KanColleTimer = {
 
     init: function(){
 	KanColleDatabase.init();
+	KanColleTimerHeadQuarterInfo.init();
 
 	KanColleTimerRegisterCallback();
 
@@ -372,9 +373,13 @@ var KanColleTimer = {
 	this.setWindowOnTop();
 
 	this.readResourceData();
+
+	KanColleTimerHeadQuarterInfo.start();
     },
 
     destroy: function(){
+	KanColleTimerHeadQuarterInfo.stop();
+
 	KanColleKdockMouseEventHandler.exit();
 
 	this.stopTimer();
@@ -382,6 +387,8 @@ var KanColleTimer = {
 	KanColleTimerUnregisterCallback();
 
 	this.writeResourceData();
+
+	KanColleTimerHeadQuarterInfo.exit();
 	KanColleDatabase.exit();
     }
 };

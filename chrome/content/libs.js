@@ -21,105 +21,129 @@ const HTML_NS= "http://www.w3.org/1999/xhtml";
 /*
  * 艦娘/装備数
  */
-function KanColleTimerBasicInformationPanel(){
-    let headquarter;
-    let maxships;
-    let maxslotitems;
-    let ships;
-    let slotitems;
-    let burner = '-';
-    let bucket = '-';
-    let shipnumfree = KanColleTimerConfig.getInt('display.ship-num-free');
-    let ship_color = null;
-    let slotitem_color = null;
+var KanColleTimerHeadQuarterInfo = {
+    _update_bound: null,
+    update: {
+	headQuarter: function() {
+	    let headquarter;
+	    let maxships;
+	    let maxslotitems;
+	    let ships;
+	    let slotitems;
+	    let shipnumfree = KanColleTimerConfig.getInt('display.ship-num-free');
+	    let ship_color = null;
+	    let slotitem_color = null;
 
-    function convnan(t) {
-	return isNaN(t) ? '-' : t;
-    }
+	    function convnan(t) {
+		return isNaN(t) ? '-' : t;
+	    }
 
-    function numcolor(cur,mark,max) {
-	let col = null;
-	if (!isNaN(cur)) {
-	    if (!isNaN(max) && cur >= max)
-		col = 'red';
-	    else if (!isNaN(mark) && cur >= mark)
-		col = 'orange';
-	    else
-		col = 'black';
+	    function numcolor(cur,mark,max) {
+		let col = null;
+		if (!isNaN(cur)) {
+		    if (!isNaN(max) && cur >= max)
+			col = 'red';
+		    else if (!isNaN(mark) && cur >= mark)
+			col = 'orange';
+		    else
+			col = 'black';
+		}
+		return col;
+	    }
+
+	    headquarter = KanColleDatabase.headQuarter.get();
+
+	    ships = convnan(headquarter.ship_cur);
+	    maxships = convnan(headquarter.ship_max);
+	    ship_color = numcolor(ships, maxships - shipnumfree, maxships);
+
+	    slotitems = convnan(headquarter.slotitem_cur);
+	    maxslotitems = convnan(headquarter.slotitem_max);
+	    slotitem_color = numcolor(slotitems, maxslotitems - shipnumfree * 4, maxslotitems);
+
+	    // 母港100、装備枠500から、母港拡張10ごとに装備枠40増加
+	    //   装備枠 = 500 + (母港-100) * 4
+	    //
+	    // APIでから渡される装備数上限は、それ以上の数では新艦船/
+	    // 新装備開発ができなくなる、という実際の制限値であり、
+	    // 戦績表示の「最大保有可能装備アイテム数」から3減じた
+	    // ものとなっている。
+	    //
+	    // このため、建造やドロップでの艦船取得によって装備数が
+	    // 最大4つ増え、装備数がAPIによる最大装備数を上回ることは
+	    // ある。
+	    //
+	    //if (!isNaN(maxslotitems) && !isNaN(maxships) &&
+	    //	maxslotitems < 100 + maxships * 4) {
+	    //	maxslotitems = 100 + maxships * 4;
+	    //}
+	    $('basic-information-shipcount').value = ships;
+	    SetStyleProperty($('basic-information-shipcount'), 'color', ship_color);
+	    $('basic-information-shipcount').setAttribute('tooltiptext', ships + ' / ' + maxships);
+
+	    $('basic-information-slotitemcount').value = slotitems;
+	    SetStyleProperty($('basic-information-slotitemcount'), 'color', slotitem_color);
+	    $('basic-information-slotitemcount').setAttribute('tooltiptext', slotitems + ' / ' + maxslotitems);
+	},
+
+	memberMaterial: function() {
+	    let burner = '-';
+	    let bucket = '-';
+	    if (KanColleDatabase.memberMaterial.timestamp()) {
+		let d;
+		/*
+		 * 1: 燃料
+		 * 2: 弾薬
+		 * 3: 鋼材
+		 * 4: ボーキサイト
+		 * 5: 高速建造材
+		 * 6: 高速修復材
+		 * 7: 開発資材
+		 */
+		d = KanColleDatabase.memberMaterial.get(5);
+		if (typeof(d) == 'object')
+		    burner = d.api_value;
+		d = KanColleDatabase.memberMaterial.get(6);
+		if (typeof(d) == 'object')
+		    bucket = d.api_value;
+	    }
+
+	    $('basic-information-burnercount').value = burner;
+	    $('basic-information-bucketcount').value = bucket;
+	},
+    },
+
+    start: function() {
+	let keys = [];
+	for (let k in this._update_bound) {
+	    if (KanColleDatabase[k]) {
+		keys.push(k);
+		KanColleDatabase[k].appendCallback(this._update_bound[k]);
+	    }
 	}
-	return col;
-    }
+	if (this._updte_bound._common) {
+	    for (let k in keys)
+		KanColleDatabase[k].appendCallback(this._update_bound._common);
+	}
+    },
+    stop: function() {
+	for (let k in this._update_bound)
+	    if (KanColleDatabase[k])
+		KanColleDatabase[k].removeCallback(k);
+    },
 
-    headquarter = KanColleDatabase.headQuarter.get();
+    init: function() {
+	if (!this._update_bound) {
+	    this._update_bound = {};
+	    for (let k in this.update)
+		this._update_bound[k] = this.update[k].bind(this);
+	}
+    },
 
-    ships = convnan(headquarter.ship_cur);
-    maxships = convnan(headquarter.ship_max);
-    ship_color = numcolor(ships, maxships - shipnumfree, maxships);
-
-    slotitems = convnan(headquarter.slotitem_cur);
-    maxslotitems = convnan(headquarter.slotitem_max);
-    slotitem_color = numcolor(slotitems, maxslotitems - shipnumfree * 4, maxslotitems);
-
-    if (KanColleDatabase.memberMaterial.timestamp()) {
-	let d;
-	/*
-	 * 1: 燃料
-	 * 2: 弾薬
-	 * 3: 鋼材
-	 * 4: ボーキサイト
-	 * 5: 高速建造材
-	 * 6: 高速修復材
-	 * 7: 開発資材
-	 */
-	d = KanColleDatabase.memberMaterial.get(5);
-	if (typeof(d) == 'object')
-	    burner = d.api_value;
-	d = KanColleDatabase.memberMaterial.get(6);
-	if (typeof(d) == 'object')
-	    bucket = d.api_value;
-    }
-
-    // 母港100、装備枠500から、母港拡張10ごとに装備枠40増加
-    //   装備枠 = 500 + (母港-100) * 4
-    //
-    // APIでから渡される装備数上限は、それ以上の数では新艦船/
-    // 新装備開発ができなくなる、という実際の制限値であり、
-    // 戦績表示の「最大保有可能装備アイテム数」から3減じた
-    // ものとなっている。
-    //
-    // このため、建造やドロップでの艦船取得によって装備数が
-    // 最大4つ増え、装備数がAPIによる最大装備数を上回ることは
-    // ある。
-    //
-    //if (!isNaN(maxslotitems) && !isNaN(maxships) &&
-    //	maxslotitems < 100 + maxships * 4) {
-    //	maxslotitems = 100 + maxships * 4;
-    //}
-
-    $('basic-information-shipcount').value = ships;
-    SetStyleProperty($('basic-information-shipcount'), 'color', ship_color);
-    $('basic-information-shipcount').setAttribute('tooltiptext', ships + ' / ' + maxships);
-
-    $('basic-information-slotitemcount').value = slotitems;
-    SetStyleProperty($('basic-information-slotitemcount'), 'color', slotitem_color);
-    $('basic-information-slotitemcount').setAttribute('tooltiptext', slotitems + ' / ' + maxslotitems);
-
-    $('basic-information-burnercount').value = burner;
-    $('basic-information-bucketcount').value = bucket;
-}
-
-function KanColleTimerHeadQuarterInfoStart() {
-    let db = KanColleDatabase;
-    db.headQuarter.appendCallback(KanColleTimerBasicInformationPanel);
-    db.memberMaterial.appendCallback(KanColleTimerBasicInformationPanel);
-}
-
-function KanColleTimerHeadQuarterInfoStop() {
-    let db = KanColleDatabase;
-    db.memberMaterial.removeCallback(KanColleTimerBasicInformationPanel);
-    db.headQuarter.removeCallback(KanColleTimerBasicInformationPanel);
-}
-
+    exit: function() {
+	this._update_bound = null;
+    },
+};
 
 /*
  * デッキ/遠征
@@ -901,7 +925,6 @@ function KanColleTimerQuestInformationStop() {
 function KanColleTimerRegisterCallback(){
     KanColleTimerDeckStart();
     KanColleTimerFleetInfoStart();
-    KanColleTimerHeadQuarterInfoStart();
     KanColleTimerKdockStart();
     KanColleTimerMaterialLogStart();
     KanColleTimerNdockStart();
@@ -915,7 +938,6 @@ function KanColleTimerUnregisterCallback(){
     KanColleTimerNdockStop();
     KanColleTimerMaterialLogStop();
     KanColleTimerKdockStop();
-    KanColleTimerHeadQuarterInfoStop();
     KanColleTimerFleetInfoStop();
     KanColleTimerDeckStop();
 }
