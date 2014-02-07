@@ -340,14 +340,25 @@ var KanColleTimer = {
 	Storage.writeObject( "resourcehistory", data );
     },
 
+    startTimer: function() {
+	if (this._timer)
+	    return;
+	this._timer = setInterval(this.update.bind(this), 1000);
+    },
+
+    stopTimer: function() {
+	if (!this._timer)
+	    return;
+	clearInterval(this._timer);
+	this._timer = null;
+    },
+
     init: function(){
 	KanColleDatabase.init();
 
 	KanColleTimerRegisterCallback();
 
-	setInterval( function(){
-			 KanColleTimer.update();
-		     }, 1000 );
+	this.startTimer();
 
 	KanColleTimerDeckRestore();
 	KanColleTimerNdockRestore();
@@ -365,6 +376,8 @@ var KanColleTimer = {
 
     destroy: function(){
 	KanColleKdockMouseEventHandler.exit();
+
+	this.stopTimer();
 
 	KanColleTimerUnregisterCallback();
 
