@@ -358,6 +358,7 @@ var KanColleTimer = {
 	KanColleTimerHeadQuarterInfo.init();
 	KanColleTimerDeckInfo.init();
 	KanColleTimerNdockInfo.init();
+	KanColleTimerFleetInfo.init();
 
 	KanColleTimerRegisterCallback();
 
@@ -367,6 +368,7 @@ var KanColleTimer = {
 	KanColleTimerNdockInfo.restore();
 	KanColleTimerKdockRestore();
 	KanColleTimerQuestInformationShow();
+	//KanColleTimerFleetInfo.restore();
 
 	KanColleShipInfoInit();
 	KanColleKdockMouseEventHandler.init();
@@ -379,9 +381,11 @@ var KanColleTimer = {
 	KanColleTimerHeadQuarterInfo.start();
 	KanColleTimerDeckInfo.start();
 	KanColleTimerNdockInfo.start();
+	KanColleTimerFleetInfo.start();
     },
 
     destroy: function(){
+	KanColleTimerFleetInfo.stop();
 	KanColleTimerNdockInfo.stop();
 	KanColleTimerDeckInfo.stop();
 	KanColleTimerHeadQuarterInfo.stop();
@@ -394,6 +398,7 @@ var KanColleTimer = {
 
 	this.writeResourceData();
 
+	KanColleTimerFleetInfo.exit();
 	KanColleTimerNdockInfo.exit();
 	KanColleTimerDeckInfo.exit();
 	KanColleTimerHeadQuarterInfo.exit();

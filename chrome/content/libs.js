@@ -535,177 +535,172 @@ function KanColleTimerShipInfoHandler(){
     KanColleShipInfoSetView();
 }
 
-function KanColleTimerMemberShip2FleetHandler(){
-    let l = KanColleDatabase.memberDeck.list();
+var KanColleTimerFleetInfo = {
+    update: {
+	memberDeck: function() {
+	    let l = KanColleDatabase.memberDeck.list();
 
-    function timestr(t){
-	let d = new Date;
-	let h;
-	let m;
+	    function timestr(t){
+		let d = new Date;
+		let h;
+		let m;
 
-	d.setTime(t);
+		d.setTime(t);
 
-	h = d.getHours();
-	if (h < 10)
-	    h = '0' + h;
+		h = d.getHours();
+		if (h < 10)
+		    h = '0' + h;
 
-	m = d.getMinutes();
-	if (m < 10)
-	    m = '0' + m;
+		m = d.getMinutes();
+		if (m < 10)
+		    m = '0' + m;
 
-	return h + ':' + m;
-    }
-
-    // 艦隊/遠征情報
-    for ( let i = 0; i < l.length; i++ ){
-	let fi = KanColleDatabase.memberDeck.get(l[i]);
-	let id = parseInt(fi.api_id, 10);
-	let fleet_text = fi.api_name;
-	let fleet_flagship_lv = 0;
-	let fleet_stypes = {};
-	let min_cond = 100;
-	for ( let j = 0; j < fi.api_ship.length; j++ ){
-	    let ship_id = fi.api_ship[j];
-	    let ship_name = FindShipName(ship_id);
-	    let ship_info = FindShipStatus(ship_id);
-	    let ship_cond = FindShipCond(ship_id);
-	    let ship = KanColleDatabase.memberShip2.get(ship_id);
-	    let ship_bgcolor;
-	    let ship_border;
-	    let ship_color;
-	    let ship_shadow;
-	    let ship_text = ship_name + (ship ? ' Lv' + ship.api_lv : '');
-
-	    if (ship) {
-		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
-		if (j == 0)
-		    fleet_flagship_lv = ship.api_lv;
-		if (!fleet_stypes[shiptype.api_stype])
-		    fleet_stypes[shiptype.api_stype] = 1;
-		else
-		    fleet_stypes[shiptype.api_stype]++;
+		return h + ':' + m;
 	    }
 
-	    if (ship_cond === undefined) {
-		ship_cond = '-';
-		ship_bgcolor = null;
-	    } else if (ship_cond >= 90) {
-		ship_bgcolor = '#ffffff';   //キラキラ
-	    } else if (ship_cond >= 80) {
-		ship_bgcolor = '#eeffff';   //キラキラ
-	    } else if (ship_cond >= 70) {
-		ship_bgcolor = '#ddffee';   //キラキラ
-	    } else if (ship_cond >= 60) {
-		ship_bgcolor = '#ccffdd';   //キラキラ
-	    } else if (ship_cond >= 50) {
-		ship_bgcolor = '#bbffcc';   //キラキラ
-	    } else if (ship_cond >= 40) {
-		ship_bgcolor = '#88ff88';   //平常
-	    } else if (ship_cond >= 30) {
-		ship_bgcolor = '#ffdd88';   //間宮
-	    } else if (ship_cond >= 20) {
-		ship_bgcolor = '#ffaa44';   //オレンジ
-	    } else if (ship_cond >= 0) {
-		ship_bgcolor = '#ff8888';   //赤
-	    } else {
-		ship_bgcolor = '#666666';   //...
-	    }
+	    // 艦隊/遠征情報
+	    for ( let i = 0; i < l.length; i++ ){
+		let fi = KanColleDatabase.memberDeck.get(l[i]);
+		let id = parseInt(fi.api_id, 10);
+		let fleet_text = fi.api_name;
+		let fleet_flagship_lv = 0;
+		let fleet_stypes = {};
+		let min_cond = 100;
+		for ( let j = 0; j < fi.api_ship.length; j++ ){
+		    let ship_id = fi.api_ship[j];
+		    let ship_name = FindShipName(ship_id);
+		    let ship_info = FindShipStatus(ship_id);
+		    let ship_cond = FindShipCond(ship_id);
+		    let ship = KanColleDatabase.memberShip2.get(ship_id);
+		    let ship_bgcolor;
+		    let ship_border;
+		    let ship_color;
+		    let ship_shadow;
+		    let ship_text = ship_name + (ship ? ' Lv' + ship.api_lv : '');
 
-	    if (ship_cond < 49) {
-		let t = KanColleDatabase.memberShip2.timestamp();
-		ship_text += ' ' + timestr(t + Math.ceil((49 - ship_cond) / 3) * 180000);
-
-		if (ship_cond < min_cond)
-		    min_cond = ship_cond;
-	    }
-
-	    if (ship_info === undefined) {
-		ship_border = null;
-		ship_color = null;
-	    } else {
-		let hpratio = ship_info.nowhp / ship_info.maxhp;
-
-		ship_text += '\nHP: ' + ship_info.nowhp + '/' + ship_info.maxhp;
-
-		if (ship_info.bull_max > ship_info.bull ||
-		    ship_info.fuel_max > ship_info.fuel) {
-		    ship_border = 'solid red';
-		} else {
-		    ship_border = null;
-		}
-
-		if (hpratio >= 1) {
-		    ship_color = null;	    //無傷
-		    ship_shadow = null;
-		} else {
-		    ship_shadow = '1px 1px 0 black';
-		    if (hpratio > 0.75) {
-			ship_color = '#0000cc'; //かすり傷
-		    } else if (hpratio > 0.50) {
-			ship_color = '#ff44cc'; //小破
-		    } else if (hpratio > 0.25) {
-			ship_color = '#ff4400'; //中破
-		    } else {
-			ship_color = '#ff0000'; //大破
+		    if (ship) {
+			let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+			if (j == 0)
+			    fleet_flagship_lv = ship.api_lv;
+			if (!fleet_stypes[shiptype.api_stype])
+			    fleet_stypes[shiptype.api_stype] = 1;
+			else
+			    fleet_stypes[shiptype.api_stype]++;
 		    }
+
+		    if (ship_cond === undefined) {
+			ship_cond = '-';
+			ship_bgcolor = null;
+		    } else if (ship_cond >= 90) {
+			ship_bgcolor = '#ffffff';   //キラキラ
+		    } else if (ship_cond >= 80) {
+			ship_bgcolor = '#eeffff';   //キラキラ
+		    } else if (ship_cond >= 70) {
+			ship_bgcolor = '#ddffee';   //キラキラ
+		    } else if (ship_cond >= 60) {
+			ship_bgcolor = '#ccffdd';   //キラキラ
+		    } else if (ship_cond >= 50) {
+			ship_bgcolor = '#bbffcc';   //キラキラ
+		    } else if (ship_cond >= 40) {
+			ship_bgcolor = '#88ff88';   //平常
+		    } else if (ship_cond >= 30) {
+			ship_bgcolor = '#ffdd88';   //間宮
+		    } else if (ship_cond >= 20) {
+			ship_bgcolor = '#ffaa44';   //オレンジ
+		    } else if (ship_cond >= 0) {
+			ship_bgcolor = '#ff8888';   //赤
+		    } else {
+			ship_bgcolor = '#666666';   //...
+		    }
+
+		    if (ship_cond < 49) {
+			let t = KanColleDatabase.memberShip2.timestamp();
+			ship_text += ' ' + timestr(t + Math.ceil((49 - ship_cond) / 3) * 180000);
+
+			if (ship_cond < min_cond)
+			    min_cond = ship_cond;
+		    }
+
+		    if (ship_info === undefined) {
+			ship_border = null;
+			ship_color = null;
+		    } else {
+			let hpratio = ship_info.nowhp / ship_info.maxhp;
+
+			ship_text += '\nHP: ' + ship_info.nowhp + '/' + ship_info.maxhp;
+
+			if (ship_info.bull_max > ship_info.bull ||
+			    ship_info.fuel_max > ship_info.fuel) {
+			    ship_border = 'solid red';
+			} else {
+			    ship_border = null;
+			}
+
+			if (hpratio >= 1) {
+			    ship_color = null;	    //無傷
+			    ship_shadow = null;
+			} else {
+			    ship_shadow = '1px 1px 0 black';
+			    if (hpratio > 0.75) {
+				ship_color = '#0000cc'; //かすり傷
+			    } else if (hpratio > 0.50) {
+				ship_color = '#ff44cc'; //小破
+			    } else if (hpratio > 0.25) {
+				ship_color = '#ff4400'; //中破
+			    } else {
+				ship_color = '#ff0000'; //大破
+			    }
+			}
+		    }
+
+		    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
+		    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_text);
+		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'background-color', ship_bgcolor);
+		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'border', ship_border);
+		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'color', ship_color);
+		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'text-shadow', ship_shadow);
 		}
+
+		if (fleet_flagship_lv > 0) {
+		    let stypes;
+		    let fleetinfo = [];
+		    let timercmd = null;
+
+		    let cur = (new Date).getTime();
+		    let t = KanColleDatabase.memberShip2.timestamp();
+		    let time = t + Math.ceil((49 - min_cond) / 3) * 180000;
+		    let str = timestr(time);
+
+		    if (time >= cur) {
+			fleet_text += ' ' + timestr(time);
+			$('shipstatus-' + id + '-popup-1').label = 'タイマー設定(' + str + ')';
+			$('shipstatus-' + id + '-popup-1').setAttribute('oncommand', 'KanColleTimer.setGeneralTimerByTime(' + time + ')');
+			$('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'false');
+		    } else {
+			$('shipstatus-' + id + '-popup-1').label = 'タイマー';
+			$('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'true');
+		    }
+
+		    stypes = Object.keys(fleet_stypes).sort(function(a,b){
+			return fleet_stypes[b] - fleet_stypes[a];
+		    });
+
+		    fleet_text += '\n旗艦Lv' + fleet_flagship_lv;
+		    for( let j = 0; j < stypes.length; j++ ){
+			let stypename = KanColleData.type_name[stypes[j]];
+			if (!stypename)
+			    stypename = 'UNKNOWN_' + stypes[j];
+			fleetinfo.push(' ' + stypename + '(' + fleet_stypes[stypes[j]] + ')');
+		    }
+		    fleet_text += ';' + fleetinfo.join(',');
+		}
+
+		$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
 	    }
-
-	    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
-	    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_text);
-	    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'background-color', ship_bgcolor);
-	    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'border', ship_border);
-	    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'color', ship_color);
-	    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'text-shadow', ship_shadow);
-	}
-
-	if (fleet_flagship_lv > 0) {
-	    let stypes;
-	    let fleetinfo = [];
-	    let timercmd = null;
-
-	    let cur = (new Date).getTime();
-	    let t = KanColleDatabase.memberShip2.timestamp();
-	    let time = t + Math.ceil((49 - min_cond) / 3) * 180000;
-	    let str = timestr(time);
-
-	    if (time >= cur) {
-		fleet_text += ' ' + timestr(time);
-		$('shipstatus-' + id + '-popup-1').label = 'タイマー設定(' + str + ')';
-		$('shipstatus-' + id + '-popup-1').setAttribute('oncommand', 'KanColleTimer.setGeneralTimerByTime(' + time + ')');
-		$('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'false');
-	    } else {
-		$('shipstatus-' + id + '-popup-1').label = 'タイマー';
-		$('shipstatus-' + id + '-popup-1').setAttribute('disabled', 'true');
-	    }
-
-	    stypes = Object.keys(fleet_stypes).sort(function(a,b){
-		return fleet_stypes[b] - fleet_stypes[a];
-	    });
-
-	    fleet_text += '\n旗艦Lv' + fleet_flagship_lv;
-	    for( let j = 0; j < stypes.length; j++ ){
-		let stypename = KanColleData.type_name[stypes[j]];
-		if (!stypename)
-		    stypename = 'UNKNOWN_' + stypes[j];
-		fleetinfo.push(' ' + stypename + '(' + fleet_stypes[stypes[j]] + ')');
-	    }
-	    fleet_text += ';' + fleetinfo.join(',');
-	}
-
-	$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
-    }
-}
-
-function KanColleTimerFleetInfoStart() {
-    let db = KanColleDatabase;
-    db.memberDeck.appendCallback(KanColleTimerMemberShip2FleetHandler);
-}
-
-function KanColleTimerFleetInfoStop() {
-    let db = KanColleDatabase;
-    db.memberDeck.removeCallback(KanColleTimerMemberShip2FleetHandler);
-}
+	},
+    },
+};
+KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
 
 function KanColleTimerQuestInformationShow(){
     let questbox = $('quest-list-box');
@@ -919,7 +914,6 @@ function KanColleTimerQuestInformationStop() {
 }
 
 function KanColleTimerRegisterCallback(){
-    KanColleTimerFleetInfoStart();
     KanColleTimerKdockStart();
     KanColleTimerMaterialLogStart();
     KanColleTimerQuestInformationStart();
@@ -931,7 +925,6 @@ function KanColleTimerUnregisterCallback(){
     KanColleTimerQuestInformationStop();
     KanColleTimerMaterialLogStop();
     KanColleTimerKdockStop();
-    KanColleTimerFleetInfoStop();
 }
 
 function AddLog(str){
