@@ -242,91 +242,79 @@ KanColleTimerDeckInfo.__proto__ = __KanColleTimerPanel;
  * 入渠ドック
  *  member/ndock	: api_data
  */
-function KanColleTimerNdockHandler(){
-    let docks = KanColleDatabase.memberNdock.list();
-    let now = Math.floor(KanColleDatabase.memberNdock.timestamp()/1000);
-    // 入渠ドック
-    for( let i = 0; i < docks.length; i++ ){
-	let d = KanColleDatabase.memberNdock.get(docks[i]);
-	let k = d.api_id;
-	var targetid = 'ndock'+k;
-	var timeid = 'ndockremain'+k;
-	KanColleRemainInfo.ndock[i] = new Object();
-	if( d.api_state > 0 ){
-	    let ship_id = d.api_ship_id;
-	    let name = FindShipName( ship_id );
-	    let complete_time = d.api_complete_time;
-	    if (!complete_time)
-		complete_time = cur;
-	    $("ndock-label"+k).setAttribute('tooltiptext', name);
-	    if( name ){
-		$("ndock-label"+k).value = name;
-	    }
+var KanColleTimerNdockInfo = {
+    update: {
+	memberNdock: function() {
+	    let docks = KanColleDatabase.memberNdock.list();
+	    let now = Math.floor(KanColleDatabase.memberNdock.timestamp()/1000);
+	    // 入渠ドック
+	    for( let i = 0; i < docks.length; i++ ){
+		let d = KanColleDatabase.memberNdock.get(docks[i]);
+		let k = d.api_id;
+		var targetid = 'ndock'+k;
+		var timeid = 'ndockremain'+k;
+		KanColleRemainInfo.ndock[i] = new Object();
+		if( d.api_state > 0 ){
+		    let ship_id = d.api_ship_id;
+		    let name = FindShipName( ship_id );
+		    let complete_time = d.api_complete_time;
+		    if (!complete_time)
+			complete_time = cur;
+		    $("ndock-label"+k).setAttribute('tooltiptext', name);
+		    if( name ){
+			$("ndock-label"+k).value = name;
+		    }
 
-	    KanColleRemainInfo.ndock_ship_id[i] = ship_id;
-	    KanColleRemainInfo.ndock[i].finishedtime = complete_time;
-	    $(targetid).finishTime = complete_time;
-	    $(timeid).finishTime = complete_time;
-	}else if(d.api_state == 0){
-	    $("ndock-label"+(i+1)).value = "No."+(i+1);
-	    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
-	    KanColleRemainInfo.ndock_ship_id[i] = 0;
-	    $(targetid).finishTime = '';
-	    $(timeid).finishTime = '';
-	    KanColleRemainInfo.ndock[i].finishedtime = Number.NaN;
-	}else{
-	    $('ndock-box'+(i+1)).style.display = 'none';
+		    KanColleRemainInfo.ndock_ship_id[i] = ship_id;
+		    KanColleRemainInfo.ndock[i].finishedtime = complete_time;
+		    $(targetid).finishTime = complete_time;
+		    $(timeid).finishTime = complete_time;
+		}else if(d.api_state == 0){
+		    $("ndock-label"+(i+1)).value = "No."+(i+1);
+		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
+		    KanColleRemainInfo.ndock_ship_id[i] = 0;
+		    $(targetid).finishTime = '';
+		    $(timeid).finishTime = '';
+		    KanColleRemainInfo.ndock[i].finishedtime = Number.NaN;
+		}else{
+		    $('ndock-box'+(i+1)).style.display = 'none';
+		}
+	    }
+	},
+	memberBasic: function() {
+	    let d = KanColleDatabase.memberBasic.get();
+	    let ndocks;
+	    if (!d)
+		return;
+	    ndocks  = document.getElementsByClassName("ndock-box");
+	    for( let i = 0; i < 4; i++ )
+		SetStyleProperty(ndocks[i], 'display', i < d.api_count_ndock ? "":"none");
+	},
+	memberMaterial: function() {
+	    let d = KanColleDatabase.memberMaterial.get(6);
+	    if (typeof(d) == 'object')
+		$('repairkit-number').value = d.api_value;
+	},
+    },
+    restore: function() {
+	this.update.memberBasic();
+	try{
+	    for( let i=0; i < 4; i++ ){
+		let k = i + 1;
+		if( KanColleRemainInfo.ndock_memo[i] ){
+		    $('ndock-box'+k).setAttribute('tooltiptext',
+						  KanColleRemainInfo.ndock_memo[i] );
+		}
+		if( KanColleRemainInfo.ndock[i] ){
+		    $('ndock'+k).finishTime = KanColleRemainInfo.ndock[i].finishedtime;
+		    $('ndockremain'+k).finishTime = KanColleRemainInfo.ndock[i].finishedtime;
+		}
+	    }
+	} catch(x) {
 	}
-    }
-}
-
-function KanColleTimerNdockBasicHandler(){
-    let d = KanColleDatabase.memberBasic.get();
-    let ndocks;
-    if (!d)
-	return;
-    ndocks  = document.getElementsByClassName("ndock-box");
-    for( let i = 0; i < 4; i++ )
-	SetStyleProperty(ndocks[i], 'display', i < d.api_count_ndock ? "":"none");
-}
-
-function KanColleTimerNdockMaterialHandler() {
-    let d = KanColleDatabase.memberMaterial.get(6);
-    if (typeof(d) == 'object')
-	$('repairkit-number').value = d.api_value;
-}
-
-function KanColleTimerNdockRestore(){
-    KanColleTimerNdockBasicHandler();
-    try{
-	for( let i=0; i < 4; i++ ){
-	    let k = i + 1;
-	    if( KanColleRemainInfo.ndock_memo[i] ){
-		$('ndock-box'+k).setAttribute('tooltiptext',
-					      KanColleRemainInfo.ndock_memo[i] );
-	    }
-	    if( KanColleRemainInfo.ndock[i] ){
-		$('ndock'+k).finishTime = KanColleRemainInfo.ndock[i].finishedtime;
-		$('ndockremain'+k).finishTime = KanColleRemainInfo.ndock[i].finishedtime;
-	    }
-	}
-    } catch(x) {
-    }
-}
-
-function KanColleTimerNdockStart() {
-    let db = KanColleDatabase;
-    db.memberNdock.appendCallback(KanColleTimerNdockHandler);
-    db.memberBasic.appendCallback(KanColleTimerNdockBasicHandler);
-    db.memberMaterial.appendCallback(KanColleTimerNdockMaterialHandler);
-}
-
-function KanColleTimerNdockStop() {
-    let db = KanColleDatabase;
-    db.memberMaterial.removeCallback(KanColleTimerNdockMaterialHandler);
-    db.memberBasic.removeCallback(KanColleTimerNdockBasicHandler);
-    db.memberNdock.removeCallback(KanColleTimerNdockHandler);
-}
+    },
+};
+KanColleTimerNdockInfo.__proto__ = __KanColleTimerPanel;
 
 /*
  * 建造
@@ -934,7 +922,6 @@ function KanColleTimerRegisterCallback(){
     KanColleTimerFleetInfoStart();
     KanColleTimerKdockStart();
     KanColleTimerMaterialLogStart();
-    KanColleTimerNdockStart();
     KanColleTimerQuestInformationStart();
     KanColleTimerShipInfoStart();
 }
@@ -942,7 +929,6 @@ function KanColleTimerRegisterCallback(){
 function KanColleTimerUnregisterCallback(){
     KanColleTimerShipInfoStop();
     KanColleTimerQuestInformationStop();
-    KanColleTimerNdockStop();
     KanColleTimerMaterialLogStop();
     KanColleTimerKdockStop();
     KanColleTimerFleetInfoStop();

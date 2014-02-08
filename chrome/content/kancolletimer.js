@@ -357,13 +357,14 @@ var KanColleTimer = {
 	KanColleDatabase.init();
 	KanColleTimerHeadQuarterInfo.init();
 	KanColleTimerDeckInfo.init();
+	KanColleTimerNdockInfo.init();
 
 	KanColleTimerRegisterCallback();
 
 	this.startTimer();
 
 	KanColleTimerDeckInfo.restore();
-	KanColleTimerNdockRestore();
+	KanColleTimerNdockInfo.restore();
 	KanColleTimerKdockRestore();
 	KanColleTimerQuestInformationShow();
 
@@ -377,9 +378,11 @@ var KanColleTimer = {
 
 	KanColleTimerHeadQuarterInfo.start();
 	KanColleTimerDeckInfo.start();
+	KanColleTimerNdockInfo.start();
     },
 
     destroy: function(){
+	KanColleTimerNdockInfo.stop();
 	KanColleTimerDeckInfo.stop();
 	KanColleTimerHeadQuarterInfo.stop();
 
@@ -391,6 +394,7 @@ var KanColleTimer = {
 
 	this.writeResourceData();
 
+	KanColleTimerNdockInfo.exit();
 	KanColleTimerDeckInfo.exit();
 	KanColleTimerHeadQuarterInfo.exit();
 	KanColleDatabase.exit();
