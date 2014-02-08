@@ -168,84 +168,75 @@ KanColleTimerHeadQuarterInfo.__proto__ = __KanColleTimerPanel;
  *  member/deck_port	: api_data
  *  member/ship2	: api_data_deck
  */
-function KanColleTimerDeckHandler(){
-    let decks = KanColleDatabase.memberDeck.list();
-    let now = Math.floor(KanColleDatabase.memberDeck.timestamp() / 1000);
+var KanColleTimerDeckInfo = {
+    update: {
+	memberDeck: function() {
+	    let decks = KanColleDatabase.memberDeck.list();
+	    let now = Math.floor(KanColleDatabase.memberDeck.timestamp() / 1000);
 
-    for( let i = 0; i < decks.length; i++ ){
-	let d = KanColleDatabase.memberDeck.get(decks[i]);
-	let k = d.api_id;
-	let nameid = 'fleetname'+k;
-	let targetid = 'fleet'+k;
-	let timeid = 'fleetremain'+k;
-	KanColleRemainInfo.fleet[i] = new Object();
-	KanColleRemainInfo.fleet_name[i] = d.api_name;
-	$(nameid).value = d.api_name; // 艦隊名
-	if( d.api_mission[0] ){
-	    let mission_id = d.api_mission[1]; // 遠征ID
-	    // 遠征名を表示
-	    let mission_name = KanColleData.mission_name[mission_id];
-	    if (!mission_name)
-		mission_name = 'UNKNOWN_' + mission_id;
-	    KanColleRemainInfo.mission_name[i] = mission_name;
-	    $('mission_name'+k).value = mission_name;
+	    for( let i = 0; i < decks.length; i++ ){
+		let d = KanColleDatabase.memberDeck.get(decks[i]);
+		let k = d.api_id;
+		let nameid = 'fleetname'+k;
+		let targetid = 'fleet'+k;
+		let timeid = 'fleetremain'+k;
+		KanColleRemainInfo.fleet[i] = new Object();
+		KanColleRemainInfo.fleet_name[i] = d.api_name;
+		$(nameid).value = d.api_name; // 艦隊名
+		if( d.api_mission[0] ){
+		    let mission_id = d.api_mission[1]; // 遠征ID
+		    // 遠征名を表示
+		    let mission_name = KanColleData.mission_name[mission_id];
+		    if (!mission_name)
+			mission_name = 'UNKNOWN_' + mission_id;
+		    KanColleRemainInfo.mission_name[i] = mission_name;
+		    $('mission_name'+k).value = mission_name;
 
-	    KanColleRemainInfo.fleet[i].finishedtime = d.api_mission[2];    //遠征終了時刻
-	    $(targetid).finishTime = d.api_mission[2];
-	    $(timeid).finishTime = d.api_mission[2];
-	}else{
-	    $(targetid).finishTime = '';
-	    $(timeid).finishTime = '';
-	    KanColleRemainInfo.fleet[i].finishedtime = Number.NaN;
+		    KanColleRemainInfo.fleet[i].finishedtime = d.api_mission[2];    //遠征終了時刻
+		    $(targetid).finishTime = d.api_mission[2];
+		    $(timeid).finishTime = d.api_mission[2];
+		}else{
+		    $(targetid).finishTime = '';
+		    $(timeid).finishTime = '';
+		    KanColleRemainInfo.fleet[i].finishedtime = Number.NaN;
+		}
+	    }
+	},
+	memberBasic: function() {
+	    let d = KanColleDatabase.memberBasic.get();
+	    let fleets;
+	    if (!d)
+		return;
+	    fleets = document.getElementsByClassName("fleet");
+	    for( let i=0; i<4; i++ )
+		SetStyleProperty(fleets[i], 'display',
+				 (i != 0 && i < d.api_count_deck) ? "" : "none");
+	    if (d.api_count_deck < 2)
+		$('group-mission').style.display = "none";
+	},
+    },
+    restore: function() {
+	this.update.memberBasic();
+	try{
+	    for( let i = 0; i < 4; i++ ){
+		let k = i + 1;
+		if( KanColleRemainInfo.fleet_name[i] ){
+		    $('fleetname'+k).value = KanColleRemainInfo.fleet_name[i];
+		}
+		if( KanColleRemainInfo.mission_name[i] ){
+		    let mission_name = KanColleRemainInfo.mission_name[i];
+		    $('mission_name'+k).value=mission_name;
+		}
+		if( KanColleRemainInfo.fleet[i] ){
+		    $('fleet'+k).finishTime = KanColleRemainInfo.fleet[i].finishedtime;
+		    $('fleetremain'+k).finishTime = KanColleRemainInfo.fleet[i].finishedtime;
+		}
+	    }
+	} catch(x) {
 	}
-    }
-}
-
-function KanColleTimerDeckBasicHandler(){
-    let d = KanColleDatabase.memberBasic.get();
-    let fleets;
-    if (!d)
-	return;
-    fleets = document.getElementsByClassName("fleet");
-    for( let i=0; i<4; i++ )
-	SetStyleProperty(fleets[i], 'display',
-			 (i != 0 && i < d.api_count_deck) ? "" : "none");
-    if (d.api_count_deck < 2)
-	$('group-mission').style.display = "none";
-}
-
-function KanColleTimerDeckRestore(){
-    KanColleTimerDeckBasicHandler();
-    try{
-	for( let i = 0; i < 4; i++ ){
-	    let k = i + 1;
-	    if( KanColleRemainInfo.fleet_name[i] ){
-		$('fleetname'+k).value = KanColleRemainInfo.fleet_name[i];
-	    }
-	    if( KanColleRemainInfo.mission_name[i] ){
-		let mission_name = KanColleRemainInfo.mission_name[i];
-		$('mission_name'+k).value=mission_name;
-	    }
-	    if( KanColleRemainInfo.fleet[i] ){
-		$('fleet'+k).finishTime = KanColleRemainInfo.fleet[i].finishedtime;
-		$('fleetremain'+k).finishTime = KanColleRemainInfo.fleet[i].finishedtime;
-	    }
-	}
-    } catch(x) {
-    }
-}
-
-function KanColleTimerDeckStart() {
-    let db = KanColleDatabase;
-    db.memberDeck.appendCallback(KanColleTimerDeckHandler);
-    db.memberBasic.appendCallback(KanColleTimerDeckBasicHandler);
-}
-
-function KanColleTimerDeckStop() {
-    let db = KanColleDatabase;
-    db.memberBasic.appendCallback(KanColleTimerDeckBasicHandler);
-    db.memberDeck.appendCallback(KanColleTimerDeckHandler);
-}
+    },
+};
+KanColleTimerDeckInfo.__proto__ = __KanColleTimerPanel;
 
 /*
  * 入渠ドック
@@ -940,7 +931,6 @@ function KanColleTimerQuestInformationStop() {
 }
 
 function KanColleTimerRegisterCallback(){
-    KanColleTimerDeckStart();
     KanColleTimerFleetInfoStart();
     KanColleTimerKdockStart();
     KanColleTimerMaterialLogStart();
@@ -956,7 +946,6 @@ function KanColleTimerUnregisterCallback(){
     KanColleTimerMaterialLogStop();
     KanColleTimerKdockStop();
     KanColleTimerFleetInfoStop();
-    KanColleTimerDeckStop();
 }
 
 function AddLog(str){
