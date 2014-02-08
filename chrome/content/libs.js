@@ -702,227 +702,223 @@ var KanColleTimerFleetInfo = {
 };
 KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
 
-function KanColleTimerQuestInformationShow(){
-    let questbox = $('quest-list-box');
-    let quests = KanColleDatabase.quest.get();
-    let ids = quests.list ? Object.keys(quests.list) : [];
-    let list = $('quest-list-rows');
-    let listitem;
-    let staletime = KanColleDatabase.memberShip2.timestamp();
-    let mode = KanColleTimerConfig.getInt('quest-info.mode');
-    let modenode = $('quest-information-mode');
-    let tooltips = {};
+var KanColleTimerQuestInfo = {
+    update: {
+	quest: function() {
+	    let questbox = $('quest-list-box');
+	    let quests = KanColleDatabase.quest.get();
+	    let ids = quests.list ? Object.keys(quests.list) : [];
+	    let list = $('quest-list-rows');
+	    let listitem;
+	    let staletime = KanColleDatabase.memberShip2.timestamp();
+	    let mode = KanColleTimerConfig.getInt('quest-info.mode');
+	    let modenode = $('quest-information-mode');
+	    let tooltips = {};
 
-    function deadline(t,weekly){
-	const base = 331200000;	// 1970/1/4 20:00 UTC = 1970/1/5(月) 5:00 JST
-	const fuzz = 60000;
-	const span = 86400000 * (weekly ? 7 : 1);
-	let d;
-	let elapsed;	// 期間開始からの経過時間
+	    function deadline(t,weekly){
+		const base = 331200000;	// 1970/1/4 20:00 UTC = 1970/1/5(月) 5:00 JST
+		const fuzz = 60000;
+		const span = 86400000 * (weekly ? 7 : 1);
+		let d;
+		let elapsed;	// 期間開始からの経過時間
 
-	if (!t || t < 0)
-	    return -1;	// エラー
+		if (!t || t < 0)
+		    return -1;	// エラー
 
-	elapsed = (t - base) % span;
-	if (elapsed < fuzz)
-	    return 0;	// 時計ずれを考慮
+		elapsed = (t - base) % span;
+		if (elapsed < fuzz)
+		    return 0;	// 時計ずれを考慮
 
-	return t + span - elapsed;
-    }
+		return t + span - elapsed;
+	    }
 
-    if (modenode) {
-	let str = '-';
-	let menunodename = modenode.getAttribute('popup');
-	let menunode = menunodename ? $(menunodename) : null;
-	let children = menunode ? menunode.childNodes : null;
-	if (children) {
-	    for (let i = 0; i < children.length; i++) {
-		let val = parseInt(children[i].value, 10);
-		if (mode == val) {
-		    str = children[i].label;
-		    break;
+	    if (modenode) {
+		let str = '-';
+		let menunodename = modenode.getAttribute('popup');
+		let menunode = menunodename ? $(menunodename) : null;
+		let children = menunode ? menunode.childNodes : null;
+		if (children) {
+		    for (let i = 0; i < children.length; i++) {
+			let val = parseInt(children[i].value, 10);
+			if (mode == val) {
+			    str = children[i].label;
+			    break;
+			}
+		    }
+		}
+		modenode.value = str;
+	    }
+
+	    if (!ids.length)
+		return;
+
+	    ids = ids.sort(function(a,b){
+		return quests.list[a].data.api_no - quests.list[b].data.api_no;
+	    });
+
+	    // clear
+	    RemoveChildren(list);
+
+	    for (let i = 0; i < ids.length; i++) {
+		let no = ids[i];
+		let listitem = CreateElement('row');
+		let cell;
+		let t;
+		let color = null;
+		let q = quests.list[ids[i]];
+		let type = 0;
+		let tid = 'quest-information-deadline-tooltip-' + i;
+
+		// title
+		cell = CreateElement('label');
+		cell.setAttribute('value', q.data.api_title);
+		cell.setAttribute('crop', 'end');
+		cell.setAttribute('tooltiptext', q.data.api_detail);
+		listitem.appendChild(cell);
+
+		// type
+		switch (q.data.api_type) {
+		case 1: t = '';	    type = 0; break;
+		case 2: t = '[日]'; type = 1; break;
+		case 3: t = '[週]'; type = 2; break;
+		case 4: t = '[日]'; type = 1; break;  //3,7,0の日
+		case 5: t = '[日]'; type = 1; break;  //2,8の日
+		default:
+			t = '[' + q.data.api_type + ']';
+		}
+		cell = CreateElement('label');
+		cell.setAttribute('value', t);
+		listitem.appendChild(cell);
+
+		t = type ? deadline(q.timestamp, type == 2) : -1;
+		if (t > 0) {
+		    let tooltip = CreateElement('tooltip');
+		    let timer;
+		    tooltip.setAttribute('id', tid);
+
+		    timer = CreateElement('timer');
+		    timer.mode = 'time';
+		    timer.finishTime = '' + t;
+		    tooltip.appendChild(timer);
+
+		    tooltips[tid] = tooltip;
+
+		    cell.setAttribute('tooltip', tid);
+		}
+
+		// progress
+		if (q.data.api_state == 1 ||
+		    q.data.api_state == 2) {
+		    switch (q.data.api_progress_flag) {
+		    case 0:
+			    t = '  ';
+			    color = null;
+			    break;
+		    case 1: //50%
+			    t = '50';
+			    color = '#88ff88';
+			    break;
+		    case 2: //80%
+			    t = '80';
+			    color = '#3cb371';
+			    break;
+		    }
+		} else if (q.data.api_state == 3) {
+		    //t = '\u2713';	//check mark
+		    t = 'OK';
+		    color = '#88ffff';
+		} else {
+		    t = '?';
+		    color = 'red';
+		}
+
+		cell = CreateElement('label');
+		cell.setAttribute('value', t);
+		listitem.appendChild(cell);
+
+		listitem.style.color = 'black';
+
+		if (q.data.api_state > 1) {
+		    listitem.style.fontWeight = 'bold';
+		    listitem.style.color = 'black';
+		} else {
+		    listitem.style.fontWeight = 'normal';
+		    listitem.style.color = '#444444';
+		}
+		if (color) {
+		    cell.style.border = color + ' 1px solid';
+		    cell.style.backgroundColor = color;
+		    //listitem.style.border = color + ' 1px solid';
+		    //listitem.style.backgroundColor = color;
+		}
+
+		// 古いときは灰色に。
+		if (!staletime || q.timestamp < staletime) {
+		    listitem.style.backgroundColor = '#dddddd';
+		    //listitem.style.fontStyle = 'italic';
+		}
+
+		//debugprint('no: ' + no +
+		//	   '[state: ' + q.data.api_state +
+		//	   ', flag:' + q.data.api_progress_flag +
+		//	   '] title: ' + q.data.api_title +
+		//	   '; detail: ' + q.data.api_detail);
+
+		if (mode == 1) {
+		    // 遂行していないかつ進捗なし(-50%)
+		    if (q.data.api_state == 1 &&
+			q.data.api_progress_flag == 0)
+			continue;
+		} else if (mode == 2) {
+		    // 遂行中でも達成済でもない
+		    if (q.data.api_state != 2 && q.data.api_state != 3)
+			continue;
+		} else if (mode == 3) {
+		    // 遂行中でない
+		    if (q.data.api_state != 2)
+			continue;
+		}
+
+		list.appendChild(listitem);
+	    }
+
+	    if (questbox) {
+		for (let tid in tooltips) {
+		    let node = $(tid);
+		    if (node)
+			node.parentNode.replaceChild(tooltips[tid], node);
+		    else
+			questbox.appendChild(tooltips[tid]);
 		}
 	    }
-	}
-	modenode.value = str;
-    }
+	},
+	memberShip2: 'quest',
+    },
 
-    if (!ids.length)
-	return;
+    restore: function() {
+	this.update.quest();
+    },
 
-    ids = ids.sort(function(a,b){
-	return quests.list[a].data.api_no - quests.list[b].data.api_no;
-    });
+    changeMode: function(node) {
+	let id = node.id;
+	let val = parseInt(node.value, 10);
 
-    // clear
-    RemoveChildren(list);
+	if (!isNaN(val))
+	    KanColleTimerConfig.setInt('quest-info.mode', val);
 
-    for (let i = 0; i < ids.length; i++) {
-	let no = ids[i];
-	let listitem = CreateElement('row');
-	let cell;
-	let t;
-	let color = null;
-	let q = quests.list[ids[i]];
-	let type = 0;
-	let tid = 'quest-information-deadline-tooltip-' + i;
-
-	// title
-	cell = CreateElement('label');
-	cell.setAttribute('value', q.data.api_title);
-	cell.setAttribute('crop', 'end');
-	cell.setAttribute('tooltiptext', q.data.api_detail);
-	listitem.appendChild(cell);
-
-	// type
-	switch (q.data.api_type) {
-	case 1: t = '';	    type = 0; break;
-	case 2: t = '[日]'; type = 1; break;
-	case 3: t = '[週]'; type = 2; break;
-	case 4: t = '[日]'; type = 1; break;  //3,7,0の日
-	case 5: t = '[日]'; type = 1; break;  //2,8の日
-	default:
-		t = '[' + q.data.api_type + ']';
-	}
-	cell = CreateElement('label');
-	cell.setAttribute('value', t);
-	listitem.appendChild(cell);
-
-	t = type ? deadline(q.timestamp, type == 2) : -1;
-	if (t > 0) {
-	    let tooltip = CreateElement('tooltip');
-	    let timer;
-	    tooltip.setAttribute('id', tid);
-
-	    timer = CreateElement('timer');
-	    timer.mode = 'time';
-	    timer.finishTime = '' + t;
-	    tooltip.appendChild(timer);
-
-	    tooltips[tid] = tooltip;
-
-	    cell.setAttribute('tooltip', tid);
-	}
-
-	// progress
-	if (q.data.api_state == 1 ||
-	    q.data.api_state == 2) {
-	    switch (q.data.api_progress_flag) {
-	    case 0:
-		    t = '  ';
-		    color = null;
-		    break;
-	    case 1: //50%
-		    t = '50';
-		    color = '#88ff88';
-		    break;
-	    case 2: //80%
-		    t = '80';
-		    color = '#3cb371';
-		    break;
-	    }
-	} else if (q.data.api_state == 3) {
-	    //t = '\u2713';	//check mark
-	    t = 'OK';
-	    color = '#88ffff';
-	} else {
-	    t = '?';
-	    color = 'red';
-	}
-
-	cell = CreateElement('label');
-	cell.setAttribute('value', t);
-	listitem.appendChild(cell);
-
-	listitem.style.color = 'black';
-
-	if (q.data.api_state > 1) {
-	    listitem.style.fontWeight = 'bold';
-	    listitem.style.color = 'black';
-	} else {
-	    listitem.style.fontWeight = 'normal';
-	    listitem.style.color = '#444444';
-	}
-	if (color) {
-	    cell.style.border = color + ' 1px solid';
-	    cell.style.backgroundColor = color;
-	    //listitem.style.border = color + ' 1px solid';
-	    //listitem.style.backgroundColor = color;
-	}
-
-	// 古いときは灰色に。
-	if (!staletime || q.timestamp < staletime) {
-	    listitem.style.backgroundColor = '#dddddd';
-	    //listitem.style.fontStyle = 'italic';
-	}
-
-	//debugprint('no: ' + no +
-	//	   '[state: ' + q.data.api_state +
-	//	   ', flag:' + q.data.api_progress_flag +
-	//	   '] title: ' + q.data.api_title +
-	//	   '; detail: ' + q.data.api_detail);
-
-	if (mode == 1) {
-	    // 遂行していないかつ進捗なし(-50%)
-	    if (q.data.api_state == 1 &&
-	        q.data.api_progress_flag == 0)
-		continue;
-	} else if (mode == 2) {
-	    // 遂行中でも達成済でもない
-	    if (q.data.api_state != 2 && q.data.api_state != 3)
-		continue;
-	} else if (mode == 3) {
-	    // 遂行中でない
-	    if (q.data.api_state != 2)
-		continue;
-	}
-
-	list.appendChild(listitem);
-    }
-
-    if (questbox) {
-	for (let tid in tooltips) {
-	    let node = $(tid);
-	    if (node)
-		node.parentNode.replaceChild(tooltips[tid], node);
-	    else
-		questbox.appendChild(tooltips[tid]);
-	}
-    }
-}
-
-function KanColleTimerQuestInformationChangeMode(node){
-    let id = node.id;
-    let val = parseInt(node.value, 10);
-
-    if (!isNaN(val))
-	KanColleTimerConfig.setInt('quest-info.mode', val);
-
-    KanColleTimerQuestInformationShow();
-}
-
-function KanColleTimerQuestInformationStart() {
-    let db = KanColleDatabase;
-    db.quest.appendCallback(KanColleTimerQuestInformationShow);
-    db.memberShip2.appendCallback(KanColleTimerQuestInformationShow);
-}
-
-function KanColleTimerQuestInformationStop() {
-    let db = KanColleDatabase;
-    db.memberShip2.removeCallback(KanColleTimerQuestInformationShow);
-    db.quest.removeCallback(KanColleTimerQuestInformationShow);
-}
+	this.update.quest();
+    },
+};
+KanColleTimerQuestInfo.__proto__ = __KanColleTimerPanel;
 
 function KanColleTimerRegisterCallback(){
     KanColleTimerKdockStart();
     KanColleTimerMaterialLogStart();
-    KanColleTimerQuestInformationStart();
     KanColleTimerShipInfoStart();
 }
 
 function KanColleTimerUnregisterCallback(){
     KanColleTimerShipInfoStop();
-    KanColleTimerQuestInformationStop();
     KanColleTimerMaterialLogStop();
     KanColleTimerKdockStop();
 }
