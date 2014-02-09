@@ -320,114 +320,117 @@ KanColleTimerNdockInfo.__proto__ = __KanColleTimerPanel;
  * 建造
  *  member/kdock	: api_data
  */
-function KanColleTimerKdockHandler(){
-    let docks = KanColleDatabase.memberKdock.list();
-    let cur = KanColleDatabase.memberKdock.timestamp();
-    let now = Math.floor(cur);
+var KanColleTimerKdockInfo = {
+    update: {
+	memberKdock: function() {
+	    let docks = KanColleDatabase.memberKdock.list();
+	    let cur = KanColleDatabase.memberKdock.timestamp();
+	    let now = Math.floor(cur);
 
-    // 建造ドック
-    for( let i = 0; i < docks.length; i++ ){
-	let d = KanColleDatabase.memberKdock.get(docks[i]);
-	let k = d.api_id;
-	let targetid = 'kdock'+k;
-	let timeid = 'kdockremain'+k;
-	KanColleRemainInfo.kdock[i] = new Object();
+	    // 建造ドック
+	    for( let i = 0; i < docks.length; i++ ) {
+		let d = KanColleDatabase.memberKdock.get(docks[i]);
+		let k = d.api_id;
+		let targetid = 'kdock'+k;
+		let timeid = 'kdockremain'+k;
+		KanColleRemainInfo.kdock[i] = new Object();
 
-	if( d.api_state > 0 ){
-	    // 建造艦の推定
-	    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
-	    /*
-	    let ship_id = parseInt( d.api_created_ship_id, 10 );
-	    let ship_name = FindShipNameByCatId(d.api_created_ship_id);
-	     */
-	    let ship_name = '???';
-	    let complete_time = d.api_complete_time;
+		if( d.api_state > 0 ){
+		    // 建造艦の推定
+		    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
+		    /*
+		    let ship_id = parseInt( d.api_created_ship_id, 10 );
+		    let ship_name = FindShipNameByCatId(d.api_created_ship_id);
+		     */
+		    let ship_name = '???';
+		    let complete_time = d.api_complete_time;
 
-	    if (d.api_state == 3)
-		complete_time = cur;
+		    if (d.api_state == 3)
+			complete_time = cur;
 
-	    if (cur < complete_time) {
-		// ブラウザを起動して初回タイマー起動時に
-		// 建造開始時刻を復元するため
-		// Note: Configにはms単位の時刻は保存できないので
-		//       分けて保存する。
-		let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k) * 1000 +
-				   KanColleTimerConfig.getInt("kdock-created-timems"+k);
-		if( !created_time ){
-		    created_time = cur;
-		    KanColleTimerConfig.setInt( "kdock-created-time"+k, Math.floor(cur/1000) );
-		    KanColleTimerConfig.setInt( "kdock-created-timems"+k, cur % 1000);
+		    if (cur < complete_time) {
+			// ブラウザを起動して初回タイマー起動時に
+			// 建造開始時刻を復元するため
+			// Note: Configにはms単位の時刻は保存できないので
+			//       分けて保存する。
+			let created_time = KanColleTimerConfig.getInt("kdock-created-time"+k) * 1000 +
+					   KanColleTimerConfig.getInt("kdock-created-timems"+k);
+			if( !created_time ){
+			    created_time = cur;
+			    KanColleTimerConfig.setInt( "kdock-created-time"+k, Math.floor(cur/1000) );
+			    KanColleTimerConfig.setInt( "kdock-created-timems"+k, cur % 1000);
+			}
+
+			ship_name = GetConstructionShipName(Math.floor(created_time/1000),
+							    Math.floor(complete_time/1000));
+			KanColleRemainInfo.construction_shipname[i] = ship_name;
+		    } else {
+			ship_name = KanColleRemainInfo.construction_shipname[i];
+		    }
+		    if (ship_name) {
+			$('kdock-label'+k).setAttribute('tooltiptext', ship_name);
+		    }
+
+		    KanColleRemainInfo.kdock[i].finishedtime = complete_time;
+		    $(targetid).finishTime = complete_time;
+		    $(timeid).finishTime = complete_time;
+		}else if (d.api_state == 0) {
+		    // 建造していない
+		    $('kdock-label'+k).setAttribute('tooltiptext','');
+		    $(targetid).finishTime = '';
+		    $(timeid).finishTime = '';
+		    KanColleRemainInfo.kdock[i].finishedtime = Number.NaN;
+		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
+		    KanColleTimerConfig.setInt( "kdock-created-timems"+k, 0 );
+		    KanColleRemainInfo.construction_shipname[i] = null;
+		}else{
+		    $('kdock-box'+k).style.display = 'none';
 		}
-
-		ship_name = GetConstructionShipName(Math.floor(created_time/1000),
-						    Math.floor(complete_time/1000));
-		KanColleRemainInfo.construction_shipname[i] = ship_name;
-	    } else {
-		ship_name = KanColleRemainInfo.construction_shipname[i];
 	    }
-	    if (ship_name) {
-		$('kdock-label'+k).setAttribute('tooltiptext', ship_name);
-	    }
+	},
 
-	    KanColleRemainInfo.kdock[i].finishedtime = complete_time;
-	    $(targetid).finishTime = complete_time;
-	    $(timeid).finishTime = complete_time;
-	}else if (d.api_state == 0) {
-	    // 建造していない
-	    $('kdock-label'+k).setAttribute('tooltiptext','');
-	    $(targetid).finishTime = '';
-	    $(timeid).finishTime = '';
-	    KanColleRemainInfo.kdock[i].finishedtime = Number.NaN;
-	    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
-	    KanColleTimerConfig.setInt( "kdock-created-timems"+k, 0 );
-	    KanColleRemainInfo.construction_shipname[i] = null;
-	}else{
-	    $('kdock-box'+k).style.display = 'none';
+	memberBasic: function() {
+	    let d = KanColleDatabase.memberBasic.get();
+	    let ndocks;
+	    if (!d)
+		return;
+	    ndocks = document.getElementsByClassName("kdock-box");
+	    for( let i = 0; i < 4; i++ )
+		SetStyleProperty(ndocks[i], 'display', i < d.api_count_kdock ? "":"none");
+	},
+
+	memberMaterial: function() {
+	    let d = KanColleDatabase.memberMaterial.get(5);
+	    if (typeof(d) == 'object')
+		$('burner-number').value = d.api_value;
+	},
+
+    },
+
+    restore: function() {
+	this.update.memberBasic();
+	try{
+	    for(let i=0; i<4; i++){
+		let k = i+1;
+		if( KanColleRemainInfo.kdock[i] ){
+		    $('kdock'+k).finishTime = KanColleRemainInfo.kdock[i].finishedtime;
+		    $('kdockremain'+k).finishTime = KanColleRemainInfo.kdock[i].finishedtime;
+		}
+		// 建造中艦艇の表示復元
+		if( KanColleRemainInfo.construction_shipname[i] ){
+		    $('kdock-box'+k).setAttribute('tooltiptext',KanColleRemainInfo.construction_shipname[i]);
+		}
+	    }
+	} catch (x) {
 	}
-    }
-}
+    },
 
-function KanColleTimerKdockBasicHandler(){
-    let d = KanColleDatabase.memberBasic.get();
-    let ndocks;
-    if (!d)
-	return;
-    ndocks = document.getElementsByClassName("kdock-box");
-    for( let i = 0; i < 4; i++ )
-	SetStyleProperty(ndocks[i], 'display', i < d.api_count_kdock ? "":"none");
-}
-
-function KanColleTimerKdockMaterialHandler() {
-    let d = KanColleDatabase.memberMaterial.get(5);
-    if (typeof(d) == 'object')
-	$('burner-number').value = d.api_value;
-}
-
-function KanColleTimerKdockRestore(){
-    KanColleTimerKdockBasicHandler();
-    try{
-	for(let i=0; i<4; i++){
-	    let k = i+1;
-	    if( KanColleRemainInfo.kdock[i] ){
-		$('kdock'+k).finishTime = KanColleRemainInfo.kdock[i].finishedtime;
-		$('kdockremain'+k).finishTime = KanColleRemainInfo.kdock[i].finishedtime;
-	    }
-	    // 建造中艦艇の表示復元
-	    if( KanColleRemainInfo.construction_shipname[i] ){
-		$('kdock-box'+k).setAttribute('tooltiptext',KanColleRemainInfo.construction_shipname[i]);
-	    }
-	}
-    } catch (x) {
-    }
-}
-
-/*
- * 建造艦名表示（隠し機能）
- *
- * 建造ドックのNo.欄を素早く何度かダブルクリックすると
- * 艦名を tooltip として表示
- */
-var KanColleKdockMouseEventHandler = {
+    /*
+     * 建造艦名表示（隠し機能）
+     *
+     * 建造ドックのNo.欄を素早く何度かダブルクリックすると
+     * 艦名を tooltip として表示
+     */
     timer: {},
 
     handleEvent: function(e) {
@@ -454,7 +457,8 @@ var KanColleKdockMouseEventHandler = {
 	}
     },
 
-    init: function(){
+    init: function() {
+	this._update_init();
 	for( let i = 0; i < 4; i++ ){
 	    let k = 'kdock-label' + (i + 1);
 	    $(k).addEventListener('dblclick', this);
@@ -466,22 +470,10 @@ var KanColleKdockMouseEventHandler = {
 	    let k = 'kdock-label' + (i + 1);
 	    $(k).removeEventListener('dblclick', this);
 	}
+	this._update_exit();
     },
 };
-
-function KanColleTimerKdockStart() {
-    let db = KanColleDatabase;
-    db.memberKdock.appendCallback(KanColleTimerKdockHandler);
-    db.memberBasic.appendCallback(KanColleTimerKdockBasicHandler);
-    db.memberMaterial.appendCallback(KanColleTimerKdockMaterialHandler);
-}
-
-function KanColleTimerKdockStop() {
-    let db = KanColleDatabase;
-    db.memberMaterial.removeCallback(KanColleTimerKdockMaterialHandler);
-    db.memberBasic.removeCallback(KanColleTimerKdockBasicHandler);
-    db.memberKdock.removeCallback(KanColleTimerKdockHandler);
-}
+KanColleTimerKdockInfo.__proto__ = __KanColleTimerPanel;
 
 // 資源情報
 function KanColleTimerMemberMaterialHandler() {
@@ -912,7 +904,6 @@ var KanColleTimerQuestInfo = {
 KanColleTimerQuestInfo.__proto__ = __KanColleTimerPanel;
 
 function KanColleTimerRegisterCallback(){
-    KanColleTimerKdockStart();
     KanColleTimerMaterialLogStart();
     KanColleTimerShipInfoStart();
 }
@@ -920,7 +911,6 @@ function KanColleTimerRegisterCallback(){
 function KanColleTimerUnregisterCallback(){
     KanColleTimerShipInfoStop();
     KanColleTimerMaterialLogStop();
-    KanColleTimerKdockStop();
 }
 
 function AddLog(str){

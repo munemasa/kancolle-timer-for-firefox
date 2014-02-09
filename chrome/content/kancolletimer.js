@@ -358,6 +358,7 @@ var KanColleTimer = {
 	KanColleTimerHeadQuarterInfo.init();
 	KanColleTimerDeckInfo.init();
 	KanColleTimerNdockInfo.init();
+	KanColleTimerKdockInfo.init();
 	KanColleTimerQuestInfo.init();
 	KanColleTimerFleetInfo.init();
 
@@ -367,12 +368,11 @@ var KanColleTimer = {
 
 	KanColleTimerDeckInfo.restore();
 	KanColleTimerNdockInfo.restore();
-	KanColleTimerKdockRestore();
+	KanColleTimerKdockInfo.restore();
 	KanColleTimerQuestInfo.restore();
 	//KanColleTimerFleetInfo.restore();
 
 	KanColleShipInfoInit();
-	KanColleKdockMouseEventHandler.init();
 
 	this.createMissionBalanceTable();
 	this.setWindowOnTop();
@@ -381,6 +381,7 @@ var KanColleTimer = {
 
 	KanColleTimerHeadQuarterInfo.start();
 	KanColleTimerDeckInfo.start();
+	KanColleTimerKdockInfo.start();
 	KanColleTimerNdockInfo.start();
 	KanColleTimerQuestInfo.start();
 	KanColleTimerFleetInfo.start();
@@ -389,11 +390,10 @@ var KanColleTimer = {
     destroy: function(){
 	KanColleTimerFleetInfo.stop();
 	KanColleTimerQuestInfo.stop();
+	KanColleTimerKdockInfo.stop();
 	KanColleTimerNdockInfo.stop();
 	KanColleTimerDeckInfo.stop();
 	KanColleTimerHeadQuarterInfo.stop();
-
-	KanColleKdockMouseEventHandler.exit();
 
 	this.stopTimer();
 
@@ -403,6 +403,7 @@ var KanColleTimer = {
 
 	KanColleTimerFleetInfo.exit();
 	KanColleTimerQuestInfo.exit();
+	KanColleTimerKdockInfo.exit();
 	KanColleTimerNdockInfo.exit();
 	KanColleTimerDeckInfo.exit();
 	KanColleTimerHeadQuarterInfo.exit();
