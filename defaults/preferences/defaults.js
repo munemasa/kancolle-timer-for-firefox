@@ -14,6 +14,8 @@ pref("extensions.kancolletimer.screenshot.path","");
 pref("extensions.kancolletimer.screenshot.jpeg",false);
 pref("extensions.kancolletimer.screenshot.mask-name",false);
 
+pref("extensions.kancolletimer.window.auto-open",false);
+
 pref("extensions.kancolletimer.wallpaper","");
 pref("extensions.kancolletimer.wallpaper.alpha",100);
 

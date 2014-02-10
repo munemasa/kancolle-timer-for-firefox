@@ -176,6 +176,8 @@
 
   <prefpane id="prefpane-wallpaper" label="表示" image="chrome://kancolletimer/content/data/screen.png">
     <preferences>
+      <preference id="pref-auto-open"
+		  name="extensions.kancolletimer.window.auto-open" type="bool"/>
       <preference id="pref-display-short"
 		  name="extensions.kancolletimer.display.short" type="bool"/>
       <preference id="pref-wallpaper"
@@ -190,6 +192,7 @@
       <preference id="font.language.group" name="font.language.group" type="wstring"/>
     </preferences>
 
+    <checkbox preference="pref-auto-open" label="艦これタイマー(ウィンドウ)を自動で開く" tooltiptext="艦これのゲームページを開いたときに、艦これタイマー(ウィンドウ)を自動で開きます。"/>
     <checkbox preference="pref-display-short" label="省スペース表示にする" tooltiptext="ウィンドウ表示時に終了時刻の表示をなくします。"/>
 
     <hbox align="center">
