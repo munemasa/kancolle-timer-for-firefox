@@ -61,7 +61,7 @@
 		     oncommand="$('deck').selectedIndex=3;"/>
       <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
 		     oncommand="$('deck').selectedIndex=1;"/>
-      <toolbarbutton tooltiptext="保有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
+      <toolbarbutton tooltiptext="保有艦娘リスト" image="data/list.png" oncommand="OpenShipList();"/>
       <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
 	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
@@ -72,7 +72,7 @@
       </toolbarbutton>
       <toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	<menupopup>
-	  <menuitem label="保有艦艇リスト" oncommand="OpenShipList();"/>
+	  <menuitem label="保有艦娘リスト" oncommand="OpenShipList();"/>
 	  <menuitem label="資源グラフ" oncommand="OpenResourceGraph();"/>
 	  <menuseparator/>
 	  <menuitem id="window-stay-on-top" persist="checked"
@@ -245,7 +245,7 @@
 	<groupbox id="group-info">
 	  <caption>艦隊司令部情報</caption>
 	  <hbox>
-	    <label value="保有艦艇数"/><label id="number-of-ships" value=""/><label value="/"/><label id="max-number-of-ships" value=""/>
+	    <label value="保有艦娘数"/><label id="number-of-ships" value=""/><label value="/"/><label id="max-number-of-ships" value=""/>
 	  </hbox>
 	  <hbox>
 	    <label value="装備アイテム数"/><label id="number-of-items" value=""/><label value="/"/><label id="max-number-of-items" value=""/>
