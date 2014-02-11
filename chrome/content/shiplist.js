@@ -245,23 +245,59 @@ var ShipList = {
 	    .attr("height", function(d) { return height - y(d); });
     },
 
-    init: function(){
-	let now = GetCurrentTime();
+    createShipOrganizationList: function(){
+	// 艦隊編成
+	let fleets = KanColleDatabase.memberDeck.list();
+	for( let j = 0; j < fleets.length; j++ ){
+	    let fleet = KanColleDatabase.memberDeck.get( fleets[j] );
+	    let rows = $( 'fleet-' + fleet.api_id );
 
-	this.createHistogram();
+	    for( let i = 0; fleet.api_ship[i] != -1 && i < 6; i++ ){
+		let row = CreateElement( 'row' );
+		let data = FindOwnShipData( fleet.api_ship[i] );
+		let masterdata = FindShipData( fleet.api_ship[i] );
+		row.appendChild( CreateLabel( KanColleData.type_name[masterdata.api_stype], '' ) );
+		row.appendChild( CreateLabel( masterdata.api_name ) );
+		row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp ) );
 
+		let hbox = CreateElement( 'hbox' );
+		hbox.appendChild( CreateLabel( "" + data.api_cond ) );
+		row.appendChild( hbox );
+		if( masterdata.api_fuel_max != data.api_fuel ||
+		    masterdata.api_bull_max != data.api_bull ){
+		    hbox.setAttribute( 'warning', '1' );
+		}
+
+		let maxhp = parseInt( data.api_maxhp );
+		let nowhp = parseInt( data.api_nowhp );
+		if( nowhp - 1 <= maxhp * 0.25 ){
+		    row.style.backgroundColor = '#ff8080';
+		}else{
+		    row.style.backgroundColor = '';
+		}
+		rows.appendChild( row );
+	    }
+
+	}
+    },
+
+    createShipList: function(){
 	// 艦艇リスト
-	let ships = KanColleDatabase.memberShip2.list().map(function(k){ return KanColleDatabase.memberShip2.get(k); });
-	let items = KanColleDatabase.memberSlotitem.list().map(function(k){ return KanColleDatabase.memberSlotitem.get(k); });
-	items.forEach( function(elem){
+	let ships = KanColleDatabase.memberShip2.list().map( function( k ){
+	    return KanColleDatabase.memberShip2.get( k );
+	} );
+	let items = KanColleDatabase.memberSlotitem.list().map( function( k ){
+	    return KanColleDatabase.memberSlotitem.get( k );
+	} );
+	items.forEach( function( elem ){
 	    elem._owner_ship = null;
 	} );
 
 	this.allships = new Array();
 
-	let list = $('ship-list');
+	let list = $( 'ship-list' );
 	let no = 1;
-	for (let j = 0; j < ships.length; j++) {
+	for( let j = 0; j < ships.length; j++ ){
 	    let ship = ships[j];
 	    let data = FindShipData( ship.api_id );
 	    let fleet_no = this.getFleetNo( ship.api_id );
@@ -274,83 +310,67 @@ var ShipList = {
 	    obj.name = data.api_name;
 	    obj.lv = ship.api_lv;
 	    obj.cond = ship.api_cond;
-	    obj.ndock_time = parseInt(ship.api_ndock_time/1000);
+	    obj.ndock_time = parseInt( ship.api_ndock_time / 1000 );
 
 	    obj.equips = new Array();
 
 	    for( let i in ship.api_slot ){
 		let slot_id = ship.api_slot[i];
-		if( slot_id==-1 ) continue;
+		if( slot_id == -1 ) continue;
 		let item = FindSlotItem( slot_id );
 		item._owner_ship = obj.name;
 		obj.equips.push( item.api_name );
 	    }
 	    this.allships.push( obj );
 	}
-	this.setupListBox();
+	return {ships: ships, items: items};
+    },
 
-	// 艦隊編成
-	let fleets = KanColleDatabase.memberDeck.list();
-	for (let j = 0; j < fleets.length; j++) {
-	    let fleet = KanColleDatabase.memberDeck.get(fleets[j]);
-	    let rows = $('fleet-'+fleet.api_id);
-
-	    for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
-		let row = CreateElement('row');
-		let data = FindOwnShipData( fleet.api_ship[i] );
-		let masterdata = FindShipData( fleet.api_ship[i] );
-		row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
-		row.appendChild( CreateLabel(masterdata.api_name) );
-		row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
-
-		let hbox = CreateElement('hbox');
-		hbox.appendChild( CreateLabel(""+data.api_cond) );
-		row.appendChild( hbox );
-		if( masterdata.api_fuel_max!=data.api_fuel ||
-		    masterdata.api_bull_max!=data.api_bull ){
-			hbox.setAttribute('warning','1');
-		}
-
-		let maxhp = parseInt(data.api_maxhp);
-		let nowhp = parseInt(data.api_nowhp);
-		if( nowhp-1 <= maxhp*0.25 ){
-		    row.style.backgroundColor = '#ff8080';
-		}else{
-		    row.style.backgroundColor = '';
-		}
-		rows.appendChild( row );
-	    }
-
-	}
-
+    createEquipmentList: function( items ){
 	// 未装備品リストを作成する
-	let equipments = items.filter( function(d){ return !d._owner_ship; });
+	let equipments = items.filter( function( d ){
+	    return !d._owner_ship;
+	} );
 	let count = new Object();
 	for( let e in equipments ){
 	    let k = equipments[e].api_name;
 	    if( !count[k] ) count[k] = 0;
 	    count[ k ]++;
 	}
-	let update = d3.select("#equipment-list")
-		.selectAll("row")
-		.data( d3.map(count).keys() );
+	let update = d3.select( "#equipment-list" )
+	    .selectAll( "row" )
+	    .data( d3.map( count ).keys() );
 	update.enter()
-	    .append("row")
-	    .attr("style","border-bottom: #c0c0c0 1px solid;")
-	    .selectAll("label")
-	    .data( function(d){ return [d, count[d]]; } )
+	    .append( "row" )
+	    .attr( "style", "border-bottom: #c0c0c0 1px solid;" )
+	    .selectAll( "label" )
+	    .data( function( d ){
+		return [d, count[d]];
+	    } )
 	    .enter()
-	    .append("label")
-	    .attr("value", function(d){
+	    .append( "label" )
+	    .attr( "value", function( d ){
 		return d;
-	    });
+	    } );
+	return equipments;
+    },
 
-	$("tab-ships").setAttribute("label","艦娘("+ships.length+")");
-	$("tab-equipment").setAttribute("label","未装備品("+equipments.length+")");
+    init: function(){
+	this.createHistogram();
+	var __ret = this.createShipList();
+	var ships = __ret.ships;
+	var items = __ret.items;
 
-	this.setFleetOrganization(1);
+	this.setupListBox();
+	this.createShipOrganizationList();
+	var equipments = this.createEquipmentList( items );
 
-	document.title += " "+ new Date();
+	$( "tab-ships" ).setAttribute( "label", "艦娘(" + ships.length + ")" );
+	$( "tab-equipment" ).setAttribute( "label", "未装備品(" + equipments.length + ")" );
+
+	this.setFleetOrganization( 1 );
+
+	document.title += " " + new Date();
     }
 
 };
