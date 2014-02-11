@@ -379,7 +379,15 @@ var KanColleTimer = {
 
     init: function(){
 	KanColleHttpRequestObserver.init();
-	KanColleTimerCallbackInit();
+
+	KanColleTimerHeadQuarterInfoStart();
+	KanColleTImerDeckInfoStart();
+	KanColleTimerNdockInfoStart();
+	KanColleTimerKdockInfoStart();
+	KanColleTimerQuestInfoStart();
+	KanColleTimerFleetOrgInfoStart();
+	KanColleTimerFleetCondInfoStart();
+	KanColleTimerMaterialLogStart();
 
 	this.startTimer();
 
@@ -430,7 +438,14 @@ var KanColleTimer = {
     destroy: function(){
 	this.stopTimer();
 
-	KanColleTimerCallbackExit();
+	KanColleTimerMaterialLogStop();
+	KanColleTimerFleetCondInfoStop();
+	KanColleTimerFleetOrgInfoStop();
+	KanColleTimerQuestInfoStop();
+	KanColleTimerKdockInfoStop();
+	KanColleTimerNdockInfoStop();
+	KanColleTImerDeckInfoStop();
+	KanColleTimerHeadQuarterInfoStop();
 
 	KanColleHttpRequestObserver.destroy();
 
