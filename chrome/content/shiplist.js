@@ -331,12 +331,21 @@ var ShipList = {
 	let equipments = items.filter( function( d ){
 	    return !d._owner_ship;
 	} );
+
+	// 艦これと同じ並びにする
+	for( let i=0; i<4; i+=2 ){
+	    equipments.sort( function( a, b ){
+		return a.api_type[i] - b.api_type[i];
+	    } );
+	}
+
 	let count = new Object();
 	for( let e in equipments ){
 	    let k = equipments[e].api_name;
 	    if( !count[k] ) count[k] = 0;
 	    count[ k ]++;
 	}
+
 	let update = d3.select( "#equipment-list" )
 	    .selectAll( "row" )
 	    .data( d3.map( count ).keys() );
@@ -369,8 +378,8 @@ var ShipList = {
 	$( "tab-equipment" ).setAttribute( "label", "未装備品(" + equipments.length + ")" );
 
 	this.setFleetOrganization( 1 );
-
 	document.title += " " + new Date();
+
     }
 
 };
