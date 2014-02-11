@@ -63,6 +63,15 @@ function KanColleTimerMemberDeckHandler() {
     }
 }
 
+function KanColleTimerDeckMemberBasicHandler() {
+    let d = KanColleDatabase.memberBasic.get();
+    let fleets = document.getElementsByClassName("fleet");
+    for (let i = 0; i < 4; i++)
+	fleets[i].style.display = (i != 0 && i < d.api_count_deck) ? "" : "none");
+    if (d.api_count_deck < 2)
+	$('group-mission').style.display = "none";
+}
+
 // 入渠ドック
 function KanColleTimerMemberNdockHandler() {
     let docks = KanColleDatabase.memberNdock.list();
@@ -106,6 +115,13 @@ function KanColleTimerMemberNdockHandler() {
 	    KanColleRemainInfo.ndock[i].finishedtime = -1;
 	}
     }
+}
+
+function KanColleTimerNdockMemberBasicHandler() {
+    let d = KanColleDatabase.memberBasic.get();
+    let ndocks = document.getElementsByClassName("ndock-box");
+    for (let i = 0; i < 4; i++)
+	ndocks[i].style.display = i < d.api_count_ndock ? "" : "none";
 }
 
 // 建造ドック
@@ -167,6 +183,13 @@ function KanColleTimerMemberKdockHandler() {
     }
 }
 
+function KanColleTimerKdockMemberBasicHandler() {
+    let d = KanColleDatabase.memberBasic.get();
+    let kdocks = document.getElementsByClassName("kdock-box");
+    for (let i = 0; i < 4; i++)
+	kdocks[i].style.display = i < d.api_count_kdock ? "" : "none";
+}
+
 // 所持艦船情報 / 装備情報
 function KanColleTimerSetHeadQuarterInformation() {
     function convnan(v) {
@@ -179,22 +202,6 @@ function KanColleTimerSetHeadQuarterInformation() {
 // 艦隊司令部情報
 function KanColleTimerMemberBasicHandler() {
     let d = KanColleDatabase.memberBasic.get();
-    let f = function( elems, n ){
-	for( let i=1; i<4; i++ ){
-	    elems[i].style.display = i<n ? "":"none";
-	}
-    };
-    let tmp = parseInt( d.api_count_deck );
-    if( tmp==1 ){
-	$('group-mission').style.display = "none";
-    }else{
-	let fleets = document.getElementsByClassName("fleet");
-	f( fleets, tmp );
-    }
-    let ndocks = document.getElementsByClassName("ndock-box");
-    let kdocks = document.getElementsByClassName("kdock-box");
-    f( ndocks, parseInt(d.api_count_ndock) );
-    f( kdocks, parseInt(d.api_count_kdock) );
 
     $('max-number-of-ships').value = d.api_max_chara+"隻";
     $('max-number-of-items').value = d.api_max_slotitem;
@@ -258,8 +265,11 @@ function KanColleTimerCallbackInit() {
     KanColleDatabase.memberDeck.appendCallback(SetAllFleetOrganization);
     KanColleDatabase.memberDeck.appendCallback(SetFleetsCondition);
     KanColleDatabase.memberDeck.appendCallback(KanColleTimerMemberDeckHandler);
+    KanColleDatabase.memberBasic.appendCallback(KanColleTimerDeckMemberBasicHandler);
     KanColleDatabase.memberNdock.appendCallback(KanColleTimerMemberNdockHandler);
+    KanColleDatabase.memberBasic.appendCallback(KanColleTimerNdockMemberBasicHandler);
     KanColleDatabase.memberKdock.appendCallback(KanColleTimerMemberKdockHandler);
+    KanColleDatabase.memberBasic.appendCallback(KanColleTimerKdockMemberBasicHandler);
     KanColleDatabase.memberShip2.appendCallback(KanColleTimerSetHeadQuarterInformation);
     KanColleDatabase.memberShip2.appendCallback(KanColleTimerMemberDeckHandler);
     KanColleDatabase.memberShip2.appendCallback(SetAllFleetOrganization);
@@ -281,8 +291,11 @@ function KanColleTimerCallbackExit() {
     KanColleDatabase.memberShip2.removeCallback(SetAllFleetOrganization);
     KanColleDatabase.memberShip2.removeCallback(KanColleTimerMemberDeckHandler);
     KanColleDatabase.memberShip2.removeCallback(KanColleTimerSetHeadQuarterInformation);
+    KanColleDatabase.memberBasic.removeCallback(KanColleTimerKdockMemberBasicHandler);
     KanColleDatabase.memberKdock.removeCallback(KanColleTimerMemberKdockHandler);
+    KanColleDatabase.memberBasic.removeCallback(KanColleTimerNdockMemberBasicHandler);
     KanColleDatabase.memberNdock.removeCallback(KanColleTimerMemberNdockHandler);
+    KanColleDatabase.memberBasic.removeCallback(KanColleTimerDeckMemberBasicHandler);
     KanColleDatabase.memberDeck.removeCallback(KanColleTimerMemberDeckHandler);
     KanColleDatabase.memberDeck.removeCallback(SetFleetsCondition);
     KanColleDatabase.memberDeck.removeCallback(SetAllFleetOrganization);
