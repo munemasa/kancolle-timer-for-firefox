@@ -364,13 +364,24 @@ var KanColleTimer = {
 	Storage.writeObject( "resourcehistory", data );
     },
 
+    startTimer: function() {
+	if (this._timer)
+	    return;
+	this._timer = setInterval(this.update.bind(this), 1000);
+    },
+
+    stopTimer: function() {
+	if (!this._timer)
+	    return;
+	clearInterval(this._timer);
+	this._timer = null;
+    },
+
     init: function(){
 	KanColleHttpRequestObserver.init();
 	KanColleTimerCallbackInit();
 
-	setInterval( function(){
-			 KanColleTimer.update();
-		     }, 1000 );
+	this.startTimer();
 
 	try{
 	    for(let i=0; i<4; i++){
@@ -417,7 +428,10 @@ var KanColleTimer = {
     },
 
     destroy: function(){
+	this.stopTimer();
+
 	KanColleTimerCallbackExit();
+
 	KanColleHttpRequestObserver.destroy();
 
 	this.writeResourceData();
