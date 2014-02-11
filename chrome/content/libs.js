@@ -124,6 +124,12 @@ function KanColleTimerNdockMemberBasicHandler() {
 	ndocks[i].style.display = i < d.api_count_ndock ? "" : "none";
 }
 
+// 資源情報
+function KanColleTimerMemberMaterialHandler() {
+    let d = KanColleDatabase.memberMaterial.get(6);
+    $('repairkit-number').value = d.api_value;
+}
+
 // 建造ドック
 function KanColleTimerMemberKdockHandler() {
     let docks = KanColleDatabase.memberKdock.list();
@@ -205,12 +211,6 @@ function KanColleTimerMemberBasicHandler() {
 
     $('max-number-of-ships').value = d.api_max_chara+"隻";
     $('max-number-of-items').value = d.api_max_slotitem;
-}
-
-// 資源情報
-function KanColleTimerMemberMaterialHandler() {
-    let d = KanColleDatabase.memberMaterial.get(6);
-    $('repairkit-number').value = d.api_value;
 }
 
 function KanColleTimerMemberMaterialLogging() {
