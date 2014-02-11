@@ -123,7 +123,7 @@ var KanColleTimer = {
 		delete KanColleRemainInfo.gMission[i];
 	    }
 	    this._date = d;
-	    SetQuestName();
+	    KanColleTimerQuestInfo.update.memberQuestlist();
 	}
     },
 
@@ -380,46 +380,61 @@ var KanColleTimer = {
     init: function(){
 	KanColleHttpRequestObserver.init();
 
-	KanColleTimerHeadQuarterInfoStart();
-	KanColleTImerDeckInfoStart();
-	KanColleTimerNdockInfoStart();
-	KanColleTimerKdockInfoStart();
-	KanColleTimerQuestInfoStart();
-	KanColleTimerFleetOrgInfoStart();
-	KanColleTimerFleetCondInfoStart();
-	KanColleTimerMaterialLogStart();
+	KanColleTimerHeadQuarterInfo.init();
+	KanColleTimerDeckInfo.init();
+	KanColleTimerNdockInfo.init();
+	KanColleTimerKdockInfo.init();
+	KanColleTimerQuestInfo.init();
+	KanColleTimerFleetOrgInfo.init();
+	KanColleTimerFleetCondInfo.init();
+	KanColleTimerMaterialLog.init();
+
+	KanColleTimerDeckInfo.restore();
+	KanColleTimerKdockInfo.restore();
+	KanColleTimerNdockInfo.restore();
+	KanColleTimerQuestInfo.restore();
+	KanColleTimerFleetOrgInfo.restore();
+	KanColleTimerFleetCondInfo.restore();
 
 	this.startTimer();
 
-	KanColleTimerDeckInfoRestore();
-	KanColleTimerKdockInfoRestore();
-	KanColleTimerNdockInfoRestore();
-
 	this.createMissionBalanceTable();
 
-	SetQuestName();
-	SetAllFleetOrganization();
-	SetFleetsCondition();
-
-	KanColleTimerSetHeadQuarterInformation();
-
 	this.readResourceData();
+
+	KanColleTimerHeadQuarterInfo.start();
+	KanColleTimerDeckInfo.start();
+	KanColleTimerNdockInfo.start();
+	KanColleTimerKdockInfo.start();
+	KanColleTimerQuestInfo.start();
+	KanColleTimerFleetOrgInfo.start();
+	KanColleTimerFleetCondInfo.start();
+	KanColleTimerMaterialLog.start();
     },
 
     destroy: function(){
-	this.stopTimer();
+	KanColleTimerMaterialLog.stop();
+	KanColleTimerFleetCondInfo.stop();
+	KanColleTimerFleetOrgInfo.stop();
+	KanColleTimerQuestInfo.stop();
+	KanColleTimerKdockInfo.stop();
+	KanColleTimerNdockInfo.stop();
+	KanColleTimerDeckInfo.stop();
+	KanColleTimerHeadQuarterInfo.stop();
 
-	KanColleTimerMaterialLogStop();
-	KanColleTimerFleetCondInfoStop();
-	KanColleTimerFleetOrgInfoStop();
-	KanColleTimerQuestInfoStop();
-	KanColleTimerKdockInfoStop();
-	KanColleTimerNdockInfoStop();
-	KanColleTImerDeckInfoStop();
-	KanColleTimerHeadQuarterInfoStop();
+	this.stopTimer();
 
 	KanColleHttpRequestObserver.destroy();
 
 	this.writeResourceData();
+
+	KanColleTimerMaterialLog.exit();
+	KanColleTimerFleetCondInfo.exit();
+	KanColleTimerFleetOrgInfo.exit();
+	KanColleTimerQuestInfo.exit();
+	KanColleTimerKdockInfo.exit();
+	KanColleTimerNdockInfo.exit();
+	KanColleTimerDeckInfo.exit();
+	KanColleTimerHeadQuarterInfo.exit();
     }
 };
