@@ -190,8 +190,8 @@ var KanColleDatabase = {
     memberShip2: null,		// member/ship2
     memberSlotitem: null,	// member/slotitem
 
-    _callback: null,
-    callback: function(req, s) {
+    _callback_bound: null,
+    _callback: function(req, s) {
 	let now = (new Date).getTime();
 	let url = req.name;
 	let data = JSON.parse(s.substring(s.indexOf('svdata=') + 7));
@@ -229,8 +229,8 @@ var KanColleDatabase = {
 
     // Initialization
     init: function(){
-	if (!this._callback)
-	    this._callback = this.callback.bind(this);
+	if (!this._callback_bound)
+	    this._callback_bound = this._callback.bind(this);
 
 	if (!this.masterShip)
 	    this.masterShip = new KanColleDB();
@@ -395,7 +395,7 @@ var KanColleHttpRequestObserver =
 	    debugprint("start kancolle observer.");
 
 	    KanColleDatabase.init();
-	    this.addCallback(KanColleDatabase._callback);
+	    this.addCallback(KanColleDatabase._callback_bound);
 	}
 	this.counter++;
     },
@@ -403,7 +403,7 @@ var KanColleHttpRequestObserver =
     destroy: function(){
 	this.counter--;
 	if( this.counter<=0 ){
-	    this.removeCallback(KanColleDatabase._callback);
+	    this.removeCallback(KanColleDatabase._callback_bound);
 	    KanColleDatabase.exit();
 
 	    this.observerService.removeObserver(this, "http-on-examine-response");
