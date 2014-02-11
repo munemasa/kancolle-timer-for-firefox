@@ -391,37 +391,9 @@ var KanColleTimer = {
 
 	this.startTimer();
 
-	try{
-	    for(let i=0; i<4; i++){
-		let k = i+1;
-		if( KanColleRemainInfo.fleet_name[i] ){
-		    $('fleetname'+k).value = KanColleRemainInfo.fleet_name[i];
-		}
-		if( KanColleRemainInfo.mission_name[i] ){
-		    let mission_name = KanColleRemainInfo.mission_name[i];
-		    $('mission_name'+k).value=mission_name;
-		}
-		if( KanColleRemainInfo.fleet_time[i] ){
-		    $('fleet'+k).value = KanColleRemainInfo.fleet_time[i];
-		}
-		if( KanColleRemainInfo.ndock_memo[i] ){
-		    $('ndock-box'+k).setAttribute('tooltiptext',
-						  KanColleRemainInfo.ndock_memo[i] );
-		}
-
-		if( KanColleRemainInfo.ndock_time[i] ){
-		    $('ndock'+k).value = KanColleRemainInfo.ndock_time[i];
-		}
-		if( KanColleRemainInfo.kdock_time[i] ){
-		    $('kdock'+k).value = KanColleRemainInfo.kdock_time[i];
-		}
-		// 建造中艦艇の表示復元
-		if( KanColleRemainInfo.construction_shipname[i] ){
-		    $('kdock-box'+k).setAttribute('tooltiptext',KanColleRemainInfo.construction_shipname[i]);
-		}
-	    }
-	} catch (x) {
-	}
+	KanColleTimerDeckInfoRestore();
+	KanColleTimerKdockInfoRestore();
+	KanColleTimerNdockInfoRestore();
 
 	this.createMissionBalanceTable();
 

@@ -72,6 +72,25 @@ function KanColleTimerDeckMemberBasicHandler() {
 	$('group-mission').style.display = "none";
 }
 
+function KanColleTimerDeckInfoRestore() {
+    try{
+	for(let i=0; i<4; i++){
+	    let k = i+1;
+	    if( KanColleRemainInfo.fleet_name[i] ){
+		$('fleetname'+k).value = KanColleRemainInfo.fleet_name[i];
+	    }
+	    if( KanColleRemainInfo.mission_name[i] ){
+		let mission_name = KanColleRemainInfo.mission_name[i];
+		$('mission_name'+k).value=mission_name;
+	    }
+	    if( KanColleRemainInfo.fleet_time[i] ){
+		$('fleet'+k).value = KanColleRemainInfo.fleet_time[i];
+	    }
+	}
+    } catch (x) {
+    }
+}
+
 function KanColleTimerDeckInfoStart() {
     KanColleDatabase.memberDeck.appendCallback(KanColleTimerMemberDeckHandler);
     KanColleDatabase.memberBasic.appendCallback(KanColleTimerDeckMemberBasicHandler);
@@ -140,6 +159,22 @@ function KanColleTimerNdockMemberBasicHandler() {
 function KanColleTimerMemberMaterialHandler() {
     let d = KanColleDatabase.memberMaterial.get(6);
     $('repairkit-number').value = d.api_value;
+}
+
+function KanColleTimerNdockInfoRestore() {
+    try{
+	for(let i=0; i<4; i++){
+	    let k = i+1;
+	    if( KanColleRemainInfo.kdock_time[i] ){
+		$('kdock'+k).value = KanColleRemainInfo.kdock_time[i];
+	    }
+	    // 建造中艦艇の表示復元
+	    if( KanColleRemainInfo.construction_shipname[i] ){
+		$('kdock-box'+k).setAttribute('tooltiptext',KanColleRemainInfo.construction_shipname[i]);
+	    }
+	}
+    } catch (x) {
+    }
 }
 
 function KanColleTimerNdockInfoStart() {
@@ -216,6 +251,22 @@ function KanColleTimerKdockMemberBasicHandler() {
     let kdocks = document.getElementsByClassName("kdock-box");
     for (let i = 0; i < 4; i++)
 	kdocks[i].style.display = i < d.api_count_kdock ? "" : "none";
+}
+
+function KanColleTimerKdockInfoRestore() {
+    try{
+	for(let i=0; i<4; i++){
+	    let k = i+1;
+	    if( KanColleRemainInfo.ndock_memo[i] ){
+		$('ndock-box'+k).setAttribute('tooltiptext',
+					      KanColleRemainInfo.ndock_memo[i] );
+	    }
+	    if( KanColleRemainInfo.ndock_time[i] ){
+		$('ndock'+k).value = KanColleRemainInfo.ndock_time[i];
+	    }
+	}
+    } catch (x) {
+    }
 }
 
 function KanColleTimerKdockInfoStart() {
