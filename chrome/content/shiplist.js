@@ -2,6 +2,7 @@ Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 
 var ShipList = {
     allships: [],
+    allequipments: [],
 
     saveCvs:function(){
 	let txt = "";
@@ -281,15 +282,8 @@ var ShipList = {
 	}
     },
 
-    createShipList: function(){
-	// 艦艇リスト
-	let ships = KanColleDatabase.memberShip2.list().map( function( k ){
-	    return KanColleDatabase.memberShip2.get( k );
-	} );
-	let items = KanColleDatabase.memberSlotitem.list().map( function( k ){
-	    return KanColleDatabase.memberSlotitem.get( k );
-	} );
-	items.forEach( function( elem ){
+    createShipList: function( ships ){
+	this.allequipments.forEach( function( elem ){
 	    elem._owner_ship = null;
 	} );
 
@@ -323,21 +317,13 @@ var ShipList = {
 	    }
 	    this.allships.push( obj );
 	}
-	return {ships: ships, items: items};
     },
 
-    createEquipmentList: function( items ){
+    createEquipmentList: function(){
 	// 未装備品リストを作成する
-	let equipments = items.filter( function( d ){
+	let equipments = this.allequipments.filter( function( d ){
 	    return !d._owner_ship;
 	} );
-
-	// 艦これと同じ並びにする
-	for( let i=0; i<4; i+=2 ){
-	    equipments.sort( function( a, b ){
-		return a.api_type[i] - b.api_type[i];
-	    } );
-	}
 
 	let count = new Object();
 	for( let e in equipments ){
@@ -365,14 +351,28 @@ var ShipList = {
     },
 
     init: function(){
-	this.createHistogram();
-	var __ret = this.createShipList();
-	var ships = __ret.ships;
-	var items = __ret.items;
+	// 装備アイテムリスト
+	this.allequipments = KanColleDatabase.memberSlotitem.list().map( function( k ){
+	    return KanColleDatabase.memberSlotitem.get( k );
+	} );
+	// 艦これと同じ並びにする
+	for( let i=0; i<4; i+=2 ){
+	    this.allequipments.sort( function( a, b ){
+		return a.api_type[i] - b.api_type[i];
+	    } );
+	}
 
+	this.createHistogram();
+
+	// 艦艇リスト
+	let ships = KanColleDatabase.memberShip2.list().map( function( k ){
+	    return KanColleDatabase.memberShip2.get( k );
+	} );
+	this.createShipList( ships );
 	this.setupListBox();
+
 	this.createShipOrganizationList();
-	var equipments = this.createEquipmentList( items );
+	var equipments = this.createEquipmentList();
 
 	$( "tab-ships" ).setAttribute( "label", "艦娘(" + ships.length + ")" );
 	$( "tab-equipment" ).setAttribute( "label", "未装備品(" + equipments.length + ")" );
