@@ -94,11 +94,9 @@ function KanColleTimerDeckInfoRestore() {
 function KanColleTimerDeckInfoStart() {
     KanColleDatabase.memberDeck.appendCallback(KanColleTimerMemberDeckHandler);
     KanColleDatabase.memberBasic.appendCallback(KanColleTimerDeckMemberBasicHandler);
-    KanColleDatabase.memberShip2.appendCallback(KanColleTimerMemberDeckHandler);
 }
 
 function KanColleTimerDeckInfoStop() {
-    KanColleDatabase.memberShip2.removeCallback(KanColleTimerMemberDeckHandler);
     KanColleDatabase.memberBasic.removeCallback(KanColleTimerDeckMemberBasicHandler);
     KanColleDatabase.memberDeck.removeCallback(KanColleTimerMemberDeckHandler);
 }
