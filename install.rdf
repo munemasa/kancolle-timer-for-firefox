@@ -32,5 +32,13 @@
 	<em:maxVersion>*</em:maxVersion>
       </Description>
     </em:targetApplication>
+    <em:targetApplication>
+      <Description>
+	<!-- Windows 8 Modern-style -->
+	<em:id>{99bceaaa-e3c6-48c1-b981-ef9b46b67d60}</em:id>
+	<em:minVersion>4.0</em:minVersion>
+	<em:maxVersion>*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
   </Description>
 </RDF>
