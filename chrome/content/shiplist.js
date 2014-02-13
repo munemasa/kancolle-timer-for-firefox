@@ -356,6 +356,9 @@ var ShipList = {
 	    return KanColleDatabase.memberSlotitem.get( k );
 	} );
 	// 艦これと同じ並びにする
+	this.allequipments.sort( function( a, b ){
+	    return a.api_slotitem_id - b.api_slotitem_id;
+	} );
 	for( let i=0; i<4; i+=2 ){
 	    this.allequipments.sort( function( a, b ){
 		return a.api_type[i] - b.api_type[i];
