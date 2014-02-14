@@ -179,7 +179,7 @@ var ShipList = {
     },
 
     createHistogram: function(){
-	let histogram = [0,0,0,0,0,0,0,0,0,0];
+	let histogram = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 	let ships = KanColleDatabase.memberShip2.list().map(function(k){ return KanColleDatabase.memberShip2.get(k); });
 	for( let i=0; i<ships.length; i++ ){
 	    let k = parseInt( ships[i].api_lv/10 );
@@ -187,7 +187,7 @@ var ShipList = {
 	}
 
 	let margin = {top: 20, right: 20, bottom: 30, left: 40},
-	    width = 640 - margin.left - margin.right,
+	    width = 800 - margin.left - margin.right,
 	    height = 480 - margin.top - margin.bottom;
 	
 	let x = d3.scale.ordinal()
@@ -198,7 +198,7 @@ var ShipList = {
 	let xAxis = d3.svg.axis()
 		.scale(x)
 		.orient("bottom")
-		.tickFormat( function(d){ return d3.max([(d*10),1])+"-"+(d*10+9); } );
+		.tickFormat( function(d){ return d3.max([(d*10),1])+"-"; } );
 
 	let yAxis = d3.svg.axis()
 		.scale(y)
