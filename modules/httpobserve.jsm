@@ -177,18 +177,18 @@ KanColleDB.prototype = {
 
 var KanColleDatabase = {
     // Database
-    masterShip: null,		// master/ship
-    masterSlotitem: null,	// master/slotitem
-    memberBasic: null,		// member/basic
-    memberDeck: null,		// member/deck,member/deck_port,
+    masterShip: new KanColleDB(),	// master/ship
+    masterSlotitem: new KanColleDB(),	// master/slotitem
+    memberBasic: new KanColleSimpleDB(),// member/basic
+    memberDeck: new KanColleDB(),	// member/deck,member/deck_port,
 				// or member/ship2[api_data_deck]
 				// or member/ship3[api_deck_data]
-    memberKdock: null,		// member/kdock
-    memberMaterial: null,	// member/material
-    memberNdock: null,		// member/ndock
-    memberQuestlist: null,	// member/questlist
-    memberShip2: null,		// member/ship2
-    memberSlotitem: null,	// member/slotitem
+    memberKdock: new KanColleDB(),	// member/kdock
+    memberMaterial: new KanColleDB(),	// member/material
+    memberNdock: new KanColleDB(),	// member/ndock
+    memberQuestlist: new KanColleSimpleDB(),	// member/questlist
+    memberShip2: new KanColleDB(),		// member/ship2
+    memberSlotitem: new KanColleDB(),	// member/slotitem
 
     _callback_bound: null,
     _callback: function(req, s) {
@@ -231,33 +231,9 @@ var KanColleDatabase = {
     init: function(){
 	if (!this._callback_bound)
 	    this._callback_bound = this._callback.bind(this);
-
-	if (!this.masterShip)
-	    this.masterShip = new KanColleDB();
-	if (!this.masterSlotitem)
-	    this.masterSlotitem = new KanColleDB();
-	this.memberBasic = new KanColleSimpleDB();
-	this.memberDeck = new KanColleDB();
-	this.memberKdock = new KanColleDB();
-	this.memberMaterial = new KanColleDB();
-	this.memberNdock = new KanColleDB();
-	this.memberQuestlist = new KanColleSimpleDB();
-	this.memberShip2 = new KanColleDB();
-	this.memberSlotitem = new KanColleDB();
 	debugprint("KanColleDatabase initialized.");
     },
     exit: function(){
-	this.memberSlotitem = null;
-	this.memberShip2 = null;
-	this.memberQuestlist = null;
-	this.memberNdock = null;
-	this.memberMaterial = null;
-	this.memberKdock = null;
-	this.memberDeck = null;
-	this.memberBasic = null;
-	//マスタ情報は再送されないので削除しない
-	//this.masterSlotitem = null;
-	//this.masterShip = null;
 	debugprint("KanColleDatabase cleared.");
     },
 };
