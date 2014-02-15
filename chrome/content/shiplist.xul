@@ -36,7 +36,7 @@
 	  <menuitem label="閉じる" oncommand="window.close();"/>
 	</menupopup>
       </menu>
-      <menuitem label="!表示を更新" oncommand="OpenShipList();"/>
+      <menuitem label="!リロード" oncommand="OpenShipList();"/>
     </menubar>
   </toolbox>
 
@@ -50,6 +50,19 @@
       </tabs>
       <tabpanels flex="1">
 	<vbox><!-- tab 1 -->
+	  <hbox align="center">
+	    <label value="フィルタリング"/>
+	    <menulist oncommand="ShipList.filterByType(this.value);">
+	      <menupopup id="menu-shiptype">
+		<menuitem label="なし"/>
+	      </menupopup>
+	    </menulist>
+	    <menulist oncommand="ShipList.filterByEquipment(this.value);">
+	      <menupopup id="menu-equipment">
+		<menuitem label="なし"/>
+	      </menupopup>
+	    </menulist>
+	  </hbox>
 	  <listbox id="ship-list" flex="1" context="popup-save-csv">
 	    <listcols>
 	      <listcol/><listcol/><listcol/><listcol/><listcol/><listcol/>
