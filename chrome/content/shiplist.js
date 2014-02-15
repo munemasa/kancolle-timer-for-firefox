@@ -63,7 +63,8 @@ var ShipList = {
     },
 
     sort: function( type ){
-	this.allships.sort( function( a, b ){
+	let list = this.filter();
+	list.sort( function( a, b ){
 	    var tmpa = 0;
 	    var tmpb = 0;
 	    var order = -1;
@@ -87,7 +88,7 @@ var ShipList = {
 	    }
 	    return (tmpa - tmpb) * order;
 	} );
-	this.showShipList( this.allships );
+	this.showShipList( list );
     },
 
     /**
@@ -367,10 +368,12 @@ var ShipList = {
 	} );
 
 	let count = new Object();
+	let data = new Object();
 	for( let e in non_equipments ){
 	    let k = non_equipments[e].api_name;
 	    if( !count[k] ) count[k] = 0;
 	    count[ k ]++;
+	    data[k] = non_equipments[e];
 	}
 
 	let update = d3.select( "#equipment-list" )
@@ -378,7 +381,10 @@ var ShipList = {
 	    .data( d3.map( count ).keys() );
 	update.enter()
 	    .append( "row" )
-	    .attr( "style", "border-bottom: #c0c0c0 1px solid;" )
+	    .attr( "style", function(d){
+		let color = ShipList.getEquipmentColor( data[d] );
+		return "border-left:"+ color + " 16px solid; border-bottom: #c0c0c0 1px solid;";
+	    } )
 	    .selectAll( "label" )
 	    .data( function( d ){
 		return [d, count[d]];
@@ -389,6 +395,20 @@ var ShipList = {
 		return d;
 	    } );
 	return non_equipments;
+    },
+
+    /**
+     * 装備アイテムの色を返す
+     * @param d 装備アイテム
+     * @returns 色を返す
+     */
+    getEquipmentColor: function( d ){
+	let color = KanColleData.slotitem_color[ d.api_type[2] ];
+	if( (d.api_type[2] == 1 || d.api_type[2] == 4) && d.api_type[3] == 16 ){
+	    // 主砲・副砲扱いの高角砲たち
+	    color = "#66cc77";
+	}
+	return color;
     },
 
     init: function(){
@@ -422,20 +442,28 @@ var ShipList = {
 	let tmp = new Object();
 	ships.forEach( function( d ){
 	    let data = FindShipData( d.api_id );
-	    tmp[ KanColleData.type_name[data.api_stype] ] = 1;
+	    if( data.api_stype != 9 ) tmp[ data.api_stype ] = 1;
 	} );
-	d3.map( tmp ).keys().forEach( function( d ){
-	    let menuitem = CreateMenuItem( d, d );
-	    $( 'menu-shiptype' ).appendChild( menuitem );
-	} );
+	d3.map( tmp ).keys()
+	    .sort( function( a, b ){
+		return b - a;
+	    } )
+	    .forEach( function( d ){
+		let name = KanColleData.type_name[d];
+		let menuitem = CreateMenuItem( name, name );
+		$( 'menu-shiptype' ).appendChild( menuitem );
+	    } );
 
 	// 装備アイテムメニュー
 	tmp = new Object();
 	this.allequipments.forEach( function( d ){
-	    tmp[ d.api_name ] = 1;
+	    tmp[ d.api_name ] = d;
 	} );
 	d3.map( tmp ).keys().forEach( function( d ){
 	    let menuitem = CreateMenuItem( d, d );
+	    let color = ShipList.getEquipmentColor( tmp[ d ] );
+	    menuitem.appendChild( CreateLabel( d, d ) );
+	    menuitem.setAttribute( "style", "border-left: " + color + " 16px solid;" );
 	    $( 'menu-equipment' ).appendChild( menuitem );
 	} );
 
