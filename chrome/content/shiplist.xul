@@ -31,13 +31,12 @@
     <menubar>
       <menu label="ツール">
 	<menupopup>
-	  <menuitem label="表示を更新" oncommand="OpenShipList();"/>
-	  <menuseparator/>
 	  <menuitem label="艦娘リストをCSVに保存..." oncommand="ShipList.saveCvs();"/>
 	  <menuseparator/>
 	  <menuitem label="閉じる" oncommand="window.close();"/>
 	</menupopup>
       </menu>
+      <menuitem label="!表示を更新" oncommand="OpenShipList();"/>
     </menubar>
   </toolbox>
 
