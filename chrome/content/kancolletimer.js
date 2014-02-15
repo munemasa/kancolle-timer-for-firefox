@@ -320,7 +320,14 @@ var KanColleTimer = {
 	    name = name.substring(0,7);
 	    row.appendChild( CreateLabel( name ) );
 	    for( let j=0; j<4; j++ ){
-		row.appendChild( CreateLabel(balance[i][j]) );
+		let value = balance[i][j];
+		let order = value * 10 % 10;
+		let label = CreateLabel( parseInt(value) );
+		let styles = ["color:blue; font-weight:bold;", "font-weight:bold;", "font-weight:bold;"];
+		if( order ){
+		    label.setAttribute( "style", styles[order-1] );
+		}
+		row.appendChild( label );
 	    }
 	    row.setAttribute("style","border-bottom: 1px solid gray;");
 	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
