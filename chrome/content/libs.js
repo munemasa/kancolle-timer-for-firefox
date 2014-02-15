@@ -1841,14 +1841,17 @@ function ShipExp(ship){
 }
 
 function ShipNextLvExp(ship){
-    let nextexp = KanColleData.level_accumexp[ship.api_lv];
-    if (nextexp === undefined) {
-	if (typeof(ship.api_exp) == 'object')
-	    return ship.api_exp[0] + ship.api_exp[1];
-	return undefined;
-    } else if (nextexp < 0)
-	return Number.POSITIVE_INFINITY;
-    return nextexp;
+    if (typeof(ship.api_exp) == 'object') {
+	// Lv99: [1000000,0,0]
+	return ship.api_exp[1] > 0 ? ship.api_exp[0] + ship.api_exp[1] : Number.POSITIVE_INFINITY;
+    } else {
+	let nextexp = KanColleData.level_accumexp[ship.api_lv];
+	if (nextexp === undefined)
+	    return undefined;
+	else if (nextexp < 0)
+	    return Number.POSITIVE_INFINITY;
+	return nextexp;
+    }
 }
 
 function ShipUpgradeableExp(ship){
