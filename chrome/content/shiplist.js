@@ -312,8 +312,10 @@ var ShipList = {
 		let slot_id = ship.api_slot[i];
 		if( slot_id == -1 ) continue;
 		let item = FindSlotItem( slot_id );
-		item._owner_ship = obj.name;
-		obj.equips.push( item.api_name );
+		if( item ){
+		    item._owner_ship = obj.name;
+		    obj.equips.push( item.api_name );
+		}
 	    }
 	    this.allships.push( obj );
 	}
