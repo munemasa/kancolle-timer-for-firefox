@@ -34,8 +34,6 @@
     <menubar>
       <menu label="ツール">
 	<menupopup>
-	  <menuitem label="表示を更新" oncommand="OpenResourceGraph();"/>
-	  <menuseparator/>
 	  <menuitem label="CSVに保存" oncommand="ResourceGraph.saveToFile();"/>
 	  <menuitem label="画像に保存" oncommand="ResourceGraph.takeScreenshot();"/>
 	  <menuitem label="つぶやく" oncommand="ResourceGraph.tweet();"/>
@@ -43,6 +41,7 @@
 	  <menuitem label="閉じる" oncommand="window.close();"/>
 	</menupopup>
       </menu>
+      <menuitem label="!リロード" oncommand="OpenResourceGraph();"/>
       <menuitem label="!Change Color" oncommand="ResourceGraph.changeColor();"/>
     </menubar>
   </toolbox>
