@@ -1179,6 +1179,13 @@ function FindParentElement(elem,tag){
     return elem;
 }
 
+/**
+ * 符号付き数字を返す
+ */
+function GetSignedValue( v ){
+    if( v>0 ) return "+"+v;
+    return v;
+}
 
 /**
  * クリップボードにテキストをコピーする.

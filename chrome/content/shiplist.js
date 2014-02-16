@@ -362,39 +362,67 @@ var ShipList = {
     },
 
     createEquipmentList: function(){
-	// 未装備品リストを作成する
-	let non_equipments = this.allequipments.filter( function( d ){
-	    return !d._owner_ship;
-	} );
-
 	let count = new Object();
+	let count_all = new Object();
 	let data = new Object();
-	for( let e in non_equipments ){
-	    let k = non_equipments[e].api_name;
+	this.allequipments.forEach( function( d ){
+	    let k = d.api_name;
 	    if( !count[k] ) count[k] = 0;
-	    count[ k ]++;
-	    data[k] = non_equipments[e];
-	}
+	    if( !d._owner_ship ) count[ k ]++;
+	    data[k] = d;
+
+	    if( !count_all[d.api_name] ) count_all[d.api_name] = 0;
+	    count_all[d.api_name]++;
+	} );
 
 	let update = d3.select( "#equipment-list" )
 	    .selectAll( "row" )
 	    .data( d3.map( count ).keys() );
 	update.enter()
 	    .append( "row" )
-	    .attr( "style", function(d){
+	    .attr( "style", function( d ){
 		let color = ShipList.getEquipmentColor( data[d] );
-		return "border-left:"+ color + " 16px solid; border-bottom: #c0c0c0 1px solid;";
+		return "border-left:" + color + " 16px solid; border-bottom: #c0c0c0 1px solid;";
 	    } )
 	    .selectAll( "label" )
 	    .data( function( d ){
-		return [d, count[d]];
+		let value = new Array();
+		value.push( d );
+		value.push( count[d] );
+		value.push( "総数 " + count_all[d] );
+
+		let name = {
+		    "api_houg": "火力",
+		    "api_raig": "雷装",
+		    "api_baku": "爆装",
+		    "api_tyku": "対空",
+		    "api_tais": "対潜",
+		    "api_houm": "命中",
+		    "api_kaih": "回避",
+		    "api_saku": "索敵"
+		};
+		d3.map( data[d] ).keys().forEach( function( k ){
+		    let v = GetSignedValue( data[d][k] );
+		    switch( k ){
+		    case "api_houg": // 火力
+		    case "api_raig": // 雷装
+		    case "api_baku": // 爆装
+		    case "api_tyku": // 対空
+		    case "api_tais": // 対潜
+		    case "api_houm": // 命中
+		    case "api_kaih": // 回避
+		    case "api_saku": // 索敵
+			if( v ) value.push( name[k] + v );
+			break;
+		    }
+		} );
+		return value;
 	    } )
 	    .enter()
 	    .append( "label" )
 	    .attr( "value", function( d ){
 		return d;
 	    } );
-	return non_equipments;
     },
 
     /**
@@ -436,7 +464,7 @@ var ShipList = {
 	this.showShipList( this.allships );
 
 	this.createShipOrganizationList();
-	let non_equipments = this.createEquipmentList();
+	this.createEquipmentList();
 
 	// 艦種メニュー
 	let tmp = new Object();
@@ -470,6 +498,11 @@ var ShipList = {
 	this.setFleetOrganization( 1 );
 
 	document.title += " " + new Date();
+
+	// 未装備品リストを作成する
+	let non_equipments = this.allequipments.filter( function( d ){
+	    return !d._owner_ship;
+	} );
 	$( "tab-ships" ).setAttribute( "label", "艦娘(" + ships.length + ")" );
 	$( "tab-equipment" ).setAttribute( "label", "未装備品(" + non_equipments.length + ")" );
     }
