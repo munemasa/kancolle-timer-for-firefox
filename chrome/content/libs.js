@@ -440,6 +440,7 @@ var KanColleTimerFleetOrgInfo = {
 	if( !fleet ) return;
 	let rows = $('fleet-'+n);
 	RemoveChildren(rows);
+	let min_cond = 100;
 	for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
 	    let row = CreateElement('row');
 	    let data = FindOwnShipData( fleet.api_ship[i] );
@@ -456,6 +457,8 @@ var KanColleTimerFleetOrgInfo = {
 	    }else if( data.api_cond<=29 ){
 		label.setAttribute('cond','low');
 	    }
+	    min_cond = d3.min( [min_cond, data.api_cond] );
+
 	    hbox.appendChild( label );
 	    row.appendChild( hbox );
 	    if( masterdata.api_fuel_max!=data.api_fuel ||
@@ -494,6 +497,21 @@ var KanColleTimerFleetOrgInfo = {
 	    }
 
 	    rows.appendChild( row );
+	}
+	if( n==1 ){
+	    // 第1艦隊のみ状態回復時間を計算する
+	    if( min_cond<49 ){
+		let now = GetCurrentTime();
+		let t0 = (49-min_cond);
+		t0 += 3-(t0%3); // 3HP/3分 で回復なので、3の倍数まで切り上げ
+		t0 *= 60;
+		let refresh_time = t0 - (now%180);
+		$('refresh-timer').setAttribute('refresh-time', now+refresh_time);
+		$('refresh-timer').value = GetTimeString( refresh_time ).substring(3);
+	    }else{
+		$('refresh-timer').removeAttribute('refresh-time');
+		$('refresh-timer').value = "00:00";
+	    }
 	}
     },
 

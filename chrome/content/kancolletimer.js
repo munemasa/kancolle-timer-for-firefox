@@ -127,9 +127,20 @@ var KanColleTimer = {
 	}
     },
 
+    updateRefreshTimer: function(){
+	let t = $('refresh-timer').getAttribute('refresh-time');
+	let now = GetCurrentTime();
+	if( t && t>now ){
+	    $('refresh-timer').value = GetTimeString( t - now ).substring(3);
+	}else{
+	    $('refresh-timer').value = "00:00";
+	}
+    },
+
     update: function(){
 	this.updateDailyJob();
 	this.updateGeneralTimer();
+	this.updateRefreshTimer();
 
 	let i;
 	let now = GetCurrentTime();
