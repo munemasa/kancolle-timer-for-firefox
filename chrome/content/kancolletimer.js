@@ -235,7 +235,7 @@ var KanColleTimer = {
 		    if( KanColleTimerConfig.isShortDisplay() ){
 			kdockremain[i].setAttribute('few-minutes-left','1');
 		    }else{
-			kdockremain[i].setAttribute('few-minutes-left','1');
+			kdockremain[i].removeAttribute('few-minutes-left');
 		    }
 		}else{
 		    kdock_time[i].removeAttribute('few-minutes-left');
