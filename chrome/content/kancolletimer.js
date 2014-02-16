@@ -146,18 +146,22 @@ var KanColleTimer = {
 	    let t = KanColleRemainInfo.fleet[i].mission_finishedtime;
 	    if( t > 0 ){
 		let d = t - now;
-		if( fleet_time[i].style.color=="black" ){
+		if( !fleet_time[i].getAttribute('few-minutes-left') ){
 		    if( d<60 ){
 			let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
 			this.noticeMission1min(i,str);
 		    }
 		}
 		if( d<60 ){
-		    fleet_time[i].style.color = "red";
-		    fleetremain[i].style.color = KanColleTimerConfig.isShortDisplay()?"red":"black";
+		    fleet_time[i].setAttribute('few-minutes-left','1');
+		    if( KanColleTimerConfig.isShortDisplay() ){
+			fleetremain[i].setAttribute('few-minutes-left','1');
+		    }else{
+			fleetremain[i].removeAttribute('few-minutes-left');
+		    }
 		}else{
-		    fleet_time[i].style.color = "black";
-		    fleetremain[i].style.color = "black";
+		    fleet_time[i].removeAttribute('few-minutes-left');
+		    fleetremain[i].removeAttribute('few-minutes-left');
 		}
 
 		if( d<0 ){
@@ -180,7 +184,7 @@ var KanColleTimer = {
 	    if( t > 0 ){
 		let d = KanColleRemainInfo.ndock[i].finishedtime - now;
 
-		if( ndock_time[i].style.color=="black" ){
+		if( !ndock_time[i].getAttribute('few-minutes-left') ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
 			this.noticeRepair1min(i,str);
@@ -188,11 +192,15 @@ var KanColleTimer = {
 		}
 
 		if( d<60 ){
-		    ndock_time[i].style.color = "red";
-		    ndockremain[i].style.color = KanColleTimerConfig.isShortDisplay()?"red":"black";
+		    ndock_time[i].setAttribute('few-minutes-left','1');
+		    if( KanColleTimerConfig.isShortDisplay() ){
+			ndockremain[i].setAttribute('few-minutes-left','1');
+		    }else{
+			ndockremain[i].removeAttribute('few-minutes-left');
+		    }
 		}else{
-		    ndock_time[i].style.color = "black";
-		    ndockremain[i].style.color = "black";
+		    ndock_time[i].removeAttribute('few-minutes-left');
+		    ndockremain[i].removeAttribute('few-minutes-left');
 		}
 
 		if( d<0 ){
@@ -215,7 +223,7 @@ var KanColleTimer = {
 	    if( t > 0 ){
 		let d = KanColleRemainInfo.kdock[i].finishedtime - now;
 
-		if( kdock_time[i].style.color=="black" ){
+		if( !kdock_time[i].getAttribute('few-minutes-left') ){
 		    if( d<60 ){
 			let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
 			this.noticeConstruction1min(i,str);
@@ -223,11 +231,15 @@ var KanColleTimer = {
 		}
 
 		if( d<60 ){
-		    kdock_time[i].style.color = "red";
-		    kdockremain[i].style.color = KanColleTimerConfig.isShortDisplay()?"red":"black";
+		    kdock_time[i].setAttribute('few-minutes-left','1');
+		    if( KanColleTimerConfig.isShortDisplay() ){
+			kdockremain[i].setAttribute('few-minutes-left','1');
+		    }else{
+			kdockremain[i].setAttribute('few-minutes-left','1');
+		    }
 		}else{
-		    kdock_time[i].style.color = "black";
-		    kdockremain[i].style.color = "black";
+		    kdock_time[i].removeAttribute('few-minutes-left');
+		    kdockremain[i].removeAttribute('few-minutes-left');
 		}
 		if( d<0 ){
 		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";

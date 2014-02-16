@@ -31,6 +31,10 @@ label[cond='low'] {
     background-color: #eea87a;
 }
 
+label[few-minutes-left] {
+    color: red;
+}
+
 /* テキスト範囲選択できるクラス */
 .selection {
     cursor: text ! important;

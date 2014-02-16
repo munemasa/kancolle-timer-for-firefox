@@ -105,7 +105,11 @@ var KanColleTimerDeckInfo = {
 		    }
 
 		    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
+		    if( diff<60 ){
+			$(ftime_str).setAttribute('few-minutes-left','1');
+		    }else{
+			$(ftime_str).removeAttribute('few-minutes-left');
+		    }
 		}else{
 		    $(ftime_str).value = "";
 		    KanColleRemainInfo.fleet[i].mission_finishedtime = -1;
@@ -178,7 +182,11 @@ var KanColleTimerNdockInfo = {
 		    }
 
 		    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
+		    if( diff<60 ){
+			$(ftime_str).setAttribute('few-minutes-left','1');
+		    }else{
+			$(ftime_str).removeAttribute('few-minutes-left');
+		    }
 		}else{
 		    $("ndock-label"+k).value = "No."+(i+1);
 		    $("ndock-label"+k).setAttribute('tooltiptext', "");
@@ -260,7 +268,11 @@ var KanColleTimerKdockInfo = {
 		    }
 
 		    let diff = finishedtime - now;
-		    $(ftime_str).style.color = diff<60?"red":"black";
+		    if( diff<60 ){
+			$(ftime_str).setAttribute('few-minutes-left','1');
+		    }else{
+			$(ftime_str).removeAttribute('few-minutes-left');
+		    }
 
 		    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
 		    /*
