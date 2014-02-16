@@ -399,7 +399,8 @@ var ShipList = {
 		    "api_tais": "対潜",
 		    "api_houm": "命中",
 		    "api_kaih": "回避",
-		    "api_saku": "索敵"
+		    "api_saku": "索敵",
+		    "api_raim": "雷撃命中" // かな？
 		};
 		d3.map( data[d] ).keys().forEach( function( k ){
 		    let v = GetSignedValue( data[d][k] );
@@ -412,6 +413,7 @@ var ShipList = {
 		    case "api_houm": // 命中
 		    case "api_kaih": // 回避
 		    case "api_saku": // 索敵
+		    //case "api_raim": // 雷撃命中
 			if( v ) value.push( name[k] + v );
 			break;
 		    }
