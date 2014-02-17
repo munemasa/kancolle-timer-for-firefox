@@ -503,7 +503,9 @@ var KanColleTimerFleetOrgInfo = {
 	    if( min_cond<49 ){
 		let now = GetCurrentTime();
 		let t0 = (49-min_cond);
-		t0 += 3-(t0%3); // 3HP/3分 で回復なので、3の倍数まで切り上げ
+		if( t0%3 ){
+		    t0 += 3-(t0%3); // 3HP/3分 で回復なので、3の倍数まで切り上げ
+		}
 		t0 *= 60;
 		let refresh_time = t0 - (now%180);
 		$('refresh-timer').setAttribute('refresh-time', now+refresh_time);
