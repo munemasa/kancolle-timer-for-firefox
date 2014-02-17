@@ -133,6 +133,7 @@ var KanColleTimer = {
 	if( t && t>now ){
 	    $('refresh-timer').value = GetTimeString( t - now ).substring(3);
 	}else{
+	    $('refresh-timer').removeAttribute('refresh-time');
 	    $('refresh-timer').value = "00:00";
 	}
     },
