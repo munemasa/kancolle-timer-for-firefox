@@ -63,8 +63,7 @@ var ShipList = {
     },
 
     sort: function( type ){
-	let list = this.filter();
-	list.sort( function( a, b ){
+	this.allships.sort( function( a, b ){
 	    var tmpa = 0;
 	    var tmpb = 0;
 	    var order = -1;
@@ -88,6 +87,7 @@ var ShipList = {
 	    }
 	    return (tmpa - tmpb) * order;
 	} );
+	let list = this.filter( this.allships );
 	this.showShipList( list );
     },
 
@@ -149,18 +149,18 @@ var ShipList = {
 
     filterByType: function( type ){
 	this.filter_key[0] = type;
-	let ships = this.filter();
+	let ships = this.filter( this.allships );
 	this.showShipList( ships );
     },
 
     filterByEquipment: function( equip ){
 	this.filter_key[1] = equip;
-	let ships = this.filter();
+	let ships = this.filter( this.allships );
 	this.showShipList( ships );
     },
 
-    filter: function(){
-	return this.allships.filter( this._filter_func[0] ).filter( this._filter_func[1] );
+    filter: function( list ){
+	return list.filter( this._filter_func[0] ).filter( this._filter_func[1] );
     },
 
     /**
@@ -413,7 +413,7 @@ var ShipList = {
 		    case "api_houm": // 命中
 		    case "api_kaih": // 回避
 		    case "api_saku": // 索敵
-		    //case "api_raim": // 雷撃命中
+			//case "api_raim": // 雷撃命中
 			if( v ) value.push( name[k] + v );
 			break;
 		    }
