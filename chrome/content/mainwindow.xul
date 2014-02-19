@@ -227,7 +227,7 @@
       </vbox>
       <!-- 編成・任務表 -->
       <vbox id="tab-organization" flex="1" style="overflow:auto;">
-	<hbox align="center" id="group-general-timer">
+	<hbox align="center" id="group-general-timer" style="display:inline-block">
 	  <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
 	    <menupopup>
 	      <menuitem label="0分" value="0" />
@@ -239,6 +239,7 @@
 	      <menuitem label="30分" value="1800"/>
 	    </menupopup>
 	  </menulist>
+	  <button label="疲労回復まで" oncommand="KanColleTimer.setGeneralTimer(-1);"/>
 	  <label id="general-timer" value="00:00:00"/>
 	</hbox>
 

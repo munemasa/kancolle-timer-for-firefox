@@ -90,9 +90,15 @@ var KanColleTimer = {
     },
 
     // 汎用タイマーの時間設定
+    // 負の値を指定すると、回復時間をセットする。
     setGeneralTimer: function(sec){
-	sec = parseInt(sec);
-	this.general_timer = GetCurrentTime() + sec;
+	if( sec<0 ){
+	    let t = $('refresh-timer').getAttribute('refresh-time');
+	    this.general_timer = parseInt(t);
+	}else{
+	    sec = parseInt(sec);
+	    this.general_timer = GetCurrentTime() + sec;
+	}
     },
 
     updateGeneralTimer:function(){
