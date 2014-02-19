@@ -90,14 +90,14 @@
 	</vbox>
 
 	<vbox style="overflow:auto;"><!-- tab 4 -->
-	  <hbox>
+	  <hbox class="fleet-list">
 	    <groupbox>
 	      <caption>第1艦隊</caption>
 	      <grid>
 		<columns>
 		  <column/><column/><column/>
 		</columns>
-		<rows id="fleet-1">
+		<rows id="fleet-1" class="fleet-organization">
 		</rows>
 	      </grid>
 	    </groupbox>
@@ -107,7 +107,7 @@
 		<columns>
 		  <column/><column/><column/>
 		</columns>
-		<rows id="fleet-2">
+		<rows id="fleet-2" class="fleet-organization">
 		</rows>
 	      </grid>
 	    </groupbox>
@@ -117,7 +117,7 @@
 		<columns>
 		  <column/><column/><column/>
 		</columns>
-		<rows id="fleet-3">
+		<rows id="fleet-3" class="fleet-organization">
 		</rows>
 	      </grid>
 	    </groupbox>
@@ -127,7 +127,7 @@
 		<columns>
 		  <column/><column/><column/><column/>
 		</columns>
-		<rows id="fleet-4">
+		<rows id="fleet-4" class="fleet-organization">
 		</rows>
 	      </grid>
 	    </groupbox>

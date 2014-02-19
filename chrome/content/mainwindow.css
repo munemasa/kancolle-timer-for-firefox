@@ -35,15 +35,8 @@ label[few-minutes-left] {
     color: #e00000;
 }
 
-/* テキスト範囲選択できるクラス */
-.selection {
-    cursor: text ! important;
-    -moz-user-focus: normal;
-    -moz-user-select: text;
-}
-
-.select-setlist menuitem{
-    min-width: 3em;
+.fleet-list {
+    display: inline-block;
 }
 
 .red {

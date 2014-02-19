@@ -252,13 +252,14 @@
 	  </hbox>
 	</groupbox>
 
+	<!-- 第1艦隊編成 -->
 	<groupbox id="group-1stfleet">
 	  <caption><label id="first-fleet-name" value="第1艦隊"/><checkbox persist="checked" autoCheck="true" id="show-gage" label="HPゲージ" tooltiptext="HPゲージを表示するようにします" style="margin:0;"/><label id="refresh-timer" value="00:00:00"/></caption>
 	  <grid>
 	    <columns>
 	      <column/><column/><column/><column/>
 	    </columns>
-	    <rows id="fleet-1">
+	    <rows id="fleet-1" class="fleet-organization">
 	    </rows>
 	  </grid>
 	</groupbox>
@@ -284,21 +285,21 @@
 	      <columns>
 		<column/><column/><column/><column/>
 	      </columns>
-	      <rows id="fleet-2">
+	      <rows id="fleet-2" class="fleet-organization">
 	      </rows>
 	    </grid>
 	    <grid>
 	      <columns>
 		<column/><column/><column/><column/>
 	      </columns>
-	      <rows id="fleet-3">
+	      <rows id="fleet-3" class="fleet-organization">
 	      </rows>
 	    </grid>
 	    <grid>
 	      <columns>
 		<column/><column/><column/><column/>
 	      </columns>
-	      <rows id="fleet-4">
+	      <rows id="fleet-4" class="fleet-organization">
 	      </rows>
 	    </grid>
 	  </deck>
