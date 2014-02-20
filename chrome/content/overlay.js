@@ -236,6 +236,20 @@ var KanColleTimerOverlay = {
 	return true;
     },
 
+    togglePanel: function(){
+        let panel = document.getElementById("kancolle-timer-panel");
+        let splitter = document.getElementById("kancolle-timer-splitter");
+
+        // normal panel toggle
+        splitter.collapsed = panel.collapsed = (panel.collapsed) ? false : true;
+
+        // command checked
+        //document.getElementById("cmd_hf_togglePanel").setAttribute("checked", !HttpFoxPanelSplitter.collapsed);
+    },
+
+    /**
+     * 艦娘リストを開く
+     */
     openShipList: function(){
 	let feature="chrome,resizable=yes";
 	let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);

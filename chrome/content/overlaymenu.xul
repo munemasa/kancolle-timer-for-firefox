@@ -19,6 +19,7 @@
     <key id="key_openKanColleTimerSidebar" command="viewKanColleTimerSidebar" key="k" modifiers="accel,alt" />
   </keyset>
 
+  <!-- side bar -->
   <broadcasterset id="mainBroadcasterSet"> 
     <broadcaster id="viewKanColleTimerSidebar" 
                  label="艦これタイマー"
@@ -76,20 +77,19 @@
      </scrollbox>
    </statusbar>
 
+   <vbox id="appcontent">
+     <splitter id="kancolle-timer-splitter" collapsed="true" persist="height" />
+     <hbox id="kancolle-timer-panel" collapsed="true" persist="height" >
+       <label value="艦これタイマー"/>
+     </hbox>
+   </vbox>
+
   <toolbar id="addon-bar">
-<!--    <statusbarpanel id="NicoLive-panel" label="NicoLive Helper" /> -->
     <toolbarbutton id="kancolle-timer-toolbar-button"
 		   label="艦これタイマー"
-		   oncommand="KanColleTimerOverlay.open();"
+		   oncommand="KanColleTimerOverlay.togglePanel();"
 		   class="toolbarbutton-1"
 		   image="chrome://kancolletimer/content/data/icon.png" />
   </toolbar>
-
-
-<!--
-  <popup id="contentAreaContextMenu">
-    <menuitem id="kancolletimer-popup-menu" label="艦これタイマー" oncommand="KanColleTimerOverlay.open();" />
-  </popup>
--->
 
 </overlay>
