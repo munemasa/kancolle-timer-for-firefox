@@ -429,6 +429,15 @@ var KanColleTimerFleetOrgInfo = {
 	}
 	return false;
     },
+    _showSupplyMark: function(n, b){
+	// 遠征タイマー部分に未補給のマークを付ける
+	let elem = evaluateXPath2(document,"//xul:vbox[@class='fleet']/xul:hbox[1]");
+	if( b ){
+	    elem[n-1].setAttribute('warning','1');
+	}else{
+	    elem[n-1].removeAttribute('warning');
+	}
+    },
     /**
      * 第n艦隊の編成を表示する
      * @param n 1,2,3,4
@@ -464,6 +473,9 @@ var KanColleTimerFleetOrgInfo = {
 	    if( masterdata.api_fuel_max!=data.api_fuel ||
 		masterdata.api_bull_max!=data.api_bull ){
 		    hbox.setAttribute('warning','1');
+		    this._showSupplyMark(n, true);
+	    }else{
+		this._showSupplyMark(n, false);
 	    }
 	    if( this._isRepairing( data.api_id ) ){
 		hbox.setAttribute('repair','1');
