@@ -381,7 +381,7 @@
 
   <popupset>
     <menupopup id="popup-ndock-memo">
-      <menuitem label="メモの記入" oncommand="KanColleTimer.createRepairMemo();"/>
+      <menuitem label="メモの記入" oncommand="KanColleTimerNdockInfo.createRepairMemo();"/>
     </menupopup>
   </popupset>
       

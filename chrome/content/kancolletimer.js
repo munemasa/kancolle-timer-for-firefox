@@ -14,24 +14,6 @@ var KanColleTimer = {
     cookie:{},
     general_timer: 0,
 
-    // 入渠ドックのメモ作成
-    createRepairMemo: function(){
-	let elem = $('popup-ndock-memo').triggerNode;
-	let hbox = FindParentElement(elem,"row");
-	let oldstr = hbox.getAttribute('tooltiptext') || "";
-	let text = "入渠ドック"+hbox.firstChild.value+"のメモを入力してください。\nツールチップとして表示されるようになります。";
-	let str = InputPrompt(text,"入渠ドックメモ", oldstr);
-	if( str==null ) return;
-	hbox.setAttribute('tooltiptext',str);
-
-	let ndock_hbox = evaluateXPath(document,"//*[@class='ndock-box']");
-	for(let k in ndock_hbox){
-	    k = parseInt(k);
-	    let elem = ndock_hbox[k];
-	    KanColleRemainInfo.ndock_memo[k] = ndock_hbox[k].getAttribute('tooltiptext');
-	}
-    },
-
     // 通知
     notify: function(type,i,str){
 	let coretype = type.replace(/^1min\./,'');
