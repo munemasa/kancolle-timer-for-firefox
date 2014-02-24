@@ -450,6 +450,8 @@ var KanColleTimerFleetOrgInfo = {
 	let rows = $('fleet-'+n);
 	RemoveChildren(rows);
 	let min_cond = 100;
+
+	this._showSupplyMark(n, false);
 	for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
 	    let row = CreateElement('row');
 	    let data = FindOwnShipData( fleet.api_ship[i] );
@@ -474,8 +476,6 @@ var KanColleTimerFleetOrgInfo = {
 		masterdata.api_bull_max!=data.api_bull ){
 		    hbox.setAttribute('warning','1');
 		    this._showSupplyMark(n, true);
-	    }else{
-		this._showSupplyMark(n, false);
 	    }
 	    if( this._isRepairing( data.api_id ) ){
 		hbox.setAttribute('repair','1');
