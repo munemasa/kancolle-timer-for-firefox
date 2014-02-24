@@ -75,6 +75,10 @@ var ShipList = {
 	    case 1: // レベル
 		tmpa = a.lv;
 		tmpb = b.lv;
+		if( tmpa==tmpb ){
+		    tmpa = b.sort_no;
+		    tmpb = a.sort_no;
+		}
 		break;
 	    case 2: // 状態
 		tmpa = a.cond;
@@ -337,6 +341,7 @@ var ShipList = {
 
 	    let obj = new Object();
 	    obj.ship_id = ship.api_id;
+	    obj.sort_no = data.api_sortno;
 	    obj.fleet_no = fleet_no;
 	    obj.type = KanColleData.type_name[data.api_stype];
 	    obj.stype = data.api_stype;
