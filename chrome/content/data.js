@@ -40,6 +40,7 @@ var KanColleData = {
      カ号 #66cc77
      三式指揮 #7fccd8
      バルジ #9a7eaa
+     ドラム缶 #a3a3a3
      */
     slotitem_color: {
 	1:  '#d15b5b',	// 主砲 1-16が高角砲
@@ -68,6 +69,7 @@ var KanColleData = {
 	26: '#7fccd8',	// 三式式連絡機
 	27: '#9a7eaa',	// バルジ
 	28: '#9a7eaa',	// バルジ
+	30: '#a3a3a3',  // ドラム缶
     },
 
     mission_name:           {
