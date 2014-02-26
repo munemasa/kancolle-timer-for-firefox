@@ -15,6 +15,8 @@ try{
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+const MODE_SAVE = Ci.nsIFilePicker.modeSave;
+
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
 
@@ -2270,7 +2272,7 @@ function TreeView(){
 	let rv;
 	let cos;
 
-	fp.init(window, "艦船リストの保存...", nsIFilePicker.modeSave);
+	fp.init(window, "艦船リストの保存...", MODE_SAVE);
 	fp.defaultExtension = 'txt';
 	fp.appendFilter("テキストCSV","*.csv; *.txt");
 	fp.appendFilters(nsIFilePicker.filterText);
@@ -2776,7 +2778,7 @@ function SaveObjectToFile(obj,caption)
 {
     const nsIFilePicker = Components.interfaces.nsIFilePicker;
     let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-    fp.init(window, caption, nsIFilePicker.modeSave);
+    fp.init(window, caption, MODE_SAVE);
     fp.appendFilters(nsIFilePicker.filterAll);
     let rv = fp.show();
     if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
