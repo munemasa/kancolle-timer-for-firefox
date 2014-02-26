@@ -2191,6 +2191,12 @@ function TreeView(){
 	_stype: function(ship_a,ship_b){
 	    return DefaultSortFunc(ship_a,ship_b,order);
 	},
+	_lv: function(ship_a,ship_b){
+	    let ret = ship_a.api_lv - ship_b.api_lv;
+	    if (ret)
+		return ret;
+	    return ship_b.api_sortno - ship_a.api_sortno;
+	},
 	_lvupg: function(ship_a,ship_b){
 	    let shiptype_a = KanColleDatabase.masterShip.get(ship_a.api_ship_id);
 	    let lv_a = shiptype ? shiptype_a.api_afterlv : 0;
