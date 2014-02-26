@@ -559,6 +559,8 @@ var KanColleTimerFleetInfo = {
 		let fleet_text = fi.api_name;
 		let fleet_flagship_lv = 0;
 		let fleet_stypes = {};
+		let fleet_slotitem_ship = {};
+		let fleet_slotitem_num =  {};
 		let min_cond = 100;
 		for ( let j = 0; j < fi.api_ship.length; j++ ){
 		    let ship_id = fi.api_ship[j];
@@ -571,6 +573,7 @@ var KanColleTimerFleetInfo = {
 		    let ship_color;
 		    let ship_shadow;
 		    let ship_text = ship_name + (ship ? ' Lv' + ship.api_lv : '');
+		    let shipslot = {};
 
 		    if (ship) {
 			let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
@@ -647,6 +650,31 @@ var KanColleTimerFleetInfo = {
 			}
 		    }
 
+		    // 装備
+		    if (ship) {
+			for (let k = 0; k < ship.api_slot.length; k++) {
+			    let itemid = ship.api_slot[k];
+			    let item;
+			    let itemtype;
+
+			    if (itemid < 0)
+				continue;
+			    item = KanColleDatabase.memberSlotitem.get(itemid);
+			    if (!item)
+				continue;
+			    itemtype = KanColleDatabase.masterSlotitem.get(item.api_slotitem_id);
+			    if (!itemtype)
+				continue;
+			    shipslot[itemtype.api_type[2]] = shipslot[itemtype.api_type[2]] ?  shipslot[itemtype.api_type[2]] + 1 : 1;
+			}
+			for (let k in shipslot) {
+			    // 装備数
+			    fleet_slotitem_num[k] = fleet_slotitem_num[k] ? fleet_slotitem_num[k] + shipslot[k] : shipslot[k];
+			    // 所持艦船数
+			    fleet_slotitem_ship[k] = fleet_slotitem_ship[k] ? fleet_slotitem_ship[k] + 1 : 1;
+			}
+		    }
+
 		    $('shipstatus-' + id + '-' + (j + 1)).value = ship_cond;
 		    $('shipstatus-' + id + '-' + (j + 1)).setAttribute('tooltiptext', ship_text);
 		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'background-color', ship_bgcolor);
@@ -659,6 +687,8 @@ var KanColleTimerFleetInfo = {
 		    let stypes;
 		    let fleetinfo = [];
 		    let timercmd = null;
+		    let slotitem2show = [ 12, 13, 24, 30 ];
+		    let slotiteminfo = [];
 
 		    let cur = (new Date).getTime();
 		    let t = KanColleDatabase.memberShip2.timestamp();
@@ -687,6 +717,19 @@ var KanColleTimerFleetInfo = {
 			fleetinfo.push(' ' + stypename + '(' + fleet_stypes[stypes[j]] + ')');
 		    }
 		    fleet_text += ';' + fleetinfo.join(',');
+
+		    for ( let j = 0; j < slotitem2show.length; j++ ) {
+			let k = slotitem2show[j];
+			if (!fleet_slotitem_ship[k])
+			    fleet_slotitem_ship[k] = 0;
+			if (!fleet_slotitem_num[k])
+			    fleet_slotitem_num[k] = 0;
+			slotiteminfo.push(' ' + KanColleData.slotitem_type[k]
+					    + '(' + fleet_slotitem_num[k]
+					    + '/' + fleet_slotitem_ship[k]
+					    + ')');
+		    }
+		    fleet_text += '\n装備: ' + slotiteminfo.join(', ');
 		}
 
 		$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
