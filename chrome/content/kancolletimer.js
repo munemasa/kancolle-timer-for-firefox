@@ -163,23 +163,6 @@ var KanColleTimer = {
 	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
-    createMissionBalanceTable:function(){
-	let balance = KanColleData.mission_hourly_balance;
-	let rows = $('hourly_balance');
-	for( let i in balance ){
-	    let row = CreateElement('row');
-	    let name = KanColleData.mission_name[i];
-	    name = name.substring(0,7);
-	    row.appendChild( CreateLabel( name ) );
-	    for( let j=0; j<4; j++ ){
-		row.appendChild( CreateLabel(balance[i][j]) );
-	    }
-	    row.setAttribute("style","border-bottom: 1px solid gray;");
-	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
-	    rows.appendChild( row );
-	}
-    },
-
     /**
      * スクリーンショット保存
      * @param file 保存ファイル名(nsIFile)
@@ -342,6 +325,7 @@ var KanColleTimer = {
 	KanColleTimerQuestInfo.init();
 	KanColleTimerFleetInfo.init();
 	KanColleTimerMaterialLog.init();
+	KanColleTimerMissionBalanceInfo.init();
 
 	KanColleTimerRegisterCallback();
 
@@ -355,7 +339,6 @@ var KanColleTimer = {
 
 	KanColleShipInfoInit();
 
-	this.createMissionBalanceTable();
 	this.setWindowOnTop();
 
 	KanColleTimerHeadQuarterInfo.start();
@@ -380,6 +363,7 @@ var KanColleTimer = {
 
 	KanColleTimerUnregisterCallback();
 
+	KanColleTimerMissionBalanceInfo.exit();
 	KanColleTimerMaterialLog.exit();
 	KanColleTimerFleetInfo.exit();
 	KanColleTimerQuestInfo.exit();

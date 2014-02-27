@@ -980,6 +980,42 @@ function KanColleTimerUnregisterCallback(){
     KanColleTimerShipInfoStop();
 }
 
+var KanColleTimerMissionBalanceInfo = {
+    _id: 'hourly_balance',
+
+    _fillTable: function(){
+	let balance = KanColleData.mission_hourly_balance;
+	let rows = $('hourly_balance');
+	for( let i in balance ){
+	    let row = CreateElement('row');
+	    let name = KanColleData.mission_name[i];
+	    name = name.substring(0,7);
+	    row.appendChild( CreateLabel( name ) );
+	    for( let j=0; j<4; j++ ){
+		row.appendChild( CreateLabel(balance[i][j]) );
+	    }
+	    row.setAttribute("style","border-bottom: 1px solid gray;");
+	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
+	    rows.appendChild( row );
+	}
+    },
+
+    _clearTable: function() {
+	RemoveChildren($(this._id));
+    },
+
+    init: function() {
+	this._update_init();
+	this._fillTable();
+    },
+
+    exit: function() {
+	this._clearTable();
+	this._update_exit();
+    },
+};
+KanColleTimerMissionBalanceInfo.__proto__ = __KanColleTimerPanel;
+
 function AddLog(str){
     $('log').value = str + $('log').value;
 }
