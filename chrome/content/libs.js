@@ -478,47 +478,71 @@ var KanColleTimerKdockInfo = {
 KanColleTimerKdockInfo.__proto__ = __KanColleTimerPanel;
 
 // 資源情報
-function KanColleTimerMemberMaterialHandler() {
-    let now = Math.floor(KanColleDatabase.memberMaterial.timestamp() / 1000);
-    let res = KanColleRemainInfo.gResourceData;
-    let last_data = res[ res.length-1 ];
-    let data = new Object();
-    let resnames = {
-	fuel: 1,
-	bullet: 2,
-	steel: 3,
-	bauxite: 4,
-    };
-    let count = 0;
+var KanColleTimerMaterialLog = {
+    update: {
+	memberMaterial: function() {
+	    let now = Math.floor(KanColleDatabase.memberMaterial.timestamp() / 1000);
+	    let res = KanColleRemainInfo.gResourceData;
+	    let last_data = res[ res.length-1 ];
+	    let data = new Object();
+	    let resnames = {
+		fuel: 1,
+		bullet: 2,
+		steel: 3,
+		bauxite: 4,
+	    };
+	    let count = 0;
 
-    if (!now)
-	return;
+	    if (!now)
+		return;
 
-    for (let k in resnames) {
-	let v = KanColleDatabase.memberMaterial.get(resnames[k]);
-	if (typeof(v) != 'object')
-	    continue;
-	data[k] = v.api_value;
-	if (!length || last_data[k] != data[k])
-	    count++;
-    }
+	    for (let k in resnames) {
+		let v = KanColleDatabase.memberMaterial.get(resnames[k]);
+		if (typeof(v) != 'object')
+		    continue;
+		data[k] = v.api_value;
+		if (!length || last_data[k] != data[k])
+		    count++;
+	    }
 
-    data.recorded_time = now; // 記録日時
+	    data.recorded_time = now; // 記録日時
 
-    if (count)
-	res.push( data );
-}
+	    if (count)
+		res.push( data );
+	},
+    },
 
-function KanColleTimerMaterialLogStart() {
-    let db = KanColleDatabase;
-    db.memberMaterial.appendCallback(KanColleTimerMemberMaterialHandler);
-}
+    readResourceData: function(){
+	let data = Storage.readObject( "resourcehistory", [] );
+	let d = KanColleRemainInfo.gResourceData;
 
-function KanColleTimerMaterialLogStop() {
-    let db = KanColleDatabase;
-    db.memberMaterial.removeCallback(KanColleTimerMemberMaterialHandler);
-}
+	let t1 = data.length && data[ data.length-1 ].recorded_time;
+	let t2 = d.length && d[ d.length-1 ].recorded_time;
+	if( t2 < t1 ){
+	    KanColleRemainInfo.gResourceData = data;
+	}
+    },
+    writeResourceData: function(){
+	let data = KanColleRemainInfo.gResourceData;
+	if( data.length > 15000 ){
+	    // 自然回復が一日480回あるので、それを最低1ヶ月分記録するとしたら
+	    // 15000件保存できればいいので。
+	    data = data.slice(-15000);
+	}
+	Storage.writeObject( "resourcehistory", data );
+    },
 
+    init: function() {
+	this._update_init();
+	this.readResourceData();
+    },
+
+    exit: function() {
+	this.writeResourceData();
+	this._update_exit();
+    },
+};
+KanColleTimerMaterialLog.__proto__ = __KanColleTimerPanel;
 
 /*
  * 所有艦娘情報2
@@ -949,13 +973,11 @@ var KanColleTimerQuestInfo = {
 KanColleTimerQuestInfo.__proto__ = __KanColleTimerPanel;
 
 function KanColleTimerRegisterCallback(){
-    KanColleTimerMaterialLogStart();
     KanColleTimerShipInfoStart();
 }
 
 function KanColleTimerUnregisterCallback(){
     KanColleTimerShipInfoStop();
-    KanColleTimerMaterialLogStop();
 }
 
 function AddLog(str){

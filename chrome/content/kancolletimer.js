@@ -320,26 +320,6 @@ var KanColleTimer = {
 	}
     },
 
-    readResourceData: function(){
-	let data = Storage.readObject( "resourcehistory", [] );
-	let d = KanColleRemainInfo.gResourceData;
-
-	let t1 = data.length && data[ data.length-1 ].recorded_time;
-	let t2 = d.length && d[ d.length-1 ].recorded_time;
-	if( t2 < t1 ){
-	    KanColleRemainInfo.gResourceData = data;
-	}
-    },
-    writeResourceData: function(){
-	let data = KanColleRemainInfo.gResourceData;
-	if( data.length > 15000 ){
-	    // 自然回復が一日480回あるので、それを最低1ヶ月分記録するとしたら
-	    // 15000件保存できればいいので。
-	    data = data.slice(-15000);
-	}
-	Storage.writeObject( "resourcehistory", data );
-    },
-
     startTimer: function() {
 	if (this._timer)
 	    return;
@@ -361,6 +341,7 @@ var KanColleTimer = {
 	KanColleTimerKdockInfo.init();
 	KanColleTimerQuestInfo.init();
 	KanColleTimerFleetInfo.init();
+	KanColleTimerMaterialLog.init();
 
 	KanColleTimerRegisterCallback();
 
@@ -377,17 +358,17 @@ var KanColleTimer = {
 	this.createMissionBalanceTable();
 	this.setWindowOnTop();
 
-	this.readResourceData();
-
 	KanColleTimerHeadQuarterInfo.start();
 	KanColleTimerDeckInfo.start();
 	KanColleTimerKdockInfo.start();
 	KanColleTimerNdockInfo.start();
 	KanColleTimerQuestInfo.start();
 	KanColleTimerFleetInfo.start();
+	KanColleTimerMaterialLog.start();
     },
 
     destroy: function(){
+	KanColleTimerMaterialLog.stop();
 	KanColleTimerFleetInfo.stop();
 	KanColleTimerQuestInfo.stop();
 	KanColleTimerKdockInfo.stop();
@@ -399,8 +380,7 @@ var KanColleTimer = {
 
 	KanColleTimerUnregisterCallback();
 
-	this.writeResourceData();
-
+	KanColleTimerMaterialLog.exit();
 	KanColleTimerFleetInfo.exit();
 	KanColleTimerQuestInfo.exit();
 	KanColleTimerKdockInfo.exit();
