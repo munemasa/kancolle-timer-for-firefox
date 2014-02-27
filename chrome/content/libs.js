@@ -972,14 +972,6 @@ var KanColleTimerQuestInfo = {
 };
 KanColleTimerQuestInfo.__proto__ = __KanColleTimerPanel;
 
-function KanColleTimerRegisterCallback(){
-    KanColleTimerShipInfoStart();
-}
-
-function KanColleTimerUnregisterCallback(){
-    KanColleTimerShipInfoStop();
-}
-
 var KanColleTimerMissionBalanceInfo = {
     _id: 'hourly_balance',
 
@@ -2483,24 +2475,27 @@ function ShipInfoTreeMenuPopup(){
     KanColleShipInfoSetView();
 }
 
-function KanColleTimerShipInfoStart() {
+function KanColleTimerShipTableStart() {
     let db = KanColleDatabase;
     db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.memberShip2.appendCallback(KanColleTimerShipInfoHandler);
 }
 
-function KanColleTimerShipInfoStop() {
+function KanColleTimerShipTableStop() {
     let db = KanColleDatabase;
     db.memberShip2.removeCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler);
     db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler);
 }
 
-function KanColleShipInfoInit(){
+function KanColleTimerShipTableInit() {
     debugprint('KanColleShipInfoInit()');
     KanColleCreateShipTree();
     KanColleShipInfoSetView();
+}
+
+function KanColleTimerShipTableExit() {
 }
 
 /**
