@@ -891,7 +891,7 @@ var KanColleTimerQuestInfo = {
 
 		// 古いときは灰色に。
 		if (!staletime || q.timestamp < staletime) {
-		    listitem.style.backgroundColor = '#dddddd';
+		    listitem.style.backgroundColor = 'rgba(221,221,221,0.5)'; //#dddddd
 		    //listitem.style.fontStyle = 'italic';
 		}
 
