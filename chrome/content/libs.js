@@ -483,7 +483,7 @@ var KanColleTimerFleetOrgInfo = {
 
 	    let maxhp = parseInt(data.api_maxhp);
 	    let nowhp = parseInt(data.api_nowhp);
-	    if( nowhp-1 <= maxhp*0.25 ){
+	    if( nowhp <= maxhp*0.25 ){
 		row.style.backgroundColor = '#ff8080';
 	    }else{
 		if( n==1 && $('show-gage').hasAttribute('checked') ){
