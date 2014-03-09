@@ -15,7 +15,7 @@
   <keyset>
     <!-- CTRL+W: Close this window -->
     <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
-    <key id="reload" key="r" modifiers="accel" oncommand="OpenShipList();"/>
+    <key id="reload" key="r" modifiers="accel" oncommand="window.location.reload();"/>
   </keyset>
 
   <script type="application/javascript;version=1.7"
@@ -105,7 +105,7 @@
 	  </grid>
 	  <hbox>
 	    <vbox>
-	      <image src="data/sync.png" style="cursor:pointer;" tooltiptext="表示を更新" onclick="OpenShipList();"/>
+	      <image src="data/sync.png" style="cursor:pointer;" tooltiptext="表示を更新" onclick="window.location.reload();"/>
 	    </vbox>
 	  </hbox>
 	</hbox><!-- tab 2 -->
