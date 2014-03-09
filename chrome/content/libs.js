@@ -991,7 +991,9 @@ function CreateHTMLElement(part){
  * @param elem 削除したい要素
  */
 function RemoveElement(elem){
-    elem.parentNode.removeChild(elem);
+    if( elem ){
+	elem.parentNode.removeChild(elem);
+    }
 }
 
 /**
