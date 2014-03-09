@@ -47,6 +47,12 @@
   </toolbox>
 
   <vbox id="box" flex="1" style="overflow:auto;">
+    <hbox>
+      <checkbox id="fuel" checked="true" label="燃料" oncommand="ResourceGraph.createGraph();"/>
+      <checkbox id="bullet" checked="true" label="弾薬" oncommand="ResourceGraph.createGraph();"/>
+      <checkbox id="steel" checked="true" label="鋼材" oncommand="ResourceGraph.createGraph();"/>
+      <checkbox id="bauxite" checked="true" label="ボーキサイト" oncommand="ResourceGraph.createGraph();"/>
+    </hbox>
   </vbox>
 
   <scrollbox width="1" height="1">

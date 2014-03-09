@@ -166,7 +166,10 @@ var ResourceGraph = {
     },
 
     createGraph: function(){
+	RemoveElement( $( 'graph' ) );
+
 	var data = KanColleRemainInfo.gResourceData;
+
 	var margin = {top: 20, right: 80, bottom: 30, left: 50};
 	var width = this.width - margin.left - margin.right;
 	var height = this.height - margin.top - margin.bottom;
@@ -191,6 +194,12 @@ var ResourceGraph = {
 	    .attr( "transform", "translate(" + margin.left + "," + margin.top + ")" );
 
 	var keys = d3.keys( data[0] ).filter( function( k ){
+	    let ids = ["fuel", "bullet", "steel", "bauxite" ];
+	    for( let i = 0; i < ids.length; i++ ){
+		if( !$( ids[i] ).checked && k == ids[i] ){
+		    return false;
+		}
+	    }
 	    return k !== "recorded_time" && k !== "date";
 	} );
 
