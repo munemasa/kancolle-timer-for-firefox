@@ -582,8 +582,36 @@ var KanColleQuestDB = function() {
 };
 KanColleQuestDB.prototype = new KanColleCombinedDB();
 
+var KanColleMissionDB = function() {
+    this._init();
+
+    this._db = {};
+
+    this._update = {
+	masterMission: function() {
+	    let list = KanColleDatabase.masterMission.list();
+	    for (let i = 0; i < list.length; i++) {
+		this._db[list[i]] = KanColleDatabase.masterMission.get(list[i]);
+	    }
+	    this._notify();
+	},
+    };
+
+    this.list = function() {
+	return Object.keys(this._db);
+    };
+
+    this.get = function(id) {
+	return this._db[id];
+    };
+
+    this._update_init();
+};
+KanColleMissionDB.prototype = new KanColleCombinedDB();
+
 var KanColleDatabase = {
     // Database
+    masterMission: null,	// master/mission
     masterShip: null,		// master/ship
     masterSlotitem: null,	// master/slotitem
     memberBasic: null,		// member/basic
@@ -617,7 +645,9 @@ var KanColleDatabase = {
 	if (data.api_result != 1)
 	    return;
 
-	if (url.match(/kcsapi\/api_get_master\/ship/)) {
+	if (url.match(/kcsapi\/api_get_master\/mission/)) {
+	    this.masterMission.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_master\/ship/)) {
 	    this.masterShip.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_master\/slotitem/)) {
 	    this.masterSlotitem.update(data.api_data);
@@ -663,6 +693,7 @@ var KanColleDatabase = {
 	    // Initialize
 	    KanColleHttpRequestObserver.init();
 
+	    this.masterMission = new KanColleDB();
 	    if (!this.masterShip)
 		this.masterShip = new KanColleDB();
 	    if (!this.masterSlotitem)
@@ -687,6 +718,8 @@ var KanColleDatabase = {
 	    this.slotitem .init();
 	    this.quest = new KanColleQuestDB();
 	    this.quest.init();
+	    this.mission = new KanColleMissionDB();
+	    this.mission.init();
 
 	    debugprint("KanColleDatabase initialized.");
 
@@ -701,6 +734,8 @@ var KanColleDatabase = {
 	    KanColleHttpRequestObserver.removeCallback(this._callback);
 
 	    // Clear
+	    this.mission.exit();
+	    this.mission = null;
 	    this.quest.exit();
 	    this.quest = null;
 	    this.slotitem.exit();
@@ -724,6 +759,7 @@ var KanColleDatabase = {
 	    //マスタ情報は再送されないので削除しない
 	    //this.masterSlotitem = null;
 	    //this.masterShip = null;
+	    this.masterMission = null;
 	    debugprint("KanColleDatabase cleared.");
 
 	    KanColleHttpRequestObserver.destroy();

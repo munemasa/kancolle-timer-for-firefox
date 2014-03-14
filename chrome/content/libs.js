@@ -172,6 +172,22 @@ KanColleTimerHeadQuarterInfo.__proto__ = __KanColleTimerPanel;
  */
 var KanColleTimerDeckInfo = {
     update: {
+	mission: function() {
+	    let decks = KanColleDatabase.memberDeck.list();
+	    for (let i = 0; i < decks.length; i++){
+		let d = KanColleDatabase.memberDeck.get(decks[i]);
+		let k = d.api_id;
+		if (d.api_mission[0]) {
+		    let mission_id = d.api_mission[1]; // 遠征ID
+		    let mission = KanColleDatabase.mission.get(mission_id);
+		    if (mission) {
+			KanColleRemainInfo.mission_name[i] = mission.api_name;
+			$('mission_name'+k).value = mission.api_name;
+		    }
+		}
+	    }
+	},
+
 	memberDeck: function() {
 	    let decks = KanColleDatabase.memberDeck.list();
 	    let now = Math.floor(KanColleDatabase.memberDeck.timestamp() / 1000);
@@ -187,8 +203,9 @@ var KanColleTimerDeckInfo = {
 		$(nameid).value = d.api_name; // 艦隊名
 		if( d.api_mission[0] ){
 		    let mission_id = d.api_mission[1]; // 遠征ID
+		    let mission = KanColleDatabase.mission.get(mission_id);
 		    // 遠征名を表示
-		    let mission_name = KanColleData.mission_name[mission_id];
+		    let mission_name = mission ? mission.api_name : KanColleData.mission_name[mission_id];
 		    if (!mission_name)
 			mission_name = 'UNKNOWN_' + mission_id;
 		    KanColleRemainInfo.mission_name[i] = mission_name;
