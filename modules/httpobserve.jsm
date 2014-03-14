@@ -579,7 +579,7 @@ var KanColleQuestDB = function() {
     };
 
     this._update_init();
-}
+};
 KanColleQuestDB.prototype = new KanColleCombinedDB();
 
 var KanColleDatabase = {
