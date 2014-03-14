@@ -713,7 +713,7 @@ var KanColleTimerFleetInfo = {
 			}
 		    }
 
-		    if (ship) {
+		    if (KanColleTimerConfig.getBool('display.extra-info') && ship) {
 			let ship_ap = ShipCalcAirPower(ship_id);
 			if (ship_ap >= 0) {
 			    //ship_text += '\n制空: ' + ship_ap;
@@ -804,7 +804,7 @@ var KanColleTimerFleetInfo = {
 		    }
 		    fleet_text += '\n装備: ' + slotiteminfo.join(', ');
 
-		    if (fleet_ap >= 0)
+		    if (KanColleTimerConfig.getBool('display.extra-info') && fleet_ap >= 0)
 			fleet_text += '\n制空: ' + fleet_ap;
 		}
 
