@@ -622,6 +622,7 @@ var KanColleTimerFleetInfo = {
 		let fleet_stypes = {};
 		let fleet_slotitem_ship = {};
 		let fleet_slotitem_num =  {};
+		let fleet_ap = 0;
 		let min_cond = 100;
 		for ( let j = 0; j < fi.api_ship.length; j++ ){
 		    let ship_id = fi.api_ship[j];
@@ -712,6 +713,16 @@ var KanColleTimerFleetInfo = {
 			}
 		    }
 
+		    if (ship) {
+			let ship_ap = ShipCalcAirPower(ship_id);
+			if (ship_ap >= 0) {
+			    //ship_text += '\n制空: ' + ship_ap;
+			    if (fleet_ap >= 0)
+				fleet_ap += ship_ap;
+			} else
+			    fleet_ap = -1;
+		    }
+
 		    // 装備
 		    if (ship) {
 			for (let k = 0; k < ship.api_slot.length; k++) {
@@ -792,6 +803,9 @@ var KanColleTimerFleetInfo = {
 					    + ')');
 		    }
 		    fleet_text += '\n装備: ' + slotiteminfo.join(', ');
+
+		    if (fleet_ap >= 0)
+			fleet_text += '\n制空: ' + fleet_ap;
 		}
 
 		$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
@@ -1252,6 +1266,25 @@ function FindShipStatus( ship_id ){
     } catch (x) {
     }
     return undefined;
+}
+
+function ShipCalcAirPower(shipid) {
+    let ship = KanColleDatabase.memberShip2.get(shipid);
+    let ap = 0;
+
+    if (!ship)
+	return -1;
+
+    for (let j = 0; j < ship.api_slot.length && j < ship.api_onslot.length; j++) {
+	let item = KanColleDatabase.memberSlotitem.get(ship.api_slot[j]);
+	if (!item || item.api_tyku == 0)
+	    continue;
+	if (item.api_type[1] == 5 ||
+	    item.api_type[1] == 7) {
+	    ap += Math.floor(item.api_tyku * Math.sqrt(ship.api_onslot[j]));
+	}
+    }
+    return ap;
 }
 
 /*
