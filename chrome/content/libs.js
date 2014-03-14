@@ -618,6 +618,7 @@ var KanColleTimerFleetInfo = {
 		let id = parseInt(fi.api_id, 10);
 		let fleet_text = fi.api_name;
 		let fleet_flagship_lv = 0;
+		let fleet_lv = 0;
 		let fleet_stypes = {};
 		let fleet_slotitem_ship = {};
 		let fleet_slotitem_num =  {};
@@ -637,6 +638,7 @@ var KanColleTimerFleetInfo = {
 
 		    if (ship) {
 			let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
+			fleet_lv += ship.api_lv;
 			if (j == 0)
 			    fleet_flagship_lv = ship.api_lv;
 			if (!fleet_stypes[shiptype.api_stype])
@@ -769,7 +771,7 @@ var KanColleTimerFleetInfo = {
 			return fleet_stypes[b] - fleet_stypes[a];
 		    });
 
-		    fleet_text += '\n旗艦Lv' + fleet_flagship_lv;
+		    fleet_text += '\n旗艦Lv' + fleet_flagship_lv + '/' + fleet_lv;
 		    for( let j = 0; j < stypes.length; j++ ){
 			let stypename = KanColleData.type_name[stypes[j]];
 			if (!stypename)
