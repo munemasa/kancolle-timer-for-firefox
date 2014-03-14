@@ -86,7 +86,7 @@ var KanColleTimerDeckInfo = {
 		$(nameid).value = d.api_name; // 艦隊名
 		if( k==1 ){
 		    // 第1艦隊の名前
-		    $('first-fleet-name').value = d.api_name;
+		    $('first-fleet-name').setAttribute('label', d.api_name);
 		}
 		if( d.api_mission[0] ){
 		    let mission_id = d.api_mission[1]; // 遠征ID
@@ -486,7 +486,7 @@ var KanColleTimerFleetOrgInfo = {
 	    if( nowhp <= maxhp*0.25 ){
 		row.style.backgroundColor = '#ff8080';
 	    }else{
-		if( n==1 && $('show-gage').hasAttribute('checked') ){
+		if( n==1 && $('first-fleet-name').hasAttribute('checked') ){
 		    // 第1艦隊のみ
 		    let percentage = parseInt( nowhp/maxhp*100 );
 		    let image;

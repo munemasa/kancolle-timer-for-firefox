@@ -255,7 +255,7 @@
 
 	<!-- 第1艦隊編成 -->
 	<groupbox id="group-1stfleet">
-	  <caption><label id="first-fleet-name" value="第1艦隊"/><checkbox persist="checked" autoCheck="true" id="show-gage" label="HPゲージ" tooltiptext="HPゲージを表示するようにします" style="margin:0;"/><label id="refresh-timer" value="00:00:00"/></caption>
+	  <caption><checkbox persist="checked" autoCheck="true" id="first-fleet-name" label="第1艦隊" tooltiptext="チェックを入れるとHPゲージを表示するようにします" style="margin:0;"/><label id="refresh-timer" value="00:00:00"/></caption>
 	  <grid>
 	    <columns>
 	      <column/><column/><column/><column/>
