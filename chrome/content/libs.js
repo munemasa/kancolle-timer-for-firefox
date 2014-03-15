@@ -382,12 +382,23 @@ var KanColleTimerQuestInfo = {
 	    quest_name[0].parentNode.removeChild(quest_name[0]);
 	}
 
+	let color = {
+	    0: "",
+	    1: "",
+	    2: "#df4f42", // 出撃
+	    3: "#7ebb56", // 演習
+	    4: "#45b9c3", // 遠征
+	    5: "#cab057", // 補給・入渠
+	};
+
 	let cnt=0;
 	for( let i in KanColleRemainInfo.gMission ){
 	    let mission = KanColleRemainInfo.gMission[i];
 	    if( mission && mission.api_state==2 ){
 		let label = CreateLabel( mission.api_title );
-		label.setAttribute('class','quest-name');
+		let str = 'border-left: 5px solid '+color[mission.api_category];
+		label.setAttribute('style', str);
+		label.setAttribute('class', 'quest-name');
 		label.setAttribute('tooltiptext', mission.api_detail);
 		$('group-quest').appendChild( label );
 	    }
