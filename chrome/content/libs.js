@@ -389,6 +389,8 @@ var KanColleTimerQuestInfo = {
 	    3: "#7ebb56", // 演習
 	    4: "#45b9c3", // 遠征
 	    5: "#cab057", // 補給・入渠
+	    6: "#7d4f33", // 工廠
+	    7: "#b599c9", // 改装
 	};
 
 	let cnt=0;
