@@ -811,6 +811,7 @@ var KanColleTimerFleetInfo = {
 		$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
 	    }
 	},
+	memberShip2: 'memberDeck',
     },
 };
 KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
