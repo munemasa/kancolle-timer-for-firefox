@@ -449,7 +449,10 @@ var ShipList = {
     init: function(){
 	// 装備アイテムリスト
 	this.allequipments = KanColleDatabase.memberSlotitem.list().map( function( k ){
-	    return KanColleDatabase.memberSlotitem.get( k );
+	    let item = KanColleDatabase.memberSlotitem.get( k );
+	    let tmp = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+	    MergeSimpleObject( item, tmp );
+	    return item;
 	} );
 	// 艦これと同じ並びにする
 	this.allequipments.sort( function( a, b ){

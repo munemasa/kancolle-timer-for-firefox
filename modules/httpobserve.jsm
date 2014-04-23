@@ -199,7 +199,10 @@ var KanColleDatabase = {
 	if (data.api_result != 1)
 	    return;
 
-	if (url.match(/kcsapi\/api_get_master\/ship/)) {
+	if (url.match(/kcsapi\/api_start2/)) {
+	    this.masterShip.update(data.api_data.api_mst_ship);
+	    this.masterSlotitem.update(data.api_data.api_mst_slotitem);
+	}if (url.match(/kcsapi\/api_get_master\/ship/)) {
 	    this.masterShip.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_master\/slotitem/)) {
 	    this.masterSlotitem.update(data.api_data);
