@@ -397,15 +397,16 @@ var KanColleSlotitemDB = function() {
 	items = KanColleDatabase.memberSlotitem.list();
 	ships = KanColleDatabase.memberShip2.list();
 
-	if (items.length && ships.length) {
+	if (items.length && ships.length && KanColleDatabase.masterSlotitem.timestamp()) {
 	    for (let i = 0; i < items.length; i++) {
 		let item = KanColleDatabase.memberSlotitem.get(items[i]);
 		let itemtypeid = item.api_slotitem_id;
+		let itemtype = KanColleDatabase.masterSlotitem.get(itemtypeid);
 		if (!db[itemtypeid]) {
 		    db[itemtypeid] = {
 					id: itemtypeid,
-					name: item.api_name,
-					type: item.api_type,
+					name: itemtype.api_name,
+					type: itemtype.api_type,
 					list: {},
 					totalnum: 0,
 					num: 0,
@@ -645,7 +646,11 @@ var KanColleDatabase = {
 	if (data.api_result != 1)
 	    return;
 
-	if (url.match(/kcsapi\/api_get_master\/mission/)) {
+	if (url.match(/kcsapi\/api_start2/)) {
+	    this.masterMission.update(data.api_data.api_mst_mission);
+	    this.masterShip.update(data.api_data.api_mst_ship);
+	    this.masterSlotitem.update(data.api_data.api_mst_slotitem);
+	} else if (url.match(/kcsapi\/api_get_master\/mission/)) {
 	    this.masterMission.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_master\/ship/)) {
 	    this.masterShip.update(data.api_data);
@@ -675,8 +680,16 @@ var KanColleDatabase = {
 	    this.memberUnsetslot.update(data.api_data.api_slot_data);
 	} else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
 	    this.memberSlotitem.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_get_member\/slot_item/)) {
+	    this.memberSlotitem.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/unsetslot/)) {
 	    this.memberUnsetslot.update(data.api_data);
+	} else if (url.match(/kcsapi\/api_port\/port/)) {
+	    this.memberBasic.update(data.api_data.api_basic);
+	    this.memberDeck.update(data.api_data.api_deck_port);
+	    this.memberMaterial.update(data.api_data.api_material);
+	    this.memberShip2.update(data.api_data.api_ship);
+	    this.memberNdock.update(data.api_data.api_ndock);
 	} else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 	    this.questClearitemget.update(data.api_data);
 	}
