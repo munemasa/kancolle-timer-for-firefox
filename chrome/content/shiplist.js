@@ -75,7 +75,7 @@ var ShipList = {
 	    case 1: // レベル
 		tmpa = a.lv;
 		tmpb = b.lv;
-		if( tmpa==tmpb ){
+		if( tmpa == tmpb ){
 		    tmpa = b.sort_no;
 		    tmpb = a.sort_no;
 		}
