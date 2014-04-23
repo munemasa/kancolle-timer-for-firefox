@@ -1184,9 +1184,11 @@ function TakeKanColleScreenshot(isjpeg){
  */
 function FindSlotItemNameById( api_id ){
     let item = KanColleDatabase.memberSlotitem.get(api_id);
-    if (item)
-	return item.api_name;
-    return "[Unknown";
+    if (item) {
+	let itemtype = KanColleDatabase.masterSlotitem.get(item.api_slotitem_id);
+	return itemtype.api_name;
+    }
+    return "[Unknown]";
 }
 
 function FindShipNameByCatId( id ){
