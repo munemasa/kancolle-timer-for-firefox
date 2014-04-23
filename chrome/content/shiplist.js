@@ -71,6 +71,10 @@ var ShipList = {
 	    case 0: // 艦種
 		tmpa = a.stype;
 		tmpb = b.stype;
+		if( tmpa == tmpb ){
+		    tmpa = b.sort_no;
+		    tmpb = a.sort_no;
+		}
 		break;
 	    case 1: // レベル
 		tmpa = a.lv;
