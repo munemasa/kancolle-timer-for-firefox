@@ -793,11 +793,14 @@ var KanColleTimerFleetInfo = {
 
 		    for ( let j = 0; j < slotitem2show.length; j++ ) {
 			let k = slotitem2show[j];
+			let eqtype = KanColleDatabase.masterSlotitemEquiptype.get(k);
+
 			if (!fleet_slotitem_ship[k])
 			    fleet_slotitem_ship[k] = 0;
 			if (!fleet_slotitem_num[k])
 			    fleet_slotitem_num[k] = 0;
-			slotiteminfo.push(' ' + KanColleData.slotitem_type[k]
+
+			slotiteminfo.push(' ' + eqtype.api_name
 					    + '(' + fleet_slotitem_num[k]
 					    + '/' + fleet_slotitem_ship[k]
 					    + ')');
@@ -1558,7 +1561,8 @@ function KanColleSlotitemFilterTemplate(){
 	let k = itemlist[i];
 	let itemname = slotitemowners[k].name;
 	let itemtype = slotitemowners[k].type[2];
-	let itemtypename = KanColleData.slotitem_type[itemtype];
+	let itemeqtype = KanColleDatabase.masterSlotitemEquiptype.get(itemtype);
+	let itemtypename = itemeqtype.api_name;
 	let itemnum = slotitemowners[k].num;
 	let itemtotalnum = slotitemowners[k].totalnum;
 	let itemmenutitle;

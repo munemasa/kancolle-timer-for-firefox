@@ -615,6 +615,7 @@ var KanColleDatabase = {
     masterMission: null,	// master/mission
     masterShip: null,		// master/ship
     masterSlotitem: null,	// master/slotitem
+    masterSlotitemEquiptype: null,	// mst_slotitem_equiptype
     memberBasic: null,		// member/basic
     memberDeck: null,		// member/deck,member/deck_port,
 				// or member/ship2[api_data_deck]
@@ -650,6 +651,7 @@ var KanColleDatabase = {
 	    this.masterMission.update(data.api_data.api_mst_mission);
 	    this.masterShip.update(data.api_data.api_mst_ship);
 	    this.masterSlotitem.update(data.api_data.api_mst_slotitem);
+	    this.masterSlotitemEquiptype.update(data.api_data.api_mst_slotitem_equiptype);
 	} else if (url.match(/kcsapi\/api_get_master\/mission/)) {
 	    this.masterMission.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_master\/ship/)) {
@@ -711,6 +713,8 @@ var KanColleDatabase = {
 		this.masterShip = new KanColleDB();
 	    if (!this.masterSlotitem)
 		this.masterSlotitem = new KanColleDB();
+	    if (!this.masterSlotitemEquiptype)
+		this.masterSlotitemEquiptype = new KanColleDB();
 	    this.memberBasic = new KanColleSimpleDB();
 	    this.memberDeck = new KanColleDB();
 	    this.memberKdock = new KanColleDB();
@@ -770,6 +774,7 @@ var KanColleDatabase = {
 	    this.memberUnsetslot = null;
 	    this.memberShip2 = null;
 	    //マスタ情報は再送されないので削除しない
+	    //this.masterSlotitemEquiptype = null;
 	    //this.masterSlotitem = null;
 	    //this.masterShip = null;
 	    this.masterMission = null;
