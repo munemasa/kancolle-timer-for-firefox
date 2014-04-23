@@ -3,6 +3,10 @@
 
 var EXPORTED_SYMBOLS = ["KanColleRemainInfo", "KanColleDatabase"];
 
+// API version (detected)
+var KanColleAPIversion = 20131127;  // 20131127 (ship3)
+				    // 20140423 (port/port; partial ship3)
+
 /*
  * Database
  */
@@ -677,9 +681,11 @@ var KanColleDatabase = {
 	    this.memberShip2.update(data.api_data);
 	    this.memberDeck.update(data.api_data_deck);
 	} else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
-	    this.memberShip2.update(data.api_data.api_ship_data);
-	    this.memberDeck.update(data.api_data.api_deck_data);
-	    this.memberUnsetslot.update(data.api_data.api_slot_data);
+	    if (KanColleAPIversion < 20140423) {
+		this.memberShip2.update(data.api_data.api_ship_data);
+		this.memberDeck.update(data.api_data.api_deck_data);
+		this.memberUnsetslot.update(data.api_data.api_slot_data);
+	    }
 	} else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
 	    this.memberSlotitem.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_get_member\/slot_item/)) {
@@ -687,6 +693,7 @@ var KanColleDatabase = {
 	} else if (url.match(/kcsapi\/api_get_member\/unsetslot/)) {
 	    this.memberUnsetslot.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_port\/port/)) {
+	    KanColleAPIversion = 20140423;
 	    this.memberBasic.update(data.api_data.api_basic);
 	    this.memberDeck.update(data.api_data.api_deck_port);
 	    this.memberMaterial.update(data.api_data.api_material);
