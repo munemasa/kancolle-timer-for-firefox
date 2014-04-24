@@ -229,10 +229,10 @@ var KanColleDatabase = {
 	    this.memberSlotitem.update(data.api_data);
 	} else if (url.match(/kcsapi\/api_port\/port/)) {
 	    this.memberBasic.update(data.api_data.api_basic);
-	    this.memberDeck.update(data.api_data.api_deck_port);
 	    this.memberMaterial.update(data.api_data.api_material);
 	    this.memberShip2.update(data.api_data.api_ship);
 	    this.memberNdock.update(data.api_data.api_ndock);
+	    this.memberDeck.update(data.api_data.api_deck_port);
 	}
     },
 
