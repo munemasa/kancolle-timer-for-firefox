@@ -646,63 +646,88 @@ var KanColleDatabase = {
     _refcnt: null,
 
     // Callback
-    _callback: function(req, s) {
+    _callback: function(req, s, mode) {
 	let url = req.name;
-	let data = JSON.parse(s.substring(s.indexOf('svdata=') + 7));
+	if (!mode || mode == 'http-on-examine-response') {
+	    let data = JSON.parse(s.substring(s.indexOf('svdata=') + 7));
 
-	if (data.api_result != 1)
-	    return;
+	    if (data.api_result != 1)
+		return;
 
-	if (url.match(/kcsapi\/api_start2/)) {
-	    this.masterMission.update(data.api_data.api_mst_mission);
-	    this.masterShip.update(data.api_data.api_mst_ship);
-	    this.masterSlotitem.update(data.api_data.api_mst_slotitem);
-	    this.masterSlotitemEquiptype.update(data.api_data.api_mst_slotitem_equiptype);
-	} else if (url.match(/kcsapi\/api_get_master\/mission/)) {
-	    this.masterMission.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_master\/ship/)) {
-	    this.masterShip.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_master\/slotitem/)) {
-	    this.masterSlotitem.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/basic/)) {
-	    this.memberBasic.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
-		   url.match(/kcsapi\/api_get_member\/deck/)) {
-	    this.memberDeck.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/kdock/)) {
-	    this.memberKdock.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/material/)) {
-	    this.memberMaterial.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
-	    this.memberNdock.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
-	    this.memberQuestlist.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/record/)) {
-	    this.memberRecord.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
-	    this.memberShip2.update(data.api_data);
-	    this.memberDeck.update(data.api_data_deck);
-	} else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
-	    if (KanColleAPIversion < 20140423) {
-		this.memberShip2.update(data.api_data.api_ship_data);
-		this.memberDeck.update(data.api_data.api_deck_data);
-		this.memberUnsetslot.update(data.api_data.api_slot_data);
+	    if (url.match(/kcsapi\/api_start2/)) {
+		this.masterMission.update(data.api_data.api_mst_mission);
+		this.masterShip.update(data.api_data.api_mst_ship);
+		this.masterSlotitem.update(data.api_data.api_mst_slotitem);
+		this.masterSlotitemEquiptype.update(data.api_data.api_mst_slotitem_equiptype);
+	    } else if (url.match(/kcsapi\/api_get_master\/mission/)) {
+		this.masterMission.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_master\/ship/)) {
+		this.masterShip.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_master\/slotitem/)) {
+		this.masterSlotitem.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/basic/)) {
+		this.memberBasic.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/deck_port/) ||
+		       url.match(/kcsapi\/api_get_member\/deck/)) {
+		this.memberDeck.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/kdock/)) {
+		this.memberKdock.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/material/)) {
+		this.memberMaterial.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
+		this.memberNdock.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
+		this.memberQuestlist.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/record/)) {
+		this.memberRecord.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
+		this.memberShip2.update(data.api_data);
+		this.memberDeck.update(data.api_data_deck);
+	    } else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
+		if (KanColleAPIversion < 20140423) {
+		    this.memberShip2.update(data.api_data.api_ship_data);
+		    this.memberDeck.update(data.api_data.api_deck_data);
+		    this.memberUnsetslot.update(data.api_data.api_slot_data);
+		}
+	    } else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
+		this.memberSlotitem.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/slot_item/)) {
+		this.memberSlotitem.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/unsetslot/)) {
+		this.memberUnsetslot.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_port\/port/)) {
+		KanColleAPIversion = 20140423;
+		this.memberBasic.update(data.api_data.api_basic);
+		this.memberDeck.update(data.api_data.api_deck_port);
+		this.memberMaterial.update(data.api_data.api_material);
+		this.memberShip2.update(data.api_data.api_ship);
+		this.memberNdock.update(data.api_data.api_ndock);
+	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
+		this.questClearitemget.update(data.api_data);
 	    }
-	} else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
-	    this.memberSlotitem.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/slot_item/)) {
-	    this.memberSlotitem.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_get_member\/unsetslot/)) {
-	    this.memberUnsetslot.update(data.api_data);
-	} else if (url.match(/kcsapi\/api_port\/port/)) {
-	    KanColleAPIversion = 20140423;
-	    this.memberBasic.update(data.api_data.api_basic);
-	    this.memberDeck.update(data.api_data.api_deck_port);
-	    this.memberMaterial.update(data.api_data.api_material);
-	    this.memberShip2.update(data.api_data.api_ship);
-	    this.memberNdock.update(data.api_data.api_ndock);
-	} else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
-	    this.questClearitemget.update(data.api_data);
+	} else if (mode == 'http-on-modify-request') {
+	    let postdata = s.substring(s.indexOf('\r\n\r\n') + 4).split('&');
+	    let k,v,t;
+	    let data = new Object();
+	    for (let i = 0; i < postdata.length; i++){
+		let idx;
+		let e;
+
+		t = postdata[i];
+		idx = t.indexOf('=');
+		try{
+		    if (idx >= 0) {
+			k = decodeURI(t.substring(0, idx));
+			v = decodeURI(t.substring(idx + 1));
+		    }
+		    if (data[k])
+			debugprint('overriding data for ' + k + '; ' + data[k]);
+		    data[k] = v;
+		} catch(e) {
+		}
+	    }
+
+	    //debugprint('url=' + url + ', data=' + data.toSource());
 	}
     },
 
@@ -869,7 +894,7 @@ TracingListener.prototype =
 	for( var k in  callback ){
 	    var f = callback[k];
 	    if( typeof f=='function' ){
-		f( request, s );
+		f( request, s, 'http-on-examine-response' );
 	    }
 	}
     },
@@ -914,22 +939,12 @@ var KanColleHttpRequestObserver =
 		var postdata = ss.read(n);
 		us.seek(0, 0);
 
-		try{
-		    var uri = httpChannel.URI.spec.match(/^http.*\/kcsapi\/(.*)/)[1];
-		    postdata = postdata.split(/\r\n\r\n/)[1];
-		    postdata = postdata.split('&');
-		    var k,v,t;
-		    var data = new Object();
-		    for( var i=0; i<postdata.length; i++ ){
-			t = postdata[i].split('=');
-			k = decodeURI( t[0] );
-			v = decodeURI( t[1] );
-			data[k] = v;
-		    }
-		    KanColleDatabase.postData[uri] = data;
-		}catch(e){
-		    debugprint(e);
+		for( let k in callback ){
+		    let f = callback[k];
+		    if (typeof(f) == 'function')
+			f({ name: httpChannel.URI.spec }, postdata, aTopic);
 		}
+
 	    }
         }
     },
