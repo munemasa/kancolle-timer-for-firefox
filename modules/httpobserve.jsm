@@ -176,6 +176,8 @@ KanColleDB.prototype = {
 };
 
 var KanColleDatabase = {
+    postData: new Object(),
+
     // Database
     masterShip: new KanColleDB(),	// master/ship
     masterSlotitem: new KanColleDB(),	// master/slotitem
@@ -342,11 +344,46 @@ var KanColleHttpRequestObserver =
     observe: function(aSubject, aTopic, aData){
         if (aTopic == "http-on-examine-response"){
 	    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
+
 	    if( httpChannel.URI.spec.match(/^http.*\/kcsapi\//) ){
 		//debugprint(httpChannel.URI.spec);
 		var newListener = new TracingListener();
 		aSubject.QueryInterface(Ci.nsITraceableChannel);
 		newListener.originalListener = aSubject.setNewListener(newListener);
+	    }
+	}
+
+	if( aTopic=="http-on-modify-request" ){
+	    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
+	    if( httpChannel.requestMethod=='POST' &&
+		httpChannel.URI.spec.match(/^http.*\/kcsapi\//) ){
+		httpChannel.QueryInterface(Components.interfaces.nsIUploadChannel);
+		var us = httpChannel.uploadStream;
+		us.QueryInterface(Components.interfaces.nsISeekableStream);
+		var ss = Components.classes["@mozilla.org/scriptableinputstream;1"]
+			.createInstance(Components.interfaces. nsIScriptableInputStream);
+		ss.init(us);
+		us.seek(0, 0);
+		var n = ss.available();
+		var postdata = ss.read(n);
+		us.seek(0, 0);
+
+		try{
+		    var uri = httpChannel.URI.spec.match(/^http.*\/kcsapi\/(.*)/)[1];
+		    postdata = postdata.split(/\r\n\r\n/)[1];
+		    postdata = postdata.split('&');
+		    var k,v,t;
+		    var data = new Object();
+		    for( var i=0; i<postdata.length; i++ ){
+			t = postdata[i].split('=');
+			k = decodeURI( t[0] );
+			v = decodeURI( t[1] );
+			data[k] = v;
+		    }
+		    KanColleDatabase.postData[uri] = data;
+		}catch(e){
+		    debugprint(e);
+		}
 	    }
         }
     },
@@ -377,6 +414,7 @@ var KanColleHttpRequestObserver =
 	    this.observerService = Components.classes["@mozilla.org/observer-service;1"]
 		.getService(Components.interfaces.nsIObserverService);
 	    this.observerService.addObserver(this, "http-on-examine-response", false);
+	    this.observerService.addObserver(this, "http-on-modify-request", false);
 	    debugprint("start kancolle observer.");
 
 	    KanColleDatabase.init();
@@ -392,6 +430,7 @@ var KanColleHttpRequestObserver =
 	    KanColleDatabase.exit();
 
 	    this.observerService.removeObserver(this, "http-on-examine-response");
+	    this.observerService.removeObserver(this, "http-on-modify-request");
 	    this.counter = 0;
 	    debugprint("stop kancolle observer.");
 	}
