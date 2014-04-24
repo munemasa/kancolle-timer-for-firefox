@@ -133,6 +133,8 @@ var ShipList = {
 	    }
 	    elem.appendChild( cell );
 
+	    elem.appendChild( CreateListCell( data.api_sakuteki[0] ) );
+
 	    for( let i in data.api_slot ){
 		if( data.api_slot[i] < 0 ) continue;
 		let name = FindSlotItemNameById( data.api_slot[i] );
@@ -206,6 +208,9 @@ var ShipList = {
 	    }else{
 	    }
 	    elem.appendChild( cell );
+
+	    elem.appendChild( CreateListCell( obj.saku ) );
+
 
 	    for( let i in obj.equips ){
 		let name = obj.equips[i];
@@ -353,6 +358,7 @@ var ShipList = {
 	    obj.lv = ship.api_lv;
 	    obj.cond = ship.api_cond;
 	    obj.ndock_time = parseInt( ship.api_ndock_time / 1000 );
+	    obj.saku = ship.api_sakuteki[0];
 
 	    obj.equips = new Array();
 
