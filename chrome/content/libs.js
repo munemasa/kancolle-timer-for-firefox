@@ -1283,11 +1283,17 @@ function ShipCalcAirPower(shipid) {
 
     for (let j = 0; j < ship.api_slot.length && j < ship.api_onslot.length; j++) {
 	let item = KanColleDatabase.memberSlotitem.get(ship.api_slot[j]);
-	if (!item || item.api_tyku == 0)
+	let itemtype;
+
+	if (!item)
 	    continue;
-	if (item.api_type[1] == 5 ||
-	    item.api_type[1] == 7) {
-	    ap += Math.floor(item.api_tyku * Math.sqrt(ship.api_onslot[j]));
+
+	itemtype = KanColleDatabase.masterSlotitem.get(item.api_slotitem_id);
+	if (itemtype.api_tyku == 0)
+	    continue;
+	if (itemtype.api_type[1] == 5 ||
+	    itemtype.api_type[1] == 7) {
+	    ap += Math.floor(itemtype.api_tyku * Math.sqrt(ship.api_onslot[j]));
 	}
     }
     return ap;
