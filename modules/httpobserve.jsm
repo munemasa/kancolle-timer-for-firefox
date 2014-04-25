@@ -375,6 +375,39 @@ var KanColleShipDB = function() {
 
 	    this._db.fleet = db;
 	},
+
+	reqHokyuCharge: function() {
+	    let data = KanColleDatabase.reqHokyuCharge.get().api_ship;
+
+	    this._ts = KanColleDatabase.reqHokyuCharge.timestamp();
+
+	    // Deepcopy, if needed.
+	    if (!this._ship) {
+		let ships = KanColleDatabase._memberShip2.list();
+		if (!ships)
+		    return;
+
+		this._db.ship = new Object;
+
+		for (let i = 0; i < ships.length; i++)
+		    this._db.ship[ships[i]] = JSON.parse(JSON.stringify(KanColleDatabase._memberShip2.get(ships[i])));
+
+		this._db.list = Object.keys(this._db.ship);
+
+		//debugprint('hash: ' + this._db.ship.toSource());
+		//debugprint('list: ' + this._db.list.toSource());
+	    }
+
+	    // Update
+	    for (let i = 0; i < data.length; i++) {
+		let ship_id = data[i].api_id;
+		for (let k in data[i])
+		    this._db.ship[ship_id][k] = data[i][k];
+	    }
+
+	    // Notification
+	    this._notify();
+	},
     };
 
     this.get = function(id, key) {
@@ -666,6 +699,7 @@ var KanColleDatabase = {
     memberUnsetslot: null,	// member/unsetslot
 				// or member/ship3[api_data.api_slot_data]
     questClearitemget: null,	// quest/clearitemget
+    reqHokyuCharge: null,	// req_hokyu/charge
 
     headQuarter: null,		// 艦船/装備
     ship: null,			// 艦船
@@ -734,6 +768,8 @@ var KanColleDatabase = {
 		this.memberNdock.update(data.api_data.api_ndock);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 		this.questClearitemget.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_req_hokyu\/charge/)) {
+		this.reqHokyuCharge.update(data.api_data);
 	    }
 	} else if (mode == 'http-on-modify-request') {
 	    let postdata = s.substring(s.indexOf('\r\n\r\n') + 4).split('&');
@@ -791,6 +827,7 @@ var KanColleDatabase = {
 	    this.memberSlotitem = new KanColleDB();
 	    this.memberUnsetslot = new KanColleSimpleDB();
 	    this.questClearitemget = new KanColleSimpleDB();
+	    this.reqHokyuCharge = new KanColleSimpleDB();
 
 	    this.ship = new KanColleShipDB();
 	    this.ship.init();
@@ -827,6 +864,7 @@ var KanColleDatabase = {
 	    this.ship.exit();
 	    this.ship = null;
 
+	    this.reqHokyuCharge = null;
 	    this.questClearitemget = null;
 	    this.memberQuestlist = null;
 	    this.memberMaterial = null;
