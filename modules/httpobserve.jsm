@@ -230,6 +230,10 @@ KanColleCombinedDB.prototype = {
 	if (this._update_list) {
 	    for (let i = 0; i < this._update_list.length; i++) {
 		let k = this._update_list[i];
+		if (!KanColleDatabase[k]) {
+		    debugprint('KanColleDatabase["' + k + '"] is not initialized yet.  Please fix it.');
+		    continue;
+		}
 		KanColleDatabase[k].appendCallback(this._update[k]);
 	    }
 	}
@@ -239,6 +243,8 @@ KanColleCombinedDB.prototype = {
 	if (this._update_list) {
 	    for (let i = this._update_list.length - 1; i >= 0; i--) {
 		let k = this._update_list[i];
+		if (!KanColleDatabase[k])
+		    continue;
 		KanColleDatabase[k].removeCallback(this._update[k]);
 	    }
 	}
