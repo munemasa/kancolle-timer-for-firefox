@@ -72,6 +72,7 @@ var KanColleData = {
 	28: '#9a7eaa',	// バルジ
 	29: '#f28a47',  // 探照灯
 	30: '#a3a3a3',  // ドラム缶
+	31: '#b09d7f',  // 艦艇修理施設
     },
 
     mission_name:           {
