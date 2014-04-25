@@ -369,8 +369,10 @@ var KanColleShipDB = function() {
 	},
     };
 
-    this.get = function(key) {
-	return this._db[key];
+    this.get = function(id, key) {
+	if (key == 'fleet') {
+	    return this._db['fleet'][id];
+	}
     };
 
     this._update_init();
