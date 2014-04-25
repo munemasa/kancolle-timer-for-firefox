@@ -302,10 +302,10 @@ var KanColleHeadQuarterDB = function() {
 	    this._notify();
 	},
 
-	memberShip2: function() {
-	    debugprint('memberShip2()()');
-	    let t = KanColleDatabase.memberShip2.timestamp();
-	    let n = KanColleDatabase.memberShip2.count();
+	ship: function() {
+	    debugprint('ship()()');
+	    let t = KanColleDatabase.ship.timestamp();
+	    let n = KanColleDatabase.ship.count();
 
 	    if (!t)
 		return;
@@ -346,9 +346,17 @@ var KanColleShipDB = function() {
 
     this._db = {
 	fleet: {},
+	ship: null,
+	list: null,
     };
 
     this._update = {
+	_memberShip2: function() {
+	    this._ts = KanColleDatabase._memberShip2.timestamp();
+	    this._db.ship = null;
+	    this._db.list = null;
+	    this._notify();
+	},
 	memberDeck: function(t) {
 	    let decks = KanColleDatabase.memberDeck.list();
 	    let db = {};
@@ -372,7 +380,21 @@ var KanColleShipDB = function() {
     this.get = function(id, key) {
 	if (key == 'fleet') {
 	    return this._db['fleet'][id];
+	} else if (key == null) {
+	    return this._db.ship ? this._db.ship[id] : KanColleDatabase._memberShip2.get(id);
 	}
+    };
+
+    this.list = function() {
+	if (!this._db.ship)
+	    return KanColleDatabase._memberShip2.list();
+	if (!this._db.list)
+	    this._db.list = Object.keys(this._db.ship);
+	return this._db.list;
+    };
+
+    this.count = function() {
+	return this._db.ship ? this._db.list.length : KanColleDatabase._memberShip2.count();
     };
 
     this._update_init();
@@ -393,7 +415,7 @@ var KanColleSlotitemDB = function() {
     this._shipname = function(ship_id) {
 	try{
 	    // member/ship2 には艦名がない。艦艇型から取得
-	    let ship = KanColleDatabase.memberShip2.get(ship_id);
+	    let ship = KanColleDatabase.ship.get(ship_id);
 	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
 	    return shiptype.api_name;
 	} catch (x) {
@@ -407,7 +429,7 @@ var KanColleSlotitemDB = function() {
 	let ships;
 
 	items = KanColleDatabase.memberSlotitem.list();
-	ships = KanColleDatabase.memberShip2.list();
+	ships = KanColleDatabase.ship.list();
 
 	if (items.length && ships.length && KanColleDatabase.masterSlotitem.timestamp()) {
 	    for (let i = 0; i < items.length; i++) {
@@ -428,7 +450,7 @@ var KanColleSlotitemDB = function() {
 	    }
 
 	    for (let i = 0; i < ships.length; i++) {
-		let ship = KanColleDatabase.memberShip2.get(ships[i]);
+		let ship = KanColleDatabase.ship.get(ships[i]);
 		let ship_slot = ship.api_slot;
 
 		//debugprint(this._shipname(ship.api_id) + ': ');
@@ -467,8 +489,8 @@ var KanColleSlotitemDB = function() {
     };
 
     this._update = {
-	memberShip2: function() {
-	    let t = KanColleDatabase.memberShip2.timestamp();
+	ship: function() {
+	    let t = KanColleDatabase.ship.timestamp();
 	    this._update_owner(t);
 	},
 
@@ -639,7 +661,7 @@ var KanColleDatabase = {
     memberNdock: null,		// member/ndock
     memberQuestlist: null,	// member/questlist
     memberRecord: null,		// member/record
-    memberShip2: null,		// member/ship2
+    _memberShip2: null,		// member/ship2
     memberSlotitem: null,	// member/slotitem
     memberUnsetslot: null,	// member/unsetslot
 				// or member/ship3[api_data.api_slot_data]
@@ -689,11 +711,11 @@ var KanColleDatabase = {
 	    } else if (url.match(/kcsapi\/api_get_member\/record/)) {
 		this.memberRecord.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/ship2/)) {
-		this.memberShip2.update(data.api_data);
+		this._memberShip2.update(data.api_data);
 		this.memberDeck.update(data.api_data_deck);
 	    } else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
 		if (KanColleAPIversion < 20140423) {
-		    this.memberShip2.update(data.api_data.api_ship_data);
+		    this._memberShip2.update(data.api_data.api_ship_data);
 		    this.memberDeck.update(data.api_data.api_deck_data);
 		    this.memberUnsetslot.update(data.api_data.api_slot_data);
 		}
@@ -708,7 +730,7 @@ var KanColleDatabase = {
 		this.memberBasic.update(data.api_data.api_basic);
 		this.memberDeck.update(data.api_data.api_deck_port);
 		this.memberMaterial.update(data.api_data.api_material);
-		this.memberShip2.update(data.api_data.api_ship);
+		this._memberShip2.update(data.api_data.api_ship);
 		this.memberNdock.update(data.api_data.api_ndock);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 		this.questClearitemget.update(data.api_data);
@@ -757,6 +779,7 @@ var KanColleDatabase = {
 		this.masterSlotitem = new KanColleDB();
 	    if (!this.masterSlotitemEquiptype)
 		this.masterSlotitemEquiptype = new KanColleDB();
+
 	    this.memberBasic = new KanColleSimpleDB();
 	    this.memberDeck = new KanColleDB();
 	    this.memberKdock = new KanColleDB();
@@ -764,15 +787,15 @@ var KanColleDatabase = {
 	    this.memberNdock = new KanColleDB();
 	    this.memberQuestlist = new KanColleSimpleDB();
 	    this.memberRecord = new KanColleSimpleDB();
-	    this.memberShip2 = new KanColleDB();
+	    this._memberShip2 = new KanColleDB();
 	    this.memberSlotitem = new KanColleDB();
 	    this.memberUnsetslot = new KanColleSimpleDB();
 	    this.questClearitemget = new KanColleSimpleDB();
 
+	    this.ship = new KanColleShipDB();
+	    this.ship.init();
 	    this.headQuarter = new KanColleHeadQuarterDB();
 	    this.headQuarter.init();
-	    this.ship = new KanColleShipDB();
-	    this.ship .init();
 	    this.slotitem = new KanColleSlotitemDB();
 	    this.slotitem .init();
 	    this.quest = new KanColleQuestDB();
@@ -799,10 +822,10 @@ var KanColleDatabase = {
 	    this.quest = null;
 	    this.slotitem.exit();
 	    this.slotitem = null;
-	    this.ship.exit();
-	    this.ship = null;
 	    this.headQuarter.exit();
 	    this.headQuarter = null;
+	    this.ship.exit();
+	    this.ship = null;
 
 	    this.questClearitemget = null;
 	    this.memberQuestlist = null;
@@ -814,7 +837,7 @@ var KanColleDatabase = {
 	    this.memberDeck = null;
 	    this.memberSlotitem = null;
 	    this.memberUnsetslot = null;
-	    this.memberShip2 = null;
+	    this._memberShip2 = null;
 	    //マスタ情報は再送されないので削除しない
 	    //this.masterSlotitemEquiptype = null;
 	    //this.masterSlotitem = null;

@@ -629,7 +629,7 @@ var KanColleTimerFleetInfo = {
 		    let ship_name = FindShipName(ship_id);
 		    let ship_info = FindShipStatus(ship_id);
 		    let ship_cond = FindShipCond(ship_id);
-		    let ship = KanColleDatabase.memberShip2.get(ship_id);
+		    let ship = KanColleDatabase.ship.get(ship_id);
 		    let ship_bgcolor;
 		    let ship_border;
 		    let ship_color;
@@ -674,7 +674,7 @@ var KanColleTimerFleetInfo = {
 		    }
 
 		    if (ship_cond < 49) {
-			let t = KanColleDatabase.memberShip2.timestamp();
+			let t = KanColleDatabase.ship.timestamp();
 			ship_text += ' ' + timestr(t + Math.ceil((49 - ship_cond) / 3) * 180000);
 
 			if (ship_cond < min_cond)
@@ -764,7 +764,7 @@ var KanColleTimerFleetInfo = {
 		    let slotiteminfo = [];
 
 		    let cur = (new Date).getTime();
-		    let t = KanColleDatabase.memberShip2.timestamp();
+		    let t = KanColleDatabase.ship.timestamp();
 		    let time = t + Math.ceil((49 - min_cond) / 3) * 180000;
 		    let str = timestr(time);
 
@@ -814,7 +814,7 @@ var KanColleTimerFleetInfo = {
 		$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
 	    }
 	},
-	memberShip2: 'memberDeck',
+	ship: 'memberDeck',
     },
 };
 KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
@@ -827,7 +827,7 @@ var KanColleTimerQuestInfo = {
 	    let ids = quests.list ? Object.keys(quests.list) : [];
 	    let list = $('quest-list-rows');
 	    let listitem;
-	    let staletime = KanColleDatabase.memberShip2.timestamp();
+	    let staletime = KanColleDatabase.ship.timestamp();
 	    let mode = KanColleTimerConfig.getInt('quest-info.mode');
 	    let modenode = $('quest-information-mode');
 	    let tooltips = {};
@@ -1009,7 +1009,7 @@ var KanColleTimerQuestInfo = {
 		}
 	    }
 	},
-	memberShip2: 'quest',
+	ship: 'quest',
     },
 
     restore: function() {
@@ -1208,14 +1208,14 @@ function FindShipNameByCatId( id ){
  * 自分の保有している艦のデータを返す.
  */
 function FindOwnShipData( ship_id ){
-    return KanColleDatabase.memberShip2.get(ship_id);
+    return KanColleDatabase.ship.get(ship_id);
 }
 
 /**
  * 艦のデータを返す
  */
 function FindShipData( ship_id ){
-    let ship = KanColleDatabase.memberShip2.get(ship_id);
+    let ship = KanColleDatabase.ship.get(ship_id);
     if (ship)
 	return KanColleDatabase.masterShip.get(ship.api_ship_id);
     return undefined;
@@ -1227,7 +1227,7 @@ function FindShipData( ship_id ){
 function FindShipName( ship_id ){
     try{
 	// member/ship2 には艦名がない。艦艇型から取得
-	let ship = KanColleDatabase.memberShip2.get(ship_id);
+	let ship = KanColleDatabase.ship.get(ship_id);
 	return FindShipNameByCatId( ship.api_ship_id );
     } catch (x) {
     }
@@ -1236,7 +1236,7 @@ function FindShipName( ship_id ){
 
 function FindShipCond( ship_id ){
     try{
-	let ship = KanColleDatabase.memberShip2.get(ship_id);
+	let ship = KanColleDatabase.ship.get(ship_id);
 	return parseInt(ship.api_cond, 10);
     } catch (x) {
     }
@@ -1255,7 +1255,7 @@ function FindShipStatus( ship_id ){
 	};
 
 	// member/ship には fuel, bull, nowhp, maxhp
-	let ship = KanColleDatabase.memberShip2.get(ship_id);
+	let ship = KanColleDatabase.ship.get(ship_id);
 
 	info.fuel = parseInt(ship.api_fuel, 10);
 	info.bull = parseInt(ship.api_bull, 10);
@@ -1275,7 +1275,7 @@ function FindShipStatus( ship_id ){
 }
 
 function ShipCalcAirPower(shipid) {
-    let ship = KanColleDatabase.memberShip2.get(shipid);
+    let ship = KanColleDatabase.ship.get(shipid);
     let ap = 0;
 
     if (!ship)
@@ -2227,7 +2227,7 @@ function TreeView(){
     };
 
     // Ship list
-    shiplist = KanColleDatabase.memberShip2.list().slice();
+    shiplist = KanColleDatabase.ship.list().slice();
     if (ShipInfoTree.shipfilterspec) {
 	let filterspec = ShipInfoTree.shipfilterspec;
 	if (filterspec.match(/^slotitem(\d+)$/)) {
@@ -2240,7 +2240,7 @@ function TreeView(){
 	    let slist = [];
 	    for (let i = 0; i < shiplist.length; i++) {
 		let shiptype;
-		let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
+		let ship = KanColleDatabase.ship.get(shiplist[i]);
 		if (!ship)
 		    continue;
 		shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
@@ -2258,7 +2258,7 @@ function TreeView(){
 	    let proplist = proplists[(param & 2) ? 1 : 0];
 	    let ships = [];
 	    for( let i = 0; i < shiplist.length; i++ ){
-		let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
+		let ship = KanColleDatabase.ship.get(shiplist[i]);
 		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
 		if (upgrade && shiptype.api_afterlv)
 		    continue;
@@ -2276,7 +2276,7 @@ function TreeView(){
 	    let locked = parseInt(RegExp.$1, 10);
 	    let ships = [];
 	    for( let i = 0; i < shiplist.length; i++ ){
-		let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
+		let ship = KanColleDatabase.ship.get(shiplist[i]);
 		let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
 		if (!shiptype.api_afterlv)
 		    continue;
@@ -2425,8 +2425,8 @@ function TreeView(){
 	let res = 0;
 
 	do {
-	    let ship_a = KanColleDatabase.memberShip2.get(a);
-	    let ship_b = KanColleDatabase.memberShip2.get(b);
+	    let ship_a = KanColleDatabase.ship.get(a);
+	    let ship_b = KanColleDatabase.ship.get(b);
 
 	    if (!ship_a || !ship_b)
 		return ((ship_a ? 1 : 0) - (ship_b ? 1 : 0)) * order;
@@ -2475,7 +2475,7 @@ function TreeView(){
 	//cos.writeString('\ufeff');
 	for (let i = -1; i < shiplist.length; i++) {
 	    let a = [];
-	    let ship = KanColleDatabase.memberShip2.get(shiplist[i]);
+	    let ship = KanColleDatabase.ship.get(shiplist[i]);
 	    for (let j = 0; j < ShipInfoTree.COLLIST.length; j++){
 		if (!ShipInfoTree.COLLIST[j].subdump) {
 		    let val;
@@ -2519,7 +2519,7 @@ function TreeView(){
 	if (row >= this.rowCount)
 	    return 'N/A';
 
-	ship = KanColleDatabase.memberShip2.get(shiplist[row]);
+	ship = KanColleDatabase.ship.get(shiplist[row]);
 	if (!ship)
 	    return 'N/A';
 
@@ -2561,12 +2561,12 @@ function KanColleTimerShipTableStart() {
     let db = KanColleDatabase;
     db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
-    db.memberShip2.appendCallback(KanColleTimerShipInfoHandler);
+    db.ship.appendCallback(KanColleTimerShipInfoHandler);
 }
 
 function KanColleTimerShipTableStop() {
     let db = KanColleDatabase;
-    db.memberShip2.removeCallback(KanColleTimerShipInfoHandler);
+    db.ship.removeCallback(KanColleTimerShipInfoHandler);
     db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler);
     db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler);
 }

@@ -130,7 +130,7 @@ var ShipList = {
 	let now = GetCurrentTime();
 
 	// 艦艇リスト
-	let ships = KanColleDatabase.memberShip2.list();
+	let ships = KanColleDatabase.ship.list();
 
 	document.title = "保有艦艇リスト "+ships.length+"隻 ("+GetDateString(now*1000)+")";
 
@@ -139,7 +139,7 @@ var ShipList = {
 	let no = 1;
 	let list = $('ship-list');
 	for( let j = 0; j < ships.length; j++ ){
-	    let ship = KanColleDatabase.memberShip2.get(ships[j]);
+	    let ship = KanColleDatabase.ship.get(ships[j]);
 	    let data = FindShipData( ship.api_id );
 	    let fleet_no = this.getFleetNo( ship.api_id );
 
