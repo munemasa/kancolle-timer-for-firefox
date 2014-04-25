@@ -2056,8 +2056,7 @@ function TreeView(){
     // getCellText function table by column ID
     var shipcellfunc = {
 	fleet: function(ship) {
-	    let shipfleet = KanColleDatabase.ship.get('fleet');
-	    let fleet = shipfleet[ship.api_id];
+	    let fleet = KanColleDatabase.ship.get(ship.api_id, 'fleet');
 	    if (fleet)
 		return fleet.fleet;
 	    return '';
@@ -2300,9 +2299,8 @@ function TreeView(){
     // special comparision function: each function takes two 'ship's
     var shipcmpfunc = {
 	fleet: function(ship_a,ship_b){
-	    let shipfleet = KanColleDatabase.ship.get('fleet');
-	    let fleet_a = shipfleet[ship_a.api_id];
-	    let fleet_b = shipfleet[ship_b.api_id];
+	    let fleet_a = KanColleDatabase.ship.get(ship_a.api_id, 'fleet');
+	    let fleet_b = KanColleDatabase.ship.get(ship_b.api_id, 'fleet');
 	    let ret;
 	    if (!fleet_a || !fleet_b)
 		return ((fleet_b ? 1 : 0) - (fleet_a ? 1 : 0)) * order;

@@ -42,8 +42,7 @@ var ShipList = {
     },
 
     getFleetNo: function( ship_id ){
-	let shipfleet = KanColleDatabase.ship.get('fleet');
-	let fleet = shipfleet[ship_id];
+	let fleet = KanColleDatabase.ship.get(ship_id, 'fleet');
 	if (fleet)
 	    return fleet.fleet;
 	return 0;
