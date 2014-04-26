@@ -345,13 +345,11 @@ KanColleHeadQuarterDB.prototype = new KanColleCombinedDB();
 
 //
 // 艦船データベース
-//  fleet: 艦隊
 //
 var KanColleShipDB = function() {
     this._init();
 
     this._db = {
-	fleet: {},
 	ship: null,
 	list: null,
     };
@@ -362,24 +360,6 @@ var KanColleShipDB = function() {
 	    this._db.ship = null;
 	    this._db.list = null;
 	    this._notify();
-	},
-	memberDeck: function(t) {
-	    let decks = KanColleDatabase.memberDeck.list();
-	    let db = {};
-
-	    for (let i = 0; i < decks.length; i++) {
-		let deck = KanColleDatabase.memberDeck.get(decks[i]);
-		for (let j = 0; j < deck.api_ship.length; j++) {
-		    if (deck.api_ship[j] < 0)
-			continue;
-		    db[deck.api_ship[j]] = {
-			fleet: deck.api_id,
-			pos: j,
-		    };
-		}
-	    }
-
-	    this._db.fleet = db;
 	},
 
 	reqHokyuCharge: function() {
@@ -417,9 +397,7 @@ var KanColleShipDB = function() {
     };
 
     this.get = function(id, key) {
-	if (key == 'fleet') {
-	    return this._db['fleet'][id];
-	} else if (key == null) {
+	if (key == null) {
 	    return this._db.ship ? this._db.ship[id] : KanColleDatabase._memberShip2.get(id);
 	}
     };
@@ -447,8 +425,26 @@ var KanColleDeckDB = function() {
     this._init();
 
     this._db = {
+	fleet: {},
 	deck: null,
 	list: null,
+    };
+
+    this._update_fleet = function() {
+	let db = {};
+	let ids = this.list();
+	for (let i = 0; i < ids.length; i++) {
+	    let deck = this.get(ids[i]);
+	    for (let j = 0; j < deck.api_ship.length; j++) {
+		if (deck.api_ship[j] < 0)
+		    continue;
+		db[deck.api_ship[j]] = {
+		    fleet: deck.api_id,
+		    pos: j,
+		};
+	    }
+	}
+	this._db.fleet = db;
     };
 
     this._update = {
@@ -456,6 +452,7 @@ var KanColleDeckDB = function() {
 	    this._ts = KanColleDatabase.memberDeck.timestamp();
 	    this._db.deck = null;
 	    this._db.list = null;
+	    this._update_fleet();
 	    this._notify();
 	},
 	reqHenseiChange: function() {
@@ -517,14 +514,19 @@ var KanColleDeckDB = function() {
 		// 現在の艦船ID
 		let ship_id = deck.api_ship[req_ship_idx];
 		// 新しい艦の旧所属艦隊
-		let ship_fleet = req_ship_id >= 0 ? KanColleDatabase.ship.get(req_ship_id, 'fleet') : null;
+		let ship_fleet = req_ship_id >= 0 ? KanColleDatabase.deck.lookup(req_ship_id) : null;
 
 		deck.api_ship[req_ship_idx] = req_ship_id;
 		if (ship_fleet)
 		    this._db.deck[ship_fleet.fleet].api_ship[ship_fleet.pos] = ship_id;
 	    }
+	    this._update_fleet();
 	    this._notify();
 	},
+    };
+
+    this.lookup = function(ship_id) {
+	return this._db.fleet[ship_id];
     };
 
     this.get = function(id, key) {

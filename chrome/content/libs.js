@@ -2063,7 +2063,7 @@ function TreeView(){
     // getCellText function table by column ID
     var shipcellfunc = {
 	fleet: function(ship) {
-	    let fleet = KanColleDatabase.ship.get(ship.api_id, 'fleet');
+	    let fleet = KanColleDatabase.deck.lookup(ship.api_id);
 	    if (fleet)
 		return fleet.fleet;
 	    return '';
@@ -2306,8 +2306,8 @@ function TreeView(){
     // special comparision function: each function takes two 'ship's
     var shipcmpfunc = {
 	fleet: function(ship_a,ship_b){
-	    let fleet_a = KanColleDatabase.ship.get(ship_a.api_id, 'fleet');
-	    let fleet_b = KanColleDatabase.ship.get(ship_b.api_id, 'fleet');
+	    let fleet_a = KanColleDatabase.deck.lookup(ship_a.api_id);
+	    let fleet_b = KanColleDatabase.deck.lookup(ship_b.api_id);
 	    let ret;
 	    if (!fleet_a || !fleet_b)
 		return ((fleet_b ? 1 : 0) - (fleet_a ? 1 : 0)) * order;
