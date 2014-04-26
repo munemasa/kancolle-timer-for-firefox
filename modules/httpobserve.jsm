@@ -354,6 +354,24 @@ var KanColleShipDB = function() {
 	list: null,
     };
 
+    this._deepcopy = function() {
+	if (!this._db.ship) {
+	    let ships = KanColleDatabase._memberShip2.list();
+	    if (!ships)
+		return;
+
+	    this._db.ship = new Object;
+
+	    for (let i = 0; i < ships.length; i++)
+		this._db.ship[ships[i]] = JSON.parse(JSON.stringify(KanColleDatabase._memberShip2.get(ships[i])));
+
+	    this._db.list = Object.keys(this._db.ship);
+
+	    //debugprint('hash: ' + this._db.ship.toSource());
+	    //debugprint('list: ' + this._db.list.toSource());
+	}
+    };
+
     this._update = {
 	_memberShip2: function() {
 	    this._ts = KanColleDatabase._memberShip2.timestamp();
@@ -367,22 +385,7 @@ var KanColleShipDB = function() {
 
 	    this._ts = KanColleDatabase.reqHokyuCharge.timestamp();
 
-	    // Deepcopy, if needed.
-	    if (!this._db.ship) {
-		let ships = KanColleDatabase._memberShip2.list();
-		if (!ships)
-		    return;
-
-		this._db.ship = new Object;
-
-		for (let i = 0; i < ships.length; i++)
-		    this._db.ship[ships[i]] = JSON.parse(JSON.stringify(KanColleDatabase._memberShip2.get(ships[i])));
-
-		this._db.list = Object.keys(this._db.ship);
-
-		//debugprint('hash: ' + this._db.ship.toSource());
-		//debugprint('list: ' + this._db.list.toSource());
-	    }
+	    this._deepcopy();
 
 	    // Update
 	    for (let i = 0; i < data.length; i++) {
@@ -392,6 +395,24 @@ var KanColleShipDB = function() {
 	    }
 
 	    // Notification
+	    this._notify();
+	},
+
+	reqKousyouDestroyShip: function() {
+	    let req = KanColleDatabase.reqKousyouDestroyShip.get_req();
+	    let req_ship_id;
+	    let fleet;
+
+	    req_ship_id = parseInt(req.api_ship_id, 10);
+	    if (isNaN(req_ship_id))
+		return;
+
+	    this._ts = KanColleDatabase.reqKousyouDestroyShip.timestamp();
+
+	    this._deepcopy();
+	    delete(this._db.ship[req_ship_id]);
+	    this._db.list = Object.keys(this._db.ship);
+
 	    this._notify();
 	},
     };
@@ -447,6 +468,24 @@ var KanColleDeckDB = function() {
 	this._db.fleet = db;
     };
 
+    this._deepcopy = function() {
+	if (!this._db.deck) {
+	    let decks = KanColleDatabase.memberDeck.list();
+	    if (!decks)
+		return;
+
+	    this._db.deck = new Object;
+
+	    for (let i = 0; i < decks.length; i++)
+		this._db.deck[decks[i]] = JSON.parse(JSON.stringify(KanColleDatabase.memberDeck.get(decks[i])));
+
+	    this._db.list = Object.keys(this._db.deck);
+
+	    //debugprint('hash: ' + this._db.deck.toSource());
+	    //debugprint('list: ' + this._db.list.toSource());
+	}
+    };
+
     this._update = {
 	memberDeck: function() {
 	    this._ts = KanColleDatabase.memberDeck.timestamp();
@@ -464,22 +503,7 @@ var KanColleDeckDB = function() {
 
 	    this._ts = KanColleDatabase.reqHenseiChange.timestamp();
 
-	    // Deepcopy, if needed.
-	    if (!this._db.deck) {
-		let decks = KanColleDatabase.memberDeck.list();
-		if (!decks)
-		    return;
-
-		this._db.deck = new Object;
-
-		for (let i = 0; i < decks.length; i++)
-		    this._db.deck[decks[i]] = JSON.parse(JSON.stringify(KanColleDatabase.memberDeck.get(decks[i])));
-
-		this._db.list = Object.keys(this._db.deck);
-
-		//debugprint('hash: ' + this._db.deck.toSource());
-		//debugprint('list: ' + this._db.list.toSource());
-	    }
+	    this._deepcopy();
 
 	    // 編成
 	    //	req.api_id: 艦隊ID(or -1)
@@ -520,6 +544,28 @@ var KanColleDeckDB = function() {
 		if (ship_fleet)
 		    this._db.deck[ship_fleet.fleet].api_ship[ship_fleet.pos] = ship_id;
 	    }
+	    this._update_fleet();
+	    this._notify();
+	},
+	reqKousyouDestroyShip: function() {
+	    let req = KanColleDatabase.reqKousyouDestroyShip.get_req();
+	    let req_ship_id;
+	    let fleet;
+
+	    req_ship_id = parseInt(req.api_ship_id, 10);
+	    if (isNaN(req_ship_id))
+		return;
+
+	    fleet = KanColleDatabase.deck.lookup(req_ship_id);
+	    if (!fleet)
+		return;
+
+	    this._ts = KanColleDatabase.reqKousyouDestroyShip.timestamp();
+
+	    this._deepcopy();
+	    this._db.deck[fleet.fleet].splice(fleet.pos,1);
+	    this._db.deck[fleet.fleet].push(-1);
+
 	    this._update_fleet();
 	    this._notify();
 	},
@@ -818,6 +864,7 @@ var KanColleDatabase = {
     questClearitemget: null,	// quest/clearitemget
     reqHenseiChange: null,	// req_hensei/change
     reqHokyuCharge: null,	// req_hokyu/charge
+    reqKousyouDestroyShip: null,// req_kousyou/destroyship
 
     headQuarter: null,		// 艦船/装備
     ship: null,			// 艦船
@@ -921,6 +968,8 @@ var KanColleDatabase = {
 	    //debugprint('url=' + url + ', data=' + data.toSource());
 	    if (url.match(/kcsapi\/api_req_hensei\/change/)) {
 		this.reqHenseiChange.prepare(data);
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyship/)) {
+		this.reqKousyouDestroyShip.prepare(data);
 	    }
 	}
     },
@@ -956,6 +1005,7 @@ var KanColleDatabase = {
 	    this.memberUnsetslot = new KanColleSimpleDB();
 	    this.questClearitemget = new KanColleSimpleDB();
 	    this.reqHenseiChange = new KanColleSimpleDB();
+	    this.reqKousyouDestroyShip = new KanColleSimpleDB();
 	    this.reqHokyuCharge = new KanColleSimpleDB();
 
 	    this.ship = new KanColleShipDB();
@@ -997,6 +1047,7 @@ var KanColleDatabase = {
 	    this.ship.exit();
 	    this.ship = null;
 
+	    this.reqKousyouDestroyShip = null;
 	    this.reqHokyuCharge = null;
 	    this.reqHenseiChange = null;
 	    this.questClearitemget = null;
