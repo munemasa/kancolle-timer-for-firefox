@@ -766,6 +766,8 @@ var KanColleDatabase = {
 		this.memberMaterial.update(data.api_data.api_material);
 		this._memberShip2.update(data.api_data.api_ship);
 		this.memberNdock.update(data.api_data.api_ndock);
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/getship/)) {
+		this.memberKdock.update(data.api_data.api_kdock);
 	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
 		this.memberDeck.update(data.api_data.api_deck);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
