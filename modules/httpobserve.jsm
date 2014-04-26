@@ -382,7 +382,7 @@ var KanColleShipDB = function() {
 	    this._ts = KanColleDatabase.reqHokyuCharge.timestamp();
 
 	    // Deepcopy, if needed.
-	    if (!this._ship) {
+	    if (!this._db.ship) {
 		let ships = KanColleDatabase._memberShip2.list();
 		if (!ships)
 		    return;
@@ -766,6 +766,8 @@ var KanColleDatabase = {
 		this.memberMaterial.update(data.api_data.api_material);
 		this._memberShip2.update(data.api_data.api_ship);
 		this.memberNdock.update(data.api_data.api_ndock);
+	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
+		this.memberDeck.update(data.api_data.api_deck);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 		this.questClearitemget.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_hokyu\/charge/)) {
