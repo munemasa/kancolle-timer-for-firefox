@@ -74,6 +74,7 @@ KanColleSimpleDB.prototype = {
     _cb: null,
     _ts: null,
     _raw: null,
+    _req: null,
 
     timestamp: function() { return this._ts.get(); },
 
@@ -93,7 +94,12 @@ KanColleSimpleDB.prototype = {
 	g.close();
     },
 
+    prepare: function(data) {
+	this._req = data;
+    },
+
     get: function() { return this._raw; },
+    get_req: function() { return this._req; },
 
     appendCallback: function(f, c) { this._cb.append(f, c); },
     removeCallback: function(f) { this._cb.remove(f); },
