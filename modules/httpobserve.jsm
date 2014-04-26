@@ -441,6 +441,115 @@ var KanColleShipDB = function() {
 KanColleShipDB.prototype = new KanColleCombinedDB();
 
 //
+// デッキ
+//
+var KanColleDeckDB = function() {
+    this._init();
+
+    this._db = {
+	deck: null,
+	list: null,
+    };
+
+    this._update = {
+	memberDeck: function() {
+	    this._ts = KanColleDatabase.memberDeck.timestamp();
+	    this._db.deck = null;
+	    this._db.list = null;
+	    this._notify();
+	},
+	reqHenseiChange: function() {
+	    let req = KanColleDatabase.reqHenseiChange.get_req();
+	    let deck;
+	    let req_id;
+	    let req_ship_id;
+	    let req_ship_idx;
+
+	    this._ts = KanColleDatabase.reqHenseiChange.timestamp();
+
+	    // Deepcopy, if needed.
+	    if (!this._db.deck) {
+		let decks = KanColleDatabase.memberDeck.list();
+		if (!decks)
+		    return;
+
+		this._db.deck = new Object;
+
+		for (let i = 0; i < decks.length; i++)
+		    this._db.deck[decks[i]] = JSON.parse(JSON.stringify(KanColleDatabase.memberDeck.get(decks[i])));
+
+		this._db.list = Object.keys(this._db.deck);
+
+		//debugprint('hash: ' + this._db.deck.toSource());
+		//debugprint('list: ' + this._db.list.toSource());
+	    }
+
+	    // 編成
+	    //	req.api_id: 艦隊ID(or -1)
+	    //	req.api_ship_idx: 艦隊でのindex(or -1)
+	    //	req.api_ship_id: 変更後のID(or -1 or -2)
+
+	    req_id = parseInt(req.api_id, 10);
+	    if (isNaN(req_id))
+		return;
+	    req_ship_id = parseInt(req.api_ship_id, 10);
+	    if (isNaN(req_ship_id))
+		return;
+	    req_ship_idx = parseInt(req.api_ship_idx, 10);
+	    if (isNaN(req_ship_idx))
+		return;
+
+	    deck = this._db.deck[req_id];
+	    if (!deck)
+		return;
+
+	    if (req_ship_id == -2) {
+		// 随伴艦解除
+		for (let i = 1; i < deck.api_ship.length; i++)
+		    deck.api_ship[i] = -1;
+	    } else if (req_ship_id == -1) {
+		// 解除
+		deck.api_ship.splice(req_ship_idx, 1);
+		deck.api_ship.push(-1);
+	    } else if (req_ship_id >= 0) {
+		// 交換
+
+		// 現在の艦船ID
+		let ship_id = deck.api_ship[req_ship_idx];
+		// 新しい艦の旧所属艦隊
+		let ship_fleet = req_ship_id >= 0 ? KanColleDatabase.ship.get(req_ship_id, 'fleet') : null;
+
+		deck.api_ship[req_ship_idx] = req_ship_id;
+		if (ship_fleet)
+		    this._db.deck[ship_fleet.fleet].api_ship[ship_fleet.pos] = ship_id;
+	    }
+	    this._notify();
+	},
+    };
+
+    this.get = function(id, key) {
+	if (key == null) {
+	    return this._db.deck ? this._db.deck[id] : KanColleDatabase.memberDeck.get(id);
+	}
+    };
+
+    this.list = function() {
+	if (!this._db.deck)
+	    return KanColleDatabase.memberDeck.list();
+	if (!this._db.list)
+	    this._db.list = Object.keys(this._db.deck);
+	return this._db.list;
+    };
+
+    this.count = function() {
+	return this._db.deck ? this._db.list.length : KanColleDatabase.memberDeck.count();
+    };
+
+    this._update_init();
+};
+KanColleDeckDB.prototype = new KanColleCombinedDB();
+
+//
 // 装備データベース
 //  owner: 装備保持艦船
 //
@@ -705,10 +814,12 @@ var KanColleDatabase = {
     memberUnsetslot: null,	// member/unsetslot
 				// or member/ship3[api_data.api_slot_data]
     questClearitemget: null,	// quest/clearitemget
+    reqHenseiChange: null,	// req_hensei/change
     reqHokyuCharge: null,	// req_hokyu/charge
 
     headQuarter: null,		// 艦船/装備
     ship: null,			// 艦船
+    deck: null,			// デッキ
     slotitem: null,		// 装備保持艦船
     quest: null,		// 任務(クエスト)
 
@@ -772,6 +883,8 @@ var KanColleDatabase = {
 		this.memberMaterial.update(data.api_data.api_material);
 		this._memberShip2.update(data.api_data.api_ship);
 		this.memberNdock.update(data.api_data.api_ndock);
+	    } else if (url.match(/kcsapi\/api_req_hensei\/change/)) {
+		this.reqHenseiChange.update();
 	    } else if (url.match(/kcsapi\/api_req_hokyu\/charge/)) {
 		this.reqHokyuCharge.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
@@ -804,6 +917,9 @@ var KanColleDatabase = {
 	    }
 
 	    //debugprint('url=' + url + ', data=' + data.toSource());
+	    if (url.match(/kcsapi\/api_req_hensei\/change/)) {
+		this.reqHenseiChange.prepare(data);
+	    }
 	}
     },
 
@@ -837,10 +953,13 @@ var KanColleDatabase = {
 	    this.memberSlotitem = new KanColleDB();
 	    this.memberUnsetslot = new KanColleSimpleDB();
 	    this.questClearitemget = new KanColleSimpleDB();
+	    this.reqHenseiChange = new KanColleSimpleDB();
 	    this.reqHokyuCharge = new KanColleSimpleDB();
 
 	    this.ship = new KanColleShipDB();
 	    this.ship.init();
+	    this.deck = new KanColleDeckDB();
+	    this.deck.init();
 	    this.headQuarter = new KanColleHeadQuarterDB();
 	    this.headQuarter.init();
 	    this.slotitem = new KanColleSlotitemDB();
@@ -871,10 +990,13 @@ var KanColleDatabase = {
 	    this.slotitem = null;
 	    this.headQuarter.exit();
 	    this.headQuarter = null;
+	    this.deck.exit();
+	    this.deck = null;
 	    this.ship.exit();
 	    this.ship = null;
 
 	    this.reqHokyuCharge = null;
+	    this.reqHenseiChange = null;
 	    this.questClearitemget = null;
 	    this.memberQuestlist = null;
 	    this.memberMaterial = null;

@@ -166,9 +166,9 @@ var ShipList = {
 	this.setupListBox();
 
 	// 艦隊編成
-	let fleets = KanColleDatabase.memberDeck.list();
+	let fleets = KanColleDatabase.deck.list();
 	for( let j=0; j < fleets.length; j++ ){
-	    let fleet = KanColleDatabase.memberDeck.get(fleets[j]);
+	    let fleet = KanColleDatabase.deck.get(fleets[j]);
 
 	    let rows = $('fleet-'+fleet.api_id);
 

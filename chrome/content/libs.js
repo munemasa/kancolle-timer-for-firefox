@@ -173,9 +173,9 @@ KanColleTimerHeadQuarterInfo.__proto__ = __KanColleTimerPanel;
 var KanColleTimerDeckInfo = {
     update: {
 	mission: function() {
-	    let decks = KanColleDatabase.memberDeck.list();
+	    let decks = KanColleDatabase.deck.list();
 	    for (let i = 0; i < decks.length; i++){
-		let d = KanColleDatabase.memberDeck.get(decks[i]);
+		let d = KanColleDatabase.deck.get(decks[i]);
 		let k = d.api_id;
 		if (d.api_mission[0]) {
 		    let mission_id = d.api_mission[1]; // 遠征ID
@@ -188,12 +188,12 @@ var KanColleTimerDeckInfo = {
 	    }
 	},
 
-	memberDeck: function() {
-	    let decks = KanColleDatabase.memberDeck.list();
-	    let now = Math.floor(KanColleDatabase.memberDeck.timestamp() / 1000);
+	deck: function() {
+	    let decks = KanColleDatabase.deck.list();
+	    let now = Math.floor(KanColleDatabase.deck.timestamp() / 1000);
 
 	    for( let i = 0; i < decks.length; i++ ){
-		let d = KanColleDatabase.memberDeck.get(decks[i]);
+		let d = KanColleDatabase.deck.get(decks[i]);
 		let k = d.api_id;
 		let nameid = 'fleetname'+k;
 		let targetid = 'fleet'+k;
@@ -591,8 +591,8 @@ function KanColleTimerShipInfoHandler(){
 
 var KanColleTimerFleetInfo = {
     update: {
-	memberDeck: function() {
-	    let l = KanColleDatabase.memberDeck.list();
+	deck: function() {
+	    let l = KanColleDatabase.deck.list();
 
 	    function timestr(t){
 		let d = new Date;
@@ -614,7 +614,7 @@ var KanColleTimerFleetInfo = {
 
 	    // 艦隊/遠征情報
 	    for ( let i = 0; i < l.length; i++ ){
-		let fi = KanColleDatabase.memberDeck.get(l[i]);
+		let fi = KanColleDatabase.deck.get(l[i]);
 		let id = parseInt(fi.api_id, 10);
 		let fleet_text = fi.api_name;
 		let fleet_flagship_lv = 0;
@@ -814,7 +814,7 @@ var KanColleTimerFleetInfo = {
 		$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
 	    }
 	},
-	ship: 'memberDeck',
+	ship: 'deck',
     },
 };
 KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
