@@ -732,7 +732,7 @@ var KanColleTimerFleetInfo = {
 
 			    if (itemid < 0)
 				continue;
-			    item = KanColleDatabase.memberSlotitem.get(itemid);
+			    item = KanColleDatabase.slotitem.get(itemid);
 			    if (!item)
 				continue;
 			    itemtype = KanColleDatabase.masterSlotitem.get(item.api_slotitem_id);
@@ -1187,7 +1187,7 @@ function TakeKanColleScreenshot(isjpeg){
  
  */
 function FindSlotItemNameById( api_id ){
-    let item = KanColleDatabase.memberSlotitem.get(api_id);
+    let item = KanColleDatabase.slotitem.get(api_id);
     if (item) {
 	let itemtype = KanColleDatabase.masterSlotitem.get(item.api_slotitem_id);
 	return itemtype.api_name;
@@ -1282,7 +1282,7 @@ function ShipCalcAirPower(shipid) {
 	return -1;
 
     for (let j = 0; j < ship.api_slot.length && j < ship.api_onslot.length; j++) {
-	let item = KanColleDatabase.memberSlotitem.get(ship.api_slot[j]);
+	let item = KanColleDatabase.slotitem.get(ship.api_slot[j]);
 	let itemtype;
 
 	if (!item)
@@ -1551,7 +1551,7 @@ function KanColleStypeFilterTemplate(){
 function KanColleSlotitemFilterTemplate(){
     let menu = [];
     let submenu = null;
-    let slotitemowners = KanColleDatabase.slotitem.get('owner');
+    let slotitemowners = KanColleDatabase.slotitem.get(null,'owner');
 
     let itemlist = Object.keys(slotitemowners).sort(function(a,b){
 	let type_a = slotitemowners[a].type[2];
@@ -1980,7 +1980,7 @@ function getShipSlotitem(ship,slot){
     if (ship.api_slot[idx] < 0)
 	return '-';
 
-    item = KanColleDatabase.memberSlotitem.get(ship.api_slot[idx]);
+    item = KanColleDatabase.slotitem.get(ship.api_slot[idx]);
     if (!item)
 	return '!';
 
@@ -2233,7 +2233,7 @@ function TreeView(){
 	let filterspec = ShipInfoTree.shipfilterspec;
 	if (filterspec.match(/^slotitem(\d+)$/)) {
 	    let slotitemid = RegExp.$1;
-	    let slotitemowners = KanColleDatabase.slotitem.get('owner');
+	    let slotitemowners = KanColleDatabase.slotitem.get(null,'owner');
 	    let owners = slotitemowners[slotitemid];
 	    shiplist = owners ? Object.keys(owners.list) : [];
 	} else if (filterspec.match(/^stype((\d+-)*\d+)$/)) {
@@ -2561,14 +2561,14 @@ function ShipInfoTreeMenuPopup(){
 function KanColleTimerShipTableStart() {
     let db = KanColleDatabase;
     db.masterSlotitem.appendCallback(KanColleTimerShipInfoHandler);
-    db.memberSlotitem.appendCallback(KanColleTimerShipInfoHandler);
+    db.slotitem.appendCallback(KanColleTimerShipInfoHandler);
     db.ship.appendCallback(KanColleTimerShipInfoHandler);
 }
 
 function KanColleTimerShipTableStop() {
     let db = KanColleDatabase;
     db.ship.removeCallback(KanColleTimerShipInfoHandler);
-    db.memberSlotitem.removeCallback(KanColleTimerShipInfoHandler);
+    db.slotitem.removeCallback(KanColleTimerShipInfoHandler);
     db.masterSlotitem.removeCallback(KanColleTimerShipInfoHandler);
 }
 

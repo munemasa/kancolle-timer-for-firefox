@@ -322,10 +322,10 @@ var KanColleHeadQuarterDB = function() {
 	    this._notify();
 	},
 
-	memberSlotitem: function() {
-	    debugprint('memberSlotitem()()');
-	    let t = KanColleDatabase.memberSlotitem.timestamp();
-	    let n = KanColleDatabase.memberSlotitem.count();
+	slotitem: function() {
+	    debugprint('slotitem()()');
+	    let t = KanColleDatabase.slotitem.timestamp();
+	    let n = KanColleDatabase.slotitem.count();
 
 	    if (!t)
 		return;
@@ -606,6 +606,26 @@ var KanColleSlotitemDB = function() {
 
     this._db = {
 	owner: {},
+	hash: null,
+	list: null,
+    };
+
+    this._deepcopy = function() {
+	if (!this._db.hash) {
+	    let ids = KanColleDatabase._memberSlotitem.list();
+	    if (!ids)
+		return;
+
+	    this._db.hash = new Object;
+
+	    for (let i = 0; i < ids.length; i++)
+		this._db.hash[ids[i]] = JSON.parse(JSON.stringify(KanColleDatabase._memberSlotitem.get(ids[i])));
+
+	    this._db.list = Object.keys(this._db.hash);
+
+	    //debugprint('hash: ' + this._db.hash.toSource());
+	    //debugprint('list: ' + this._db.list.toSource());
+	}
     };
 
     this._shipname = function(ship_id) {
@@ -624,12 +644,12 @@ var KanColleSlotitemDB = function() {
 	let items;
 	let ships;
 
-	items = KanColleDatabase.memberSlotitem.list();
+	items = KanColleDatabase.slotitem.list();
 	ships = KanColleDatabase.ship.list();
 
 	if (items.length && ships.length && KanColleDatabase.masterSlotitem.timestamp()) {
 	    for (let i = 0; i < items.length; i++) {
-		let item = KanColleDatabase.memberSlotitem.get(items[i]);
+		let item = KanColleDatabase.slotitem.get(items[i]);
 		let itemtypeid = item.api_slotitem_id;
 		let itemtype = KanColleDatabase.masterSlotitem.get(itemtypeid);
 		if (!db[itemtypeid]) {
@@ -658,7 +678,7 @@ var KanColleSlotitemDB = function() {
 		    if (ship_slot[j] < 0)
 			continue;
 
-		    item = KanColleDatabase.memberSlotitem.get(ship_slot[j]);
+		    item = KanColleDatabase.slotitem.get(ship_slot[j]);
 		    // member/slotitem might be out-of-date for a while.
 		    if (!item)
 			continue;
@@ -688,16 +708,75 @@ var KanColleSlotitemDB = function() {
 	ship: function() {
 	    let t = KanColleDatabase.ship.timestamp();
 	    this._update_owner(t);
+	    this._notify();
 	},
 
-	memberSlotitem: function() {
-	    let t = KanColleDatabase.memberSlotitem.timestamp();
+	_memberSlotitem: function() {
+	    let t = KanColleDatabase._memberSlotitem.timestamp();
+	    this._db.hash = null;
+	    this._db.list = null;
 	    this._update_owner(t);
+	    this._notify();
+	},
+
+	reqKousyouCreateItem: function() {
+	    let t = KanColleDatabase.reqKousyouCreateItem.timestamp();
+	    let data = KanColleDatabase.reqKousyouCreateItem.get();
+	    let slotitem = data.api_slot_item;
+
+	    this._deepcopy();
+	    this._db.hash[slotitem.api_id] = slotitem;
+	    this._db.list = Object.keys(this._db.hash);
+
+	    this._update_owner(t);
+	    this._notify();
+	},
+
+	reqKousyouDestroyItem2: function() {
+	    let t = KanColleDatabase.reqKousyouDestroyItem2.timestamp();
+	    let req = KanColleDatabase.reqKousyouDestroyItem2.get_req();
+	    let req_slotitem_ids = req.api_slotitem_ids;
+
+	    if (!req_slotitem_ids)
+		return;
+
+	    req_slotitem_ids = req_slotitem_ids.split(/,/).map(function(v) {
+								return parseInt(v,10);
+							       });
+	    if (req_slotitem_ids.some(function(v) {
+					return isNaN(v);
+				      }))
+		return;
+
+	    this._deepcopy();
+
+	    for (let i = 0; i < req_slotitem_ids.length; i++)
+		delete(this._db.hash[req_slotitem_ids[i]]);
+	    this._db.list = Object.keys(this._db.hash);
+
+	    this._update_owner(t);
+	    this._notify();
 	},
     };
 
-    this.get = function(key) {
-	return this._db[key];
+    this.get = function(id, key) {
+	if (key == 'owner') {
+	    return id ? this._db.owner[id] : this._db.owner;
+	} else if (key == null) {
+	    return this._db.hash ? this._db.hash[id] : KanColleDatabase._memberSlotitem.get(id);
+	}
+    };
+
+    this.list = function() {
+	if (!this._db.hash)
+	    return KanColleDatabase._memberSlotitem.list();
+	if (!this._db.list)
+	    this._db.list = Object.keys(this._db.hash);
+	return this._db.list;
+    };
+
+    this.count = function() {
+	return this._db.hash ? this._db.list.length : KanColleDatabase._memberSlotitem.count();
     };
 
     this._update_init();
@@ -858,12 +937,14 @@ var KanColleDatabase = {
     memberQuestlist: null,	// member/questlist
     memberRecord: null,		// member/record
     _memberShip2: null,		// member/ship2
-    memberSlotitem: null,	// member/slotitem
+    _memberSlotitem: null,	// member/slotitem
     memberUnsetslot: null,	// member/unsetslot
 				// or member/ship3[api_data.api_slot_data]
     questClearitemget: null,	// quest/clearitemget
     reqHenseiChange: null,	// req_hensei/change
     reqHokyuCharge: null,	// req_hokyu/charge
+    reqKousyouCreateItem: null,	// req_kousyou/createitem
+    reqKousyouDestroyItem2: null,	// req_kousyou/destroyitem2
     reqKousyouDestroyShip: null,// req_kousyou/destroyship
 
     headQuarter: null,		// 艦船/装備
@@ -920,9 +1001,9 @@ var KanColleDatabase = {
 		    this.memberUnsetslot.update(data.api_data.api_slot_data);
 		}
 	    } else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
-		this.memberSlotitem.update(data.api_data);
+		this._memberSlotitem.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/slot_item/)) {
-		this.memberSlotitem.update(data.api_data);
+		this._memberSlotitem.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/unsetslot/)) {
 		this.memberUnsetslot.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_port\/port/)) {
@@ -938,6 +1019,12 @@ var KanColleDatabase = {
 		this.reqHokyuCharge.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
 		this.memberDeck.update(data.api_data.api_deck);
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/createitem/)) {
+		this.reqKousyouCreateItem.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyitem2/)) {
+		this.reqKousyouDestroyItem2.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyship/)) {
+		this.reqKousyouDestroyShip.update();
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/getship/)) {
 		this.memberKdock.update(data.api_data.api_kdock);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
@@ -968,6 +1055,8 @@ var KanColleDatabase = {
 	    //debugprint('url=' + url + ', data=' + data.toSource());
 	    if (url.match(/kcsapi\/api_req_hensei\/change/)) {
 		this.reqHenseiChange.prepare(data);
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyitem2/)) {
+		this.reqKousyouDestroyItem2.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyship/)) {
 		this.reqKousyouDestroyShip.prepare(data);
 	    }
@@ -1001,10 +1090,12 @@ var KanColleDatabase = {
 	    this.memberQuestlist = new KanColleSimpleDB();
 	    this.memberRecord = new KanColleSimpleDB();
 	    this._memberShip2 = new KanColleDB();
-	    this.memberSlotitem = new KanColleDB();
+	    this._memberSlotitem = new KanColleDB();
 	    this.memberUnsetslot = new KanColleSimpleDB();
 	    this.questClearitemget = new KanColleSimpleDB();
 	    this.reqHenseiChange = new KanColleSimpleDB();
+	    this.reqKousyouCreateItem = new KanColleSimpleDB();
+	    this.reqKousyouDestroyItem2 = new KanColleSimpleDB();
 	    this.reqKousyouDestroyShip = new KanColleSimpleDB();
 	    this.reqHokyuCharge = new KanColleSimpleDB();
 
@@ -1012,10 +1103,10 @@ var KanColleDatabase = {
 	    this.ship.init();
 	    this.deck = new KanColleDeckDB();
 	    this.deck.init();
-	    this.headQuarter = new KanColleHeadQuarterDB();
-	    this.headQuarter.init();
 	    this.slotitem = new KanColleSlotitemDB();
 	    this.slotitem .init();
+	    this.headQuarter = new KanColleHeadQuarterDB();
+	    this.headQuarter.init();
 	    this.quest = new KanColleQuestDB();
 	    this.quest.init();
 	    this.mission = new KanColleMissionDB();
@@ -1038,16 +1129,18 @@ var KanColleDatabase = {
 	    this.mission = null;
 	    this.quest.exit();
 	    this.quest = null;
-	    this.slotitem.exit();
-	    this.slotitem = null;
 	    this.headQuarter.exit();
 	    this.headQuarter = null;
+	    this.slotitem.exit();
+	    this.slotitem = null;
 	    this.deck.exit();
 	    this.deck = null;
 	    this.ship.exit();
 	    this.ship = null;
 
 	    this.reqKousyouDestroyShip = null;
+	    this.reqKousyouDestroyItem2 = null;
+	    this.reqKousyouCreateItem = null;
 	    this.reqHokyuCharge = null;
 	    this.reqHenseiChange = null;
 	    this.questClearitemget = null;
@@ -1058,7 +1151,7 @@ var KanColleDatabase = {
 	    this.memberKdock = null;
 	    this.memberNdock = null;
 	    this.memberDeck = null;
-	    this.memberSlotitem = null;
+	    this._memberSlotitem = null;
 	    this.memberUnsetslot = null;
 	    this._memberShip2 = null;
 	    //マスタ情報は再送されないので削除しない
