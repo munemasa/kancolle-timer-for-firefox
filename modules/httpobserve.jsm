@@ -770,6 +770,8 @@ var KanColleDatabase = {
 		this.reqHokyuCharge.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
 		this.memberDeck.update(data.api_data.api_deck);
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/getship/)) {
+		this.memberKdock.update(data.api_data.api_kdock);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 		this.questClearitemget.update(data.api_data);
 	    }
