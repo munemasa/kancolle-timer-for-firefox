@@ -1495,9 +1495,10 @@ function KanColleStypeFilterTemplate(){
 	    { id: 14, },    //潜母
 	  ],
 	},
-	{ label: '輸送艦系',
+	{ label: '特務艦',
 	  types: [
 	    { id: 17, },    //揚陸艦
+	    { id: 19, },    //工作艦
 	  ],
 	},
     ];
