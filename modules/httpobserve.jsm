@@ -277,7 +277,6 @@ var KanColleHeadQuarterDB = function() {
 
     this._update = {
 	memberRecord: function() {
-	    debugprint('memberRecord()()');
 	    let t = KanColleDatabase.memberRecord.timestamp();
 	    let d = KanColleDatabase.memberRecord.get();
 
@@ -294,7 +293,6 @@ var KanColleHeadQuarterDB = function() {
 	},
 
 	memberBasic: function() {
-	    debugprint('memberBasic()()');
 	    let t = KanColleDatabase.memberBasic.timestamp();
 	    let d = KanColleDatabase.memberBasic.get();
 
@@ -309,7 +307,6 @@ var KanColleHeadQuarterDB = function() {
 	},
 
 	ship: function() {
-	    debugprint('ship()()');
 	    let t = KanColleDatabase.ship.timestamp();
 	    let n = KanColleDatabase.ship.count();
 
@@ -323,7 +320,6 @@ var KanColleHeadQuarterDB = function() {
 	},
 
 	slotitem: function() {
-	    debugprint('slotitem()()');
 	    let t = KanColleDatabase.slotitem.timestamp();
 	    let n = KanColleDatabase.slotitem.count();
 
