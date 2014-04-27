@@ -415,6 +415,15 @@ var KanColleShipDB = function() {
 
 	    this._notify();
 	},
+
+	reqKousyouGetShip: function() {
+	    let data = KanColleDatabase.reqKousyouGetShip.get().api_ship;
+	    this._ts = KanColleDatabase.reqKousyouGetShip.timestamp();
+	    this._deepcopy();
+	    this._db.ship[data.api_id] = data;
+	    this._db.list = Object.keys(this._db.ship);
+	    this._notify();
+	},
     };
 
     this.get = function(id, key) {
@@ -757,6 +766,17 @@ var KanColleSlotitemDB = function() {
 	    this._update_owner(t);
 	    this._notify();
 	},
+
+	reqKousyouGetShip: function() {
+	    let data = KanColleDatabase.reqKousyouGetShip.get().api_slotitem;
+	    let t = KanColleDatabase.reqKousyouGetShip.timestamp();
+	    this._deepcopy();
+	    for (let i = 0; i < data.length; i++)
+		this._db.hash[data[i].api_id] = data[i];
+	    this._db.list = Object.keys(this._db.hash);
+	    this._update_owner(t);
+	    this._notify();
+	},
     };
 
     this.get = function(id, key) {
@@ -946,6 +966,7 @@ var KanColleDatabase = {
     reqKousyouCreateItem: null,	// req_kousyou/createitem
     reqKousyouDestroyItem2: null,	// req_kousyou/destroyitem2
     reqKousyouDestroyShip: null,// req_kousyou/destroyship
+    reqKousyouGetShip: null,	// req_kousyou/getship
 
     headQuarter: null,		// 艦船/装備
     ship: null,			// 艦船
@@ -1026,6 +1047,7 @@ var KanColleDatabase = {
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyship/)) {
 		this.reqKousyouDestroyShip.update();
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/getship/)) {
+		this.reqKousyouGetShip.update(data.api_data);
 		this.memberKdock.update(data.api_data.api_kdock);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 		this.questClearitemget.update(data.api_data);
@@ -1097,6 +1119,7 @@ var KanColleDatabase = {
 	    this.reqKousyouCreateItem = new KanColleSimpleDB();
 	    this.reqKousyouDestroyItem2 = new KanColleSimpleDB();
 	    this.reqKousyouDestroyShip = new KanColleSimpleDB();
+	    this.reqKousyouGetShip = new KanColleSimpleDB();
 	    this.reqHokyuCharge = new KanColleSimpleDB();
 
 	    this.ship = new KanColleShipDB();
@@ -1138,6 +1161,7 @@ var KanColleDatabase = {
 	    this.ship.exit();
 	    this.ship = null;
 
+	    this.reqKousyouGetShip = null;
 	    this.reqKousyouDestroyShip = null;
 	    this.reqKousyouDestroyItem2 = null;
 	    this.reqKousyouCreateItem = null;
