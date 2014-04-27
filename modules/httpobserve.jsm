@@ -423,7 +423,7 @@ var KanColleShipDB = function() {
 	    this._deepcopy();
 
 	    for (let i = 0; i < req_id_items.length; i++) {
-		let ship_id = req_id_itemps[i];
+		let ship_id = req_id_items[i];
 		this._db.dead[ship_id] = this._db.ship[ship_id];
 		delete(this._db.ship[ship_id]);
 	    }
