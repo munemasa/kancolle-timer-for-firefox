@@ -404,6 +404,35 @@ var KanColleShipDB = function() {
 	    this._notify();
 	},
 
+	reqKaisouPowerup: function() {
+	    let t = KanColleDatabase.reqKaisouPowerup.timestamp();
+	    let req = KanColleDatabase.reqKaisouPowerup.get_req();
+	    let req_id_items = req.api_id_items;
+
+	    if (!req_id_items)
+		return;
+
+	    req_id_items = req_id_items.split(/,/).map(function(v) {
+							return parseInt(v,10);
+						       });
+	    if (req_id_items.some(function(v) {
+				    return isNaN(v);
+				  }))
+		return;
+
+	    this._deepcopy();
+
+	    for (let i = 0; i < req_id_items.length; i++) {
+		let ship_id = req_id_itemps[i];
+		this._db.dead[ship_id] = this._db.ship[ship_id];
+		delete(this._db.ship[ship_id]);
+	    }
+
+	    this._db.list = Object.keys(this._db.ship);
+
+	    this._notify();
+	},
+
 	reqKousyouDestroyShip: function() {
 	    let req = KanColleDatabase.reqKousyouDestroyShip.get_req();
 	    let req_ship_id;
@@ -742,6 +771,41 @@ var KanColleSlotitemDB = function() {
 	    this._notify();
 	},
 
+	reqKaisouPowerup: function() {
+	    let t = KanColleDatabase.reqKaisouPowerup.timestamp();
+	    let req = KanColleDatabase.reqKaisouPowerup.get_req();
+	    let req_id_items = req.api_id_items;
+
+	    if (!req_id_items)
+		return;
+
+	    req_id_items = req_id_items.split(/,/).map(function(v) {
+							return parseInt(v,10);
+						       });
+	    if (req_id_items.some(function(v) {
+				    return isNaN(v);
+				  }))
+		return;
+
+	    this._deepcopy();
+
+	    for (let i = 0; i < req_id_items.length; i++) {
+		let ship = KanColleDatabse.ship.get(req_id_items[i]);
+		if (!ship)
+		    continue;
+		for (let j = 0; j < ship.api_slot.length; j++) {
+		    if (ship.api_slot[j] < 0)
+			continue;
+		    delete(this._db.hash[ship.api_slot[j]]);
+		}
+	    }
+
+	    this._db.list = Object.keys(this._db.hash);
+
+	    this._update_owner(t);
+	    this._notify();
+	},
+
 	reqKousyouCreateItem: function() {
 	    let t = KanColleDatabase.reqKousyouCreateItem.timestamp();
 	    let data = KanColleDatabase.reqKousyouCreateItem.get();
@@ -1003,6 +1067,7 @@ var KanColleDatabase = {
     questClearitemget: null,	// quest/clearitemget
     reqHenseiChange: null,	// req_hensei/change
     reqHokyuCharge: null,	// req_hokyu/charge
+    reqKaisouPowerup: null,	// req_kaisou/powerup
     reqKousyouCreateItem: null,	// req_kousyou/createitem
     reqKousyouDestroyItem2: null,	// req_kousyou/destroyitem2
     reqKousyouDestroyShip: null,// req_kousyou/destroyship
@@ -1079,6 +1144,7 @@ var KanColleDatabase = {
 	    } else if (url.match(/kcsapi\/api_req_hokyu\/charge/)) {
 		this.reqHokyuCharge.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
+		this.reqKaisouPowerup.update(data.api_data);
 		this.memberDeck.update(data.api_data.api_deck);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/createitem/)) {
 		this.reqKousyouCreateItem.update(data.api_data);
@@ -1117,6 +1183,8 @@ var KanColleDatabase = {
 	    //debugprint('url=' + url + ', data=' + data.toSource());
 	    if (url.match(/kcsapi\/api_req_hensei\/change/)) {
 		this.reqHenseiChange.prepare(data);
+	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
+		this.reqKaisouPowerup.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyitem2/)) {
 		this.reqKousyouDestroyItem2.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyship/)) {
@@ -1156,6 +1224,7 @@ var KanColleDatabase = {
 	    this.memberUnsetslot = new KanColleSimpleDB();
 	    this.questClearitemget = new KanColleSimpleDB();
 	    this.reqHenseiChange = new KanColleSimpleDB();
+	    this.reqKaisouPowerup = new KanColleSimpleDB();
 	    this.reqKousyouCreateItem = new KanColleSimpleDB();
 	    this.reqKousyouDestroyItem2 = new KanColleSimpleDB();
 	    this.reqKousyouDestroyShip = new KanColleSimpleDB();
@@ -1205,6 +1274,7 @@ var KanColleDatabase = {
 	    this.reqKousyouDestroyShip = null;
 	    this.reqKousyouDestroyItem2 = null;
 	    this.reqKousyouCreateItem = null;
+	    this.reqKaisouPowerup = null;
 	    this.reqHokyuCharge = null;
 	    this.reqHenseiChange = null;
 	    this.questClearitemget = null;
