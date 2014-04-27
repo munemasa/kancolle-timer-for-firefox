@@ -351,6 +351,11 @@ var KanColleShipDB = function() {
 
     this._db = {
 	ship: null,
+	dead: {},   // 艦船解体/改装時において、消滅する艦船の装備を
+		    // 削除する必要がある。艦船を先に削除してしまうと
+		    // 装備がわからなくなってしまうので、完全には削除
+		    // せず、暫時IDで検索できるようにする。
+		    // 次の全体更新で完全削除。
 	list: null,
     };
 
@@ -377,6 +382,7 @@ var KanColleShipDB = function() {
 	    this._ts = KanColleDatabase._memberShip2.timestamp();
 	    this._db.ship = null;
 	    this._db.list = null;
+	    this._db.dead = {};
 	    this._notify();
 	},
 
@@ -410,6 +416,7 @@ var KanColleShipDB = function() {
 	    this._ts = KanColleDatabase.reqKousyouDestroyShip.timestamp();
 
 	    this._deepcopy();
+	    this._db.dead[req_ship_id] = this._db.ship[req_ship_id];
 	    delete(this._db.ship[req_ship_id]);
 	    this._db.list = Object.keys(this._db.ship);
 
@@ -428,7 +435,14 @@ var KanColleShipDB = function() {
 
     this.get = function(id, key) {
 	if (key == null) {
-	    return this._db.ship ? this._db.ship[id] : KanColleDatabase._memberShip2.get(id);
+	    let ret;
+	    if (this._db.ship) {
+		ret = this._db.ship[id];
+		if (!ret)
+		    ret = this._db.dead[id];
+	    } else
+		ret = KanColleDatabase._memberShip2.get(id);
+	    return ret;
 	}
     };
 
