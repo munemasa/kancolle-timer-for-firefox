@@ -781,6 +781,32 @@ var KanColleSlotitemDB = function() {
 	    this._notify();
 	},
 
+	reqKousyouDestroyShip: function() {
+	    let t = KanColleDatabase.reqKousyouDestroyShip.timestamp();
+	    let req = KanColleDatabase.reqKousyouDestroyShip.get_req();
+	    let api_ship_id = parseInt(req.api_ship_id, 10);
+	    let ship;
+
+	    if (isNaN(api_ship_id))
+		return;
+
+	    ship = KanColleDatabase.ship.get(api_ship_id);
+	    if (!ship)
+		return;
+
+	    this._deepcopy();
+
+	    for (let i = 0; i < ship.api_slot.length; i++) {
+		if (ship.api_slot[i] < 0)
+		    continue;
+		delete(this._db.hash[ship.api_slot[i]]);
+	    }
+	    this._db.list = Object.keys(this._db.hash);
+
+	    this._update_owner(t);
+	    this._notify();
+	},
+
 	reqKousyouGetShip: function() {
 	    let data = KanColleDatabase.reqKousyouGetShip.get().api_slotitem;
 	    let t = KanColleDatabase.reqKousyouGetShip.timestamp();
