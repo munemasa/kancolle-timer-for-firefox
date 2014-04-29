@@ -1078,11 +1078,35 @@ var KanColleDatabase = {
     // Internal variable
     _refcnt: null,
 
+    _save: function(url, text){
+	// 通信データを ProfD/kancolletimer.dat/ に保存する.
+	url = url.match(/^http.*\/kcsapi\/(.*)/)[1];
+	url = url.replace('/','__');
+	
+        var profdir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("ProfD", Components.interfaces.nsIFile);
+
+	var dirname = "kancolletimer.dat";
+	profdir.append( dirname );
+	profdir.append( url );
+
+	var os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance(Components.interfaces.nsIFileOutputStream);
+	var flags = 0x02|0x08|0x20;// wronly|create|truncate
+	os.init( profdir, flags, 0664, 0 );
+	var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+    cos.init(os,"UTF-8",0,Components.interfaces.nsIConverterOutputStream.DEFAULT_REPLACEMENT_CHARACTER);
+	cos.writeString( text );
+	cos.close();
+    },
+
     // Callback
     _callback: function(req, s, mode) {
 	let url = req.name;
 	if (!mode || mode == 'http-on-examine-response') {
-	    let data = JSON.parse(s.substring(s.indexOf('svdata=') + 7));
+	    let url = req.name;
+	    let text = s.substring(s.indexOf('svdata=') + 7);
+	    let data = JSON.parse(text);
+
+	    this._save(url, text);
 
 	    if (data.api_result != 1)
 		return;

@@ -9,6 +9,37 @@
 	    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	    xmlns:html="http://www.w3.org/1999/xhtml">
 
+  <prefpane id="prefpane-dashboard" label="ダッシュボード" image="chrome://kancolletimer/content/data/sticky_large.png">
+    <preferences>
+      <preference id="pref-dashboard-order"
+		  name="extensions.kancolletimer.display.dashboard.order"
+		  type="string"/>
+    </preferences>
+    <vbox>
+      <description flex="1">
+	ダッシュボード画面に表示する項目をチェックしてください。<html:br/>
+	ドラッグ&amp;ドロップで表示順を変更することもできます。
+      </description>
+      <listbox id="order-of-dashboard"
+	       oncommand="KanColleTimerPreference.changeDashboardOrder();"
+	       ondragstart="KanColleTimerPreference.startDragging(event);"
+	       ondragenter="KanColleTimerPreference.checkDrag(event);"
+	       ondragover="KanColleTimerPreference.checkDrag(event);"
+	       ondrop="KanColleTimerPreference.dropTab(event);">
+	<listitem id="group-mission" type="checkbox" label="遠征タイマー" value="group-mission"/>
+	<listitem id="group-ndock" type="checkbox" label="入渠ドックタイマー" value="group-ndock"/>
+	<listitem id="group-kdock" type="checkbox" label="建造ドックタイマー" value="group-kdock"/>
+	<listitem id="group-general-timer" type="checkbox" label="汎用タイマー" value="group-general-timer"/>
+	<listitem id="group-info" type="checkbox" label="艦隊司令部情報" value="group-info"/>
+	<listitem id="group-1stfleet" type="checkbox" label="第1艦隊情報" value="group-1stfleet"/>
+	<listitem id="group-fleets" type="checkbox" label="第2〜4艦隊情報" value="group-fleets"/>
+	<listitem id="group-quest" type="checkbox" label="遂行中任務" value="group-quest"/>
+	<listitem id="group-condition" type="checkbox" label="コンディション" value="group-condition"/>
+	<listitem id="log" type="checkbox" label="ログ" value="log"/>
+      </listbox>
+    </vbox>
+  </prefpane>
+
   <prefpane id="prefpane-sound" label="音声通知" image="chrome://kancolletimer/content/data/sound.png">
     <preferences>
       <preference id="pref-sound-default"
@@ -21,59 +52,7 @@
 		  name="extensions.kancolletimer.sound.kdock" type="string"/>
       <preference id="pref-sound-api"
 		  name="extensions.kancolletimer.sound.api" type="int"/>
-    </preferences>
 
-    <vbox>
-      <groupbox>
-	<caption>汎用音声</caption>
-	<hbox>
-	  <textbox flex="1" preference="pref-sound-default"/>
-	  <button label="選択..."
-		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-default');"/>
-	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-default');"/>
-	</hbox>
-      </groupbox>
-      <groupbox>
-	<caption>遠征終了</caption>
-	<hbox>
-	  <textbox flex="1" preference="pref-sound-mission-completed"/>
-	  <button label="選択..."
-		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-completed');"/>
-	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-mission-completed');"/>
-	</hbox>
-      </groupbox>
-      <groupbox>
-	<caption>修理完了</caption>
-	<hbox>
-	  <textbox flex="1" preference="pref-sound-ndock-completed"/>
-	  <button label="選択..."
-		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-completed');"/>
-	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-ndock-completed');"/>
-	</hbox>
-      </groupbox>
-      <groupbox>
-	<caption>建造完了</caption>
-	<hbox>
-	  <textbox flex="1" preference="pref-sound-kdock-completed"/>
-	  <button label="選択..."
-		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-completed');"/>
-	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-kdock-completed');"/>
-	</hbox>
-      </groupbox>
-
-      <groupbox>
-	<caption>音声再生方式</caption>
-	<radiogroup preference="pref-sound-api">
-	  <radio id="play-html5-audio" label="HTML5 audio" value="0" oncommand="$('audio-playback').method = 'html';"/>
-	  <radio id="play-nsisound" label="nsISound" value="1" oncommand="$('audio-playback').method = 'nsisound';"/>
-	</radiogroup>
-      </groupbox>
-    </vbox>
-
-  </prefpane>
-
-  <prefpane id="prefpane-1min-sound" label="1分前通知" image="chrome://kancolletimer/content/data/sound.png">
-    <preferences>
       <preference id="pref-sound-mission-1min"
 		  name="extensions.kancolletimer.sound.1min.mission" type="string"/>
       <preference id="pref-sound-ndock-1min"
@@ -82,14 +61,68 @@
 		  name="extensions.kancolletimer.sound.1min.kdock" type="string"/>
     </preferences>
 
-    <vbox>
+    <tabbox persist="selectedIndex" id="pref-soundnotice">
+      <tabs>
+	<tab label="完了通知"/>
+	<tab label="1分前通知"/>
+      </tabs>
+      <tabpanels>
+	<tabpanel orient="vertical">
       <groupbox>
+	    <caption>汎用音声</caption>
+	    <hbox>
+	      <textbox flex="1" preference="pref-sound-default"/>
+	      <button label="選択..."
+		      oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-default');"/>
+	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-default');"/>
+	    </hbox>
+	  </groupbox>
+	  <groupbox>
+	<caption>遠征終了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-mission-completed"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-completed');"/>
+	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-mission-completed');"/>
+	</hbox>
+      </groupbox>
+      <groupbox>
+	<caption>修理完了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-ndock-completed"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-completed');"/>
+	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-ndock-completed');"/>
+	</hbox>
+      </groupbox>
+      <groupbox>
+	<caption>建造完了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-kdock-completed"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-completed');"/>
+	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-kdock-completed');"/>
+	</hbox>
+      </groupbox>
+
+      <groupbox>
+	    <caption>音声再生方式</caption>
+	    <radiogroup preference="pref-sound-api">
+	      <hbox>
+		<radio id="play-html5-audio" label="HTML5 audio" value="0" oncommand="$('audio-playback').method = 'html';"/>
+		<radio id="play-nsisound" label="nsISound" value="1" oncommand="$('audio-playback').method = 'nsisound';"/>
+	      </hbox>
+	    </radiogroup>
+	  </groupbox>
+	</tabpanel>
+	<tabpanel orient="vertical">
+	  <groupbox>
 	<caption>遠征終了</caption>
 	<hbox>
 	  <textbox flex="1" preference="pref-sound-mission-1min"/>
 	  <button label="選択..."
 		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-1min');"/>
-	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-mission-1min');"/>
+	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-mission-1min');"/>
 	</hbox>
       </groupbox>
       <groupbox>
@@ -98,7 +131,7 @@
 	  <textbox flex="1" preference="pref-sound-ndock-1min"/>
 	  <button label="選択..."
 		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-1min');"/>
-	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-ndock-1min');"/>
+	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-ndock-1min');"/>
 	</hbox>
       </groupbox>
       <groupbox>
@@ -107,10 +140,12 @@
 	  <textbox flex="1" preference="pref-sound-kdock-1min"/>
 	  <button label="選択..."
 		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-1min');"/>
-	  <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-kdock-1min');"/>
+	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-kdock-1min');"/>
 	</hbox>
       </groupbox>
-    </vbox>
+	</tabpanel>
+      </tabpanels>
+    </tabbox>
 
   </prefpane>
 
@@ -141,6 +176,8 @@
 
   <prefpane id="prefpane-wallpaper" label="表示" image="chrome://kancolletimer/content/data/screen.png">
     <preferences>
+      <preference id="pref-auto-open"
+		  name="extensions.kancolletimer.window.auto-open" type="bool"/>
       <preference id="pref-display-short"
 		  name="extensions.kancolletimer.display.short" type="bool"/>
       <preference id="pref-wallpaper"
@@ -151,15 +188,13 @@
 		  name="extensions.kancolletimer.display.font-color" type="unichar"/>
       <preference id="e.n.font"
 		  name="extensions.kancolletimer.display.font" type="unichar"/>
-      <preference id="e.n.font-size"
-		  name="extensions.kancolletimer.display.font-size" type="unichar"/>
       <preference id="pref-ship-num-free"
 		  name="extensions.kancolletimer.display.ship-num-free" type="int"/>
       <!-- to obtain font group from browser settings -->
       <preference id="font.language.group" name="font.language.group" type="wstring"/>
     </preferences>
-
     <checkbox preference="pref-display-short" label="省スペース表示にする" tooltiptext="ウィンドウ表示時に終了時刻の表示をなくします。"/>
+
 
     <hbox align="center">
       <label value="フォント"/>
@@ -219,6 +254,22 @@
 
     <checkbox preference="pref-screenshot-jpeg" label="JPEGで保存する"/>
     <checkbox preference="pref-screenshot-mask-name" label="提督名をマスクする" tooltiptext="スクリーンショット撮影時に提督名を検閲処理します。"/>
+    <groupbox>
+      <caption>スクリーンショット保存先</caption>
+      <hbox>
+	<textbox flex="1" preference="pref-screenshot-path"/>
+	<button label="選択..."
+		oncommand="KanColleTimerPreference.refDirectory('pref-screenshot-path');"/>
+      </hbox>
+    </groupbox>
+  </prefpane>
+
+  <prefpane id="prefpane-log" label="記録" image="chrome://kancolletimer/content/data/write.png">
+    <preferences>
+      <preference id="pref-record-resources"
+		  name="extensions.kancolletimer.record.resource-history" type="bool"/>
+    </preferences>
+    <checkbox preference="pref-record-resources" label="保有資源量の状態を記録する"/>
   </prefpane>
 
   <sound id="audio-playback"/>

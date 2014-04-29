@@ -61,6 +61,41 @@ var KanColleTimerConfig = {
 	this._branch.removeObserver("", this);
     },
 
+    // ウィンドウ内表示物の位置をデフォルト位置に戻す
+    setDefaultWidgetPosition: function(){
+	let f = function( elem, order ){
+	    for(let i=0,item; item=order[i]; i++){
+		let e = document.getElementById( item );
+		if( e ){
+		    elem.insertBefore( e, elem.firstChild );
+		}
+	    }
+	};
+
+	let def_order = ["log","group-kdock","group-ndock","group-mission"];
+	f( $('tab-timer'), def_order);
+	def_order = ["group-condition","group-fleets","group-quest","group-1stfleet","group-info","group-general-timer"];
+	f( $('tab-organization'), def_order);
+    },
+
+    // ダッシュボードの表示物を再生
+    loadDashboardPrefs: function(){
+	this.setDefaultWidgetPosition();
+
+	let tmp = this.getUnichar('display.dashboard.order') || "";
+	if( !tmp ) return;
+
+	let order = JSON.parse(tmp);
+
+	let dashboard = $('id-dashboard');
+	for(let i=0,item; item=order[i]; i++){
+	    let elem = document.getElementById( item );
+	    if( elem ){
+		dashboard.insertBefore( elem, dashboard.firstChild );
+	    }
+	}
+    },
+
     loadFonts:function(){
 	let col = this.getUnichar('display.font-color') || "";
 	try{
@@ -69,7 +104,6 @@ var KanColleTimerConfig = {
 	try{
 	    $('kancolletimermainwindow').style.color = col;
 	} catch (x) {}
-	$('log').style.color = col;
 
 	let font = this.getUnichar("display.font");
 	try{
@@ -77,18 +111,14 @@ var KanColleTimerConfig = {
 	} catch (x) {
 	    $('kancolletimermainwindow').style.fontFamily = font;
 	}
-	$('log').style.fontFamily = font;
+    },
 
-	font = this.getUnichar('display.font-size') || "";
-	try{
-	    $('sbKanColleTimerSidebar').style.fontSize = font;
-	} catch (x) {
-	    $('kancolletimermainwindow').style.fontSize = font;
-	}
-	$('log').style.fontSize = font;
+    isShortDisplay: function(){
+	return KanColleTimerConfig.getBool('display.short');
     },
 
     loadPrefs: function(){
+	this.loadDashboardPrefs();
 	this.loadFonts();
 
 	let b = KanColleTimerConfig.getBool('display.short');
@@ -125,8 +155,6 @@ var KanColleTimerConfig = {
 	} catch (x) {
 	    //AddLog(x);
 	}
-
-	KanColleTimerHeadQuarterInfo.update.headQuarter();
     },
 
     observe:function(aSubject, aTopic, aData){

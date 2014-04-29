@@ -61,7 +61,7 @@
 	 <menuitem label="設定..." oncommand="event.stopPropagation(); KanColleTimerOverlay.openSettingsDialog();"/>
 
 	 <menuseparator/>
-	 <menuitem label="保有艦艇リスト" oncommand="KanColleTimerOverlay.openShipList(); event.stopPropagation();"/>
+	 <menuitem label="保有艦娘リスト" oncommand="KanColleTimerOverlay.openShipList(); event.stopPropagation();"/>
 	 <menuitem label="資源グラフ" oncommand="KanColleTimerOverlay.openResourceGraph(); event.stopPropagation();"/>
 	 <menuseparator/>
 	 <menuitem label="タイマー(ウィンドウ)を開く" oncommand="KanColleTimerOverlay.open(); event.stopPropagation();"/>

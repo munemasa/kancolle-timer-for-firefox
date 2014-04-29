@@ -298,6 +298,79 @@ var KanColleTimer = {
 	this._timer = null;
     },
 
+    createMissionBalanceTable:function(){
+	let balance = KanColleData.mission_hourly_balance;
+	let rows = $('hourly_balance');
+	for( let i in balance ){
+	    let row = CreateElement('row');
+	    let name = KanColleData.mission_name[i];
+	    name = name.substring(0,7);
+	    row.appendChild( CreateLabel( name ) );
+	    for( let j=0; j<4; j++ ){
+		let value = balance[i][j];
+		let order = value * 10 % 10;
+		let label = CreateLabel( parseInt(value) );
+		let styles = ["color:blue; font-weight:bold;", "font-weight:bold;", "font-weight:bold;"];
+		if( order ){
+		    label.setAttribute( "style", styles[order-1] );
+		}
+		row.appendChild( label );
+	    }
+	    row.setAttribute("style","border-bottom: 1px solid gray;");
+	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
+	    rows.appendChild( row );
+	}
+    },
+
+    findWindow: function(){
+	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
+	return win;
+    },
+    open: function(){
+	let feature="chrome,resizable=yes";
+	let win = this.findWindow();
+	if(win){
+	    win.focus();
+	}else{
+	    let w = window.open("chrome://kancolletimer/content/mainwindow.xul","KanColleTimer",feature);
+	    w.focus();
+	}
+    },
+
+    readResourceData: function(){
+	let data = Storage.readObject( "resourcehistory", [] );
+	let d = KanColleRemainInfo.gResourceData;
+
+	let t1 = data.length && data[ data.length-1 ].recorded_time;
+	let t2 = d.length && d[ d.length-1 ].recorded_time;
+	if( t2 < t1 ){
+	    KanColleRemainInfo.gResourceData = data;
+	}
+    },
+    writeResourceData: function(){
+	let month_ago = GetCurrentTime() - 60*60*24*31;
+	
+	let data = KanColleRemainInfo.gResourceData.filter(
+	    function( elem, index, array ){
+		return elem.recorded_time > month_ago;
+	});
+	Storage.writeObject( "resourcehistory", data );
+    },
+
+    startTimer: function() {
+	if (this._timer)
+	    return;
+	this._timer = setInterval(this.update.bind(this), 1000);
+    },
+
+    stopTimer: function() {
+	if (!this._timer)
+	    return;
+	clearInterval(this._timer);
+	this._timer = null;
+    },
+
     init: function(){
 	KanColleDatabase.init();
 	KanColleTimerHeadQuarterInfo.init();
@@ -311,6 +384,7 @@ var KanColleTimer = {
 	KanColleTimerMissionBalanceInfo.init();
 
 	this.startTimer();
+	this.readResourceData();
 
 	KanColleTimerDeckInfo.restore();
 	KanColleTimerNdockInfo.restore();
@@ -341,6 +415,7 @@ var KanColleTimer = {
 	KanColleTimerHeadQuarterInfo.stop();
 
 	this.stopTimer();
+	this.writeResourceData();
 
 	KanColleTimerMissionBalanceInfo.exit();
 	KanColleTimerMaterialLog.exit();
@@ -354,7 +429,3 @@ var KanColleTimer = {
 	KanColleDatabase.exit();
     }
 };
-
-
-window.addEventListener("load", function(e){ KanColleTimer.init(); }, false);
-window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);

@@ -84,6 +84,12 @@ var KanColleTimerOverlay = {
 	ctx.drawWindow(win, x, y, w, h, "rgb(255,255,255)");
 	ctx.restore();
 
+	let mask_admiral_name = this.getPref().getBoolPref("screenshot.mask-name");
+	if( mask_admiral_name ){
+	    ctx.fillStyle = "rgb(0,0,0)";
+	    ctx.fillRect(110, 5, 145, 20);
+	}
+
 	var url;
 	if( isjpeg ){
 	    url = canvas.toDataURL("image/jpeg");
@@ -241,7 +247,6 @@ var KanColleTimerOverlay = {
      */
     open:function(){
 	let feature="chrome,resizable=yes";
-
 	let win = this.findWindow();
 	if(win){
 	    win.focus();
@@ -249,5 +254,33 @@ var KanColleTimerOverlay = {
 	    let w = window.open("chrome://kancolletimer/content/mainwindow.xul","KanColleTimer",feature);
 	    w.focus();
 	}
+    },
+
+    /**
+     * ページロード時の自動処理.
+     * @param e DOMイベント
+     */
+    onPageLoad:function(e){
+	let url = e.target.location.href;
+	let prefs = this.getPref();
+	let auto_open = prefs.getBoolPref("window.auto-open");
+
+	if( auto_open && url.match(/http:\/\/.*dmm\.com\/netgame\/.*app_id=854854/) ){
+	    this.open();
+	}
+    },
+
+    init: function(){
+	let appcontent = document.getElementById("appcontent");   // ブラウザ
+	if(appcontent){
+	    appcontent.addEventListener("DOMContentLoaded",
+					function(e){
+					    KanColleTimerOverlay.onPageLoad(e);
+					},true);
+	}
     }
 };
+
+window.addEventListener("load", function(){
+    KanColleTimerOverlay.init();
+}, false);

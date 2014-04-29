@@ -1040,7 +1040,14 @@ var KanColleTimerMissionBalanceInfo = {
 	    name = name.substring(0,7);
 	    row.appendChild( CreateLabel( name ) );
 	    for( let j=0; j<4; j++ ){
-		row.appendChild( CreateLabel(balance[i][j]) );
+		let value = balance[i][j];
+		let order = value * 10 % 10;
+		let label = CreateLabel( parseInt(value) );
+		let styles = ["color:blue; font-weight:bold;", "font-weight:bold;", "font-weight:bold;"];
+		if( order ){
+		    label.setAttribute( "style", styles[order-1] );
+		}
+		row.appendChild( label );
 	    }
 	    row.setAttribute("style","border-bottom: 1px solid gray;");
 	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
@@ -2816,7 +2823,9 @@ function CreateHTMLElement(part){
  * @param elem 削除したい要素
  */
 function RemoveElement(elem){
-    elem.parentNode.removeChild(elem);
+    if( elem ){
+	elem.parentNode.removeChild(elem);
+    }
 }
 
 /**
@@ -2955,6 +2964,23 @@ function InputPromptWithCheck(text,caption,input,checktext){
 }
 
 /**
+ * @return nsIFileを返す
+ */
+function OpenFileDialog( caption, mode )
+{
+    const nsIFilePicker = Ci.nsIFilePicker;
+    let fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+    fp.init( window, caption, mode );
+    fp.appendFilters(nsIFilePicker.filterAll);
+    let rv = fp.show();
+    if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
+	let file = fp.file;
+	return file;
+    }
+    return null;
+}
+
+/**
  *  Javascriptオブジェクトをファイルに保存する.
  * @param obj Javascriptオブジェクト
  * @param caption ファイル保存ダイアログに表示するキャプション
@@ -3031,6 +3057,13 @@ function FindParentElement(elem,tag){
     return elem;
 }
 
+/**
+ * 符号付き数字を返す
+ */
+function GetSignedValue( v ){
+    if( v>0 ) return "+"+v;
+    return v;
+}
 
 /**
  * クリップボードにテキストをコピーする.

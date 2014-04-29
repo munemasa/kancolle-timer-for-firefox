@@ -1,10 +1,14 @@
+拙作NicoLive Helperとかからコピペプログラミングしているのと、
+その時その時の考えてることと編集する周辺のコードの影響受けて
+書き方がまちまちになったりなので、コードにあまり統一性がないのは覚悟しておくべし。
+（まぁ仕事じゃないし適当）
+
 MITライセンスでお願いしますと宣言してリポジトリを公開する前から
 xpiファイルを展開してコードを流用して別のライセンスでサブライセンスさ
 れているアドオンもありますが、サブライセンスしているのは気に入らないで
 すが、まぁそこはあまりうるさく言わず。
 
 
-Copyright (c) 2013,2014 YOSHIFUJI Hideaki <hideaki@yoshifuji.org>
 Copyright (c) 2013 amano <amano@miku39.jp> and contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
