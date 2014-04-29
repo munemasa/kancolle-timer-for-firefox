@@ -218,6 +218,7 @@
 	      <menuitem label="9分" value="540"/>
 	      <menuitem label="12分" value="720"/>
 	      <menuitem label="15分" value="900"/>
+	      <menuitem label="20分" value="1200"/>
 	      <menuitem label="30分" value="1800"/>
 	    </menupopup>
 	  </menulist>
