@@ -813,7 +813,7 @@ var KanColleSlotitemDB = function() {
 	    this._deepcopy();
 
 	    for (let i = 0; i < req_id_items.length; i++) {
-		let ship = KanColleDatabse.ship.get(req_id_items[i]);
+		let ship = KanColleDatabase.ship.get(req_id_items[i]);
 		if (!ship)
 		    continue;
 		for (let j = 0; j < ship.api_slot.length; j++) {
