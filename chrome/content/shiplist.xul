@@ -135,16 +135,14 @@
 	    </groupbox>
 	  </hbox>
 
-	  <hbox>
-	    <menulist oncommand="ShipList.setFleetOrganization(this.value);">
-	      <menupopup>
-		<menuitem label="第1艦隊" value="1"/>
-		<menuitem label="第2艦隊" value="2"/>
-		<menuitem label="第3艦隊" value="3"/>
-		<menuitem label="第4艦隊" value="4"/>
-	      </menupopup>
-	    </menulist>
-	  </hbox>
+	  <radiogroup oncommand="ShipList.setFleetOrganization(this.value);">
+	    <hbox>
+	      <radio label="第1艦隊" value="1" selected="true"/>
+	      <radio label="第2艦隊" value="2"/>
+	      <radio label="第3艦隊" value="3"/>
+	      <radio label="第4艦隊" value="4"/>
+	    </hbox>
+	  </radiogroup>
 	  <listbox id="fleet-organization" rows="6">
 	    <listcols>
 	      <listcol/><listcol/><listcol/><listcol/><listcol/>
