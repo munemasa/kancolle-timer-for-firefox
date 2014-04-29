@@ -87,7 +87,7 @@ var KanColleTimerOverlay = {
 	let mask_admiral_name = this.getPref().getBoolPref("screenshot.mask-name");
 	if( mask_admiral_name ){
 	    ctx.fillStyle = "rgb(0,0,0)";
-	    ctx.fillRect(120, 5, 145, 20);
+	    ctx.fillRect(110, 5, 145, 20);
 	}
 
 	var url;
