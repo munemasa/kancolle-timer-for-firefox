@@ -481,6 +481,7 @@ var ShipList = {
 	    return KanColleDatabase.memberShip2.get( k );
 	} );
 	this.allships = this.createShipList( ships );
+	this.sort(0); // 艦種別ソートをデフォルトに
 	this.showShipList( this.allships );
 
 	this.createShipOrganizationList();
