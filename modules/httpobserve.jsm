@@ -385,6 +385,9 @@ var KanColleShipDB = function() {
 	reqHokyuCharge: function() {
 	    let data = KanColleDatabase.reqHokyuCharge.get().api_ship;
 
+	    if (!this._ts)
+		return;
+
 	    this._ts = KanColleDatabase.reqHokyuCharge.timestamp();
 
 	    this._deepcopy();
@@ -405,7 +408,7 @@ var KanColleShipDB = function() {
 	    let req = KanColleDatabase.reqKaisouPowerup.get_req();
 	    let req_id_items = req.api_id_items;
 
-	    if (!req_id_items)
+	    if (!this._ts || !req_id_items)
 		return;
 
 	    req_id_items = req_id_items.split(/,/).map(function(v) {
@@ -434,6 +437,9 @@ var KanColleShipDB = function() {
 	    let req_ship_id;
 	    let fleet;
 
+	    if (!this._ts)
+		return;
+
 	    req_ship_id = parseInt(req.api_ship_id, 10);
 	    if (isNaN(req_ship_id))
 		return;
@@ -450,6 +456,10 @@ var KanColleShipDB = function() {
 
 	reqKousyouGetShip: function() {
 	    let data = KanColleDatabase.reqKousyouGetShip.get().api_ship;
+
+	    if (!this._ts)
+		return;
+
 	    this._ts = KanColleDatabase.reqKousyouGetShip.timestamp();
 	    this._deepcopy();
 	    this._db.ship[data.api_id] = data;
@@ -549,6 +559,9 @@ var KanColleDeckDB = function() {
 	    let req_ship_id;
 	    let req_ship_idx;
 
+	    if (!this._ts)
+		return;
+
 	    this._ts = KanColleDatabase.reqHenseiChange.timestamp();
 
 	    this._deepcopy();
@@ -599,6 +612,9 @@ var KanColleDeckDB = function() {
 	    let req = KanColleDatabase.reqKousyouDestroyShip.get_req();
 	    let req_ship_id;
 	    let fleet;
+
+	    if (!this._ts)
+		return;
 
 	    req_ship_id = parseInt(req.api_ship_id, 10);
 	    if (isNaN(req_ship_id))
@@ -687,75 +703,85 @@ var KanColleSlotitemDB = function() {
 	return "";
     },
 
-    this._update_owner = function(t) {
+    this._update_owner = function() {
 	let db = {};
 	let items;
 	let ships;
 
+	if (!this._ts || !KanColleDatabase.ship.timestamp() ||
+	    !KanColleDatabase.masterSlotitem.timestamp())
+	    return -1;
+
 	items = KanColleDatabase.slotitem.list();
 	ships = KanColleDatabase.ship.list();
 
-	if (items.length && ships.length && KanColleDatabase.masterSlotitem.timestamp()) {
-	    for (let i = 0; i < items.length; i++) {
-		let item = KanColleDatabase.slotitem.get(items[i]);
-		let itemtypeid = item.api_slotitem_id;
-		let itemtype = KanColleDatabase.masterSlotitem.get(itemtypeid);
-		if (!db[itemtypeid]) {
-		    db[itemtypeid] = {
-					id: itemtypeid,
-					name: itemtype.api_name,
-					type: itemtype.api_type,
-					list: {},
-					totalnum: 0,
-					num: 0,
-		    };
-		}
-		db[itemtypeid].totalnum++;
+	for (let i = 0; i < items.length; i++) {
+	    let item = KanColleDatabase.slotitem.get(items[i]);
+	    let itemtypeid = item.api_slotitem_id;
+	    let itemtype = KanColleDatabase.masterSlotitem.get(itemtypeid);
+	    if (!db[itemtypeid]) {
+		db[itemtypeid] = {
+				    id: itemtypeid,
+				    name: itemtype.api_name,
+				    type: itemtype.api_type,
+				    list: {},
+				    totalnum: 0,
+				    num: 0,
+		};
 	    }
+	    db[itemtypeid].totalnum++;
+	}
 
-	    for (let i = 0; i < ships.length; i++) {
-		let ship = KanColleDatabase.ship.get(ships[i]);
-		let ship_slot = ship.api_slot;
+	for (let i = 0; i < ships.length; i++) {
+	    let ship = KanColleDatabase.ship.get(ships[i]);
+	    let ship_slot = ship.api_slot;
 
-		//debugprint(this._shipname(ship.api_id) + ': ');
+	    //debugprint(this._shipname(ship.api_id) + ': ');
 
-		for (let j = 0; j < ship_slot.length; j++) {
-		    let item;
-		    let itemtypeid;
+	    for (let j = 0; j < ship_slot.length; j++) {
+		let item;
+		let itemtypeid;
 
-		    if (ship_slot[j] < 0)
-			continue;
+		if (ship_slot[j] < 0)
+		    continue;
 
-		    item = KanColleDatabase.slotitem.get(ship_slot[j]);
-		    // member/slotitem might be out-of-date for a while.
-		    if (!item)
-			continue;
-		    itemtypeid = item.api_slotitem_id;
+		item = KanColleDatabase.slotitem.get(ship_slot[j]);
+		// member/slotitem might be out-of-date for a while.
+		if (!item)
+		    return -1;
 
-		    //debugprint(itemtypeid + ': ' + item.api_name);
+		itemtypeid = item.api_slotitem_id;
 
-		    db[itemtypeid].list[ship.api_id]++;
-		    db[itemtypeid].num++;
-		}
-	    }
+		//debugprint(itemtypeid + ': ' + item.api_name);
 
-	    for ( let k in db ){
-		let s = [];
-		for ( let l in db[k].list ){
-		    s.push(this._shipname(parseInt(l, 10)));
-		}
-		//debugprint(db[k].name + ': ' + s.join(','));
+		db[itemtypeid].list[ship.api_id]++;
+		db[itemtypeid].num++;
 	    }
 	}
+
+	for ( let k in db ){
+	    let s = [];
+	    for ( let l in db[k].list ){
+		s.push(this._shipname(parseInt(l, 10)));
+	    }
+	    //debugprint(db[k].name + ': ' + s.join(','));
+	}
+
 	//debugprint(db.toSource());
-	this._ts = t;
 	this._db.owner = db;
+
+	return 0;
     };
 
     this._update = {
 	ship: function() {
 	    let t = KanColleDatabase.ship.timestamp();
+
+	    if (!this._ts)
+		return;
+
 	    this._update_owner(t);
+	    this._ts = t;
 	    this._notify();
 	},
 
@@ -763,7 +789,8 @@ var KanColleSlotitemDB = function() {
 	    let t = KanColleDatabase._memberSlotitem.timestamp();
 	    this._db.hash = null;
 	    this._db.list = null;
-	    this._update_owner(t);
+	    this._update_owner();
+	    this._ts = t;
 	    this._notify();
 	},
 
@@ -772,7 +799,7 @@ var KanColleSlotitemDB = function() {
 	    let req = KanColleDatabase.reqKaisouPowerup.get_req();
 	    let req_id_items = req.api_id_items;
 
-	    if (!req_id_items)
+	    if (!this._ts || !req_id_items)
 		return;
 
 	    req_id_items = req_id_items.split(/,/).map(function(v) {
@@ -798,7 +825,8 @@ var KanColleSlotitemDB = function() {
 
 	    this._db.list = Object.keys(this._db.hash);
 
-	    this._update_owner(t);
+	    this._update_owner();
+	    this._ts = t;
 	    this._notify();
 	},
 
@@ -807,11 +835,15 @@ var KanColleSlotitemDB = function() {
 	    let data = KanColleDatabase.reqKousyouCreateItem.get();
 	    let slotitem = data.api_slot_item;
 
+	    if (!this._ts)
+		return;
+
 	    this._deepcopy();
 	    this._db.hash[slotitem.api_id] = slotitem;
 	    this._db.list = Object.keys(this._db.hash);
 
-	    this._update_owner(t);
+	    this._update_owner();
+	    this._ts = t;
 	    this._notify();
 	},
 
@@ -820,7 +852,7 @@ var KanColleSlotitemDB = function() {
 	    let req = KanColleDatabase.reqKousyouDestroyItem2.get_req();
 	    let req_slotitem_ids = req.api_slotitem_ids;
 
-	    if (!req_slotitem_ids)
+	    if (!this._ts || !req_slotitem_ids)
 		return;
 
 	    req_slotitem_ids = req_slotitem_ids.split(/,/).map(function(v) {
@@ -837,7 +869,8 @@ var KanColleSlotitemDB = function() {
 		delete(this._db.hash[req_slotitem_ids[i]]);
 	    this._db.list = Object.keys(this._db.hash);
 
-	    this._update_owner(t);
+	    this._update_owner();
+	    this._ts = t;
 	    this._notify();
 	},
 
@@ -847,7 +880,7 @@ var KanColleSlotitemDB = function() {
 	    let api_ship_id = parseInt(req.api_ship_id, 10);
 	    let ship;
 
-	    if (isNaN(api_ship_id))
+	    if (!this._ts || isNaN(api_ship_id))
 		return;
 
 	    ship = KanColleDatabase.ship.get(api_ship_id);
@@ -863,18 +896,24 @@ var KanColleSlotitemDB = function() {
 	    }
 	    this._db.list = Object.keys(this._db.hash);
 
-	    this._update_owner(t);
+	    this._update_owner();
+	    this._ts = t;
 	    this._notify();
 	},
 
 	reqKousyouGetShip: function() {
 	    let data = KanColleDatabase.reqKousyouGetShip.get().api_slotitem;
 	    let t = KanColleDatabase.reqKousyouGetShip.timestamp();
+
+	    if (!this._ts)
+		return;
+
 	    this._deepcopy();
 	    for (let i = 0; i < data.length; i++)
 		this._db.hash[data[i].api_id] = data[i];
 	    this._db.list = Object.keys(this._db.hash);
-	    this._update_owner(t);
+	    this._update_owner();
+	    this._ts = t;
 	    this._notify();
 	},
     };
