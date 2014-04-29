@@ -780,8 +780,8 @@ var KanColleSlotitemDB = function() {
 	    if (!this._ts)
 		return;
 
-	    this._update_owner(t);
 	    this._ts = t;
+	    this._update_owner();
 	    this._notify();
 	},
 
@@ -789,8 +789,8 @@ var KanColleSlotitemDB = function() {
 	    let t = KanColleDatabase._memberSlotitem.timestamp();
 	    this._db.hash = null;
 	    this._db.list = null;
-	    this._update_owner();
 	    this._ts = t;
+	    this._update_owner();
 	    this._notify();
 	},
 
@@ -825,8 +825,8 @@ var KanColleSlotitemDB = function() {
 
 	    this._db.list = Object.keys(this._db.hash);
 
-	    this._update_owner();
 	    this._ts = t;
+	    this._update_owner();
 	    this._notify();
 	},
 
@@ -842,8 +842,8 @@ var KanColleSlotitemDB = function() {
 	    this._db.hash[slotitem.api_id] = slotitem;
 	    this._db.list = Object.keys(this._db.hash);
 
-	    this._update_owner();
 	    this._ts = t;
+	    this._update_owner();
 	    this._notify();
 	},
 
@@ -869,8 +869,8 @@ var KanColleSlotitemDB = function() {
 		delete(this._db.hash[req_slotitem_ids[i]]);
 	    this._db.list = Object.keys(this._db.hash);
 
-	    this._update_owner();
 	    this._ts = t;
+	    this._update_owner();
 	    this._notify();
 	},
 
@@ -896,8 +896,8 @@ var KanColleSlotitemDB = function() {
 	    }
 	    this._db.list = Object.keys(this._db.hash);
 
-	    this._update_owner();
 	    this._ts = t;
+	    this._update_owner();
 	    this._notify();
 	},
 
@@ -912,8 +912,8 @@ var KanColleSlotitemDB = function() {
 	    for (let i = 0; i < data.length; i++)
 		this._db.hash[data[i].api_id] = data[i];
 	    this._db.list = Object.keys(this._db.hash);
-	    this._update_owner();
 	    this._ts = t;
+	    this._update_owner();
 	    this._notify();
 	},
     };
