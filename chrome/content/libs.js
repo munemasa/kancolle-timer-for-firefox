@@ -1064,6 +1064,48 @@ var KanColleTimerMissionBalanceInfo = {
 };
 KanColleTimerMissionBalanceInfo.__proto__ = __KanColleTimerPanel;
 
+var KanColleTimerPracticeInfo = {
+    update: {
+	practice: function() {
+	    let s = '';
+	    let l = KanColleDatabase.practice.list();
+	    for (let i = 0; i < l.length; i++) {
+		//const label = [ '-', 'E', 'D', 'C', 'B', 'A', 'S' ];
+		let p = KanColleDatabase.practice.get(l[i]);
+		let ship;
+		let info;
+		s += p.api_enemy_name + ' Lv' + p.api_enemy_level + '[' + p.api_enemy_rank + '](' + p.api_state + ')';
+		// ship = KanColleDatabase.masterShip.get(p.api_enemy_flag_ship);
+		// s += ship ? ship.api_name : ('UNKNOWN_' + p.api_enemy_flag_ship);
+		s += FindShipNameByCatId(p.api_enemy_flag_ship) + '(' + p.api_enemy_flag_ship + ')';
+		info = KanColleDatabase.practice.find(p.api_enemy_id);
+		if (info) {
+		    s += ': ' + info.api_deckname;
+		    if (info.api_deck && info.api_deck.api_ships) {
+			let ships = [];
+			for (let j = 0; j < info.api_deck.api_ships.length; j++) {
+			    let shipinfo = info.api_deck.api_ships[j];
+			    let t = '';
+			    if (shipinfo.api_id < 0)
+				continue;
+			    t += FindShipNameByCatId(shipinfo.api_ship_id) + ' Lv' + shipinfo.api_level + '(';
+			    //for (let k = 0; k <= shipinfo.api_star; k++)
+			    //	t += '*';
+			    t += shipinfo.api_star;
+			    t += ')';
+			    ships.push(t);
+			}
+			s += '[' + ships.join(',') + ']';
+		    }
+		}
+		s += '\n';
+	    }
+	    debugprint(s);
+	},
+    },
+};
+KanColleTimerPracticeInfo.__proto__ = __KanColleTimerPanel;
+
 function AddLog(str){
     $('log').value = str + $('log').value;
 }

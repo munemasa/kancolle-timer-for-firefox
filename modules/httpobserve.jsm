@@ -1079,6 +1079,64 @@ var KanColleMissionDB = function() {
 };
 KanColleMissionDB.prototype = new KanColleCombinedDB();
 
+var KanCollePracticeDB = function() {
+    this._init();
+
+    this._db = {
+	hash: {},
+	info: {},
+    };
+
+    this._update = {
+	memberPractice: function() {
+	    let t = KanColleDatabase.memberPractice.timestamp();
+	    let list = KanColleDatabase.memberPractice.list();
+
+	    // 演習は午前3時(0時/12時UTC)に更新
+	    if (!this._ts || Math.floor(this._ts / 43200000) < Math.floor(t / 43200000)) {
+		this._db.hash = {};
+		this._db.info = {};
+	    };
+
+	    for (let i = 0; i < list.length; i++) {
+		let p = KanColleDatabase.memberPractice.get(list[i]);
+		this._db.hash[p.api_id] = p;
+	    }
+
+	    this._ts = t;
+	    this._notify();
+	},
+
+	reqMemberGetPracticeEnemyInfo: function() {
+	    let t = KanColleDatabase.reqMemberGetPracticeEnemyInfo.timestamp();
+	    let info = KanColleDatabase.reqMemberGetPracticeEnemyInfo.get();
+
+	    if (!this._ts)
+		return;
+
+	    this._db.info[info.api_member_id] = info;
+
+	    this._ts = t;
+	    this._notify();
+	},
+    };
+
+    this.get = function(id) {
+	return this._db.hash[id];
+    };
+
+    this.list = function() {
+	return Object.keys(this._db.hash);
+    };
+
+    this.find = function(id) {
+	return this._db.info[id];
+    };
+
+    this._update_init();
+};
+KanCollePracticeDB.prototype = new KanColleCombinedDB();
+
 var KanColleDatabase = {
     postData: new Object(),
 
@@ -1118,6 +1176,7 @@ var KanColleDatabase = {
     deck: null,			// デッキ
     slotitem: null,		// 装備保持艦船
     quest: null,		// 任務(クエスト)
+    practice: null,		// 演習
 
     // Internal variable
     _refcnt: null,
@@ -1299,6 +1358,8 @@ var KanColleDatabase = {
 	    this.quest.init();
 	    this.mission = new KanColleMissionDB();
 	    this.mission.init();
+	    this.practice = new KanCollePracticeDB();
+	    this.practice.init();
 
 	    debugprint("KanColleDatabase initialized.");
 
@@ -1313,6 +1374,8 @@ var KanColleDatabase = {
 	    KanColleHttpRequestObserver.removeCallback(this._callback);
 
 	    // Clear
+	    this.practice.exit();
+	    this.practice = null;
 	    this.mission.exit();
 	    this.mission = null;
 	    this.quest.exit();

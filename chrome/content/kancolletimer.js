@@ -307,6 +307,7 @@ var KanColleTimer = {
 	KanColleTimerQuestInfo.init();
 	KanColleTimerFleetInfo.init();
 	KanColleTimerShipTableInit();
+	KanColleTimerPracticeInfo.init();
 	KanColleTimerMaterialLog.init();
 	KanColleTimerMissionBalanceInfo.init();
 
@@ -327,11 +328,13 @@ var KanColleTimer = {
 	KanColleTimerQuestInfo.start();
 	KanColleTimerFleetInfo.start();
 	KanColleTimerShipTableStart();
+	KanColleTimerPracticeInfo.start();
 	KanColleTimerMaterialLog.start();
     },
 
     destroy: function(){
 	KanColleTimerMaterialLog.stop();
+	KanColleTimerPracticeInfo.stop();
 	KanColleTimerShipTableStop();
 	KanColleTimerFleetInfo.stop();
 	KanColleTimerQuestInfo.stop();
@@ -344,6 +347,7 @@ var KanColleTimer = {
 
 	KanColleTimerMissionBalanceInfo.exit();
 	KanColleTimerMaterialLog.exit();
+	KanColleTimerPracticeInfo.exit();
 	KanColleTimerShipTableExit();
 	KanColleTimerFleetInfo.exit();
 	KanColleTimerQuestInfo.exit();
