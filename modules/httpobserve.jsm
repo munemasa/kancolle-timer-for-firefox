@@ -1094,6 +1094,7 @@ var KanColleDatabase = {
     memberKdock: null,		// member/kdock
     memberMaterial: null,	// member/material
     memberNdock: null,		// member/ndock
+    memberPractice: null,	// member/practice
     memberQuestlist: null,	// member/questlist
     memberRecord: null,		// member/record
     _memberShip2: null,		// member/ship2
@@ -1108,6 +1109,7 @@ var KanColleDatabase = {
     reqKousyouDestroyItem2: null,	// req_kousyou/destroyitem2
     reqKousyouDestroyShip: null,// req_kousyou/destroyship
     reqKousyouGetShip: null,	// req_kousyou/getship
+    reqMemberGetPracticeEnemyInfo: null,    // req_member/get_practice_enemyinfo
     reqNyukyoSpeedChange: null,	// req_nyukyo/speedchange
     reqNyukyoStart: null,	// req_nyukyo/start
 
@@ -1151,6 +1153,8 @@ var KanColleDatabase = {
 		this.memberMaterial.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
 		this.memberNdock.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/practice/)) {
+		this.memberPractice.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/questlist/)) {
 		this.memberQuestlist.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/record/)) {
@@ -1193,6 +1197,8 @@ var KanColleDatabase = {
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/getship/)) {
 		this.reqKousyouGetShip.update(data.api_data);
 		this.memberKdock.update(data.api_data.api_kdock);
+	    } else if (url.match(/kcsapi\/api_req_member\/get_practice_enemyinfo/)) {
+		this.reqMemberGetPracticeEnemyInfo.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_nyukyo\/speedchange/)) {
 		this.reqNyukyoSpeedChange.update();
 	    } else if (url.match(/kcsapi\/api_req_nyukyo\/start/)) {
@@ -1263,6 +1269,7 @@ var KanColleDatabase = {
 	    this.memberKdock = new KanColleDB();
 	    this.memberMaterial = new KanColleDB();
 	    this.memberNdock = new KanColleDB();
+	    this.memberPractice = new KanColleDB();
 	    this.memberQuestlist = new KanColleSimpleDB();
 	    this.memberRecord = new KanColleSimpleDB();
 	    this._memberShip2 = new KanColleDB();
@@ -1276,6 +1283,7 @@ var KanColleDatabase = {
 	    this.reqKousyouDestroyShip = new KanColleSimpleDB();
 	    this.reqKousyouGetShip = new KanColleSimpleDB();
 	    this.reqHokyuCharge = new KanColleSimpleDB();
+	    this.reqMemberGetPracticeEnemyInfo = new KanColleSimpleDB();
 	    this.reqNyukyoSpeedChange = new KanColleSimpleDB();
 	    this.reqNyukyoStart = new KanColleSimpleDB();
 
@@ -1320,6 +1328,7 @@ var KanColleDatabase = {
 
 	    this.reqNyukyoStart = null;
 	    this.reqNyukyoSpeedChange = null;
+	    this.reqMemberGetPracticeEnemyInfo = null;
 	    this.reqKousyouGetShip = null;
 	    this.reqKousyouDestroyShip = null;
 	    this.reqKousyouDestroyItem2 = null;
@@ -1329,6 +1338,7 @@ var KanColleDatabase = {
 	    this.reqHenseiChange = null;
 	    this.questClearitemget = null;
 	    this.memberQuestlist = null;
+	    this.memberPractice = null;
 	    this.memberMaterial = null;
 	    this.memberRecord = null;
 	    this.memberBasic = null;
