@@ -1108,6 +1108,8 @@ var KanColleDatabase = {
     reqKousyouDestroyItem2: null,	// req_kousyou/destroyitem2
     reqKousyouDestroyShip: null,// req_kousyou/destroyship
     reqKousyouGetShip: null,	// req_kousyou/getship
+    reqNyukyoSpeedChange: null,	// req_nyukyo/speedchange
+    reqNyukyoStart: null,	// req_nyukyo/start
 
     headQuarter: null,		// 艦船/装備
     ship: null,			// 艦船
@@ -1191,6 +1193,10 @@ var KanColleDatabase = {
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/getship/)) {
 		this.reqKousyouGetShip.update(data.api_data);
 		this.memberKdock.update(data.api_data.api_kdock);
+	    } else if (url.match(/kcsapi\/api_req_nyukyo\/speedchange/)) {
+		this.reqNyukyoSpeedChange.update();
+	    } else if (url.match(/kcsapi\/api_req_nyukyo\/start/)) {
+		this.reqNyukyoStart.update();
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 		this.questClearitemget.update(data.api_data);
 	    }
@@ -1225,6 +1231,10 @@ var KanColleDatabase = {
 		this.reqKousyouDestroyItem2.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyship/)) {
 		this.reqKousyouDestroyShip.prepare(data);
+	    } else if (url.match(/kcsapi\/api_req_nyukyo\/speedchange/)) {
+		this.reqNyukyoSpeedChange.prepare(data);
+	    } else if (url.match(/kcsapi\/api_req_nyukyo\/start/)) {
+		this.reqNyukyoStart.prepare(data);
 	    }
 	}
     },
@@ -1266,6 +1276,8 @@ var KanColleDatabase = {
 	    this.reqKousyouDestroyShip = new KanColleSimpleDB();
 	    this.reqKousyouGetShip = new KanColleSimpleDB();
 	    this.reqHokyuCharge = new KanColleSimpleDB();
+	    this.reqNyukyoSpeedChange = new KanColleSimpleDB();
+	    this.reqNyukyoStart = new KanColleSimpleDB();
 
 	    this.ship = new KanColleShipDB();
 	    this.ship.init();
@@ -1306,6 +1318,8 @@ var KanColleDatabase = {
 	    this.ship.exit();
 	    this.ship = null;
 
+	    this.reqNyukyoStart = null;
+	    this.reqNyukyoSpeedChange = null;
 	    this.reqKousyouGetShip = null;
 	    this.reqKousyouDestroyShip = null;
 	    this.reqKousyouDestroyItem2 = null;
