@@ -423,6 +423,7 @@ var KanColleShipDB = function() {
 
 	    for (let i = 0; i < req_id_items.length; i++) {
 		let ship_id = req_id_items[i];
+		debugprint('deleting ' + ship_id);
 		this._db.dead[ship_id] = this._db.ship[ship_id];
 		delete(this._db.ship[ship_id]);
 	    }
@@ -1205,8 +1206,8 @@ var KanColleDatabase = {
 		idx = t.indexOf('=');
 		try{
 		    if (idx >= 0) {
-			k = decodeURI(t.substring(0, idx));
-			v = decodeURI(t.substring(idx + 1));
+			k = decodeURIComponent(t.substring(0, idx));
+			v = decodeURIComponent(t.substring(idx + 1));
 		    }
 		    if (data[k])
 			debugprint('overriding data for ' + k + '; ' + data[k]);
