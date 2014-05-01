@@ -339,6 +339,109 @@ var KanColleHeadQuarterDB = function() {
 };
 KanColleHeadQuarterDB.prototype = new KanColleCombinedDB();
 
+var KanColleMaterialDB = function() {
+    this._init();
+
+    this._db = {
+	fuel: Number.NaN,
+	bullet: Number.NaN,
+	steel: Number.NaN,
+	bauxite: Number.NaN,
+	burner: Number.NaN,
+	bucket: Number.NaN,
+	devkit: Number.NaN,
+    };
+
+    this._update = {
+	memberMaterial: function() {
+	    let t = KanColleDatabase.memberMaterial.timestamp();
+	    let keys = {
+		fuel: 1,
+		bullet: 2,
+		steel: 3,
+		bauxite: 4,
+		burner: 5,
+		bucket: 6,
+		devkit: 7,
+	    };
+	    let ok = 0;
+
+	    for (let k in keys) {
+		let d = KanColleDatabase.memberMaterial.get(keys[k]);
+		if (typeof(d) != 'object' || d == null)
+		    continue;
+		this._db[k] = d.api_value;
+		ok++;
+	    }
+
+	    if (!ok)
+		return;
+
+	    this._ts = t;
+	    this._notify();
+	},
+
+	reqHokyuCharge: function() {
+	    let t = KanColleDatabase.reqHokyuCharge.timestamp();
+	    let data = KanColleDatabase.reqHokyuCharge.get();
+
+	    if (!this._ts)
+		return;
+
+	    this._db.fuel    = data.api_material[0];
+	    this._db.bullet  = data.api_material[1];
+	    this._db.steel   = data.api_material[2];
+	    this._db.bauxite = data.api_material[3];
+
+	    this._ts = t;
+	    this._notify();
+	},
+
+	reqNyukyoStart: function() {
+	    let t = KanColleDatabase.reqNyukyoStart.timestamp();
+	    let req = KanColleDatabase.reqNyukyoStart.get_req();
+
+	    if (!this._ts || isNaN(this._db.bucket) || !req.api_highspeed)
+		return;
+
+	    this._db.bucket--;
+
+	    this._ts = t;
+	    this._notify();
+	},
+
+	reqKousyouCreateShipSpeedChange: function() {
+	    let t = KanColleDatabase.reqKousyouCreateShipSpeedChange.timestamp();
+	    let req = KanColleDatabase.reqCreateShipSpeedChange.get_req();
+
+	    if (!this._ts || isNaN(this._db.burner) || !req.api_highspeed)
+		return;
+
+	    this._db.burner--;
+
+	    this._ts = t;
+	    this._notify();
+	},
+
+	reqNyukyoSpeedChange: function() {
+	    let t = KanColleDatabase.reqNyukyoStart.timestamp();
+
+	    if (!this._ts || isNaN(this._db.bucket))
+		return;
+
+	    this._db.bucket--;
+
+	    this._ts = t;
+	    this._notify();
+	},
+    };
+
+    this.get = function(key) { return this._db[key]; };
+
+    this._update_init();
+};
+KanColleMaterialDB.prototype = new KanColleCombinedDB();
+
 //
 // 艦船データベース
 //
@@ -1163,6 +1266,7 @@ var KanColleDatabase = {
     reqHenseiChange: null,	// req_hensei/change
     reqHokyuCharge: null,	// req_hokyu/charge
     reqKaisouPowerup: null,	// req_kaisou/powerup
+    reqKousyouCreateShipSppedChange: null,  // req_kousyou/createship_speedchange
     reqKousyouCreateItem: null,	// req_kousyou/createitem
     reqKousyouDestroyItem2: null,	// req_kousyou/destroyitem2
     reqKousyouDestroyShip: null,// req_kousyou/destroyship
@@ -1177,6 +1281,7 @@ var KanColleDatabase = {
     slotitem: null,		// 装備保持艦船
     quest: null,		// 任務(クエスト)
     practice: null,		// 演習
+    material: null,		// 資源/資材
 
     // Internal variable
     _refcnt: null,
@@ -1249,6 +1354,8 @@ var KanColleDatabase = {
 		this.memberDeck.update(data.api_data.api_deck);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/createitem/)) {
 		this.reqKousyouCreateItem.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/createship_speedchange/)) {
+		this.reqKousyouCreateShipSpeedChange.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyitem2/)) {
 		this.reqKousyouDestroyItem2.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyship/)) {
@@ -1292,6 +1399,8 @@ var KanColleDatabase = {
 		this.reqHenseiChange.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
 		this.reqKaisouPowerup.prepare(data);
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/createship_speedchange/)) {
+		this.reqKousyouCreateShipSpeedChange.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyitem2/)) {
 		this.reqKousyouDestroyItem2.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyship/)) {
@@ -1338,6 +1447,7 @@ var KanColleDatabase = {
 	    this.reqHenseiChange = new KanColleSimpleDB();
 	    this.reqKaisouPowerup = new KanColleSimpleDB();
 	    this.reqKousyouCreateItem = new KanColleSimpleDB();
+	    this.reqKousyouCreateShipSpeedChange = new KanColleSimpleDB();
 	    this.reqKousyouDestroyItem2 = new KanColleSimpleDB();
 	    this.reqKousyouDestroyShip = new KanColleSimpleDB();
 	    this.reqKousyouGetShip = new KanColleSimpleDB();
@@ -1360,6 +1470,8 @@ var KanColleDatabase = {
 	    this.mission.init();
 	    this.practice = new KanCollePracticeDB();
 	    this.practice.init();
+	    this.material = new KanColleMaterialDB();
+	    this.material.init();
 
 	    debugprint("KanColleDatabase initialized.");
 
@@ -1374,6 +1486,8 @@ var KanColleDatabase = {
 	    KanColleHttpRequestObserver.removeCallback(this._callback);
 
 	    // Clear
+	    this.material.exit();
+	    this.material = null;
 	    this.practice.exit();
 	    this.practice = null;
 	    this.mission.exit();
@@ -1395,6 +1509,7 @@ var KanColleDatabase = {
 	    this.reqKousyouGetShip = null;
 	    this.reqKousyouDestroyShip = null;
 	    this.reqKousyouDestroyItem2 = null;
+	    this.reqKousyouCreateShipSppedChange = null;
 	    this.reqKousyouCreateItem = null;
 	    this.reqKaisouPowerup = null;
 	    this.reqHokyuCharge = null;

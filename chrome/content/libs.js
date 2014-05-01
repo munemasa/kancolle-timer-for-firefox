@@ -135,10 +135,10 @@ var KanColleTimerHeadQuarterInfo = {
 	    $('basic-information-slotitemcount').setAttribute('tooltiptext', slotitems + ' / ' + maxslotitems);
 	},
 
-	memberMaterial: function() {
+	material: function() {
 	    let burner = '-';
 	    let bucket = '-';
-	    if (KanColleDatabase.memberMaterial.timestamp()) {
+	    if (KanColleDatabase.material.timestamp()) {
 		let d;
 		/*
 		 * 1: 燃料
@@ -149,12 +149,8 @@ var KanColleTimerHeadQuarterInfo = {
 		 * 6: 高速修復材
 		 * 7: 開発資材
 		 */
-		d = KanColleDatabase.memberMaterial.get(5);
-		if (typeof(d) == 'object')
-		    burner = d.api_value;
-		d = KanColleDatabase.memberMaterial.get(6);
-		if (typeof(d) == 'object')
-		    bucket = d.api_value;
+		burner = KanColleDatabase.material.get('burner');
+		bucket = KanColleDatabase.material.get('bucket');
 	    }
 
 	    $('basic-information-burnercount').value = burner;
@@ -309,10 +305,10 @@ var KanColleTimerNdockInfo = {
 	    for( let i = 0; i < 4; i++ )
 		SetStyleProperty(ndocks[i], 'display', i < d.api_count_ndock ? "":"none");
 	},
-	memberMaterial: function() {
-	    let d = KanColleDatabase.memberMaterial.get(6);
-	    if (typeof(d) == 'object')
-		$('repairkit-number').value = d.api_value;
+	material: function() {
+	    let d = KanColleDatabase.material.get('bucket');
+	    if (d >= 0)
+		$('repairkit-number').value = d;
 	},
     },
 
@@ -437,10 +433,9 @@ var KanColleTimerKdockInfo = {
 		SetStyleProperty(ndocks[i], 'display', i < d.api_count_kdock ? "":"none");
 	},
 
-	memberMaterial: function() {
-	    let d = KanColleDatabase.memberMaterial.get(5);
-	    if (typeof(d) == 'object')
-		$('burner-number').value = d.api_value;
+	material: function() {
+	    let d = KanColleDatabase.material.get('burner');
+	    $('burner-number').value = d.api_value;
 	},
 
     },
@@ -516,8 +511,8 @@ KanColleTimerKdockInfo.__proto__ = __KanColleTimerPanel;
 // 資源情報
 var KanColleTimerMaterialLog = {
     update: {
-	memberMaterial: function() {
-	    let now = Math.floor(KanColleDatabase.memberMaterial.timestamp() / 1000);
+	material: function() {
+	    let now = Math.floor(KanColleDatabase.material.timestamp() / 1000);
 	    let res = KanColleRemainInfo.gResourceData;
 	    let last_data = res[ res.length-1 ];
 	    let data = new Object();
@@ -533,10 +528,10 @@ var KanColleTimerMaterialLog = {
 		return;
 
 	    for (let k in resnames) {
-		let v = KanColleDatabase.memberMaterial.get(resnames[k]);
-		if (typeof(v) != 'object')
+		let v = KanColleDatabase.material.get(k);
+		if (isNaN(v))
 		    continue;
-		data[k] = v.api_value;
+		data[k] = v;
 		if (!length || last_data[k] != data[k])
 		    count++;
 	    }
