@@ -1064,7 +1064,17 @@ var KanColleTimerMissionBalanceInfo = {
 };
 KanColleTimerMissionBalanceInfo.__proto__ = __KanColleTimerPanel;
 
+
 var KanColleTimerPracticeInfo = {
+    _calc_baseexp: function(ships) {
+	let exp = -500;
+	if (ships[0].api_level >= 1)
+	    exp += KanColleData.level_accumexp[ships[0].api_level - 1] / 100;
+	if (ships[1].api_level >= 1)
+	    exp += KanColleData.level_accumexp[ships[1].api_level - 1] / 300;
+	return Math.floor(500 + (exp > 0 ? Math.sqrt(exp) : exp));
+    },
+
     update: {
 	practice: function() {
 	    let s = '';
@@ -1095,7 +1105,7 @@ var KanColleTimerPracticeInfo = {
 			    t += ')';
 			    ships.push(t);
 			}
-			s += '[' + ships.join(',') + ']';
+			s += '[' + ships.join(',') + ']; baseexp=' + this._calc_baseexp(info.api_deck.api_ships);
 		    }
 		}
 		s += '\n';
