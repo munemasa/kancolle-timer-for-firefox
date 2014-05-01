@@ -413,11 +413,24 @@ var KanColleMaterialDB = function() {
 	reqKousyouCreateShipSpeedChange: function() {
 	    let t = KanColleDatabase.reqKousyouCreateShipSpeedChange.timestamp();
 	    let req = KanColleDatabase.reqKousyouCreateShipSpeedChange.get_req();
+	    let req_kdock_id = parseInt(req.api_kdock_id, 10);
+	    let kdock;
+	    let delta_burner = 1;
 
-	    if (!this._ts || isNaN(this._db.burner) || !req.api_highspeed)
+	    if (!this._ts || isNaN(this._db.burner) || !req.api_highspeed ||
+		isNaN(req_kdock_id))
 		return;
 
-	    this._db.burner--;
+	    kdock = KanColleDatabase.kdock.get(req_kdock_id);
+	    if (kdock &&
+		(kdock.api_item1 >= 1000 || kdock.api_item2 >= 1000 ||
+		 kdock.api_item3 >= 1000 || kdock.api_item4 >= 1000 ||
+		 kdock.api_item5 > 1)) {
+		// 大型建造
+		delta_burner = 10;
+	    }
+
+	    this._db.burner -= delta_burner;
 
 	    this._ts = t;
 	    this._notify();
