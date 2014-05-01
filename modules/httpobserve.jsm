@@ -583,6 +583,66 @@ var KanColleShipDB = function() {
 	    this._db.list = Object.keys(this._db.ship);
 	    this._notify();
 	},
+
+	reqNyukyoStart: function() {
+	    let t = KanColleDatabase.reqNyukyoStart.timestamp();
+	    let req = KanColleDatabase.reqNyukyoStart.get_req();
+	    let req_ndock_id = parseInt(req.api_ndock_id, 10);
+	    let req_ship_id = parseInt(req.api_ship_id, 10);
+	    let req_highspeed = parseInt(req.api_highspeed, 10);
+	    let ship;
+
+	    if (!this._ts ||
+		isNaN(req_ndock_id) || isNaN(req_ship_id) || isNaN(req_highspeed))
+		return;
+
+	    this._deepcopy();
+
+	    ship = this._db.ship[req_ship_id];
+	    if (!ship)
+		return;
+
+	    // 高速修復 または 1分以下
+	    if (req_highspeed || ship.api_ndock_time <= 60000) {
+		ship.api_nowhp = ship.api_maxhp;
+		ship.api_ndock_time = 0;
+		for (let i = 0; i < ship.api_ndock_item.length; i++)
+		    ship.api_ndock_item[i] = 0;
+		if (ship.api_cond < 40)
+		    ship.api_cond = 40;
+	    }
+
+	    this._ts = t;
+	    this._notify();
+	},
+
+	reqNyukyoSpeedChange: function() {
+	    let t = KanColleDatabase.reqNyukyoStart.timestamp();
+	    let req = KanColleDatabase.reqNyukyoStart.get_req();
+	    let req_ndock_id = parseInt(req.api_ndock_id, 10);
+	    let req_highspeed = parseInt(req.api_highspeed, 10);
+
+	    if (!this._ts ||
+		isNaN(req_ndock_id) || isNaN(req_highspeed))
+		return;
+
+	    this._deepcopy();
+
+	    ship = this._db.ship[req_ship_id];
+	    if (!ship)
+		return;
+
+	    // 高速修復
+	    ship.api_nowhp = ship.api_maxhp;
+	    ship.api_ndock_time = 0;
+	    for (let i = 0; i < ship.api_ndock_item.length; i++)
+		ship.api_ndock_item[i] = 0;
+	    if (ship.api_cond < 40)
+		ship.api_cond = 40;
+
+	    this._ts = t;
+	    this._notify();
+	},
     };
 
     this.get = function(id, key) {
