@@ -750,6 +750,29 @@ var KanColleDeckDB = function() {
 	    this._update_fleet();
 	    this._notify();
 	},
+	reqMemberUpdateDeckName: function() {
+	    let req = KanColleDatabase.reqMemberUpdateDeckName.get_req();
+	    let req_deck_id;
+	    let deck;
+
+	    if (!this._ts)
+		return;
+
+	    req_deck_id = parseInt(req.api_deck_id, 10);
+	    if (isNaN(req_deck_id))
+		return;
+
+	    this._deepcopy();
+
+	    deck = this.get(req_deck_id);
+	    if (!deck)
+		return;
+
+	    deck.api_name = req.api_name;
+
+	    this._ts = KanColleDatabase.reqMemberUpdateDeckName.timestamp();
+	    this._notify();
+	},
     };
 
     this.lookup = function(ship_id) {
@@ -1365,6 +1388,7 @@ var KanColleDatabase = {
     reqKousyouDestroyItem2: null,	// req_kousyou/destroyitem2
     reqKousyouDestroyShip: null,// req_kousyou/destroyship
     reqKousyouGetShip: null,	// req_kousyou/getship
+    reqMemberUpdateDeckName: null,  //req_member/updatedeckname
     reqMemberGetPracticeEnemyInfo: null,    // req_member/get_practice_enemyinfo
     reqNyukyoSpeedChange: null,	// req_nyukyo/speedchange
     reqNyukyoStart: null,	// req_nyukyo/start
@@ -1460,6 +1484,8 @@ var KanColleDatabase = {
 		this._memberKdock.update(data.api_data.api_kdock);
 	    } else if (url.match(/kcsapi\/api_req_member\/get_practice_enemyinfo/)) {
 		this.reqMemberGetPracticeEnemyInfo.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_req_member\/updatedeckname/)) {
+		this.reqMemberUpdateDeckName.update();
 	    } else if (url.match(/kcsapi\/api_req_nyukyo\/speedchange/)) {
 		this.reqNyukyoSpeedChange.update();
 	    } else if (url.match(/kcsapi\/api_req_nyukyo\/start/)) {
@@ -1500,6 +1526,8 @@ var KanColleDatabase = {
 		this.reqKousyouDestroyItem2.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/destroyship/)) {
 		this.reqKousyouDestroyShip.prepare(data);
+	    } else if (url.match(/kcsapi\/api_req_member\/updatedeckname/)) {
+		this.reqMemberUpdateDeckName.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_nyukyo\/speedchange/)) {
 		this.reqNyukyoSpeedChange.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_nyukyo\/start/)) {
@@ -1548,6 +1576,7 @@ var KanColleDatabase = {
 	    this.reqKousyouGetShip = new KanColleSimpleDB();
 	    this.reqHokyuCharge = new KanColleSimpleDB();
 	    this.reqMemberGetPracticeEnemyInfo = new KanColleSimpleDB();
+	    this.reqMemberUpdateDeckName = new KanColleSimpleDB();
 	    this.reqNyukyoSpeedChange = new KanColleSimpleDB();
 	    this.reqNyukyoStart = new KanColleSimpleDB();
 
@@ -1604,6 +1633,7 @@ var KanColleDatabase = {
 
 	    this.reqNyukyoStart = null;
 	    this.reqNyukyoSpeedChange = null;
+	    this.reqMemberUpdateDeckName = null;
 	    this.reqMemberGetPracticeEnemyInfo = null;
 	    this.reqKousyouGetShip = null;
 	    this.reqKousyouDestroyShip = null;
