@@ -356,14 +356,14 @@ KanColleTimerNdockInfo.__proto__ = __KanColleTimerPanel;
  */
 var KanColleTimerKdockInfo = {
     update: {
-	memberKdock: function() {
-	    let docks = KanColleDatabase.memberKdock.list();
-	    let cur = KanColleDatabase.memberKdock.timestamp();
+	kdock: function() {
+	    let docks = KanColleDatabase.kdock.list();
+	    let cur = KanColleDatabase.kdock.timestamp();
 	    let now = Math.floor(cur);
 
 	    // 建造ドック
 	    for( let i = 0; i < docks.length; i++ ) {
-		let d = KanColleDatabase.memberKdock.get(docks[i]);
+		let d = KanColleDatabase.kdock.get(docks[i]);
 		let k = d.api_id;
 		let targetid = 'kdock'+k;
 		let timeid = 'kdockremain'+k;
@@ -481,7 +481,7 @@ var KanColleTimerKdockInfo = {
 
 	if (id.match(/^kdock-label(\d+)$/)) {
 	    let fleet_id = parseInt(RegExp.$1, 10);
-	    let fleet = KanColleDatabase.memberKdock.get(fleet_id);
+	    let fleet = KanColleDatabase.kdock.get(fleet_id);
 	    if( fleet && fleet.api_complete_time ){
 		let ship_id = parseInt( fleet.api_created_ship_id );
 		let ship_name = FindShipNameByCatId(ship_id);

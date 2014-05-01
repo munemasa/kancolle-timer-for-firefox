@@ -412,7 +412,7 @@ var KanColleMaterialDB = function() {
 
 	reqKousyouCreateShipSpeedChange: function() {
 	    let t = KanColleDatabase.reqKousyouCreateShipSpeedChange.timestamp();
-	    let req = KanColleDatabase.reqCreateShipSpeedChange.get_req();
+	    let req = KanColleDatabase.reqKousyouCreateShipSpeedChange.get_req();
 
 	    if (!this._ts || isNaN(this._db.burner) || !req.api_highspeed)
 		return;
@@ -1240,6 +1240,87 @@ var KanCollePracticeDB = function() {
 };
 KanCollePracticeDB.prototype = new KanColleCombinedDB();
 
+//
+// 建造ドックデータベース
+//
+var KanColleKdockDB = function() {
+    this._init();
+
+    this._db = {
+	hash: null,
+	list: null,
+    };
+
+    this._deepcopy = function() {
+	if (!this._db.hash) {
+	    let ids = KanColleDatabase._memberKdock.list();
+	    if (!ids)
+		return;
+
+	    this._db.hash = new Object;
+
+	    for (let i = 0; i < ids.length; i++)
+		this._db.hash[ids[i]] = JSON.parse(JSON.stringify(KanColleDatabase._memberKdock.get(ids[i])));
+
+	    this._db.list = Object.keys(this._db.hash);
+
+	    //debugprint('hash: ' + this._db.hash.toSource());
+	    //debugprint('list: ' + this._db.list.toSource());
+	}
+    };
+
+    this._update = {
+	_memberKdock: function() {
+	    let t = KanColleDatabase._memberKdock.timestamp();
+	    let list = KanColleDatabase._memberKdock.list();
+
+	    this._db.hash = null;
+	    this._db.list = null;
+
+	    this._ts = t;
+	    this._notify();
+	},
+
+	reqKousyouCreateShipSpeedChange: function() {
+	    let t = KanColleDatabase.reqKousyouCreateShipSpeedChange.timestamp();
+	    let req = KanColleDatabase.reqKousyouCreateShipSpeedChange.get_req();
+	    let req_kdock_id = req.api_kdock_id;
+	    let req_highspeed = req.api_highspeed;
+
+	    if (!this._ts || !req_highspeed)
+		return;
+
+	    this._deepcopy();
+
+	    kdock = this._db.hash[req_kdock_id];
+	    kdock.api_state = 3;	    // completed
+	    kdock.api_complete_time = 0;
+
+	    this._ts = t;
+	    this._notify();
+	},
+    };
+
+    this.get = function(id) {
+	return this._db.hash ? this._db.hash[id] : KanColleDatabase._memberKdock.get(id);
+    };
+
+    this.list = function() {
+	if (!this._db.hash)
+	    return KanColleDatabase._memberKdock.list();
+	if (!this._db.list)
+	    this._db.list = Object.keys(this._db.hash);
+	return this._db.list;
+    };
+
+    this.count = function() {
+	return this._db.hash ? this._db.list.length : KanColleDatabase._memberKdock.count();
+    };
+
+    this._update_init();
+};
+KanColleKdockDB.prototype = new KanColleCombinedDB();
+
 var KanColleDatabase = {
     postData: new Object(),
 
@@ -1252,7 +1333,7 @@ var KanColleDatabase = {
     memberDeck: null,		// member/deck,member/deck_port,
 				// or member/ship2[api_data_deck]
 				// or member/ship3[api_deck_data]
-    memberKdock: null,		// member/kdock
+    _memberKdock: null,		// member/kdock
     memberMaterial: null,	// member/material
     memberNdock: null,		// member/ndock
     memberPractice: null,	// member/practice
@@ -1282,6 +1363,7 @@ var KanColleDatabase = {
     quest: null,		// 任務(クエスト)
     practice: null,		// 演習
     material: null,		// 資源/資材
+    kdock: null,		// 建造ドック
 
     // Internal variable
     _refcnt: null,
@@ -1312,7 +1394,7 @@ var KanColleDatabase = {
 		       url.match(/kcsapi\/api_get_member\/deck/)) {
 		this.memberDeck.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/kdock/)) {
-		this.memberKdock.update(data.api_data);
+		this._memberKdock.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/material/)) {
 		this.memberMaterial.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/ndock/)) {
@@ -1362,7 +1444,7 @@ var KanColleDatabase = {
 		this.reqKousyouDestroyShip.update();
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/getship/)) {
 		this.reqKousyouGetShip.update(data.api_data);
-		this.memberKdock.update(data.api_data.api_kdock);
+		this._memberKdock.update(data.api_data.api_kdock);
 	    } else if (url.match(/kcsapi\/api_req_member\/get_practice_enemyinfo/)) {
 		this.reqMemberGetPracticeEnemyInfo.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_nyukyo\/speedchange/)) {
@@ -1434,7 +1516,7 @@ var KanColleDatabase = {
 
 	    this.memberBasic = new KanColleSimpleDB();
 	    this.memberDeck = new KanColleDB();
-	    this.memberKdock = new KanColleDB();
+	    this._memberKdock = new KanColleDB();
 	    this.memberMaterial = new KanColleDB();
 	    this.memberNdock = new KanColleDB();
 	    this.memberPractice = new KanColleDB();
@@ -1472,6 +1554,8 @@ var KanColleDatabase = {
 	    this.practice.init();
 	    this.material = new KanColleMaterialDB();
 	    this.material.init();
+	    this.kdock = new KanColleKdockDB();
+	    this.kdock.init();
 
 	    debugprint("KanColleDatabase initialized.");
 
@@ -1486,6 +1570,8 @@ var KanColleDatabase = {
 	    KanColleHttpRequestObserver.removeCallback(this._callback);
 
 	    // Clear
+	    this.kdock.exit();
+	    this.kdock= null;
 	    this.material.exit();
 	    this.material = null;
 	    this.practice.exit();
@@ -1520,7 +1606,7 @@ var KanColleDatabase = {
 	    this.memberMaterial = null;
 	    this.memberRecord = null;
 	    this.memberBasic = null;
-	    this.memberKdock = null;
+	    this._memberKdock = null;
 	    this.memberNdock = null;
 	    this.memberDeck = null;
 	    this._memberSlotitem = null;
