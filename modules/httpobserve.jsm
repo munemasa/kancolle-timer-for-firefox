@@ -1035,7 +1035,7 @@ var KanColleSlotitemDB = function() {
 	    let data = KanColleDatabase.reqKousyouCreateItem.get();
 	    let slotitem = data.api_slot_item;
 
-	    if (!this._ts)
+	    if (!this._ts || !slotitem)
 		return;
 
 	    this._deepcopy();
