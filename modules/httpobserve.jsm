@@ -1550,6 +1550,10 @@ var KanColleDatabase = {
 		this.reqNyukyoSpeedChange.update();
 	    } else if (url.match(/kcsapi\/api_req_nyukyo\/start/)) {
 		this.reqNyukyoStart.update();
+	    } else if (url.match(/kcsapi\/api_req_sortie\/battleresult/)) {
+		//this.reqSortieBattleResult.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_req_sortie\/battle/)) {
+		this.reqSortieBattle.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 		this.questClearitemget.update(data.api_data);
 	    }
@@ -1639,6 +1643,7 @@ var KanColleDatabase = {
 	    this.reqMemberUpdateDeckName = new KanColleSimpleDB();
 	    this.reqNyukyoSpeedChange = new KanColleSimpleDB();
 	    this.reqNyukyoStart = new KanColleSimpleDB();
+	    this.reqSortieBattle = new KanColleSimpleDB();
 
 	    this.ship = new KanColleShipDB();
 	    this.ship.init();
@@ -1691,6 +1696,7 @@ var KanColleDatabase = {
 	    this.ship.exit();
 	    this.ship = null;
 
+	    this.reqSortieBattle = null;
 	    this.reqNyukyoStart = null;
 	    this.reqNyukyoSpeedChange = null;
 	    this.reqMemberUpdateDeckName = null;

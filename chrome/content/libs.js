@@ -585,6 +585,69 @@ function KanColleTimerShipInfoHandler(){
 }
 
 var KanColleTimerFleetInfo = {
+    //_get_shipname: function(deckid,pos) {
+    //	let ships = KanColleDatabase.deck.get(deckid).api_ship;
+    //	if (pos >= 1 && pos <= 6)
+    //	    return FindShipName(ships[pos - 1]);
+    //	else
+    //	    return '?' + pos;
+    //},
+
+    _parse_raibak: function(data,damage) {
+	let damage = [-1,0,0,0,0,0,0,0,0,0,0,0,0];
+
+	function __parse_xdam(d,pos) {
+	    if (d) {
+		for (let i = 0; i < 6; i++) {
+		    if (d[i] === undefined || d[i] < 0)
+			continue;
+		    damage[i + pos] = Math.floor(d[i]);
+		}
+	    }
+	}
+
+	__parse_xdam(data.api_fdam, 0);
+	__parse_xdam(data.api_edam, 6);
+
+	// debugprint('raibak: ' + data.toSource() + ' => ' + damage.toSource());
+	debugprint('raibak: ' + damage.toSource());
+	return damage;
+    },
+
+    _parse_hourai: function(data) {
+	let damage = [-1,0,0,0,0,0,0,0,0,0,0,0,0];
+
+	for (let i = 0; i < data.api_at_list.length; i++) {
+	    if (data.api_at_list[i] < 0 || !data.api_df_list[i])
+		continue;
+	    for (let j = 0; j < data.api_df_list[i].length; j++) {
+		if (damage[data.api_df_list[i][j]] === undefined ||
+		    data.api_damage[i][j] === undefined)
+		    continue;
+		damage[data.api_df_list[i][j]] += Math.floor(data.api_damage[i][j]);
+	    }
+	}
+
+	// debugprint('hourai: ' + data.toSource() + ' => ' + damage.toSource());
+	debugprint('hourai: ' + damage.toSource());
+	return damage;
+    },
+
+    _reduce_damage: function() {
+	let damage = [-1,0,0,0,0,0,0,0,0,0,0,0,0];
+
+	for (let i = 0; i < arguments.length; i++) {
+	    for (let j = 0; j < arguments[i].length; j++) {
+		if (arguments[i][j] < 0 || damage[j] === undefined)
+		    continue;
+		damage[j] += arguments[i][j];
+	    }
+	}
+
+	debugprint('result: ' + damage.toSource());
+	return damage;
+    },
+
     update: {
 	deck: function() {
 	    let l = KanColleDatabase.deck.list();
@@ -810,6 +873,78 @@ var KanColleTimerFleetInfo = {
 	    }
 	},
 	ship: 'deck',
+
+	reqSortieBattle: function() {
+	    let data = KanColleDatabase.reqSortieBattle.get();
+	    let deckid = data.api_dock_id;
+	    let damage;
+	    let damages = [];
+	    let s = '';
+	    let hps = [];
+
+	    debugprint('maxhps: ' + data.api_maxhps.toSource());
+	    debugprint('nowhps: ' + data.api_nowhps.toSource());
+
+	    // 索敵
+	    if (data.api_stage_flag[0])
+		damages.push(this._parse_raibak(data.api_kouku.api_stage1));
+	    if (data.api_stage_flag[1])
+		damages.push(this._parse_raibak(data.api_kouku.api_stage2));
+	    if (data.api_stage_flag[2])
+		damages.push(this._parse_raibak(data.api_kouku.api_stage3));
+	    // FIXME: 支援
+	    //if (data.api_support_flag)
+	    //	debugprint('支援: ' + data.api_support_info.toSource());
+	    // 開幕
+	    if (data.api_opening_flag)
+		damages.push(this._parse_raibak(data.api_opening_atack)); // attackではない
+	    // 砲雷撃
+	    if (data.api_hourai_flag[0])
+		damages.push(this._parse_hourai(data.api_hougeki1));
+	    if (data.api_hourai_flag[1])
+		damages.push(this._parse_hourai(data.api_hougeki2));
+	    if (data.api_hourai_flag[2])
+		damages.push(this._parse_hourai(data.api_hougeki3));
+	    if (data.api_hourai_flag[3])
+		damages.push(this._parse_raibak(data.api_raigeki));
+
+	    damage = this._reduce_damage.apply(this,damages);
+
+	    for (let i = 0; i < damage.length; i++) {
+		let cur;
+		let ratio;
+
+		if (isNaN(damage[i]) || damage[i] < 0 ||
+		    !data.api_nowhps[i] || data.api_nowhps[i] < 0 ||
+		    !data.api_maxhps[i] || data.api_maxhps[i] < 0)
+		    continue;
+
+		cur = data.api_nowhps[i] - damage[i];
+		if (cur < 0)
+		    cur = 0;
+
+		ratio = cur / data.api_maxhps[i];
+
+		s += '#' + i + ': ' + cur + '/' + data.api_maxhps[i] + ' = ' + (Math.floor(ratio * 10000) / 10000);
+
+		if (ratio >= 1) {
+		    s += '';
+		} else if (ratio > 0.75) {
+		    s += ' [微損]';
+		} else if (ratio > 0.50) {
+		    s += ' [小破]';
+		} else if (ratio > 0.25) {
+		    s += ' [中破]';
+		} else if (ratio > 0) {
+		    s += ' [大破]';
+		} else {
+		    s += ' [撃沈]';
+		}
+		s += '\n';
+	    }
+
+	    debugprint(s);
+	},
     },
 };
 KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
