@@ -664,6 +664,58 @@ var KanColleTimerFleetInfo = {
 	return ship_color;
     },
 
+    _update_battle: function(data,damage) {
+	let deckid = data.api_dock_id;
+	let s = '';
+	for (let i = 0; i < damage.length; i++) {
+	    let cur;
+	    let ratio;
+
+	    if (isNaN(damage[i]) || damage[i] < 0 ||
+		!data.api_nowhps[i] || data.api_nowhps[i] < 0 ||
+		!data.api_maxhps[i] || data.api_maxhps[i] < 0)
+		continue;
+
+	    cur = data.api_nowhps[i] - damage[i];
+	    if (cur < 0)
+		cur = 0;
+
+	    ratio = cur / data.api_maxhps[i];
+
+	    s += '#' + i + ': ' + cur + '/' + data.api_maxhps[i] + ' = ' + (Math.floor(ratio * 10000) / 10000);
+
+	    if (ratio >= 1) {
+		s += '';
+	    } else if (ratio > 0.75) {
+		s += ' [微損]';
+	    } else if (ratio > 0.50) {
+		s += ' [小破]';
+	    } else if (ratio > 0.25) {
+		s += ' [中破]';
+	    } else if (ratio > 0) {
+		s += ' [大破]';
+	    } else {
+		s += ' [撃沈]';
+	    }
+	    s += '\n';
+
+	    if (i >= 1 && i <= 6 && damage[i]) {
+		let hpstyle = this._ship_color(ratio);
+		if (hpstyle) {
+		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration', 'line-through');
+		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-style', 'double');
+		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-color', hpstyle);
+		} else {
+		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration', null);
+		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-style', null);
+		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-color', null);
+		}
+	    }
+	}
+
+	debugprint(s);
+    },
+
     update: {
 	deck: function() {
 	    let l = KanColleDatabase.deck.list();
@@ -887,11 +939,8 @@ var KanColleTimerFleetInfo = {
 
 	reqSortieBattle: function() {
 	    let data = KanColleDatabase.reqSortieBattle.get();
-	    let deckid = data.api_dock_id;
 	    let damage;
 	    let damages = [];
-	    let s = '';
-	    let hps = [];
 
 	    debugprint('maxhps: ' + data.api_maxhps.toSource());
 	    debugprint('nowhps: ' + data.api_nowhps.toSource());
@@ -921,53 +970,23 @@ var KanColleTimerFleetInfo = {
 
 	    damage = this._reduce_damage.apply(this,damages);
 
-	    for (let i = 0; i < damage.length; i++) {
-		let cur;
-		let ratio;
+	    this._update_battle(data,damage);
+	},
+	reqBattleMidnightBattle: function() {
+	    let data = KanColleDatabase.reqSortieBattle.get();
+	    let damage;
+	    let damages = [];
 
-		if (isNaN(damage[i]) || damage[i] < 0 ||
-		    !data.api_nowhps[i] || data.api_nowhps[i] < 0 ||
-		    !data.api_maxhps[i] || data.api_maxhps[i] < 0)
-		    continue;
+	    debugprint('maxhps: ' + data.api_maxhps.toSource());
+	    debugprint('nowhps: ' + data.api_nowhps.toSource());
 
-		cur = data.api_nowhps[i] - damage[i];
-		if (cur < 0)
-		    cur = 0;
+	    // 索敵
+	    if (data.api_hougeki)
+		damages.push(this._parse_raibak(data.api_hougeki));
 
-		ratio = cur / data.api_maxhps[i];
+	    damage = this._reduce_damage.apply(this,damages);
 
-		s += '#' + i + ': ' + cur + '/' + data.api_maxhps[i] + ' = ' + (Math.floor(ratio * 10000) / 10000);
-
-		if (ratio >= 1) {
-		    s += '';
-		} else if (ratio > 0.75) {
-		    s += ' [微損]';
-		} else if (ratio > 0.50) {
-		    s += ' [小破]';
-		} else if (ratio > 0.25) {
-		    s += ' [中破]';
-		} else if (ratio > 0) {
-		    s += ' [大破]';
-		} else {
-		    s += ' [撃沈]';
-		}
-		s += '\n';
-
-		if (i >= 1 && i <= 6 && damage[i]) {
-		    let hpstyle = this._ship_color(ratio);
-		    if (hpstyle) {
-			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration', 'line-through');
-			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration-style', 'double');
-			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration-color', hpstyle);
-		    } else {
-			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration', null);
-			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-style', null);
-			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-color', null);
-		    }
-		}
-	    }
-
-	    debugprint(s);
+	    this._update_battle(data,damage);
 	},
     },
 };

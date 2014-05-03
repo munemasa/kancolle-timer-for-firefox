@@ -1524,6 +1524,8 @@ var KanColleDatabase = {
 		this.memberMaterial.update(data.api_data.api_material);
 		this._memberShip2.update(data.api_data.api_ship);
 		this.memberNdock.update(data.api_data.api_ndock);
+	    } else if (url.match(/kcsapi\/api_req_battle_midnight\/battle/)) {
+		this.reqBattleMidnightBattle.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_hensei\/change/)) {
 		this.reqHenseiChange.update();
 	    } else if (url.match(/kcsapi\/api_req_hokyu\/charge/)) {
@@ -1644,6 +1646,7 @@ var KanColleDatabase = {
 	    this.reqNyukyoSpeedChange = new KanColleSimpleDB();
 	    this.reqNyukyoStart = new KanColleSimpleDB();
 	    this.reqSortieBattle = new KanColleSimpleDB();
+	    this.reqBattleMidnightBattle = new KanColleSimpleDB();
 
 	    this.ship = new KanColleShipDB();
 	    this.ship.init();
@@ -1696,6 +1699,7 @@ var KanColleDatabase = {
 	    this.ship.exit();
 	    this.ship = null;
 
+	    this.reqBattleMidnightBattle = null;
 	    this.reqSortieBattle = null;
 	    this.reqNyukyoStart = null;
 	    this.reqNyukyoSpeedChange = null;
