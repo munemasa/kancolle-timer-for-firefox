@@ -72,6 +72,7 @@
 	    <menuitem label="9分" value="540" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="12分" value="720" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="15分" value="900" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
+	    <menuitem label="20分" value="1200" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="30分" value="1800" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="45分" value="2700" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
 	    <menuitem label="60分" value="3600" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
