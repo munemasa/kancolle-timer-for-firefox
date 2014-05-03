@@ -648,6 +648,22 @@ var KanColleTimerFleetInfo = {
 	return damage;
     },
 
+    _ship_color: function(hpratio) {
+	let ship_color;
+	if (hpratio >= 1) {
+	    ship_colo = null;
+	} else if (hpratio > 0.75) {
+	    ship_color = '#0000cc'; //かすり傷
+	} else if (hpratio > 0.50) {
+	    ship_color = '#ff44cc'; //小破
+	} else if (hpratio > 0.25) {
+	    ship_color = '#ff4400'; //中破
+	} else {
+	    ship_color = '#ff0000'; //大破
+	}
+	return ship_color;
+    },
+
     update: {
 	deck: function() {
 	    let l = KanColleDatabase.deck.list();
@@ -759,15 +775,7 @@ var KanColleTimerFleetInfo = {
 			    ship_shadow = null;
 			} else {
 			    ship_shadow = '1px 1px 0 black';
-			    if (hpratio > 0.75) {
-				ship_color = '#0000cc'; //かすり傷
-			    } else if (hpratio > 0.50) {
-				ship_color = '#ff44cc'; //小破
-			    } else if (hpratio > 0.25) {
-				ship_color = '#ff4400'; //中破
-			    } else {
-				ship_color = '#ff0000'; //大破
-			    }
+			    ship_color = this._ship_color(hpratio);
 			}
 		    }
 
@@ -812,6 +820,9 @@ var KanColleTimerFleetInfo = {
 		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'border', ship_border);
 		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'color', ship_color);
 		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'text-shadow', ship_shadow);
+		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), 'text-decoration', null);
+		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), '-moz-text-decoration-style', null);
+		    SetStyleProperty($('shipstatus-' + id + '-' + (j + 1)), '-moz-text-decoration-color', null);
 		}
 
 		if (fleet_flagship_lv > 0) {
@@ -941,6 +952,19 @@ var KanColleTimerFleetInfo = {
 		    s += ' [撃沈]';
 		}
 		s += '\n';
+
+		if (i >= 1 && i <= 6 && damage[i]) {
+		    let hpstyle = this._ship_color(ratio);
+		    if (hpstyle) {
+			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration', 'line-through');
+			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration-style', 'double');
+			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration-color', hpstyle);
+		    } else {
+			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration', null);
+			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-style', null);
+			SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-color', null);
+		    }
+		}
 	    }
 
 	    debugprint(s);
