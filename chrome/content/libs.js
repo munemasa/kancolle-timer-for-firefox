@@ -598,7 +598,7 @@ var KanColleTimerFleetInfo = {
 
 	function __parse_xdam(d,pos) {
 	    if (d) {
-		for (let i = 0; i < 6; i++) {
+		for (let i = 0; i <= 6; i++) {
 		    if (d[i] === undefined || d[i] < 0)
 			continue;
 		    damage[i + pos] = Math.floor(d[i]);
