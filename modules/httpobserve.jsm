@@ -771,16 +771,27 @@ var KanColleDeckDB = function() {
 		deck.api_ship.splice(req_ship_idx, 1);
 		deck.api_ship.push(-1);
 	    } else if (req_ship_id >= 0) {
-		// 交換
+		// 配置換え
 
-		// 現在の艦船ID
+		// 現在艦隊に所属する艦船ID
 		let ship_id = deck.api_ship[req_ship_idx];
-		// 新しい艦の旧所属艦隊
+		// 配置しようとする艦の所属艦隊
 		let ship_fleet = req_ship_id >= 0 ? KanColleDatabase.deck.lookup(req_ship_id) : null;
 
+		// 新しい艦を配置
 		deck.api_ship[req_ship_idx] = req_ship_id;
-		if (ship_fleet)
-		    this._db.deck[ship_fleet.fleet].api_ship[ship_fleet.pos] = ship_id;
+		if (ship_fleet) {
+		    // 所属元艦隊での処理
+		    let odeck = this._db.deck[ship_fleet.fleet];
+		    if (ship_id >= 0) {
+			// 配置
+			odeck.api_ship[ship_fleet.pos] = ship_id;
+		    } else {
+			// 解除
+			odeck.api_ship.splice(ship_fleet.pos, 1);
+			odeck.api_ship.push(-1);
+		    }
+		}
 	    }
 	    this._update_fleet();
 	    this._notify();
