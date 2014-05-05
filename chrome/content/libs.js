@@ -665,8 +665,15 @@ var KanColleTimerFleetInfo = {
     },
 
     _update_battle: function(data,damage) {
-	let deckid = data.api_dock_id;
+	let deckid = data.api_deck_id;
 	let s = '';
+
+	// req_sortie/battle では api_dock_id
+	// req_battle_midnight/battle では api_deck_id
+	// 意味的には deck が正しそうだが…
+	if (!deckid && data.api_dock_id)
+	    deckid = data.api_dock_id;
+
 	for (let i = 0; i < damage.length; i++) {
 	    let cur;
 	    let ratio;
