@@ -621,14 +621,19 @@ var KanColleShipDB = function() {
 	    let req = KanColleDatabase.reqNyukyoStart.get_req();
 	    let req_ndock_id = parseInt(req.api_ndock_id, 10);
 	    let req_highspeed = parseInt(req.api_highspeed, 10);
+	    let ndock;
 
 	    if (!this._ts ||
 		isNaN(req_ndock_id) || isNaN(req_highspeed))
 		return;
 
+	    ndock = KanColleDatabase.memberNdock.get(req_ndock_id);
+	    if (!ndock || ndock.api_state != 1 && !ndock.api_ship_id)
+		return;
+
 	    this._deepcopy();
 
-	    ship = this._db.ship[req_ship_id];
+	    ship = this._db.ship[ndock.api_ship_id];
 	    if (!ship)
 		return;
 
