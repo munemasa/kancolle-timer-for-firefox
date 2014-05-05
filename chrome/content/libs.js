@@ -633,6 +633,19 @@ var KanColleTimerFleetInfo = {
 	return damage;
     },
 
+    _parse_support: function(data) {
+	let damage = [-1,0,0,0,0,0,0,0,0,0,0,0,0];
+
+	for (let i = 0; i < data.api_damage.length; i++) {
+	    if (data.api_damage[i] < 0)
+		continue;
+	    damage[6+i] += Math.floor(data.api_damage[i]);
+	}
+
+	debugprint('support:' + damage.toSource());
+	return damage;
+    },
+
     _reduce_damage: function() {
 	let damage = [-1,0,0,0,0,0,0,0,0,0,0,0,0];
 
@@ -959,9 +972,19 @@ var KanColleTimerFleetInfo = {
 		damages.push(this._parse_raibak(data.api_kouku.api_stage2));
 	    if (data.api_stage_flag[2])
 		damages.push(this._parse_raibak(data.api_kouku.api_stage3));
-	    // FIXME: 支援
-	    //if (data.api_support_flag)
-	    //	debugprint('支援: ' + data.api_support_info.toSource());
+	    // 支援
+	    switch (data.api_support_flag) {
+	    case 0:
+		break;
+	    case 1:
+		damages.push(this._parse_support(data.api_support_info.api_support_airatack));
+		break;
+	    case 2:
+		damages.push(this._parse_support(data.api_support_info.api_support_hourai));
+		break;
+	    default:
+		debugprint('support: unknown ' + data.api_support_flag);
+	    }
 	    // 開幕
 	    if (data.api_opening_flag)
 		damages.push(this._parse_raibak(data.api_opening_atack)); // attackではない
