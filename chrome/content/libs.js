@@ -651,7 +651,7 @@ var KanColleTimerFleetInfo = {
     _ship_color: function(hpratio) {
 	let ship_color;
 	if (hpratio >= 1) {
-	    ship_colo = null;
+	    ship_color = null;
 	} else if (hpratio > 0.75) {
 	    ship_color = '#0000cc'; //かすり傷
 	} else if (hpratio > 0.50) {
