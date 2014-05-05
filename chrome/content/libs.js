@@ -973,7 +973,7 @@ var KanColleTimerFleetInfo = {
 	    this._update_battle(data,damage);
 	},
 	reqBattleMidnightBattle: function() {
-	    let data = KanColleDatabase.reqSortieBattle.get();
+	    let data = KanColleDatabase.reqBattleMidnightBattle.get();
 	    let damage;
 	    let damages = [];
 
@@ -982,7 +982,7 @@ var KanColleTimerFleetInfo = {
 
 	    // 索敵
 	    if (data.api_hougeki)
-		damages.push(this._parse_raibak(data.api_hougeki));
+		damages.push(this._parse_hourai(data.api_hougeki));
 
 	    damage = this._reduce_damage.apply(this,damages);
 
