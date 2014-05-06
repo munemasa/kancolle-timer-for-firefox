@@ -677,8 +677,9 @@ var KanColleTimerFleetInfo = {
 	return ship_color;
     },
 
-    _update_battle: function(data,damage) {
+    _update_battle: function(data, damages) {
 	let deckid = data.api_deck_id;
+	let damage;
 	let s = '';
 
 	// req_sortie/battle では api_dock_id
@@ -686,6 +687,8 @@ var KanColleTimerFleetInfo = {
 	// 意味的には deck が正しそうだが…
 	if (!deckid && data.api_dock_id)
 	    deckid = data.api_dock_id;
+
+	damage = this._reduce_damage.apply(this, damages);
 
 	for (let i = 0; i < damage.length; i++) {
 	    let cur;
@@ -998,13 +1001,10 @@ var KanColleTimerFleetInfo = {
 	    if (data.api_hourai_flag[3])
 		damages.push(this._parse_raibak(data.api_raigeki));
 
-	    damage = this._reduce_damage.apply(this,damages);
-
-	    this._update_battle(data,damage);
+	    this._update_battle(data, damages);
 	},
 	reqBattleMidnightBattle: function() {
 	    let data = KanColleDatabase.reqBattleMidnightBattle.get();
-	    let damage;
 	    let damages = [];
 
 	    debugprint('maxhps: ' + data.api_maxhps.toSource());
@@ -1014,9 +1014,7 @@ var KanColleTimerFleetInfo = {
 	    if (data.api_hougeki)
 		damages.push(this._parse_hourai(data.api_hougeki));
 
-	    damage = this._reduce_damage.apply(this,damages);
-
-	    this._update_battle(data,damage);
+	    this._update_battle(data, damages);
 	},
     },
 };
