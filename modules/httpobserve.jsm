@@ -498,6 +498,29 @@ var KanColleShipDB = function() {
 	    this._notify();
 	},
 
+	// リクエストに api_shipid が含まれる場合のみ呼ばれる
+	//  XXX: リクエストの api_shipid と整合性を確認すべき?
+	_memberShip3: function() {
+	    let data = KanColleDatabase._memberShip3.get().api_ship_data;
+
+	    if (!this._ts)
+		return;
+
+	    this._ts = KanColleDatabase._memberShip3.timestamp();
+	    this._deepcopy();
+
+	    for (let i = 0; i < data.length; i++) {
+		let ship_id = data[i].api_id;
+		this._db.ship[ship_id] = data[i];
+	    }
+
+	    // 念のため
+	    this._db.list = Object.keys(this._db.ship);
+
+	    this._db.dead = {};
+	    this._notify();
+	},
+
 	reqHokyuCharge: function() {
 	    let data = KanColleDatabase.reqHokyuCharge.get().api_ship;
 
@@ -1452,6 +1475,7 @@ var KanColleDatabase = {
     memberQuestlist: null,	// member/questlist
     memberRecord: null,		// member/record
     _memberShip2: null,		// member/ship2
+    _memberShip3: null,		// member/ship3
     _memberSlotitem: null,	// member/slotitem
     memberUnsetslot: null,	// member/unsetslot
 				// or member/ship3[api_data.api_slot_data]
@@ -1522,7 +1546,14 @@ var KanColleDatabase = {
 		this._memberShip2.update(data.api_data);
 		this.memberDeck.update(data.api_data_deck);
 	    } else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
-		if (KanColleAPIversion < 20140423) {
+		// もし request に api_shipid が含まれていたら、
+		// その艦船についてのみ送られてくる
+		if (KanColleAPIversion >= 20140423 &&
+		    KanColleDatabase._memberShip3.get_req().api_shipid) {
+		    this._memberShip3.update(data.api_data);
+		    this.memberDeck.update(data.api_data.api_deck_data);
+		    this.memberUnsetslot.update(data.api_data.api_slot_data);
+		} else {
 		    this._memberShip2.update(data.api_data.api_ship_data);
 		    this.memberDeck.update(data.api_data.api_deck_data);
 		    this.memberUnsetslot.update(data.api_data.api_slot_data);
@@ -1598,7 +1629,9 @@ var KanColleDatabase = {
 	    }
 
 	    //debugprint('url=' + url + ', data=' + data.toSource());
-	    if (url.match(/kcsapi\/api_req_hensei\/change/)) {
+	    if (url.match(/kcsapi\/api_get_member\/ship3/)) {
+		this._memberShip3.prepare(data);
+	    } else if (url.match(/kcsapi\/api_req_hensei\/change/)) {
 		this.reqHenseiChange.prepare(data);
 	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
 		this.reqKaisouPowerup.prepare(data);
@@ -1646,6 +1679,7 @@ var KanColleDatabase = {
 	    this.memberQuestlist = new KanColleSimpleDB();
 	    this.memberRecord = new KanColleSimpleDB();
 	    this._memberShip2 = new KanColleDB();
+	    this._memberShip3 = new KanColleSimpleDB();
 	    this._memberSlotitem = new KanColleDB();
 	    this.memberUnsetslot = new KanColleSimpleDB();
 	    this.questClearitemget = new KanColleSimpleDB();
@@ -1740,6 +1774,7 @@ var KanColleDatabase = {
 	    this.memberDeck = null;
 	    this._memberSlotitem = null;
 	    this.memberUnsetslot = null;
+	    this._memberShip3 = null;
 	    this._memberShip2 = null;
 	    //マスタ情報は再送されないので削除しない
 	    //this.masterSlotitemEquiptype = null;
