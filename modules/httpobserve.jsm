@@ -248,7 +248,7 @@ var KanColleDatabase = {
 	    this.memberShip2.update(data.api_data);
 	    this.memberDeck.update(data.api_data_deck);
 	} else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
-	    this.memberShip2.update(data.api_data.api_ship_data);
+	    //this.memberShip2.update(data.api_data.api_ship_data);
 	    this.memberDeck.update(data.api_data.api_deck_data);
 	} else if (url.match(/kcsapi\/api_get_member\/slot_item/)) {
 	    this.memberSlotitem.update(data.api_data);
