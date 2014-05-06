@@ -126,39 +126,13 @@ var KanColleTimerHeadQuarterInfo = {
 	    //	maxslotitems < 100 + maxships * 4) {
 	    //	maxslotitems = 100 + maxships * 4;
 	    //}
-	    $('basic-information-shipcount').value = ships;
-	    SetStyleProperty($('basic-information-shipcount'), 'color', ship_color);
-	    $('basic-information-shipcount').setAttribute('tooltiptext', ships + ' / ' + maxships);
-
-	    $('basic-information-slotitemcount').value = slotitems;
-	    SetStyleProperty($('basic-information-slotitemcount'), 'color', slotitem_color);
-	    $('basic-information-slotitemcount').setAttribute('tooltiptext', slotitems + ' / ' + maxslotitems);
+	    $('number-of-ships').value = ships+"隻";
+	    $('number-of-items').value = slotitems;
+	    $('max-number-of-ships').value = maxships+"隻";
+	    $('max-number-of-items').value = maxslotitems;
 	},
 
 	memberMaterial: function() {
-	    let burner = '-';
-	    let bucket = '-';
-	    if (KanColleDatabase.memberMaterial.timestamp()) {
-		let d;
-		/*
-		 * 1: 燃料
-		 * 2: 弾薬
-		 * 3: 鋼材
-		 * 4: ボーキサイト
-		 * 5: 高速建造材
-		 * 6: 高速修復材
-		 * 7: 開発資材
-		 */
-		d = KanColleDatabase.memberMaterial.get(5);
-		if (typeof(d) == 'object')
-		    burner = d.api_value;
-		d = KanColleDatabase.memberMaterial.get(6);
-		if (typeof(d) == 'object')
-		    bucket = d.api_value;
-	    }
-
-	    $('basic-information-burnercount').value = burner;
-	    $('basic-information-bucketcount').value = bucket;
 	},
     },
 };
@@ -822,7 +796,7 @@ KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
 var KanColleTimerQuestInfo = {
     update: {
 	quest: function() {
-	    let questbox = $('quest-list-box');
+	    let questbox = $('group-quest');
 	    let quests = KanColleDatabase.quest.get();
 	    let ids = quests.list ? Object.keys(quests.list) : [];
 	    let list = $('quest-list-rows');
@@ -891,6 +865,18 @@ var KanColleTimerQuestInfo = {
 		cell.setAttribute('value', q.data.api_title);
 		cell.setAttribute('crop', 'end');
 		cell.setAttribute('tooltiptext', q.data.api_detail);
+		let category_color = {
+		    0: "",
+		    1: "",
+		    2: "#df4f42", // 出撃
+		    3: "#7ebb56", // 演習
+		    4: "#45b9c3", // 遠征
+		    5: "#cab057", // 補給・入渠
+		    6: "#7d4f33", // 工廠
+		    7: "#b599c9", // 改装
+		};
+		let str = 'border-left: 5px solid '+category_color[q.data.api_category];
+		cell.setAttribute('style', str);
 		listitem.appendChild(cell);
 
 		// type

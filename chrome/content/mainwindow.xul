@@ -93,34 +93,9 @@
     <vbox id="wallpaper" flex="1">
     </vbox>
     <deck id="deck" persist="selectedIndex">
-      <vbox flex="1" style="overflow:auto;">
-	<groupbox id="basic-information">
-	  <menupopup id="general-timer-popup">
-	    <menuitem label=""/>
-	    <menuitem label="停止" value="0" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="3分" value="180" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="6分" value="360" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="9分" value="540" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="12分" value="720" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="15分" value="900" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="30分" value="1800" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="45分" value="2700" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="60分" value="3600" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	  </menupopup>
-          <caption>基本情報
-	    <label popup="general-timer-popup"><image src="data/clock.png" style="width: 1em; height: 1em;"/></label><timer id="general-timer" mode="time"/>
-	  </caption>
-          <hbox>
-	    <vbox><image src="data/ship.png" style="width: 1em; height: 1em;"/></vbox><label id="basic-information-shipcount" value="-"/>
-	    <vbox><image src="data/slotitem.png" style="width: 1em; height: 1em;"/></vbox><label id="basic-information-slotitemcount" value="-"/>
-	    <vbox><image src="data/burner.png" style="width: 1em; height: 1em;"/></vbox><label id="basic-information-burnercount" value="-"/>
-	    <vbox><image src="data/repairkit.png" style="width: 1em; height: 1em;"/></vbox><label id="basic-information-bucketcount" value="-"/>
-	  </hbox>
-	</groupbox>
-	
+      <vbox flex="1" style="overflow:auto;" id="tab-timer">
 	<groupbox id="group-mission">
 	  <caption>遠征</caption>
-	  
 	  <vbox class="fleet" style="display:none;">
 	    <hbox>
 	      <label value="■第1艦隊"/>
@@ -171,7 +146,7 @@
 	  
 	</groupbox>
 	
-	<groupbox tooltip="ndock-tooltip">
+	<groupbox tooltip="ndock-tooltip" id="group-ndock">
 	  <caption>入渠ドック[<image style="vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>]</caption>
 	  <tooltip id="ndock-tooltip">
 	    <box>
@@ -209,7 +184,7 @@
 	  </grid>
 	</groupbox>
 	
-	<groupbox tooltip="kdock-tooltip">
+	<groupbox tooltip="kdock-tooltip" id="group-kdock">
 	  <caption>建造ドック</caption>
 	  <tooltip id="kdock-tooltip">
 	    <box>
@@ -237,7 +212,7 @@
 	    <timer id="kdockremain4" mode="time" class="kdockremain"/>
 	  </hbox>
 	</groupbox>
-	<groupbox id="quest-list-box">
+	<groupbox id="group-quest">
 	  <caption>任務(<label id="quest-information-mode" value="-" popup="quest-information-mode-popup"/>)</caption>
 	  <menupopup id="quest-information-mode-popup">
 	    <menuitem label=""/>
@@ -322,10 +297,6 @@
 	    <rows id="fleet-1" class="fleet-organization">
 	    </rows>
 	  </grid>
-	</groupbox>
-
-	<groupbox id="group-quest">
-	  <caption>遂行中任務</caption>
 	</groupbox>
 
 	<groupbox id="group-fleets">

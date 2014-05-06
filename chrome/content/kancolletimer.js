@@ -47,23 +47,42 @@ var KanColleTimer = {
 	}
     },
 
+    // 汎用タイマーの時間設定
+    // 負の値を指定すると、回復時間をセットする。
     setGeneralTimer: function(sec){
-	let s = parseInt(sec,10);
-	if (isNaN(s))
-	    s = 0;
-	this.setGeneralTimerByTime(s ? (new Date).getTime() + s * 1000 : 0);
+	if( sec<0 ){
+	    let t = $('refresh-timer').getAttribute('refresh-time');
+	    this.general_timer = parseInt(t);
+	}else{
+	    sec = parseInt(sec);
+	    this.general_timer = GetCurrentTime() + sec;
+	}
     },
 
-    updateGeneralTimer: function(){
-	let now = (new Date).getTime();
-	if( !this.general_timer) return;
-	if (now > this.general_timer) {
+    updateGeneralTimer:function(){
+	let now = GetCurrentTime();
+	if( !this.general_timer ) return;
+	let remain = this.general_timer-now;
+	if( remain<0 ){
+	    remain = 0;
 	    this.general_timer = 0;
 	    $('sound.default').play();
 	    if( KanColleTimerConfig.getBool('popup.general-timer') ){
 		let str = "時間になりました。";
 		ShowPopupNotification(this.imageURL,"艦これタイマー",str,"general-timer");
 	    }
+	}
+	$('general-timer').value = GetTimeString( remain );
+    },
+
+    updateRefreshTimer: function(){
+	let t = $('refresh-timer').getAttribute('refresh-time');
+	let now = GetCurrentTime();
+	if( t && t>now ){
+	    $('refresh-timer').value = GetTimeString( t - now ).substring(3);
+	}else{
+	    $('refresh-timer').removeAttribute('refresh-time');
+	    $('refresh-timer').value = "00:00";
 	}
     },
 
@@ -120,6 +139,7 @@ var KanColleTimer = {
 	}
 
 	this.updateGeneralTimer();
+	this.updateRefreshTimer();
 
 	check_timeout('mission', 'fleet', function(i){ return KanColleRemainInfo.fleet_name[i] + 'が遠征から帰還'; });
 	check_timeout('ndock',   'ndock', function(i){ return 'ドック' + (i+1) + 'の修理が完了'; });
