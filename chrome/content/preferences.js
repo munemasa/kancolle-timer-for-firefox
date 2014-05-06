@@ -1,13 +1,51 @@
 // vim: set ts=8 sw=4 sts=4 ff=dos :
 
-var KanColleTimerPreference = {
+function debugprint(txt){
+    Application.console.log(txt);
+}
 
-    debugprint:function(txt){
+var KanColleTimerPreference = {
+    startDragging:function(event){
+	let dt = event.dataTransfer;
+	dt.mozSetDataAt('application/x-moz-node', event.target , 0 );
+    },
+    dropTab:function(event){
+	let dt = event.dataTransfer;
+	let target = event.target;
+
+	let node = dt.mozGetDataAt("application/x-moz-node", 0);
+	//debugprint( target.parentNode.tagName );
+	if( target.parentNode.tagName=='listbox' ){
+	    target.parentNode.insertBefore(node,target);
+	}else{
+	    $('order-of-dashboard').appendChild(node);
+	}
+	this.changeDashboardOrder();
 	Application.console.log(txt);
+    },
+    checkDrag:function(event){
+	let b = event.dataTransfer.types.contains("application/x-moz-node");
+	if( b ){
+	    event.preventDefault();
+	}
+	return true;
+    },
+
+    changeDashboardOrder: function(){
+	let items = evaluateXPath2(document,"//xul:listbox[@id='order-of-dashboard']/xul:listitem");
+
+	let i = items.length-1;
+	let tmp = new Array();
+	for( ; i>=0; i--){
+	    if( items[i].checked ){
+		tmp.push( items[i].value );
+	    }
+	}
+	$('pref-dashboard-order').value = JSON.stringify( tmp );
     },
 
     playSound: function(target) {
-	this.debugprint(target);
+	debugprint(target);
 	let path = $(target).value;
 	let elem = $('audio-playback');
 	elem.path = path;
@@ -27,7 +65,7 @@ var KanColleTimerPreference = {
 	if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
 	    let file = fp.file;
 	    let path = fp.file.path;
-	    this.debugprint("「"+path+"」を通知に使用します");
+	    debugprint("「"+path+"」を通知に使用します");
 
 	    $(target).value = path;
 	}
@@ -86,6 +124,16 @@ var KanColleTimerPreference = {
 	this.buildFontList();
 
 	$('audio-playback').method = $('pref-sound-api') ? 'nsisound' : 'html';
+	try{
+	    let order = JSON.parse( $('pref-dashboard-order').value );
+	    let listbox = $('order-of-dashboard');
+	    for( let i in order ){
+		let elem = $( order[i] );
+		elem.checked = true;
+		listbox.insertBefore( elem, listbox.firstChild );
+	    }
+	}catch(x){
+	}
     },
     destroy:function(){
     }

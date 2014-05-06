@@ -22,11 +22,41 @@
   <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8"></script>
 
   <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/utils/prefutils.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/config.js" />
+  <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/libs.js" />
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/resourcegraph.js" />
 
-  <vbox flex="1" style="overflow:auto;">
+  <toolbox>
+    <menubar>
+      <menu label="ツール">
+	<menupopup>
+	  <menuitem label="CSVに保存" oncommand="ResourceGraph.saveToFile();"/>
+	  <menuitem label="画像に保存" oncommand="ResourceGraph.takeScreenshot();"/>
+	  <menuitem label="つぶやく" oncommand="ResourceGraph.tweet();"/>
+	  <menuseparator/>
+	  <menuitem label="閉じる" oncommand="window.close();"/>
+	</menupopup>
+      </menu>
+      <menuitem label="!リロード" oncommand="OpenResourceGraph();"/>
+      <menuitem label="!Change Color" oncommand="ResourceGraph.changeColor();"/>
+    </menubar>
+  </toolbox>
+
+  <vbox id="box" flex="1" style="overflow:auto;">
+    <hbox>
+      <checkbox id="fuel" checked="true" label="燃料" oncommand="ResourceGraph.createGraph();"/>
+      <checkbox id="bullet" checked="true" label="弾薬" oncommand="ResourceGraph.createGraph();"/>
+      <checkbox id="steel" checked="true" label="鋼材" oncommand="ResourceGraph.createGraph();"/>
+      <checkbox id="bauxite" checked="true" label="ボーキサイト" oncommand="ResourceGraph.createGraph();"/>
+    </hbox>
   </vbox>
+
+  <scrollbox width="1" height="1">
+    <html:canvas id="KanColleTimerCapture" display="none" />
+  </scrollbox>
 
 </window>

@@ -19,17 +19,12 @@
   <vbox>
     <hbox>
       <vbox>
-	<label value="KanColle Timer [Kai]"/>
+	<label id="id-version" value="KanColle Timer ver."/>
 	<label 
 	    style="color:blue; text-decoration:underline;cursor:pointer"
-	    onclick="OpenDefaultBrowser('https://bitbucket.org/yoshfuji/kancolle-timer-for-firefox/wiki/Home',true);"
-	    value="Webpage"/>
-	<label value="Developed by yoshfuji, based on original work by amano"/>
-	<label id="id-version" value="KanColle Timer ver."/>
-	<label
-	   style="color:blue; text-decoration:underline;cursor:pointer"
-	   onclick="OpenDefaultBrowser('http://miku39.jp/blog/wp/?page_id=1705',true);"
-	   value="Original Webpage"/>
+	    onclick="OpenDefaultBrowser('http://miku39.jp/blog/wp/?page_id=1705',true);"
+	    value="Open Webpage"/>
+	<label value="Developed by amano."/>
       </vbox>
     </hbox>
   </vbox>
