@@ -364,6 +364,26 @@ var KanColleHttpRequestObserver =
 {
     counter: 0,
 
+    save: function( url, data ){
+	// 通信データを ProfD/kancolletimer.dat/ に保存する.
+	url = url.replace('/','__');
+	url = url + ".post";
+	
+        var profdir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("ProfD", Components.interfaces.nsIFile);
+
+	var dirname = "kancolletimer.dat";
+	profdir.append( dirname );
+	profdir.append( url );
+
+	var os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance(Components.interfaces.nsIFileOutputStream);
+	var flags = 0x02|0x08|0x20;// wronly|create|truncate
+	os.init( profdir, flags, 0664, 0 );
+	var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+    cos.init(os,"UTF-8",0,Components.interfaces.nsIConverterOutputStream.DEFAULT_REPLACEMENT_CHARACTER);
+	cos.writeString( JSON.stringify(data) );
+	cos.close();
+    },
+
     observe: function(aSubject, aTopic, aData){
         if (aTopic == "http-on-examine-response"){
 	    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
@@ -404,6 +424,8 @@ var KanColleHttpRequestObserver =
 			data[k] = v;
 		    }
 		    KanColleDatabase.postData[uri] = data;
+
+		    this.save( uri, data );
 		}catch(e){
 		    debugprint(e);
 		}
