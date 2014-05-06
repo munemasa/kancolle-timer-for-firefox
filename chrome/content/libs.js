@@ -2101,7 +2101,7 @@ function KanColleCreateShipTree(){
     let treechildren;
     let box;
 
-    debugprint('KanColleCreateShipTree()');
+    //debugprint('KanColleCreateShipTree()');
 
     // outer box
     box = $('shipinfo-box');
@@ -2800,7 +2800,7 @@ function TreeView(){
 
 function KanColleShipInfoSetView(){
     let menu = $('saveshiplist-menu');
-    debugprint('KanColleShipInfoSetView()');
+    //debugprint('KanColleShipInfoSetView()');
     ShipListView = new TreeView();
     if (menu)
 	menu.setAttribute('disabled', 'false');
@@ -2808,7 +2808,7 @@ function KanColleShipInfoSetView(){
 }
 
 function ShipInfoTreeMenuPopup(){
-    debugprint('ShipInfoTreeMenuPopup()');
+    //debugprint('ShipInfoTreeMenuPopup()');
     KanColleCreateShipTree();
     KanColleShipInfoSetView();
 }
@@ -2828,7 +2828,7 @@ function KanColleTimerShipTableStop() {
 }
 
 function KanColleTimerShipTableInit() {
-    debugprint('KanColleShipInfoInit()');
+    //debugprint('KanColleShipInfoInit()');
     KanColleCreateShipTree();
     KanColleShipInfoSetView();
 }
