@@ -657,7 +657,8 @@ var KanColleTimerFleetInfo = {
 	    }
 	}
 
-	debugprint('result: ' + damage.toSource());
+	debugprint('TOTAL:  ' + damage.toSource());
+
 	return damage;
     },
 
