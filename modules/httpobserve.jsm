@@ -176,6 +176,8 @@ KanColleDB.prototype = {
 };
 
 var KanColleDatabase = {
+    postData: new Object(),
+
     // Database
     masterShip: new KanColleDB(),	// master/ship
     masterSlotitem: new KanColleDB(),	// master/slotitem
@@ -190,11 +192,34 @@ var KanColleDatabase = {
     memberShip2: new KanColleDB(),		// member/ship2
     memberSlotitem: new KanColleDB(),	// member/slotitem
 
+    save: function(url, text){
+	// 通信データを ProfD/kancolletimer.dat/ に保存する.
+	url = url.match(/^http.*\/kcsapi\/(.*)/)[1];
+	url = url.replace('/','__');
+	
+        var profdir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("ProfD", Components.interfaces.nsIFile);
+
+	var dirname = "kancolletimer.dat";
+	profdir.append( dirname );
+	profdir.append( url );
+
+	var os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance(Components.interfaces.nsIFileOutputStream);
+	var flags = 0x02|0x08|0x20;// wronly|create|truncate
+	os.init( profdir, flags, 0664, 0 );
+	var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+    cos.init(os,"UTF-8",0,Components.interfaces.nsIConverterOutputStream.DEFAULT_REPLACEMENT_CHARACTER);
+	cos.writeString( text );
+	cos.close();
+    },
+
     _callback_bound: null,
     _callback: function(req, s) {
 	let now = (new Date).getTime();
 	let url = req.name;
-	let data = JSON.parse(s.substring(s.indexOf('svdata=') + 7));
+	let text = s.substring(s.indexOf('svdata=') + 7);
+	let data = JSON.parse(text);
+
+	this.save(url, text);
 
 	if (data.api_result != 1)
 	    return;
@@ -339,14 +364,71 @@ var KanColleHttpRequestObserver =
 {
     counter: 0,
 
+    save: function( url, data ){
+	// 通信データを ProfD/kancolletimer.dat/ に保存する.
+	url = url.replace('/','__');
+	url = url + ".post";
+	
+        var profdir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("ProfD", Components.interfaces.nsIFile);
+
+	var dirname = "kancolletimer.dat";
+	profdir.append( dirname );
+	profdir.append( url );
+
+	var os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance(Components.interfaces.nsIFileOutputStream);
+	var flags = 0x02|0x08|0x20;// wronly|create|truncate
+	os.init( profdir, flags, 0664, 0 );
+	var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+    cos.init(os,"UTF-8",0,Components.interfaces.nsIConverterOutputStream.DEFAULT_REPLACEMENT_CHARACTER);
+	cos.writeString( JSON.stringify(data) );
+	cos.close();
+    },
+
     observe: function(aSubject, aTopic, aData){
         if (aTopic == "http-on-examine-response"){
 	    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
+
 	    if( httpChannel.URI.spec.match(/^http.*\/kcsapi\//) ){
 		//debugprint(httpChannel.URI.spec);
 		var newListener = new TracingListener();
 		aSubject.QueryInterface(Ci.nsITraceableChannel);
 		newListener.originalListener = aSubject.setNewListener(newListener);
+	    }
+	}
+
+	if( aTopic=="http-on-modify-request" ){
+	    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
+	    if( httpChannel.requestMethod=='POST' &&
+		httpChannel.URI.spec.match(/^http.*\/kcsapi\//) ){
+		httpChannel.QueryInterface(Components.interfaces.nsIUploadChannel);
+		var us = httpChannel.uploadStream;
+		us.QueryInterface(Components.interfaces.nsISeekableStream);
+		var ss = Components.classes["@mozilla.org/scriptableinputstream;1"]
+			.createInstance(Components.interfaces. nsIScriptableInputStream);
+		ss.init(us);
+		us.seek(0, 0);
+		var n = ss.available();
+		var postdata = ss.read(n);
+		us.seek(0, 0);
+
+		try{
+		    var uri = httpChannel.URI.spec.match(/^http.*\/kcsapi\/(.*)/)[1];
+		    postdata = postdata.split(/\r\n\r\n/)[1];
+		    postdata = postdata.split('&');
+		    var k,v,t;
+		    var data = new Object();
+		    for( var i=0; i<postdata.length; i++ ){
+			t = postdata[i].split('=');
+			k = decodeURI( t[0] );
+			v = decodeURI( t[1] );
+			data[k] = v;
+		    }
+		    KanColleDatabase.postData[uri] = data;
+
+		    this.save( uri, data );
+		}catch(e){
+		    debugprint(e);
+		}
 	    }
         }
     },
@@ -377,6 +459,7 @@ var KanColleHttpRequestObserver =
 	    this.observerService = Components.classes["@mozilla.org/observer-service;1"]
 		.getService(Components.interfaces.nsIObserverService);
 	    this.observerService.addObserver(this, "http-on-examine-response", false);
+	    this.observerService.addObserver(this, "http-on-modify-request", false);
 	    debugprint("start kancolle observer.");
 
 	    KanColleDatabase.init();
@@ -392,6 +475,7 @@ var KanColleHttpRequestObserver =
 	    KanColleDatabase.exit();
 
 	    this.observerService.removeObserver(this, "http-on-examine-response");
+	    this.observerService.removeObserver(this, "http-on-modify-request");
 	    this.counter = 0;
 	    debugprint("stop kancolle observer.");
 	}

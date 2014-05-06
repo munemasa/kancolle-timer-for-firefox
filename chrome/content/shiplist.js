@@ -413,7 +413,7 @@ var ShipList = {
 		    "api_tyku": "対空",
 		    "api_tais": "対潜",
 		    "api_houm": "命中",
-		    "api_kaih": "回避",
+		    "api_houk": "回避",
 		    "api_saku": "索敵",
 		    "api_raim": "雷撃命中" // かな？
 		};
@@ -426,7 +426,7 @@ var ShipList = {
 		    case "api_tyku": // 対空
 		    case "api_tais": // 対潜
 		    case "api_houm": // 命中
-		    case "api_kaih": // 回避
+		    case "api_houk": // 回避
 		    case "api_saku": // 索敵
 			//case "api_raim": // 雷撃命中
 			if( v ) value.push( name[k] + v );
@@ -481,6 +481,7 @@ var ShipList = {
 	    return KanColleDatabase.memberShip2.get( k );
 	} );
 	this.allships = this.createShipList( ships );
+	this.sort(0); // 艦種別ソートをデフォルトに
 	this.showShipList( this.allships );
 
 	this.createShipOrganizationList();
