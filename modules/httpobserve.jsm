@@ -3,10 +3,6 @@
 
 var EXPORTED_SYMBOLS = ["KanColleRemainInfo", "KanColleDatabase"];
 
-// API version (detected)
-var KanColleAPIversion = 20131127;  // 20131127 (ship3)
-				    // 20140423 (port/port; partial ship3)
-
 /*
  * Database
  */
@@ -1548,16 +1544,13 @@ var KanColleDatabase = {
 	    } else if (url.match(/kcsapi\/api_get_member\/ship3/)) {
 		// もし request に api_shipid が含まれていたら、
 		// その艦船についてのみ送られてくる
-		if (KanColleAPIversion >= 20140423 &&
-		    KanColleDatabase._memberShip3.get_req().api_shipid) {
+		if (KanColleDatabase._memberShip3.get_req().api_shipid)
 		    this._memberShip3.update(data.api_data);
-		    this.memberDeck.update(data.api_data.api_deck_data);
-		    this.memberUnsetslot.update(data.api_data.api_slot_data);
-		} else {
+		else
 		    this._memberShip2.update(data.api_data.api_ship_data);
-		    this.memberDeck.update(data.api_data.api_deck_data);
-		    this.memberUnsetslot.update(data.api_data.api_slot_data);
-		}
+
+		this.memberDeck.update(data.api_data.api_deck_data);
+		this.memberUnsetslot.update(data.api_data.api_slot_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/slotitem/)) {
 		this._memberSlotitem.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_get_member\/slot_item/)) {
@@ -1565,7 +1558,6 @@ var KanColleDatabase = {
 	    } else if (url.match(/kcsapi\/api_get_member\/unsetslot/)) {
 		this.memberUnsetslot.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_port\/port/)) {
-		KanColleAPIversion = 20140423;
 		this.memberBasic.update(data.api_data.api_basic);
 		this.memberDeck.update(data.api_data.api_deck_port);
 		this.memberMaterial.update(data.api_data.api_material);
