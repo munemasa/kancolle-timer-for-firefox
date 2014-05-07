@@ -1179,14 +1179,14 @@ var KanColleTimerQuestInfo = {
 		let children = menunode ? menunode.childNodes : null;
 		if (children) {
 		    for (let i = 0; i < children.length; i++) {
-			let val = parseInt(children[i].value, 10);
+			let val = parseInt(children[i].getAttribute('value'), 10);
 			if (mode == val) {
-			    str = children[i].label;
+			    str = children[i].getAttribute('label');
 			    break;
 			}
 		    }
 		}
-		modenode.value = str;
+		modenode.setAttribute('value',str);
 	    }
 
 	    if (!ids.length)
