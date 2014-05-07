@@ -10,3 +10,8 @@ hr {
 prefwindow vbox button {
     min-width: 0;
 }
+
+#order-of-dashboard listitem:-moz-drag-over {
+    border: 1px solid black;
+    font-weight: bold;
+}

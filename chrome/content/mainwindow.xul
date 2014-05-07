@@ -18,7 +18,19 @@
   <keyset>
     <!-- CTRL+W: Close this window -->
     <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+    <!-- CTRL+Num: Change the tab -->
+    <key id="tab-move-1" key="1" modifiers="accel"
+	 oncommand="$('deck').selectedIndex=0;"/>
+    <key id="tab-move-2" key="2" modifiers="accel"
+	 oncommand="$('deck').selectedIndex=2;"/>
+    <key id="tab-move-3" key="3" modifiers="accel"
+	 oncommand="$('deck').selectedIndex=3;"/>
+    <key id="tab-move-4" key="4" modifiers="accel"
+	 oncommand="$('deck').selectedIndex=1;"/>
+
   </keyset>
+
+  <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8" />
 
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/utils/prefutils.js" />
@@ -33,26 +45,35 @@
 	  src="chrome://kancolletimer/content/data.js" />
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/kancolletimer.js" />
+  <script>
+  <![CDATA[
+    window.addEventListener("load", function(e){ KanColleTimer.init(); WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') ); }, false);
+    window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);
+  ]]>
+  </script>
 
   <toolbox>
     <toolbar>
       <toolbarbutton tooltiptext="タイマー" image="data/alarm.png"
 		     oncommand="$('deck').selectedIndex=0;"/>
+      <toolbarbutton tooltiptext="編成・任務" image="data/quest.png"
+		     oncommand="$('deck').selectedIndex=2;"/>
+      <toolbarbutton tooltiptext="ダッシュボード" image="data/sticky.png"
+		     oncommand="$('deck').selectedIndex=3;"/>
       <toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
 		     oncommand="$('deck').selectedIndex=1;"/>
-      <toolbarbutton tooltiptext="所有艦艇リスト" image="data/list.png" oncommand="OpenShipList();"/>
+      <toolbarbutton tooltiptext="保有艦娘リスト" image="data/list.png" oncommand="OpenShipList();"/>
       <toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	<menupopup>
 	  <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
 	  <menuseparator/>
-	  <menuitem label="ファイルを指定して保存" oncommand="KanColleTimer.takeScreenshot();" tooltiptext="ファイルを指定して保存します。"/>
-	  <menuitem label="フォルダに保存" oncommand="KanColleTimer.takeScreenshotSeriography();" tooltiptext="選択されたフォルダに保存します。ファイル名は自動的につけられます。"/>
-	  <menuitem label="保存フォルダを選択" oncommand="KanColleTimer.takeScreenshotSeriographySelectFolder();" tooltiptext="保存用のフォルダを選択します。"/>
+	  <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimer.takeScreenshot();"/>
+	  <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimer.takeScreenshotSeriography();"/>
 	</menupopup>
       </toolbarbutton>
       <toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	<menupopup>
-	  <menuitem label="艦船リストの保存" oncommand="SaveShipList();" id="saveshiplist-menu" disabled="true"/>
+	  <menuitem label="保有艦娘リスト" oncommand="OpenShipList();"/>
 	  <menuitem label="資源グラフ" oncommand="OpenResourceGraph();"/>
 	  <menuseparator/>
 	  <menuitem id="window-stay-on-top" persist="checked"
@@ -72,35 +93,9 @@
     <vbox id="wallpaper" flex="1">
     </vbox>
     <deck id="deck" persist="selectedIndex">
-      <vbox flex="1" style="overflow:auto;">
-	<groupbox id="basic-information">
-	  <menupopup id="general-timer-popup">
-	    <menuitem label=""/>
-	    <menuitem label="停止" value="0" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="3分" value="180" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="6分" value="360" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="9分" value="540" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="12分" value="720" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="15分" value="900" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="20分" value="1200" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="30分" value="1800" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="45分" value="2700" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	    <menuitem label="60分" value="3600" oncommand="KanColleTimer.setGeneralTimer(this.value);"/>
-	  </menupopup>
-          <caption>基本情報
-	    <label popup="general-timer-popup"><image src="data/clock.png" style="width: 1em; height: 1em;"/></label><timer id="general-timer" mode="time"/>
-	  </caption>
-          <hbox>
-	    <vbox><image src="data/ship.png" style="width: 1em; height: 1em;"/></vbox><label id="basic-information-shipcount" value="-"/>
-	    <vbox><image src="data/slotitem.png" style="width: 1em; height: 1em;"/></vbox><label id="basic-information-slotitemcount" value="-"/>
-	    <vbox><image src="data/burner.png" style="width: 1em; height: 1em;"/></vbox><label id="basic-information-burnercount" value="-"/>
-	    <vbox><image src="data/repairkit.png" style="width: 1em; height: 1em;"/></vbox><label id="basic-information-bucketcount" value="-"/>
-	  </hbox>
-	</groupbox>
-	
+      <vbox flex="1" style="overflow:auto;" id="tab-timer">
 	<groupbox id="group-mission">
 	  <caption>遠征</caption>
-	  
 	  <vbox class="fleet" style="display:none;">
 	    <hbox>
 	      <label value="■第1艦隊"/>
@@ -151,8 +146,8 @@
 	  
 	</groupbox>
 	
-	<groupbox tooltip="ndock-tooltip">
-	  <caption>入渠ドック</caption>
+	<groupbox tooltip="ndock-tooltip" id="group-ndock">
+	  <caption>入渠ドック[<image style="vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>]</caption>
 	  <tooltip id="ndock-tooltip">
 	    <box>
 	      <image style="background-color: white; vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>
@@ -189,7 +184,7 @@
 	  </grid>
 	</groupbox>
 	
-	<groupbox tooltip="kdock-tooltip">
+	<groupbox tooltip="kdock-tooltip" id="group-kdock">
 	  <caption>建造ドック</caption>
 	  <tooltip id="kdock-tooltip">
 	    <box>
@@ -217,7 +212,7 @@
 	    <timer id="kdockremain4" mode="time" class="kdockremain"/>
 	  </hbox>
 	</groupbox>
-	<groupbox id="quest-list-box">
+	<groupbox id="group-quest">
 	  <caption>任務(<label id="quest-information-mode" value="-" popup="quest-information-mode-popup"/>)</caption>
 	  <menupopup id="quest-information-mode-popup">
 	    <menuitem label=""/>
@@ -253,13 +248,113 @@
 	  </rows>
 	</grid>
 	<description>
-	  Referenced from 艦隊これくしょん ～艦これ～ 攻略＆2chまとめwiki
+	  Referenced from 艦隊これくしょん -艦これ- 攻略 Wiki* &amp; 艦隊これくしょん ～艦これ～ 攻略＆2chまとめwiki
 	</description>
+      </vbox>
+
+      <!-- 編成・任務表 -->
+      <vbox id="tab-organization" flex="1" style="overflow:auto;">
+	<hbox align="center" id="group-general-timer" style="display:inline-block">
+	  <menulist oncommand="KanColleTimer.setGeneralTimer(this.value);">
+	    <menupopup>
+	      <menuitem label="0分" value="0" />
+	      <menuitem label="3分" value="180" />
+	      <menuitem label="6分" value="360"/>
+	      <menuitem label="9分" value="540"/>
+	      <menuitem label="12分" value="720"/>
+	      <menuitem label="15分" value="900"/>
+	      <menuitem label="20分" value="1200"/>
+	      <menuitem label="30分" value="1800"/>
+	    </menupopup>
+	  </menulist>
+	  <button label="疲労回復まで" oncommand="KanColleTimer.setGeneralTimer(-1);"/>
+	  <label id="general-timer" value="00:00:00"/>
+	</hbox>
+
+
+
+
+
+
+
+	<groupbox id="group-info">
+	  <caption>艦隊司令部情報</caption>
+	  <hbox>
+	    <label value="保有艦娘数"/><label id="number-of-ships" value=""/><label value="/"/><label id="max-number-of-ships" value=""/>
+	  </hbox>
+	  <hbox>
+	    <label value="装備アイテム数"/><label id="number-of-items" value=""/><label value="/"/><label id="max-number-of-items" value=""/>
+	  </hbox>
+	</groupbox>
+
+	<!-- 第1艦隊編成 -->
+	<groupbox id="group-1stfleet">
+	  <caption><checkbox persist="checked" autoCheck="true" id="first-fleet-name" label="第1艦隊" tooltiptext="チェックを入れるとHPゲージを表示するようにします" style="margin:0;"/><label id="refresh-timer" value="00:00:00"/></caption>
+	  <grid>
+	    <columns>
+	      <column/><column/><column/><column/>
+	    </columns>
+	    <rows id="fleet-1" class="fleet-organization">
+	    </rows>
+	  </grid>
+	</groupbox>
+
+	<groupbox id="group-fleets">
+	  <caption>
+	    <hbox>
+	      <menulist oncommand="$('fleet-info').selectedIndex=this.value;">
+		<menupopup>
+		  <menuitem label="第2艦隊" value="0"/>
+		  <menuitem label="第3艦隊" value="1"/>
+		  <menuitem label="第4艦隊" value="2"/>
+		</menupopup>
+	      </menulist>
+	    </hbox>
+	  </caption>
+	  <deck id="fleet-info">
+	    <grid>
+	      <columns>
+		<column/><column/><column/><column/>
+	      </columns>
+	      <rows id="fleet-2" class="fleet-organization">
+	      </rows>
+	    </grid>
+	    <grid>
+	      <columns>
+		<column/><column/><column/><column/>
+	      </columns>
+	      <rows id="fleet-3" class="fleet-organization">
+	      </rows>
+	    </grid>
+	    <grid>
+	      <columns>
+		<column/><column/><column/><column/>
+	      </columns>
+	      <rows id="fleet-4" class="fleet-organization">
+	      </rows>
+	    </grid>
+	  </deck>
+	</groupbox>
+
+	<groupbox id="group-condition">
+	  <caption>コンディション</caption>
+	  <grid>
+	    <columns>
+	      <column/><column/><column/><column/><column/><column/><column/>
+	    </columns>
+	    <rows id="fleet-condition">
+	    </rows>
+	  </grid>
+	</groupbox>
+      </vbox>
+
+      <!-- ダッシュボード -->
+      <vbox id="id-dashboard" style="overflow:auto;">
       </vbox>
     </deck>
   </stack>
 
-  <groupbox>
+  <groupbox style="display:none;">
     <caption label="艦隊"/>
     <menupopup id="shipstatus-1-popup"><menuitem id="shipstatus-1-popup-1" label="タイマー設定" disabled="true"/></menupopup>
     <menupopup id="shipstatus-2-popup"><menuitem id="shipstatus-2-popup-1" label="タイマー設定" disabled="true"/></menupopup>
@@ -316,7 +411,7 @@
     </grid>
   </groupbox>
   
-  <groupbox id="shipinfo-box" flex="1">
+  <groupbox id="shipinfo-box" flex="1" style="display:none;">
     <caption>艦船</caption>
     <menupopup id="shipinfo-colmenu" oncommand="ShipInfoTreeMenuPopup();">
       <menuitem type="checkbox" persist="checked" autoCheck="true"

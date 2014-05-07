@@ -17,15 +17,26 @@ table{
     border-collapse: collapse;
 }
 
-/* テキスト範囲選択できるクラス */
-.selection {
-    cursor: text ! important;
-    -moz-user-focus: normal;
-    -moz-user-select: text;
+hbox[warning]:after{
+    content: url("chrome://kancolletimer/content/data/alert.png");
+}
+hbox[repair]:after{
+    content: url("chrome://kancolletimer/content/data/cross.png");
 }
 
-.select-setlist menuitem{
-    min-width: 3em;
+label[cond='very-low'] {
+    background-color: #fa6b6a;
+}
+label[cond='low'] {
+    background-color: #eea87a;
+}
+
+label[few-minutes-left] {
+    color: #e00000;
+}
+
+.fleet-list {
+    display: inline-block;
 }
 
 .red {

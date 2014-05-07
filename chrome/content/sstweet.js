@@ -30,11 +30,13 @@ var SSTweet = {
     },
 
     init:function(){
-	try{
-	    let data = TakeKanColleScreenshot(true);
-	    // data:image/png;base64,......
+	if( window.arguments ){
+	    let pic = window.arguments[0];
+	    let data = pic || TakeKanColleScreenshot(true);
 	    $('ss-image').src = data.spec;
-	} catch (x) {
+	}else{
+	    let data = TakeKanColleScreenshot(true);
+	    $('ss-image').src = data.spec;
 	}
 	$('text').focus();
 

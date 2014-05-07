@@ -47,23 +47,42 @@ var KanColleTimer = {
 	}
     },
 
+    // 汎用タイマーの時間設定
+    // 負の値を指定すると、回復時間をセットする。
     setGeneralTimer: function(sec){
-	let s = parseInt(sec,10);
-	if (isNaN(s))
-	    s = 0;
-	this.setGeneralTimerByTime(s ? (new Date).getTime() + s * 1000 : 0);
+	if( sec<0 ){
+	    let t = $('refresh-timer').getAttribute('refresh-time');
+	    this.general_timer = parseInt(t);
+	}else{
+	    sec = parseInt(sec);
+	    this.general_timer = GetCurrentTime() + sec;
+	}
     },
 
-    updateGeneralTimer: function(){
-	let now = (new Date).getTime();
-	if( !this.general_timer) return;
-	if (now > this.general_timer) {
+    updateGeneralTimer:function(){
+	let now = GetCurrentTime();
+	if( !this.general_timer ) return;
+	let remain = this.general_timer-now;
+	if( remain<0 ){
+	    remain = 0;
 	    this.general_timer = 0;
 	    $('sound.default').play();
 	    if( KanColleTimerConfig.getBool('popup.general-timer') ){
 		let str = "時間になりました。";
 		ShowPopupNotification(this.imageURL,"艦これタイマー",str,"general-timer");
 	    }
+	}
+	$('general-timer').value = GetTimeString( remain );
+    },
+
+    updateRefreshTimer: function(){
+	let t = $('refresh-timer').getAttribute('refresh-time');
+	let now = GetCurrentTime();
+	if( t && t>now ){
+	    $('refresh-timer').value = GetTimeString( t - now ).substring(3);
+	}else{
+	    $('refresh-timer').removeAttribute('refresh-time');
+	    $('refresh-timer').value = "00:00";
 	}
     },
 
@@ -120,6 +139,7 @@ var KanColleTimer = {
 	}
 
 	this.updateGeneralTimer();
+	this.updateRefreshTimer();
 
 	check_timeout('mission', 'fleet', function(i){ return KanColleRemainInfo.fleet_name[i] + 'が遠征から帰還'; });
 	check_timeout('ndock',   'ndock', function(i){ return 'ドック' + (i+1) + 'の修理が完了'; });
@@ -298,6 +318,79 @@ var KanColleTimer = {
 	this._timer = null;
     },
 
+    createMissionBalanceTable:function(){
+	let balance = KanColleData.mission_hourly_balance;
+	let rows = $('hourly_balance');
+	for( let i in balance ){
+	    let row = CreateElement('row');
+	    let name = KanColleData.mission_name[i];
+	    name = name.substring(0,7);
+	    row.appendChild( CreateLabel( name ) );
+	    for( let j=0; j<4; j++ ){
+		let value = balance[i][j];
+		let order = value * 10 % 10;
+		let label = CreateLabel( parseInt(value) );
+		let styles = ["color:blue; font-weight:bold;", "font-weight:bold;", "font-weight:bold;"];
+		if( order ){
+		    label.setAttribute( "style", styles[order-1] );
+		}
+		row.appendChild( label );
+	    }
+	    row.setAttribute("style","border-bottom: 1px solid gray;");
+	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
+	    rows.appendChild( row );
+	}
+    },
+
+    findWindow: function(){
+	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
+	return win;
+    },
+    open: function(){
+	let feature="chrome,resizable=yes";
+	let win = this.findWindow();
+	if(win){
+	    win.focus();
+	}else{
+	    let w = window.open("chrome://kancolletimer/content/mainwindow.xul","KanColleTimer",feature);
+	    w.focus();
+	}
+    },
+
+    readResourceData: function(){
+	let data = Storage.readObject( "resourcehistory", [] );
+	let d = KanColleRemainInfo.gResourceData;
+
+	let t1 = data.length && data[ data.length-1 ].recorded_time;
+	let t2 = d.length && d[ d.length-1 ].recorded_time;
+	if( t2 < t1 ){
+	    KanColleRemainInfo.gResourceData = data;
+	}
+    },
+    writeResourceData: function(){
+	let month_ago = GetCurrentTime() - 60*60*24*31;
+	
+	let data = KanColleRemainInfo.gResourceData.filter(
+	    function( elem, index, array ){
+		return elem.recorded_time > month_ago;
+	});
+	Storage.writeObject( "resourcehistory", data );
+    },
+
+    startTimer: function() {
+	if (this._timer)
+	    return;
+	this._timer = setInterval(this.update.bind(this), 1000);
+    },
+
+    stopTimer: function() {
+	if (!this._timer)
+	    return;
+	clearInterval(this._timer);
+	this._timer = null;
+    },
+
     init: function(){
 	KanColleDatabase.init();
 	KanColleTimerHeadQuarterInfo.init();
@@ -307,11 +400,11 @@ var KanColleTimer = {
 	KanColleTimerQuestInfo.init();
 	KanColleTimerFleetInfo.init();
 	KanColleTimerShipTableInit();
-	KanColleTimerPracticeInfo.init();
 	KanColleTimerMaterialLog.init();
 	KanColleTimerMissionBalanceInfo.init();
 
 	this.startTimer();
+	this.readResourceData();
 
 	KanColleTimerDeckInfo.restore();
 	KanColleTimerNdockInfo.restore();
@@ -328,13 +421,11 @@ var KanColleTimer = {
 	KanColleTimerQuestInfo.start();
 	KanColleTimerFleetInfo.start();
 	KanColleTimerShipTableStart();
-	KanColleTimerPracticeInfo.start();
 	KanColleTimerMaterialLog.start();
     },
 
     destroy: function(){
 	KanColleTimerMaterialLog.stop();
-	KanColleTimerPracticeInfo.stop();
 	KanColleTimerShipTableStop();
 	KanColleTimerFleetInfo.stop();
 	KanColleTimerQuestInfo.stop();
@@ -344,10 +435,10 @@ var KanColleTimer = {
 	KanColleTimerHeadQuarterInfo.stop();
 
 	this.stopTimer();
+	this.writeResourceData();
 
 	KanColleTimerMissionBalanceInfo.exit();
 	KanColleTimerMaterialLog.exit();
-	KanColleTimerPracticeInfo.exit();
 	KanColleTimerShipTableExit();
 	KanColleTimerFleetInfo.exit();
 	KanColleTimerQuestInfo.exit();
@@ -358,7 +449,3 @@ var KanColleTimer = {
 	KanColleDatabase.exit();
     }
 };
-
-
-window.addEventListener("load", function(e){ KanColleTimer.init(); }, false);
-window.addEventListener("unload", function(e){ KanColleTimer.destroy(); }, false);

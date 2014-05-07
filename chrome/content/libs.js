@@ -126,35 +126,13 @@ var KanColleTimerHeadQuarterInfo = {
 	    //	maxslotitems < 100 + maxships * 4) {
 	    //	maxslotitems = 100 + maxships * 4;
 	    //}
-	    $('basic-information-shipcount').value = ships;
-	    SetStyleProperty($('basic-information-shipcount'), 'color', ship_color);
-	    $('basic-information-shipcount').setAttribute('tooltiptext', ships + ' / ' + maxships);
-
-	    $('basic-information-slotitemcount').value = slotitems;
-	    SetStyleProperty($('basic-information-slotitemcount'), 'color', slotitem_color);
-	    $('basic-information-slotitemcount').setAttribute('tooltiptext', slotitems + ' / ' + maxslotitems);
+	    $('number-of-ships').value = ships+"隻";
+	    $('number-of-items').value = slotitems;
+	    $('max-number-of-ships').value = maxships+"隻";
+	    $('max-number-of-items').value = maxslotitems;
 	},
 
 	material: function() {
-	    let burner = '-';
-	    let bucket = '-';
-	    if (KanColleDatabase.material.timestamp()) {
-		let d;
-		/*
-		 * 1: 燃料
-		 * 2: 弾薬
-		 * 3: 鋼材
-		 * 4: ボーキサイト
-		 * 5: 高速建造材
-		 * 6: 高速修復材
-		 * 7: 開発資材
-		 */
-		burner = KanColleDatabase.material.get('burner');
-		bucket = KanColleDatabase.material.get('bucket');
-	    }
-
-	    $('basic-information-burnercount').value = burner;
-	    $('basic-information-bucketcount').value = bucket;
 	},
     },
 };
@@ -435,7 +413,7 @@ var KanColleTimerKdockInfo = {
 
 	material: function() {
 	    let d = KanColleDatabase.material.get('burner');
-	    $('burner-number').value = d.api_value;
+		$('burner-number').value = d.api_value;
 	},
 
     },
@@ -739,8 +717,152 @@ var KanColleTimerFleetInfo = {
 	debugprint(s);
     },
 
+    _isRepairing: function(ship_id) {
+	for(let i in KanColleRemainInfo.ndock_ship_id ){
+	    if( KanColleRemainInfo.ndock_ship_id[i]==ship_id ) return true;
+	}
+	return false;
+    },
+    _showSupplyMark: function(n, b){
+	// 遠征タイマー部分に未補給のマークを付ける
+	let elem = evaluateXPath2(document,"//xul:vbox[@class='fleet']/xul:hbox[1]");
+	if( b ){
+	    elem[n-1].setAttribute('warning','1');
+	}else{
+	    elem[n-1].removeAttribute('warning');
+	}
+    },
+    /**
+     * 第n艦隊の編成を表示する
+     * @param n 1,2,3,4
+     */
+    _setFleetOrganization: function(n) {
+	// 第n艦隊編成
+	let fleets = KanColleDatabase.deck.list();
+	let fleet = KanColleDatabase.deck.get(n);
+	if( !fleet ) return;
+	let rows = $('fleet-'+n);
+	RemoveChildren(rows);
+	let min_cond = 100;
+
+	this._showSupplyMark(n, false);
+	for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
+	    let row = CreateElement('row');
+	    let data = FindOwnShipData( fleet.api_ship[i] );
+	    let masterdata = FindShipData( fleet.api_ship[i] );
+	    if (!masterdata)
+		continue;
+	    row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
+	    row.appendChild( CreateLabel(masterdata.api_name) );
+	    row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
+	    let hbox = CreateElement('hbox');
+	    let label = CreateLabel(""+data.api_cond);
+	    if( data.api_cond<=19 ){
+		label.setAttribute('cond', 'very-low');
+	    }else if( data.api_cond<=29 ){
+		label.setAttribute('cond','low');
+	    }
+	    min_cond = d3.min( [min_cond, data.api_cond] );
+
+	    hbox.appendChild( label );
+	    row.appendChild( hbox );
+	    if( masterdata.api_fuel_max!=data.api_fuel ||
+		masterdata.api_bull_max!=data.api_bull ){
+		    hbox.setAttribute('warning','1');
+		    this._showSupplyMark(n, true);
+	    }
+	    if( this._isRepairing( data.api_id ) ){
+		hbox.setAttribute('repair','1');
+	    }
+
+	    let maxhp = parseInt(data.api_maxhp);
+	    let nowhp = parseInt(data.api_nowhp);
+	    if( nowhp <= maxhp*0.25 ){
+		row.style.backgroundColor = '#ff8080';
+	    }else{
+		if( n==1 && $('first-fleet-name').hasAttribute('checked') ){
+		    // 第1艦隊のみ
+		    let percentage = parseInt( nowhp/maxhp*100 );
+		    let image;
+		    if(nowhp==maxhp){
+			image = "greenbar.png";
+		    }else if( percentage<=25 ){
+			image = "redbar.png";
+		    }else if( percentage<=50 ){
+			image = "orangebar.png";
+		    }else if( percentage<=75 ){
+			image = "yellowbar.png";
+		    }else{
+			image = "lightgreenbar.png";
+		    }
+		    let style = 'background-image: url("chrome://kancolletimer/content/data/'+image+'"); background-position:left bottom; background-repeat:no-repeat; background-size:'+percentage+'% 4px;';
+		    row.setAttribute('style',style);
+		}else{
+		    row.removeAttribute('style');
+		}
+	    }
+
+	    rows.appendChild( row );
+	}
+	if( n==1 ){
+	    // 第1艦隊のみ状態回復時間を計算する
+	    if( min_cond<49 ){
+		let now = GetCurrentTime();
+		let t0 = (49-min_cond);
+		if( t0%3 ){
+		    t0 += 3-(t0%3); // 3HP/3分 で回復なので、3の倍数まで切り上げ
+		}
+		t0 *= 60;
+		let refresh_time = t0 - (now%180);
+		$('refresh-timer').setAttribute('refresh-time', now+refresh_time);
+		$('refresh-timer').value = GetTimeString( refresh_time ).substring(3);
+	    }else{
+		$('refresh-timer').removeAttribute('refresh-time');
+		$('refresh-timer').value = "00:00";
+	    }
+	}
+    },
+
+    _setAllFleetsOrganization: function() {
+	for(let i=1;i<5;i++)
+	    this._setFleetOrganization(i);
+    },
+
+    _setFleetCond: function() {
+	// 第1〜第3艦隊のコンディション表示
+	// color="#d36363" // red 0-19
+	// color="#f3a473" // orange 20-29
+
+	let table = $('fleet-condition');
+	RemoveChildren( table );
+
+	let fleets = KanColleDatabase.deck.list();
+	for (let i = 0; i < fleets.length; i++) {
+	    let fleet = KanColleDatabase.deck.get(fleets[i]);
+
+	    let row = CreateElement('row');
+	    row.appendChild( CreateLabel('第'+fleet.api_id+'艦隊') );
+	    for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
+		let data = FindOwnShipData( fleet.api_ship[i] );
+		if (!data)
+		    continue;
+		let cond = CreateLabel(""+data.api_cond);
+		if( data.api_cond<=19 ){
+		    cond.setAttribute('cond','very-low');
+		}else if( data.api_cond<=29 ){
+		    cond.setAttribute('cond','low');
+		}
+		row.appendChild( cond );
+	    }
+	    table.appendChild( row );
+	}
+    },
+
     update: {
 	deck: function() {
+	    this._setAllFleetsOrganization();
+	    this._setFleetCond();
+
 	    let l = KanColleDatabase.deck.list();
 
 	    function timestr(t){
@@ -851,8 +973,8 @@ var KanColleTimerFleetInfo = {
 			} else {
 			    ship_shadow = '1px 1px 0 black';
 			    ship_color = this._ship_color(hpratio);
+			    }
 			}
-		    }
 
 		    if (KanColleTimerConfig.getBool('display.extra-info') && ship) {
 			let ship_ap = ShipCalcAirPower(ship_id);
@@ -1002,7 +1124,7 @@ var KanColleTimerFleetInfo = {
 		damages.push(this._parse_raibak(data.api_raigeki));
 
 	    this._update_battle(data, damages);
-	},
+    },
 	reqBattleMidnightBattle: function() {
 	    let data = KanColleDatabase.reqBattleMidnightBattle.get();
 	    let damages = [];
@@ -1023,7 +1145,7 @@ KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
 var KanColleTimerQuestInfo = {
     update: {
 	quest: function() {
-	    let questbox = $('quest-list-box');
+	    let questbox = $('group-quest');
 	    let quests = KanColleDatabase.quest.get();
 	    let ids = quests.list ? Object.keys(quests.list) : [];
 	    let list = $('quest-list-rows');
@@ -1092,6 +1214,18 @@ var KanColleTimerQuestInfo = {
 		cell.setAttribute('value', q.data.api_title);
 		cell.setAttribute('crop', 'end');
 		cell.setAttribute('tooltiptext', q.data.api_detail);
+		let category_color = {
+		    0: "",
+		    1: "",
+		    2: "#df4f42", // 出撃
+		    3: "#7ebb56", // 演習
+		    4: "#45b9c3", // 遠征
+		    5: "#cab057", // 補給・入渠
+		    6: "#7d4f33", // 工廠
+		    7: "#b599c9", // 改装
+		};
+		let str = 'border-left: 5px solid '+category_color[q.data.api_category];
+		cell.setAttribute('style', str);
 		listitem.appendChild(cell);
 
 		// type
@@ -1241,7 +1375,14 @@ var KanColleTimerMissionBalanceInfo = {
 	    name = name.substring(0,7);
 	    row.appendChild( CreateLabel( name ) );
 	    for( let j=0; j<4; j++ ){
-		row.appendChild( CreateLabel(balance[i][j]) );
+		let value = balance[i][j];
+		let order = value * 10 % 10;
+		let label = CreateLabel( parseInt(value) );
+		let styles = ["color:blue; font-weight:bold;", "font-weight:bold;", "font-weight:bold;"];
+		if( order ){
+		    label.setAttribute( "style", styles[order-1] );
+		}
+		row.appendChild( label );
 	    }
 	    row.setAttribute("style","border-bottom: 1px solid gray;");
 	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
@@ -3069,7 +3210,9 @@ function CreateHTMLElement(part){
  * @param elem 削除したい要素
  */
 function RemoveElement(elem){
-    elem.parentNode.removeChild(elem);
+    if( elem ){
+	elem.parentNode.removeChild(elem);
+    }
 }
 
 /**
@@ -3208,6 +3351,23 @@ function InputPromptWithCheck(text,caption,input,checktext){
 }
 
 /**
+ * @return nsIFileを返す
+ */
+function OpenFileDialog( caption, mode )
+{
+    const nsIFilePicker = Ci.nsIFilePicker;
+    let fp = Cc["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+    fp.init( window, caption, mode );
+    fp.appendFilters(nsIFilePicker.filterAll);
+    let rv = fp.show();
+    if (rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace) {
+	let file = fp.file;
+	return file;
+    }
+    return null;
+}
+
+/**
  *  Javascriptオブジェクトをファイルに保存する.
  * @param obj Javascriptオブジェクト
  * @param caption ファイル保存ダイアログに表示するキャプション
@@ -3284,6 +3444,13 @@ function FindParentElement(elem,tag){
     return elem;
 }
 
+/**
+ * 符号付き数字を返す
+ */
+function GetSignedValue( v ){
+    if( v>0 ) return "+"+v;
+    return v;
+}
 
 /**
  * クリップボードにテキストをコピーする.
