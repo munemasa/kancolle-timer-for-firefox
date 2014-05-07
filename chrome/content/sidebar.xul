@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css" ?>
 <?xml-stylesheet href="chrome://browser/skin/browser.css" type="text/css" ?>
+<?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
 <?xml-stylesheet href="chrome://kancolletimer/content/timer-binding.css" type="text/css" ?>
 <?xml-stylesheet href="chrome://kancolletimer/content/sound-binding.css" type="text/css"?>
 
