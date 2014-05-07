@@ -111,6 +111,14 @@ var KanColleTimerConfig = {
 	} catch (x) {
 	    $('kancolletimermainwindow').style.fontFamily = font;
 	}
+
+	font = this.getUnichar('display.font-size') || "";
+	try{
+	    $('sbKanColleTimerSidebar').style.fontSize = font;
+	} catch (x) {
+	    $('kancolletimermainwindow').style.fontSize = font;
+	}
+	$('log').style.fontSize = font;
     },
 
     isShortDisplay: function(){

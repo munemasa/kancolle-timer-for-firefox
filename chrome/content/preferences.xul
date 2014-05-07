@@ -188,6 +188,8 @@
 		  name="extensions.kancolletimer.display.font-color" type="unichar"/>
       <preference id="e.n.font"
 		  name="extensions.kancolletimer.display.font" type="unichar"/>
+      <preference id="e.n.font-size"
+		  name="extensions.kancolletimer.display.font-size" type="unichar"/>
       <preference id="pref-ship-num-free"
 		  name="extensions.kancolletimer.display.ship-num-free" type="int"/>
       <!-- to obtain font group from browser settings -->
