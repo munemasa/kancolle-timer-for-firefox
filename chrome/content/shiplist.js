@@ -43,15 +43,9 @@ var ShipList = {
     },
 
     getFleetNo: function( ship_id ){
-	let fleets = KanColleDatabase.memberDeck.list();
-	for( let i = 0; i < fleets.length; i++ ){
-	    let fleet = KanColleDatabase.memberDeck.get( fleets[i] );
-	    for( let j in fleet.api_ship ){
-		if( fleet.api_ship[j] == ship_id ){
-		    return fleet.api_id;
-		}
-	    }
-	}
+	let fleet = KanColleDatabase.deck.lookup(ship_id);
+	if (fleet)
+	    return fleet.fleet;
 	return 0;
     },
 
@@ -106,7 +100,7 @@ var ShipList = {
 	let list = $( 'fleet-organization' );
 	this.clearListBox( list );
 	// 艦隊編成
-	let fleet = KanColleDatabase.memberDeck.get( n );
+	let fleet = KanColleDatabase.deck.get( n );
 
 	let no = 1;
 	for( let i = 0; fleet.api_ship[i] != -1 && i < 6; i++ ){
@@ -222,8 +216,8 @@ var ShipList = {
 
     createHistogram: function(){
 	let histogram = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-	let ships = KanColleDatabase.memberShip2.list().map( function( k ){
-	    return KanColleDatabase.memberShip2.get( k );
+	let ships = KanColleDatabase.ship.list().map( function( k ){
+	    return KanColleDatabase.ship.get( k );
 	} );
 	for( let i = 0; i < ships.length; i++ ){
 	    let k = parseInt( ships[i].api_lv / 10 );
@@ -300,11 +294,12 @@ var ShipList = {
 
     createShipOrganizationList: function(){
 	// 艦隊編成
-	let fleets = KanColleDatabase.memberDeck.list();
+	let fleets = KanColleDatabase.deck.list();
 	for( let j = 0; j < fleets.length; j++ ){
-	    let fleet = KanColleDatabase.memberDeck.get( fleets[j] );
+	    let fleet = KanColleDatabase.deck.get( fleets[j] );
 	    let rows = $( 'fleet-' + fleet.api_id );
 
+	let ships = KanColleDatabase.ship.list();
 	    for( let i = 0; fleet.api_ship[i] != -1 && i < 6; i++ ){
 		let row = CreateElement( 'row' );
 		let data = FindOwnShipData( fleet.api_ship[i] );
@@ -365,7 +360,8 @@ var ShipList = {
 	    for( let i in ship.api_slot ){
 		let slot_id = ship.api_slot[i];
 		if( slot_id == -1 ) continue;
-		let item = FindSlotItem( slot_id );
+
+		let item = KanColleDatabase.slotitem.get( slot_id );
 		if( item ){
 		    item._owner_ship = obj.name;
 		    obj.equips.push( item.api_name );
@@ -374,6 +370,11 @@ var ShipList = {
 	    allships.push( obj );
 	}
 	return allships;
+    },
+
+    findItem: function( slot_id ){
+	for( let i=0; i<this.allequipments;i++){
+	}
     },
 
     createEquipmentList: function(){
@@ -458,8 +459,8 @@ var ShipList = {
 
     init: function(){
 	// 装備アイテムリスト
-	this.allequipments = KanColleDatabase.memberSlotitem.list().map( function( k ){
-	    let item = KanColleDatabase.memberSlotitem.get( k );
+	this.allequipments = KanColleDatabase.slotitem.list().map( function( k ){
+	    let item = KanColleDatabase.slotitem.get( k );
 	    let tmp = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
 	    MergeSimpleObject( item, tmp );
 	    return item;
@@ -477,8 +478,8 @@ var ShipList = {
 	this.createHistogram();
 
 	// 艦艇リスト
-	let ships = KanColleDatabase.memberShip2.list().map( function( k ){
-	    return KanColleDatabase.memberShip2.get( k );
+	let ships = KanColleDatabase.ship.list().map( function( k ){
+	    return KanColleDatabase.ship.get( k );
 	} );
 	this.allships = this.createShipList( ships );
 	this.sort(0); // 艦種別ソートをデフォルトに

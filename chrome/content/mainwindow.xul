@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/timer-binding.css" type="text/css" ?>
 <?xml-stylesheet href="chrome://kancolletimer/content/sound-binding.css" type="text/css"?>
 
 <!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
@@ -92,10 +93,9 @@
     <vbox id="wallpaper" flex="1">
     </vbox>
     <deck id="deck" persist="selectedIndex">
-      <vbox id="tab-timer" flex="1" style="overflow:auto;">
+      <vbox flex="1" style="overflow:auto;" id="tab-timer">
 	<groupbox id="group-mission">
 	  <caption>遠征</caption>
-	  
 	  <vbox class="fleet" style="display:none;">
 	    <hbox>
 	      <label value="■第1艦隊"/>
@@ -103,8 +103,8 @@
 	    </hbox>
 	    <hbox>
 	      <label id="fleetname1" class="fleetname" value="第1艦隊"/><!-- 艦隊名 -->
-	      <label id="fleet1" class="fleet-time" value=""/><!-- 帰還時刻 -->
-	      <label id="fleetremain1" class="fleetremain" value=""/><!-- 残り時間 -->
+	      <timer id="fleet1" class="fleet-time" mode="target"/><!-- 帰還時刻 -->
+	      <timer id="fleetremain1" class="fleetremain" mode="time"/><!-- 残り時間 -->
 	    </hbox>
 	  </vbox>
 	  
@@ -115,8 +115,8 @@
 	    </hbox>
 	    <hbox>
 	      <label id="fleetname2" class="fleetname" value="第2艦隊"/>
-	      <label id="fleet2" class="fleet-time" value=""/>
-	      <label id="fleetremain2" class="fleetremain" value=""/>
+	      <timer id="fleet2" class="fleet-time" mode="target"/>
+	      <timer id="fleetremain2" class="fleetremain" mode="time"/>
 	    </hbox>
 	  </vbox>
 	  
@@ -127,8 +127,8 @@
 	    </hbox>
 	    <hbox>
 	      <label id="fleetname3" class="fleetname" value="第3艦隊"/>
-	      <label id="fleet3" class="fleet-time" value=""/>
-	      <label id="fleetremain3" class="fleetremain" value=""/>
+	      <timer id="fleet3" class="fleet-time" mode="target"/>
+	      <timer id="fleetremain3" class="fleetremain" mode="time"/>
 	    </hbox>
 	  </vbox>
 	  
@@ -139,15 +139,20 @@
 	    </hbox>
 	    <hbox>
 	      <label id="fleetname4" class="fleetname" value="第4艦隊"/>
-	      <label id="fleet4" class="fleet-time" value=""/>
-	      <label id="fleetremain4" class="fleetremain" value=""/>
+	      <timer id="fleet4" class="fleet-time" mode="target"/>
+	      <timer id="fleetremain4" class="fleetremain" mode="time"/>
 	    </hbox>
 	  </vbox>
 	  
 	</groupbox>
 	
-	<groupbox id="group-ndock">
+	<groupbox tooltip="ndock-tooltip" id="group-ndock">
 	  <caption>入渠ドック[<image style="vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>]</caption>
+	  <tooltip id="ndock-tooltip">
+	    <box>
+	      <image style="background-color: white; vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>
+	    </box>
+	  </tooltip>
 	  <grid>
 	    <columns>
 	      <column/>
@@ -157,50 +162,71 @@
 	    <rows>
 	      <row id="ndock-box1" class="ndock-box" context="popup-ndock-memo">
 		<label id="ndock-label1" value="No.1"/>
-		<label id="ndock1" class="ndock-time" value=""/>
-		<label id="ndockremain1" class="ndockremain" value=""/>
+		<timer id="ndock1" mode="target" class="ndock-time"/>
+		<timer id="ndockremain1" mode="time" class="ndockremain"/>
 	      </row>
 	      <row id="ndock-box2" class="ndock-box" context="popup-ndock-memo">
 		<label id="ndock-label2" value="No.2"/>
-		<label id="ndock2" class="ndock-time" value=""/>
-		<label id="ndockremain2" class="ndockremain" value=""/>
+		<timer id="ndock2" mode="target" class="ndock-time"/>
+		<timer id="ndockremain2" mode="time" class="ndockremain"/>
 	      </row>
 	      <row id="ndock-box3" class="ndock-box" context="popup-ndock-memo">
 		<label id="ndock-label3" value="No.3"/>
-		<label id="ndock3" class="ndock-time" value=""/>
-		<label id="ndockremain3" class="ndockremain" value=""/>
+		<timer id="ndock3" mode="target" class="ndock-time"/>
+		<timer id="ndockremain3" mode="time" class="ndockremain"/>
 	      </row>
 	      <row id="ndock-box4" class="ndock-box" context="popup-ndock-memo">
 		<label id="ndock-label4" value="No.4"/>
-		<label id="ndock4" class="ndock-time" value=""/>
-		<label id="ndockremain4" class="ndockremain" value=""/>
+		<timer id="ndock4" mode="target" class="ndock-time"/>
+		<timer id="ndockremain4" mode="time" class="ndockremain"/>
 	      </row>
 	    </rows>
 	  </grid>
 	</groupbox>
 	
-	<groupbox id="group-kdock">
+	<groupbox tooltip="kdock-tooltip" id="group-kdock">
 	  <caption>建造ドック</caption>
+	  <tooltip id="kdock-tooltip">
+	    <box>
+	      <image style="background-color: white; vertical-align:middle;" src="data/burner.png"/><label id="burner-number" value="---"/>
+	    </box>
+	  </tooltip>
 	  <hbox id="kdock-box1" class="kdock-box">
 	    <label id="kdock-label1" value="No.1"/>
-	    <label id="kdock1" class="kdock-time" value=""/>
-	    <label id="kdockremain1" class="kdockremain" value=""/>
+	    <timer id="kdock1" mode="target" class="kdock-time"/>
+	    <timer id="kdockremain1" mode="time" class="kdockremain"/>
 	  </hbox>
 	  <hbox id="kdock-box2" class="kdock-box">
 	    <label id="kdock-label2" value="No.2"/>
-	    <label id="kdock2" class="kdock-time" value=""/>
-	    <label id="kdockremain2" class="kdockremain" value=""/>
+	    <timer id="kdock2" mode="target" class="kdock-time"/>
+	    <timer id="kdockremain2" mode="time" class="kdockremain"/>
 	  </hbox>
 	  <hbox id="kdock-box3" class="kdock-box">
 	    <label id="kdock-label3" value="No.3"/>
-	    <label id="kdock3" class="kdock-time" value=""/>
-	    <label id="kdockremain3" class="kdockremain" value=""/>
+	    <timer id="kdock3" mode="target" class="kdock-time"/>
+	    <timer id="kdockremain3" mode="time" class="kdockremain"/>
 	  </hbox>
 	  <hbox id="kdock-box4" class="kdock-box">
 	    <label id="kdock-label4" value="No.4"/>
-	    <label id="kdock4" class="kdock-time" value=""/>
-	    <label id="kdockremain4" class="kdockremain" value=""/>
+	    <timer id="kdock4" mode="target" class="kdock-time"/>
+	    <timer id="kdockremain4" mode="time" class="kdockremain"/>
 	  </hbox>
+	</groupbox>
+	<groupbox id="group-quest">
+	  <caption>任務(<label id="quest-information-mode" value="-" popup="quest-information-mode-popup"/>)</caption>
+	  <menupopup id="quest-information-mode-popup">
+	    <menuitem label=""/>
+	    <menuitem label="全て"               value="0" oncommand="KanColleTimerQuestInfo.changeMode(this);"/>
+	    <menuitem label="遂行中/進捗有"      value="1" oncommand="KanColleTimerQuestInfo.changeMode(this);"/>
+	    <menuitem label="遂行中"             value="2" oncommand="KanColleTimerQuestInfo.changeMode(this);"/>
+	    <menuitem label="未達成遂行中"       value="3" oncommand="KanColleTimerQuestInfo.changeMode(this);"/>
+	  </menupopup>
+	  <grid id="quest-list">
+	    <columns>
+	      <column flex="1" crop="end"/><column/><column/>
+	    </columns>
+	    <rows id="quest-list-rows"/>
+	  </grid>
 	</groupbox>
 	<html:textarea id="log" style="min-height: 5em;"/>
       </vbox>
@@ -225,6 +251,7 @@
 	  Referenced from 艦隊これくしょん -艦これ- 攻略 Wiki* &amp; 艦隊これくしょん ～艦これ～ 攻略＆2chまとめwiki
 	</description>
       </vbox>
+
       <!-- 編成・任務表 -->
       <vbox id="tab-organization" flex="1" style="overflow:auto;">
 	<hbox align="center" id="group-general-timer" style="display:inline-block">
@@ -243,6 +270,12 @@
 	  <button label="疲労回復まで" oncommand="KanColleTimer.setGeneralTimer(-1);"/>
 	  <label id="general-timer" value="00:00:00"/>
 	</hbox>
+
+
+
+
+
+
 
 	<groupbox id="group-info">
 	  <caption>艦隊司令部情報</caption>
@@ -264,10 +297,6 @@
 	    <rows id="fleet-1" class="fleet-organization">
 	    </rows>
 	  </grid>
-	</groupbox>
-
-	<groupbox id="group-quest">
-	  <caption>遂行中任務</caption>
 	</groupbox>
 
 	<groupbox id="group-fleets">
@@ -325,13 +354,122 @@
     </deck>
   </stack>
 
-  <sound id="sound.ndock"/>
-  <sound id="sound.kdock"/>
-  <sound id="sound.mission"/>
-  <sound id="sound.1min.ndock"/>
-  <sound id="sound.1min.kdock"/>
-  <sound id="sound.1min.mission"/>
-  <sound id="sound.default"/><!-- default -->
+  <groupbox style="display:none;">
+    <caption label="艦隊"/>
+    <menupopup id="shipstatus-1-popup"><menuitem id="shipstatus-1-popup-1" label="タイマー設定" disabled="true"/></menupopup>
+    <menupopup id="shipstatus-2-popup"><menuitem id="shipstatus-2-popup-1" label="タイマー設定" disabled="true"/></menupopup>
+    <menupopup id="shipstatus-3-popup"><menuitem id="shipstatus-3-popup-1" label="タイマー設定" disabled="true"/></menupopup>
+    <menupopup id="shipstatus-4-popup"><menuitem id="shipstatus-4-popup-1" label="タイマー設定" disabled="true"/></menupopup>
+    <grid>
+      <rows>
+	<row/>
+	<row/>
+	<row/>
+	<row/>
+	<row/>
+	<row/>
+	<row/>
+      </rows>
+      <columns>
+	<column id="shipstatus-fleet-1">
+	  <label id="shipstatus-1-0" class="shipstatus-fleetname" value="#1" context="shipstatus-1-popup"/>
+	  <label id="shipstatus-1-1" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-1-2" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-1-3" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-1-4" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-1-5" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-1-6" class="shipstatus-ship" value=""/>
+	</column>
+	<column id="shipstatus-fleet-2">
+	  <label id="shipstatus-2-0" class="shipstatus-fleetname" value="#2" context="shipstatus-2-popup"/>
+	  <label id="shipstatus-2-1" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-2-2" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-2-3" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-2-4" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-2-5" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-2-6" class="shipstatus-ship" value=""/>
+	</column>
+	<column id="shipstatus-fleet-3">
+	  <label id="shipstatus-3-0" class="shipstatus-fleetname" value="#3" context="shipstatus-3-popup"/>
+	  <label id="shipstatus-3-1" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-3-2" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-3-3" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-3-4" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-3-5" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-3-6" class="shipstatus-ship" value=""/>
+	</column>
+	<column id="shipstatus-fleet-4">
+	  <label id="shipstatus-4-0" class="shipstatus-fleetname" value="#4" context="shipstatus-4-popup"/>
+	  <label id="shipstatus-4-1" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-4-2" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-4-3" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-4-4" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-4-5" class="shipstatus-ship" value=""/>
+	  <label id="shipstatus-4-6" class="shipstatus-ship" value=""/>
+	</column>
+      </columns>
+    </grid>
+  </groupbox>
+  
+  <groupbox id="shipinfo-box" flex="1" style="display:none;">
+    <caption>艦船</caption>
+    <menupopup id="shipinfo-colmenu" oncommand="ShipInfoTreeMenuPopup();">
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="艦隊"	value="fleet"		id="shipinfo-colmenu-fleet"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="ID"	value="id"		id="shipinfo-colmenu-id"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="艦種" 	value="stype"		id="shipinfo-colmenu-stype"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="艦名"	value="name"		id="shipinfo-colmenu-name"	checked="true"  disabled="true" />
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="Lv"	value="lv"		id="shipinfo-colmenu-lv"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="経験値"	value="exp"		id="shipinfo-colmenu-exp"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="HP"	value="hp"		id="shipinfo-colmenu-hp"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="火力"	value="karyoku"		id="shipinfo-colmenu-karyoku"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="雷装"	value="raisou"		id="shipinfo-colmenu-raisou"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="対空"	value="taiku"		id="shipinfo-colmenu-taiku"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装甲"	value="soukou"		id="shipinfo-colmenu-soukou"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="回避"	value="kaihi"		id="shipinfo-colmenu-kaihi"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="対潜"	value="taisen"		id="shipinfo-colmenu-taisen"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="索敵"	value="sakuteki"	id="shipinfo-colmenu-sakuteki"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="速力"	value="soku"		id="shipinfo-colmenu-soku"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="射程"	value="length"		id="shipinfo-colmenu-length"	checked="false" disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="運"	value="lucky"		id="shipinfo-colmenu-lucky"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="士気"	value="cond"		id="shipinfo-colmenu-cond"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="入渠"	value="ndock"		id="shipinfo-colmenu-ndock"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装備1"	value="slotitem1"	id="shipinfo-colmenu-slotitem1"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装備2"	value="slotitem2"	id="shipinfo-colmenu-slotitem2"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装備3"	value="slotitem3"	id="shipinfo-colmenu-slotitem3"	checked="true"  disabled="false"/>
+      <menuitem type="checkbox" persist="checked" autoCheck="true"
+		label="装備4"	value="slotitem4"	id="shipinfo-colmenu-slotitem4"	checked="true"  disabled="false"/>
+    </menupopup>
+  </groupbox>
+
+  <sound id="sound.ndock" src=""/>
+  <sound id="sound.kdock" src=""/>
+  <sound id="sound.mission" src=""/>
+  <sound id="sound.1min.ndock" src=""/>
+  <sound id="sound.1min.kdock" src=""/>
+  <sound id="sound.1min.mission" src=""/>
+  <sound id="sound.default" src=""/>
 
   <scrollbox width="1" height="1">
     <html:canvas id="KanColleTimerCapture" display="none" />
@@ -339,7 +477,7 @@
 
   <popupset>
     <menupopup id="popup-ndock-memo">
-      <menuitem label="メモの記入" oncommand="KanColleTimer.createRepairMemo();"/>
+      <menuitem label="メモの記入" oncommand="KanColleTimerNdockInfo.createRepairMemo();"/>
     </menupopup>
   </popupset>
       

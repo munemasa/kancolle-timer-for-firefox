@@ -21,6 +21,7 @@ var KanColleTimerPreference = {
 	    $('order-of-dashboard').appendChild(node);
 	}
 	this.changeDashboardOrder();
+	Application.console.log(txt);
     },
     checkDrag:function(event){
 	let b = event.dataTransfer.types.contains("application/x-moz-node");
@@ -70,6 +71,12 @@ var KanColleTimerPreference = {
 	}
     },
 
+    refFontSize:function( target, label, value ){
+	let t = $(target);
+	t.label = label;
+	t.value = value;
+    },
+
     /**
      * 画像選択.
      * @param target 設定対象
@@ -116,6 +123,7 @@ var KanColleTimerPreference = {
 	$('wallpaper-alpha').value = alpha;
 	this.buildFontList();
 
+	$('audio-playback').method = $('pref-sound-api') ? 'nsisound' : 'html';
 	try{
 	    let order = JSON.parse( $('pref-dashboard-order').value );
 	    let listbox = $('order-of-dashboard');

@@ -97,19 +97,18 @@
     </property>
     <method name="play">
       <body><![CDATA[
-	try {
-	    if (!this._method)
-		this.setMethod('html');
-	    if (this._method == 'nsisound') {
-		if (this._audio)
-		    this._audio.play(this._uri);
-            } else {
-		if (this._audio)
-		    this._audio.play();
-	    }
-	} catch(x) {}
+	if (!this._method)
+	  this.setMethod('html');
+	if (this._method == 'nsisound') {
+	  if (this._audio)
+	    this._audio.play(this._uri);
+        } else {
+	  if (this._audio)
+	    this._audio.play();
+	}
       ]]></body>
     </method>
     </implementation>
   </binding>
 </bindings>
+

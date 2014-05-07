@@ -5,7 +5,8 @@ pref("extensions.kancolletimer.display.dashboard.order","");
 pref("extensions.kancolletimer.display.short",false);
 pref("extensions.kancolletimer.display.font-color","");
 pref("extensions.kancolletimer.display.font","");
-
+pref("extensions.kancolletimer.display.font-size","");
+pref("extensions.kancolletimer.display.ship-num-free",5);
 pref("extensions.kancolletimer.default-action.toolbar", 0);
 
 pref("extensions.kancolletimer.record.resource-history",false);

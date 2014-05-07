@@ -68,7 +68,7 @@
       </tabs>
       <tabpanels>
 	<tabpanel orient="vertical">
-	  <groupbox>
+      <groupbox>
 	    <caption>汎用音声</caption>
 	    <hbox>
 	      <textbox flex="1" preference="pref-sound-default"/>
@@ -78,34 +78,34 @@
 	    </hbox>
 	  </groupbox>
 	  <groupbox>
-	    <caption>遠征終了</caption>
-	    <hbox>
-	      <textbox flex="1" preference="pref-sound-mission-completed"/>
-	      <button label="選択..."
-		      oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-completed');"/>
+	<caption>遠征終了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-mission-completed"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-completed');"/>
 	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-mission-completed');"/>
-	    </hbox>
-	  </groupbox>
-	  <groupbox>
-	    <caption>修理完了</caption>
-	    <hbox>
-	      <textbox flex="1" preference="pref-sound-ndock-completed"/>
-	      <button label="選択..."
-		      oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-completed');"/>
+	</hbox>
+      </groupbox>
+      <groupbox>
+	<caption>修理完了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-ndock-completed"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-completed');"/>
 	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-ndock-completed');"/>
-	    </hbox>
-	  </groupbox>
-	  <groupbox>
-	    <caption>建造完了</caption>
-	    <hbox>
-	      <textbox flex="1" preference="pref-sound-kdock-completed"/>
-	      <button label="選択..."
-		      oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-completed');"/>
+	</hbox>
+      </groupbox>
+      <groupbox>
+	<caption>建造完了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-kdock-completed"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-completed');"/>
 	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-kdock-completed');"/>
-	    </hbox>
-	  </groupbox>
-	  
-	  <groupbox>
+	</hbox>
+      </groupbox>
+
+      <groupbox>
 	    <caption>音声再生方式</caption>
 	    <radiogroup preference="pref-sound-api">
 	      <hbox>
@@ -117,36 +117,36 @@
 	</tabpanel>
 	<tabpanel orient="vertical">
 	  <groupbox>
-	    <caption>遠征終了</caption>
-	    <hbox>
-	      <textbox flex="1" preference="pref-sound-mission-1min"/>
-	      <button label="選択..."
-		      oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-1min');"/>
+	<caption>遠征終了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-mission-1min"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-mission-1min');"/>
 	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-mission-1min');"/>
-	    </hbox>
-	  </groupbox>
-	  <groupbox>
-	    <caption>修理完了</caption>
-	    <hbox>
-	      <textbox flex="1" preference="pref-sound-ndock-1min"/>
-	      <button label="選択..."
-		      oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-1min');"/>
+	</hbox>
+      </groupbox>
+      <groupbox>
+	<caption>修理完了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-ndock-1min"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-ndock-1min');"/>
 	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-ndock-1min');"/>
-	    </hbox>
-	  </groupbox>
-	  <groupbox>
-	    <caption>建造完了</caption>
-	    <hbox>
-	      <textbox flex="1" preference="pref-sound-kdock-1min"/>
-	      <button label="選択..."
-		      oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-1min');"/>
+	</hbox>
+      </groupbox>
+      <groupbox>
+	<caption>建造完了</caption>
+	<hbox>
+	  <textbox flex="1" preference="pref-sound-kdock-1min"/>
+	  <button label="選択..."
+		  oncommand="KanColleTimerPreference.refSoundFileToNotice('pref-sound-kdock-1min');"/>
 	      <button label="再生" oncommand="KanColleTimerPreference.playSound('pref-sound-kdock-1min');"/>
-	    </hbox>
-	  </groupbox>
+	</hbox>
+      </groupbox>
 	</tabpanel>
       </tabpanels>
     </tabbox>
-    
+
   </prefpane>
 
   <prefpane id="prefpane-popup" label="ポップアップ通知" image="chrome://kancolletimer/content/data/popupnotification.png">
@@ -188,16 +188,34 @@
 		  name="extensions.kancolletimer.display.font-color" type="unichar"/>
       <preference id="e.n.font"
 		  name="extensions.kancolletimer.display.font" type="unichar"/>
+      <preference id="e.n.font-size"
+		  name="extensions.kancolletimer.display.font-size" type="unichar"/>
+      <preference id="pref-ship-num-free"
+		  name="extensions.kancolletimer.display.ship-num-free" type="int"/>
       <!-- to obtain font group from browser settings -->
       <preference id="font.language.group" name="font.language.group" type="wstring"/>
     </preferences>
-
-    <checkbox preference="pref-auto-open" label="艦これタイマー(ウィンドウ)を自動で開く" tooltiptext="艦これのゲームページを開いたときに、艦これタイマー(ウィンドウ)を自動で開きます。"/>
     <checkbox preference="pref-display-short" label="省スペース表示にする" tooltiptext="ウィンドウ表示時に終了時刻の表示をなくします。"/>
+
 
     <hbox align="center">
       <label value="フォント"/>
       <menulist id="select-font" preference="e.n.font"/>
+      <label value="サイズ"/>
+      <button id="fontsize" type="menu" preference="e.n.font-size" label="" value="">
+	<menupopup>
+	  <menuitem type="radio" name="fontsize" label="Default" oncommand="KanColleTimerPreference.refFontSize('fontsize','Default','');"/>
+	  <menuitem type="radio" name="fontsize" label="xx-small" oncommand="KanColleTimerPreference.refFontSize('fontsize','xx-small','xx-small');"/>
+	  <menuitem type="radio" name="fontsize" label="x-small" oncommand="KanColleTimerPreference.refFontSize('fontsize','x-small','x-small');"/>
+	  <menuitem type="radio" name="fontsize" label="small" oncommand="KanColleTimerPreference.refFontSize('fontsize','small','small');"/>
+	  <menuitem type="radio" name="fontsize" label="medium" oncommand="KanColleTimerPreference.refFontSize('fontsize','medium','medium');"/>
+	  <menuitem type="radio" name="fontsize" label="large" oncommand="KanColleTimerPreference.refFontSize('fontsize','large','large');"/>
+	  <menuitem type="radio" name="fontsize" label="x-large" oncommand="KanColleTimerPreference.refFontSize('fontsize','x-large','x-large');"/>
+	  <menuitem type="radio" name="fontsize" label="xx-large" oncommand="KanColleTimerPreference.refFontSize('fontsize','xx-large','xx-large');"/>
+	</menupopup>
+      </button>
+    </hbox>
+    <hbox align="center">
       <label value="文字色"/>
       <colorpicker id="select-font-color" type="button" preference="e.n.font-color"/>
     </hbox>
@@ -215,6 +233,15 @@
 	<label id="alpha-label" value="100" style="width:3em;"/>
       </hbox>
     </groupbox>
+    <groupbox>
+      <caption>警告表示</caption>
+      <hbox>
+	<label value="艦船数余裕"/>
+	<textbox preference="pref-ship-num-free" type="number" min="0"/>
+	<label value="以下"/>
+      </hbox>
+    </groupbox>
+
   </prefpane>
 
   <prefpane id="prefpane-camera" label="撮影" image="chrome://kancolletimer/content/data/camera.png">

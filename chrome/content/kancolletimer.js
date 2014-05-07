@@ -11,82 +11,40 @@ var KanColleTimer = {
     kdock: [],
     fleet: [],
 
-    // 入渠ドックのメモ作成
-    createRepairMemo: function(){
-	let elem = $('popup-ndock-memo').triggerNode;
-	let hbox = FindParentElement(elem,"row");
-	let oldstr = hbox.getAttribute('tooltiptext') || "";
-	let text = "入渠ドック"+hbox.firstChild.value+"のメモを入力してください。\nツールチップとして表示されるようになります。";
-	let str = InputPrompt(text,"入渠ドックメモ", oldstr);
-	if( str==null ) return;
-	hbox.setAttribute('tooltiptext',str);
+    cookie:{},
+    general_timer: 0,
 
-	let ndock_hbox = evaluateXPath(document,"//*[@class='ndock-box']");
-	for(let k in ndock_hbox){
-	    k = parseInt(k);
-	    let elem = ndock_hbox[k];
-	    KanColleRemainInfo.ndock_memo[k] = ndock_hbox[k].getAttribute('tooltiptext');
-	}
-    },
+    // 通知
+    notify: function(type,i,str){
+	let coretype = type.replace(/^1min\./,'');
+	let sound_conf = 'sound.' + type;
+	let popup_conf = 'popup.' + coretype;
+	let is1min = type != coretype;
+	let cookie = 'kancolletimer.' + coretype + '.' + i;
+	let path = KanColleTimerConfig.getUnichar(sound_conf);
 
-    // 完了の通知
-    noticeRepairFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.ndock');
-	$('sound.ndock').play();
-
-	if( KanColleTimerConfig.getBool('popup.ndock') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
-	}
-    },
-    noticeConstructionFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.kdock');
-	$('sound.kdock').play();
-
-	if( KanColleTimerConfig.getBool('popup.kdock') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
-	}
-    },
-    noticeMissionFinished: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.mission');
-	$('sound.mission').play();
-
-	if( KanColleTimerConfig.getBool('popup.mission') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
-	}
-    },
-
-    // 1分前の通知
-    noticeRepair1min: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.ndock');
-	$('sound.1min.ndock').play();
-
-	if( KanColleTimerConfig.getBool('popup.ndock') &&
-	    KanColleTimerConfig.getBool('popup.1min-before') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"repair"+i);
-	}
-    },
-    noticeConstruction1min: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.kdock');
-	$('sound.1min.kdock').play();
-
-	if( KanColleTimerConfig.getBool('popup.kdock') &&
-	    KanColleTimerConfig.getBool('popup.1min-before') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"construction"+i);
-	}
-    },
-    noticeMission1min: function(i,str){
-	let path = KanColleTimerConfig.getUnichar('sound.1min.mission');
-	$('sound.1min.mission').play();
-
-	if( KanColleTimerConfig.getBool('popup.1min-before') &&
-	    KanColleTimerConfig.getBool('popup.mission') ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"mission"+i);
+	$(sound_conf).play();
+	if( KanColleTimerConfig.getBool(popup_conf) &&
+	    (!is1min || KanColleTimerConfig.getBool('popup.1min-before')) ){
+	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,cookie);
 	}
     },
 
     // ウィンドウを最前面にする
     setWindowOnTop:function(){
-	WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
+	let checkbox = $('window-stay-on-top');
+	if (checkbox)
+	    WindowOnTop( window, checkbox.hasAttribute('checked') );
+    },
+
+    setGeneralTimerByTime: function(timeout){
+	if (timeout) {
+	    this.general_timer = timeout;
+	    $('general-timer').finishTime = timeout;
+	} else {
+	    this.general_timer = 0;
+	    $('general-timer').finishTime = '';
+	}
     },
 
     // 汎用タイマーの時間設定
@@ -117,22 +75,6 @@ var KanColleTimer = {
 	$('general-timer').value = GetTimeString( remain );
     },
 
-    updateDailyJob: function(){
-	let now = new Date();
-	let d = now.getDate();
-	let h = now.getHours();
-	let m = now.getMinutes();
-	let s = now.getSeconds();
-	// 毎日午前5時になったときに任務を一旦クリアする
-	if( h==5 && m==0 && this._date!=d ){
-	    for( let i in KanColleRemainInfo.gMission ){
-		delete KanColleRemainInfo.gMission[i];
-	    }
-	    this._date = d;
-	    KanColleTimerQuestInfo.update.memberQuestlist();
-	}
-    },
-
     updateRefreshTimer: function(){
 	let t = $('refresh-timer').getAttribute('refresh-time');
 	let now = GetCurrentTime();
@@ -145,181 +87,63 @@ var KanColleTimer = {
     },
 
     update: function(){
-	this.updateDailyJob();
+	let cur = (new Date).getTime();
+	let that = this;
+
+	function check_cookie(cookie,type,no,time) {
+	    let k;
+	    let v;
+	    k = type + '_' + no;
+	    v = cookie[k];
+
+	    //debugprint('k=' + k + '; v=' + v + ', time=' + time);
+
+	    if (!v || time > cur) {
+		ret = v != time;
+		if (ret)
+		    cookie[k] = time;
+	    } else {
+		cookie[k] = time;
+		ret = false;
+	    }
+	    return ret;
+	}
+
+	function check_timeout(type,list,titlefunc){
+	    for( let i in KanColleRemainInfo[list] ){
+		i = parseInt(i,10);
+		let t = KanColleRemainInfo[list][i].finishedtime;
+		let d = t - cur;
+
+		if (isNaN(t)) {
+		    check_cookie(that.cookie,type,i,0);
+		    check_cookie(KanColleRemainInfo.cookie,type,i,0);
+		    continue;
+		}
+
+		if (d < 0) {
+		    let str = titlefunc(i) + 'しました。\n';
+		    if (check_cookie(that.cookie,type,i,t))
+			AddLog(str);
+		    if (check_cookie(KanColleRemainInfo.cookie,type,i,t))
+			that.notify(type,i, str);
+		} else if (d < 60000) {
+		    let str = 'まもなく' + titlefunc(i) + 'します。\n';
+		    if (check_cookie(KanColleRemainInfo.cookie,'1min.' + type,i,t))
+			that.notify('1min.' + type,i,str);
+		} else {
+		    check_cookie(that.cookie,type,i,0);
+		    check_cookie(KanColleRemainInfo.cookie,type,i,0);
+		}
+	    }
+	}
+
 	this.updateGeneralTimer();
 	this.updateRefreshTimer();
 
-	let i;
-	let now = GetCurrentTime();
-	let fleetremain = evaluateXPath(document,"//*[@class='fleetremain']");
-	let ndockremain = evaluateXPath(document,"//*[@class='ndockremain']");
-	let kdockremain = evaluateXPath(document,"//*[@class='kdockremain']");
-	let fleet_time = evaluateXPath(document,"//*[@class='fleet-time']");
-	let ndock_time = evaluateXPath(document,"//*[@class='ndock-time']");
-	let kdock_time = evaluateXPath(document,"//*[@class='kdock-time']");
-
-	// 遠征
-	for(i in KanColleRemainInfo.fleet){
-	    i = parseInt(i);
-	    let t = KanColleRemainInfo.fleet[i].mission_finishedtime;
-	    if( t > 0 ){
-		let d = t - now;
-		if( !fleet_time[i].getAttribute('few-minutes-left') ){
-		    if( d<60 ){
-			let str = "まもなく"+KanColleRemainInfo.fleet_name[i]+"が遠征から帰還します。\n";
-			this.noticeMission1min(i,str);
-		    }
-		}
-		if( d<60 ){
-		    fleet_time[i].setAttribute('few-minutes-left','1');
-		    if( KanColleTimerConfig.isShortDisplay() ){
-			fleetremain[i].setAttribute('few-minutes-left','1');
-		    }else{
-			fleetremain[i].removeAttribute('few-minutes-left');
-		    }
-		}else{
-		    fleet_time[i].removeAttribute('few-minutes-left');
-		    fleetremain[i].removeAttribute('few-minutes-left');
-		}
-
-		if( d<0 ){
-		    let str = KanColleRemainInfo.fleet_name[i]+"が遠征から帰還しました。\n";
-		    AddLog(str);
-		    KanColleRemainInfo.fleet[i].mission_finishedtime = 0;
-		    this.noticeMissionFinished(i, str);
-		}else{
-		    fleetremain[i].value = GetTimeString( d );
-		}
-	    }else{
-		fleetremain[i].value = "";
-	    }
-	}
-
-	// 入渠ドック
-	for(i in KanColleRemainInfo.ndock){
-	    i = parseInt(i);
-	    let t = KanColleRemainInfo.ndock[i].finishedtime;
-	    if( t > 0 ){
-		let d = KanColleRemainInfo.ndock[i].finishedtime - now;
-
-		if( !ndock_time[i].getAttribute('few-minutes-left') ){
-		    if( d<60 ){
-			let str = "まもなくドック"+(i+1)+"の修理が完了します。\n";
-			this.noticeRepair1min(i,str);
-		    }
-		}
-
-		if( d<60 ){
-		    ndock_time[i].setAttribute('few-minutes-left','1');
-		    if( KanColleTimerConfig.isShortDisplay() ){
-			ndockremain[i].setAttribute('few-minutes-left','1');
-		    }else{
-			ndockremain[i].removeAttribute('few-minutes-left');
-		    }
-		}else{
-		    ndock_time[i].removeAttribute('few-minutes-left');
-		    ndockremain[i].removeAttribute('few-minutes-left');
-		}
-
-		if( d<0 ){
-		    let str = "ドック"+(i+1)+"の修理が完了しました。\n";
-		    AddLog(str);
-		    KanColleRemainInfo.ndock[i].finishedtime = 0;
-		    this.noticeRepairFinished(i,str);
-		}else{
-		    ndockremain[i].value = GetTimeString( d );
-		}
-	    }else{
-		ndockremain[i].value = "";
-	    }
-	}
-
-	// 建造ドック
-	for(i in KanColleRemainInfo.kdock){
-	    i = parseInt(i);
-	    let t = KanColleRemainInfo.kdock[i].finishedtime;
-	    if( t > 0 ){
-		let d = KanColleRemainInfo.kdock[i].finishedtime - now;
-
-		if( !kdock_time[i].getAttribute('few-minutes-left') ){
-		    if( d<60 ){
-			let str = "まもなくドック"+(i+1)+"の建造が完了します。\n";
-			this.noticeConstruction1min(i,str);
-		    }
-		}
-
-		if( d<60 ){
-		    kdock_time[i].setAttribute('few-minutes-left','1');
-		    if( KanColleTimerConfig.isShortDisplay() ){
-			kdockremain[i].setAttribute('few-minutes-left','1');
-		    }else{
-			kdockremain[i].removeAttribute('few-minutes-left');
-		    }
-		}else{
-		    kdock_time[i].removeAttribute('few-minutes-left');
-		    kdockremain[i].removeAttribute('few-minutes-left');
-		}
-		if( d<0 ){
-		    let str = "ドック"+(i+1)+"の建造が完了しました。\n";
-		    AddLog(str);
-		    KanColleRemainInfo.kdock[i].finishedtime = 0;
-		    this.noticeConstructionFinished(i,str);
-		}else{
-		    kdockremain[i].value = GetTimeString( d );
-		}
-	    }else{
-		kdockremain[i].value = "";
-	    }
-	}
-    },
-
-    /**
-     * スクリーンショット撮影
-     * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
-     */
-    takeScreenshot: function(path){
-	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
-	var url = TakeKanColleScreenshot( isjpeg );
-	if( !url ){
-	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
-	    return null;
-	}
-
-	var file = null;
-	if( !path ){
-	    var fp = Components.classes['@mozilla.org/filepicker;1']
-		.createInstance(Components.interfaces.nsIFilePicker);
-	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
-	    fp.appendFilters(fp.filterImages);
-	    fp.defaultExtension = isjpeg?"jpg":"png";
-	    if( KanColleTimerConfig.getUnichar("screenshot.path") ){
-		fp.displayDirectory = OpenFile(KanColleTimerConfig.getUnichar("screenshot.path"));
-	    }
-
-	    var datestr = this.getNowDateString();
-	    fp.defaultString = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
-	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
-	    
-	    file = fp.file;
-	}else{
-	    let localfileCID = '@mozilla.org/file/local;1';
-	    let localfileIID =Components.interfaces.nsILocalFile;
-	    file = Components.classes[localfileCID].createInstance(localfileIID);
-	    file.initWithPath(path);
-	    var datestr = this.getNowDateString();
-	    var filename = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
-	    file.append(filename);
-	}
-	
-	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-            .createInstance(Components.interfaces.nsIWebBrowserPersist);
-	wbp.saveURI(url, null, null, null, null, file, null);
-	return true;
-    },
-
-    takeScreenshotSeriography:function(){
-	var path = KanColleTimerConfig.getUnichar("screenshot.path");
-	this.takeScreenshot(path);
+	check_timeout('mission', 'fleet', function(i){ return KanColleRemainInfo.fleet_name[i] + 'が遠征から帰還'; });
+	check_timeout('ndock',   'ndock', function(i){ return 'ドック' + (i+1) + 'の修理が完了'; });
+	check_timeout('kdock',   'kdock', function(i){ return 'ドック' + (i+1) + 'の建造が完了'; });
     },
 
     getNowDateString: function(){
@@ -339,6 +163,159 @@ var KanColleTimer = {
 	    ms = "0" + ms;
 	}
 	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
+    },
+
+    /**
+     * スクリーンショット保存
+     * @param file 保存ファイル名(nsIFile)
+     * @param url 保存オブジェクト
+     */
+    _saveScreenshot: function(file,url){
+	if (!file || !url)
+	    return;
+	Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
+	    .createInstance(Components.interfaces.nsIWebBrowserPersist)
+	    .saveURI(url, null, null, null, null, file, null);
+    },
+    /**
+     * スクリーンショット撮影
+     * @param isjpeg JPEGかどうか
+     */
+    _takeScreenshot: function(isjpeg){
+	let url = TakeKanColleScreenshot(isjpeg);
+	if (!url) {
+	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
+	    return null;
+	}
+	return url;
+    },
+
+    /**
+     * スクリーンショット撮影
+     */
+    takeScreenshot: function(){
+	let ret;
+	let defaultdir = KanColleTimerConfig.getUnichar("screenshot.path");
+	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+	let nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+	let url = this._takeScreenshot(isjpeg);
+
+	if (!url)
+	    return;
+
+	fp.init(window, "保存ファイルを選んでください", nsIFilePicker.modeSave);
+	if (defaultdir) {
+	    let file = Components.classes['@mozilla.org/file/local;1']
+		       .createInstance(Components.interfaces.nsILocalFile);
+	    file.initWithPath(defaultdir);
+	    if (file.exists() && file.isDirectory())
+		fp.displayDirectory = file;
+	}
+	fp.appendFilters(nsIFilePicker.filterImages);
+	fp.defaultString = "screenshot-"+ this.getNowDateString() + (isjpeg?".jpg":".png");
+	fp.defaultExtension = isjpeg ? "jpg" : "png";
+	ret = fp.show();
+	if ((ret != nsIFilePicker.returnOK && ret != nsIFilePicker.returnReplace) || !fp.file)
+	    return null;
+
+	this._saveScreenshot(fp.file, url);
+    },
+
+    /**
+     * スクリーンショット連続撮影用フォルダ選択
+     * @return nsIFile
+     */
+    takeScreenshotSeriographySelectFolder: function(){
+	let defaultdir = KanColleTimerConfig.getUnichar("screenshot.path");
+	let ret;
+	let nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+
+	fp.init(window, "保存フォルダを選んでください", nsIFilePicker.modeGetFolder);
+	if (defaultdir) {
+	    let file = Components.classes['@mozilla.org/file/local;1']
+		       .createInstance(Components.interfaces.nsILocalFile);
+	    file.initWithPath(defaultdir);
+	    if (file.exists() && file.isDirectory())
+		fp.displayDirectory = file;
+	}
+	ret = fp.show();
+	if (ret != nsIFilePicker.returnOK || !fp.file)
+	    return null;
+
+	KanColleTimerConfig.setUnichar("screenshot.path", fp.file.path);
+
+	return fp.file;
+    },
+
+    /**
+     * スクリーンショット連続撮影
+     */
+    takeScreenshotSeriography: function(){
+	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+	let url = this._takeScreenshot(isjpeg);
+	let file = null;
+	let dir;
+
+	if (!url)
+	    return;
+
+	dir = KanColleTimerConfig.getUnichar("screenshot.path");
+	if (dir) {
+	    file = Components.classes['@mozilla.org/file/local;1']
+		   .createInstance(Components.interfaces.nsILocalFile);
+	    file.initWithPath(dir);
+	}
+
+	// フォルダのチェック。フォルダでなければ、(再)選択
+	do {
+	    if (file && file.exists() && file.isDirectory())
+		break;
+	    file = this.takeScreenshotSeriographySelectFolder();
+	} while(file);
+
+	// エラー
+	if (!file)
+	    return null;
+
+	file.append("screenshot-" + this.getNowDateString() + (isjpeg ? '.jpg' : '.png'));
+
+	this._saveScreenshot(file, url);
+    },
+
+    findWindow:function(){
+	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
+	return win;
+    },
+
+    /**
+     * 艦これタイマーを開く
+     */
+    open:function(){
+	let feature="chrome,resizable=yes";
+
+	let win = this.findWindow();
+	if(win){
+	    win.focus();
+	}else{
+	    let w = window.open("chrome://kancolletimer/content/mainwindow.xul","KanColleTimer",feature);
+	    w.focus();
+	}
+    },
+
+    startTimer: function() {
+	if (this._timer)
+	    return;
+	this._timer = setInterval(this.update.bind(this), 1000);
+    },
+
+    stopTimer: function() {
+	if (!this._timer)
+	    return;
+	clearInterval(this._timer);
+	this._timer = null;
     },
 
     createMissionBalanceTable:function(){
@@ -415,44 +392,42 @@ var KanColleTimer = {
     },
 
     init: function(){
-	KanColleHttpRequestObserver.init();
-
+	KanColleDatabase.init();
 	KanColleTimerHeadQuarterInfo.init();
 	KanColleTimerDeckInfo.init();
 	KanColleTimerNdockInfo.init();
 	KanColleTimerKdockInfo.init();
 	KanColleTimerQuestInfo.init();
-	KanColleTimerFleetOrgInfo.init();
-	KanColleTimerFleetCondInfo.init();
+	KanColleTimerFleetInfo.init();
+	KanColleTimerShipTableInit();
 	KanColleTimerMaterialLog.init();
-
-	KanColleTimerDeckInfo.restore();
-	KanColleTimerKdockInfo.restore();
-	KanColleTimerNdockInfo.restore();
-	KanColleTimerQuestInfo.restore();
-	KanColleTimerFleetOrgInfo.restore();
-	KanColleTimerFleetCondInfo.restore();
+	KanColleTimerMissionBalanceInfo.init();
 
 	this.startTimer();
-
-	this.createMissionBalanceTable();
-
 	this.readResourceData();
+
+	KanColleTimerDeckInfo.restore();
+	KanColleTimerNdockInfo.restore();
+	KanColleTimerKdockInfo.restore();
+	KanColleTimerQuestInfo.restore();
+	//KanColleTimerFleetInfo.restore();
+
+	this.setWindowOnTop();
 
 	KanColleTimerHeadQuarterInfo.start();
 	KanColleTimerDeckInfo.start();
-	KanColleTimerNdockInfo.start();
 	KanColleTimerKdockInfo.start();
+	KanColleTimerNdockInfo.start();
 	KanColleTimerQuestInfo.start();
-	KanColleTimerFleetOrgInfo.start();
-	KanColleTimerFleetCondInfo.start();
+	KanColleTimerFleetInfo.start();
+	KanColleTimerShipTableStart();
 	KanColleTimerMaterialLog.start();
     },
 
     destroy: function(){
 	KanColleTimerMaterialLog.stop();
-	KanColleTimerFleetCondInfo.stop();
-	KanColleTimerFleetOrgInfo.stop();
+	KanColleTimerShipTableStop();
+	KanColleTimerFleetInfo.stop();
 	KanColleTimerQuestInfo.stop();
 	KanColleTimerKdockInfo.stop();
 	KanColleTimerNdockInfo.stop();
@@ -460,18 +435,17 @@ var KanColleTimer = {
 	KanColleTimerHeadQuarterInfo.stop();
 
 	this.stopTimer();
-
-	KanColleHttpRequestObserver.destroy();
-
 	this.writeResourceData();
 
+	KanColleTimerMissionBalanceInfo.exit();
 	KanColleTimerMaterialLog.exit();
-	KanColleTimerFleetCondInfo.exit();
-	KanColleTimerFleetOrgInfo.exit();
+	KanColleTimerShipTableExit();
+	KanColleTimerFleetInfo.exit();
 	KanColleTimerQuestInfo.exit();
 	KanColleTimerKdockInfo.exit();
 	KanColleTimerNdockInfo.exit();
 	KanColleTimerDeckInfo.exit();
 	KanColleTimerHeadQuarterInfo.exit();
+	KanColleDatabase.exit();
     }
 };
