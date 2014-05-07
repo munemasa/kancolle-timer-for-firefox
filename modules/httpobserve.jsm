@@ -1054,6 +1054,7 @@ var KanColleSlotitemDB = function() {
 		for (let j = 0; j < ship.api_slot.length; j++) {
 		    if (ship.api_slot[j] < 0)
 			continue;
+		    debugprint('deleting slotitem: ' + ship.api_slot[j]);
 		    delete(this._db.hash[ship.api_slot[j]]);
 		}
 	    }
@@ -1100,8 +1101,10 @@ var KanColleSlotitemDB = function() {
 
 	    this._deepcopy();
 
-	    for (let i = 0; i < req_slotitem_ids.length; i++)
+	    for (let i = 0; i < req_slotitem_ids.length; i++) {
+		debugprint('deleting slotitem: ' + req_slotitem_ids[i]);
 		delete(this._db.hash[req_slotitem_ids[i]]);
+	    }
 	    this._db.list = Object.keys(this._db.hash);
 
 	    this._ts = t;
@@ -1127,6 +1130,7 @@ var KanColleSlotitemDB = function() {
 	    for (let i = 0; i < ship.api_slot.length; i++) {
 		if (ship.api_slot[i] < 0)
 		    continue;
+		debugprint('deleting slotitem: ' + ship.api_slot[i]);
 		delete(this._db.hash[ship.api_slot[i]]);
 	    }
 	    this._db.list = Object.keys(this._db.hash);
