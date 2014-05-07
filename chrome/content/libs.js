@@ -275,12 +275,10 @@ var KanColleTimerKdockInfo = {
 		    }
 
 		    // 建造艦艇の表示…はあらかじめ分かってしまうと面白みがないのでやらない
-		    /*
 		     let ship_id = parseInt( d.api_created_ship_id );
 		     let shiptype = KanColleDatabase.masterShip.get(ship_id);
 		     let ship_name = shiptype ? shiptype.api_name : ('UNKNOWN' + ship_id);
 		     $('kdock-box'+k).setAttribute('tooltiptext',ship_name);
-		     */
 		}else{
 		    // 建造していない
 		    KanColleRemainInfo.kdock_time[i] = "";
