@@ -695,8 +695,8 @@ var KanColleTimerFleetInfo = {
 	    let ratio;
 
 	    if (isNaN(damage[i]) || damage[i] < 0 ||
-		!data.api_nowhps[i] || data.api_nowhps[i] < 0 ||
-		!data.api_maxhps[i] || data.api_maxhps[i] < 0)
+		data.api_nowhps[i] === undefined || data.api_nowhps[i] < 0 ||
+		data.api_maxhps[i] === undefined || data.api_maxhps[i] < 0)
 		continue;
 
 	    cur = data.api_nowhps[i] - damage[i];
