@@ -402,8 +402,6 @@ var KanColleTimer = {
 	KanColleTimerShipTableInit();
 	KanColleTimerMaterialLog.init();
 	KanColleTimerMissionBalanceInfo.init();
-	KanColleTimerFleetOrgInfo.init();
-	KanColleTimerFleetCondInfo.init();
 
 	this.startTimer();
 	this.readResourceData();
@@ -435,8 +433,6 @@ var KanColleTimer = {
 	KanColleTimerNdockInfo.stop();
 	KanColleTimerDeckInfo.stop();
 	KanColleTimerHeadQuarterInfo.stop();
-	KanColleTimerFleetCondInfo.stop();
-	KanColleTimerFleetOrgInfo.stop();
 
 	this.stopTimer();
 	this.writeResourceData();
@@ -450,8 +446,6 @@ var KanColleTimer = {
 	KanColleTimerNdockInfo.exit();
 	KanColleTimerDeckInfo.exit();
 	KanColleTimerHeadQuarterInfo.exit();
-	KanColleTimerFleetCondInfo.exit();
-	KanColleTimerFleetOrgInfo.exit();
 	KanColleDatabase.exit();
     }
 };
