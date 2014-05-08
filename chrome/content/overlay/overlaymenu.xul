@@ -112,8 +112,8 @@
        </toolbarbutton>
        <hbox align="center">
 	 <label id="kancolletimer-nickname" value="---"/>
-	 <label id="kancolletimer-level" value="Lv1"/>
 	 <label id="kancolletimer-rank" value="---"/>
+	 <label id="kancolletimer-level" value="Lv1"/>
 	 <vbox><image src="chrome://kancolletimer/content/data/fuel.png"/></vbox>
 	 <label id="kancolletimer-fuel" value="0"/>
 	 <vbox><image src="chrome://kancolletimer/content/data/bullet.png"/></vbox>
