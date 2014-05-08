@@ -76,20 +76,13 @@
      </scrollbox>
    </statusbar>
 
-  <toolbar id="addon-bar">
+  <statusbar id="status-bar">
 <!--    <statusbarpanel id="NicoLive-panel" label="NicoLive Helper" /> -->
     <toolbarbutton id="kancolle-timer-toolbar-button"
 		   label="艦これタイマー"
 		   oncommand="KanColleTimer.Overlay.open();"
 		   class="toolbarbutton-1"
 		   image="chrome://kancolletimer/content/data/icon.png" />
-  </toolbar>
-
-
-<!--
-  <popup id="contentAreaContextMenu">
-    <menuitem id="kancolletimer-popup-menu" label="艦これタイマー" oncommand="KanColleTimer.Overlay.open();" />
-  </popup>
--->
+  </statusbar>
 
 </overlay>
