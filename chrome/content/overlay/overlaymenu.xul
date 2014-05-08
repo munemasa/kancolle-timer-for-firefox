@@ -111,9 +111,9 @@
 	 </menupopup>
        </toolbarbutton>
        <hbox align="center">
-	 <label value="あまの"/>
-	 <label value="Lv104"/>
-	 <label value="中将"/>
+	 <label id="kancolletimer-nickname" value="---"/>
+	 <label id="kancolletimer-level" value="Lv1"/>
+	 <label id="kancolletimer-rank" value="---"/>
 	 <label value="燃"/>
 	 <label id="kancolletimer-fuel" value="0"/>
 	 <label value="弾"/>

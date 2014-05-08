@@ -72,7 +72,20 @@ KanColleTimer.MaterialLog = {
 		    elem.value = v;
 		}
 	    }
-	}
+	},
+	memberBasic: function() {
+	    let d = KanColleDatabase.memberBasic.get();
+	    if (!d)
+		return;
+	    try{
+		let rank = ["", "元帥", "大将", "中将", "少将",
+			    "大佐", "中佐", "新米中佐",
+			    "少佐", "中堅少佐", "新米少佐", "", "", "", "" ];
+		document.getElementById('kancolletimer-nickname').value = d.api_nickname;
+		document.getElementById('kancolletimer-level').value = "Lv"+d.api_level;
+		document.getElementById('kancolletimer-rank').value = rank[d.api_rank];
+	    }catch(e){}
+	},
     },
 
     init: function() {
