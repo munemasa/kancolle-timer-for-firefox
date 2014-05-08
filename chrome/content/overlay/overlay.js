@@ -1,6 +1,8 @@
 // vim: set ts=8 sw=4 sts=4 ff=dos :
 
-var KanColleTimerOverlay = {
+var KanColleTimer = KanColleTimer || {};
+
+KanColleTimer.Overlay = {
     debugprint:function(txt){
 	//Application.console.log(txt);
     },
@@ -275,12 +277,12 @@ var KanColleTimerOverlay = {
 	if(appcontent){
 	    appcontent.addEventListener("DOMContentLoaded",
 					function(e){
-					    KanColleTimerOverlay.onPageLoad(e);
+					    KanColleTimer.Overlay.onPageLoad(e);
 					},true);
 	}
     }
 };
 
 window.addEventListener("load", function(){
-    KanColleTimerOverlay.init();
+    KanColleTimer.Overlay.init();
 }, false);
