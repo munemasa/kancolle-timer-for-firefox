@@ -114,13 +114,13 @@
 	 <label id="kancolletimer-nickname" value="---"/>
 	 <label id="kancolletimer-level" value="Lv1"/>
 	 <label id="kancolletimer-rank" value="---"/>
-	 <label value="燃"/>
+	 <vbox><image src="chrome://kancolletimer/content/data/fuel.png"/></vbox>
 	 <label id="kancolletimer-fuel" value="0"/>
-	 <label value="弾"/>
+	 <vbox><image src="chrome://kancolletimer/content/data/bullet.png"/></vbox>
 	 <label id="kancolletimer-bullet" value="0"/>
-	 <label value="鋼"/>
+	 <vbox><image src="chrome://kancolletimer/content/data/steel.png"/></vbox>
 	 <label id="kancolletimer-steel" value="0"/>
-	 <label value="ボ"/>
+	 <vbox><image src="chrome://kancolletimer/content/data/bauxite.png"/></vbox>
 	 <label id="kancolletimer-bauxite" value="0"/>
 	 <vbox><image src="chrome://kancolletimer/content/data/repairkit.png"/></vbox>
 	 <label id="kancolletimer-bucket" value="0"/>
