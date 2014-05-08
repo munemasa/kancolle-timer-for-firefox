@@ -122,11 +122,21 @@
 	 <label value="999999"/>
 	 <label value="ボ"/>
 	 <label value="999999"/>
+	 <vbox><image src="chrome://kancolletimer/content/data/repairkit.png"/></vbox>
+	 <label value="9999"/>
+	 <vbox><image src="chrome://kancolletimer/content/data/burner.png"/></vbox>
+	 <label value="9999"/>
+	 <label value="資"/>
+	 <label value="9999"/>
        </hbox>
-       <toolbarbutton style="padding-left: 0.2em; padding-right: 0.2em;" tooltiptext="スクリーンショットを撮影して保存する"
+       <toolbarbutton style="padding-left: 0.7em; padding-right: 0.7em;"
+		      tooltiptext="スクリーンショットを撮影して保存します"
 		      oncommand="event.stopPropagation(); KanColleTimer.Overlay.takeScreenshot();"
-		      label="撮影"
 		      image="chrome://kancolletimer/content/data/toolbarcamera.png"/>
+       <toolbarbutton style="padding-left: 0.5em; padding-right: 0.5em;"
+		      tooltiptext="スクリーンショットをつぶやきます"
+		      oncommand="event.stopPropagation(); KanColleTimer.Overlay.openTweetDialog();"
+		      image="chrome://kancolletimer/content/data/twitter_logo.png"/>
        <toolbarbutton image="chrome://kancolletimer/content/data/tool.png" tooltiptext="ツール" type="menu">
 	  <menupopup>
 	    <menuitem label="保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
