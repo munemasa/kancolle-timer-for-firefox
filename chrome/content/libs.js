@@ -175,6 +175,10 @@ var KanColleTimerDeckInfo = {
 		KanColleRemainInfo.fleet[i] = new Object();
 		KanColleRemainInfo.fleet_name[i] = d.api_name;
 		$(nameid).value = d.api_name; // 艦隊名
+		if( i==0 ){
+		    // 第1艦隊の名前
+		    $('first-fleet-name').setAttribute('label', d.api_name);
+		}
 		if( d.api_mission[0] ){
 		    let mission_id = d.api_mission[1]; // 遠征ID
 		    let mission = KanColleDatabase.mission.get(mission_id);
