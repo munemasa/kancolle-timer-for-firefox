@@ -358,26 +358,6 @@ var KanColleTimer = {
 	}
     },
 
-    readResourceData: function(){
-	let data = Storage.readObject( "resourcehistory", [] );
-	let d = KanColleRemainInfo.gResourceData;
-
-	let t1 = data.length && data[ data.length-1 ].recorded_time;
-	let t2 = d.length && d[ d.length-1 ].recorded_time;
-	if( t2 < t1 ){
-	    KanColleRemainInfo.gResourceData = data;
-	}
-    },
-    writeResourceData: function(){
-	let month_ago = GetCurrentTime() - 60*60*24*31;
-	
-	let data = KanColleRemainInfo.gResourceData.filter(
-	    function( elem, index, array ){
-		return elem.recorded_time > month_ago;
-	});
-	Storage.writeObject( "resourcehistory", data );
-    },
-
     startTimer: function() {
 	if (this._timer)
 	    return;
@@ -404,7 +384,6 @@ var KanColleTimer = {
 	KanColleTimerMissionBalanceInfo.init();
 
 	this.startTimer();
-	this.readResourceData();
 
 	KanColleTimerDeckInfo.restore();
 	KanColleTimerNdockInfo.restore();
@@ -435,7 +414,6 @@ var KanColleTimer = {
 	KanColleTimerHeadQuarterInfo.stop();
 
 	this.stopTimer();
-	this.writeResourceData();
 
 	KanColleTimerMissionBalanceInfo.exit();
 	KanColleTimerMaterialLog.exit();
