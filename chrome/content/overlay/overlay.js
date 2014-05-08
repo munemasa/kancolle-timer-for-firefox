@@ -238,10 +238,18 @@ KanColleTimer.Overlay = {
 	return true;
     },
 
+    // 艦娘リストを開く
     openShipList: function(){
 	let feature="chrome,resizable=yes";
 	let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);
 	w.focus();
+    },
+
+    openAbout: function(){
+	let feature="chrome,resizable=yes";
+	let w = window.open("chrome://kancolletimer/content/about.xul","KanColleTimerAbout",feature);
+	w.focus();
+	event.stopPropagation();
     },
 
     /**

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <overlay id="KanColleTimer.Overlay"
 	 xmlns:html="http://www.w3.org/1999/xhtml"
@@ -7,18 +7,18 @@
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/utils/prefutils.js" />
   <script type="application/javascript;version=1.7" src="chrome://kancolletimer/content/overlay/overlay.js" />
 
+  <!-- ツールメニュー -->
   <menupopup id="menu_ToolsPopup">
     <menuitem id="kancolletimer-tools-popup-menu" label="艦これタイマー" oncommand="KanColleTimer.Overlay.open();" />
   </menupopup>
 
-
+  <!-- サイドバーメニュー -->
   <menupopup id="viewSidebarMenu">
     <menuitem key="key_openKanColleTimerSidebar" observes="viewKanColleTimerSidebar"  />
   </menupopup>
   <keyset id="mainKeyset">
     <key id="key_openKanColleTimerSidebar" command="viewKanColleTimerSidebar" key="k" modifiers="accel,alt" />
   </keyset>
-
   <broadcasterset id="mainBroadcasterSet"> 
     <broadcaster id="viewKanColleTimerSidebar" 
                  label="艦これタイマー"
@@ -30,7 +30,8 @@
                  oncommand="toggleSidebar('viewKanColleTimerSidebar');" />
   </broadcasterset>
 
-   <toolbarpalette id="BrowserToolbarPalette">
+  <!-- ツールバー -->
+  <toolbarpalette id="BrowserToolbarPalette">
      <toolbarbutton id="KanColleTimer-ToolbarButton"
 		    type="menu-button"
 		    label="艦これタイマー"
@@ -51,7 +52,7 @@
 	   <menupopup onpopupshowing="return KanColleTimer.Overlay.onDefaultActionMenuShowing();">
 	     <menuitem name="kt-default-action" id="kt-open-sidebar" label="サイドバーの開閉"
 		       autocheck="true" type="radio" oncommand="KanColleTimer.Overlay.setDefaultAction(); event.stopPropagation();"/>
-	     <menuitem name="kt-default-action" id="kt-take-screenshot" label="スクリーンショットの撮影(1枚)"
+	     <menuitem name="kt-default-action" id="kt-take-screenshot" label="スクリーンショットを撮影して保存"
 		       autocheck="true" type="radio" oncommand="KanColleTimer.Overlay.setDefaultAction(); event.stopPropagation();"/>
 	     <menuitem name="kt-default-action" id="kt-take-screenshot-seriography" label="スクリーンショットの撮影(連続撮影)"
 		       autocheck="true" type="radio" oncommand="KanColleTimer.Overlay.setDefaultAction(); event.stopPropagation();"/>
@@ -64,25 +65,79 @@
 	 <menuitem label="保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
 	 <menuitem label="資源グラフ" oncommand="KanColleTimer.Overlay.openResourceGraph(); event.stopPropagation();"/>
 	 <menuseparator/>
-	 <menuitem label="タイマー(ウィンドウ)を開く" oncommand="KanColleTimer.Overlay.open(); event.stopPropagation();"/>
+	 <menuitem label="艦これタイマー(ウィンドウ)を開く" oncommand="KanColleTimer.Overlay.open(); event.stopPropagation();"/>
 	 <menuitem label="サイドバーを開閉" oncommand="toggleSidebar('viewKanColleTimerSidebar'); event.stopPropagation();"/>
        </menupopup>
      </toolbarbutton>
    </toolbarpalette>
 
+   <!-- スクリーンショット撮影エリア -->
    <statusbar id="status-bar">
      <scrollbox width="1" height="1">
        <html:canvas id="KanColleTimerCapture" display="none" />
      </scrollbox>
    </statusbar>
 
-  <statusbar id="status-bar">
-<!--    <statusbarpanel id="NicoLive-panel" label="NicoLive Helper" /> -->
-    <toolbarbutton id="kancolle-timer-toolbar-button"
-		   label="艦これタイマー"
-		   oncommand="KanColleTimer.Overlay.open();"
-		   class="toolbarbutton-1"
-		   image="chrome://kancolletimer/content/data/icon.png" />
-  </statusbar>
+   <!-- ステータスバー -->
+   <statusbar id="status-bar">
+     <toolbarbutton id="kancolle-timer-toolbar-button"
+		    label="艦これタイマー"
+		    oncommand="KanColleTimer.Overlay.open();"
+		    class="toolbarbutton-1"
+		    image="chrome://kancolletimer/content/data/icon.png" />
+   </statusbar>
 
+   <!-- ツールバー -->
+   <toolbox id="navigator-toolbox">
+     <toolbar id="kancolletimer-toolbar" accesskey="k"
+	      class="chromeclass-toolbar"
+	      customizable="true"
+	      iconsize="small"
+	      persist="collapsed,hidden"
+	      inherits="collapsed,hidden" mode="full"
+	      grippytooltiptext="艦これタイマー"
+	      defaultset="kt-toolbar-mainitem"
+	      toolbarname="艦これタイマーツールバー"/>
+   </toolbox>
+   
+   <toolbarpalette id="BrowserToolbarPalette">
+     <toolbaritem id="kt-toolbar-mainitem">
+       <toolbarbutton image="chrome://kancolletimer/content/data/icon.png" type="menu">
+	 <menupopup>
+	   <menuitem label="艦これタイマー(ウィンドウ)を開く" oncommand="KanColleTimer.Overlay.open(); event.stopPropagation();"/>
+	   <menuitem label="サイドバーを開閉" oncommand="toggleSidebar('viewKanColleTimerSidebar'); event.stopPropagation();"/>
+	   <menuseparator/>
+	   <menuitem label="艦これページを開く" oncommand="KanColleTimer.Overlay.openKanCollePage(); event.stopPropagation();"/>
+	 </menupopup>
+       </toolbarbutton>
+       <hbox align="center">
+	 <label value="あまの"/>
+	 <label value="Lv104"/>
+	 <label value="中将"/>
+	 <label value="燃"/>
+	 <label value="999999"/>
+	 <label value="弾"/>
+	 <label value="999999"/>
+	 <label value="鋼"/>
+	 <label value="999999"/>
+	 <label value="ボ"/>
+	 <label value="999999"/>
+       </hbox>
+       <toolbarbutton style="padding-left: 0.2em; padding-right: 0.2em;" tooltiptext="スクリーンショットを撮影して保存する"
+		      oncommand="event.stopPropagation(); KanColleTimer.Overlay.takeScreenshot();"
+		      label="撮影"
+		      image="chrome://kancolletimer/content/data/toolbarcamera.png"/>
+       <toolbarbutton image="chrome://kancolletimer/content/data/tool.png" tooltiptext="ツール" type="menu">
+	  <menupopup>
+	    <menuitem label="保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
+	    <menuitem label="資源グラフ" oncommand="KanColleTimer.Overlay.openResourceGraph(); event.stopPropagation();"/>
+	    <menuseparator/>
+	    <menuitem label="設定..." oncommand="event.stopPropagation(); KanColleTimer.Overlay.openSettingsDialog();"/>
+	    <menuseparator/>
+	    <menuitem label="About" oncommand="KanColleTimer.Overlay.openAbout();"/>
+	  </menupopup>
+	</toolbarbutton>
+     </toolbaritem>
+   </toolbarpalette>
+   
 </overlay>
