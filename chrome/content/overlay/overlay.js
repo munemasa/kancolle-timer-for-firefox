@@ -246,7 +246,7 @@ KanColleTimer.Overlay = {
     },
 
     openAbout: function(){
-	let feature="chrome,resizable=yes";
+	let feature="chrome,resizable=yes,centerscreen";
 	let w = window.open("chrome://kancolletimer/content/about.xul","KanColleTimerAbout",feature);
 	w.focus();
 	event.stopPropagation();
