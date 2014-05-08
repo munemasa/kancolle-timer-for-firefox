@@ -1,6 +1,90 @@
 // vim: set ts=8 sw=4 sts=4 ff=dos :
+Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 
 var KanColleTimer = KanColleTimer || {};
+
+// libs.jsからコピペなのであとでなんとかする
+var __KanColleTimerPanel = {
+    update: null,
+    _update_bound: null,
+
+    _update_start: function() {
+	for (let k in this._update_bound)
+	    KanColleDatabase[k].appendCallback(this._update_bound[k]);
+    },
+    _update_stop: function() {
+	for (let k in this._update_bound)
+	    KanColleDatabase[k].removeCallback(this._update_bound[k]);
+    },
+
+    _update_init: function() {
+	if (!this._update_bound) {
+	    this._update_bound = {};
+	    if (this.update) {
+		for (let k in this.update) {
+		    let f = this.update[k];
+		    let visited = {};   // loop detection
+		    while (typeof(f) == 'string' && !visited[f]) {
+			visited[f] = true;
+			f = this.update[f];
+		    }
+		    this._update_bound[k] = f.bind(this);
+		}
+	    }
+	}
+    },
+    _update_exit: function() {
+	this._update_bound = null;
+    },
+
+    start: function() {
+	this._update_start();
+    },
+    stop: function() {
+	this._update_stop();
+    },
+
+    init: function() {
+	this._update_init();
+    },
+    exit: function() {
+	this._update_exit();
+    },
+};
+
+// 資源情報
+KanColleTimer.MaterialLog = {
+    update: {
+	material: function() {
+	    let now = Math.floor(KanColleDatabase.material.timestamp() / 1000);
+	    let resnames = ["fuel", "bullet", "steel", "bauxite", "burner", "bucket", "devkit"];
+
+	    if (!now)
+		return;
+
+	    let v,elem;
+	    for (let k in resnames) {
+		v = KanColleDatabase.material.get( resnames[k] );
+		if (isNaN(v))
+		    continue;
+		elem = document.getElementById('kancolletimer-'+resnames[k]);
+		if( elem ){
+		    elem.value = v;
+		}
+	    }
+	}
+    },
+
+    init: function() {
+	this._update_init();
+    },
+
+    exit: function() {
+	this._update_exit();
+    }
+};
+KanColleTimer.MaterialLog.__proto__ = __KanColleTimerPanel;
+
 
 KanColleTimer.Overlay = {
     debugprint:function(txt){
@@ -288,9 +372,23 @@ KanColleTimer.Overlay = {
 					    KanColleTimer.Overlay.onPageLoad(e);
 					},true);
 	}
+
+	KanColleDatabase.init();
+	KanColleTimer.MaterialLog.init();
+	KanColleTimer.MaterialLog.start();
+    },
+
+    destroy: function(){
+	KanColleTimer.MaterialLog.stop();
+	KanColleTimer.MaterialLog.exit();
+	KanColleDatabase.exit();
     }
 };
 
 window.addEventListener("load", function(){
     KanColleTimer.Overlay.init();
+}, false);
+
+window.addEventListener("unload", function(){
+    KanColleTimer.Overlay.destroy();
 }, false);

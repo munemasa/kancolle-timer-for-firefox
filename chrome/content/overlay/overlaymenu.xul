@@ -115,19 +115,19 @@
 	 <label value="Lv104"/>
 	 <label value="中将"/>
 	 <label value="燃"/>
-	 <label value="999999"/>
+	 <label id="kancolletimer-fuel" value="0"/>
 	 <label value="弾"/>
-	 <label value="999999"/>
+	 <label id="kancolletimer-bullet" value="0"/>
 	 <label value="鋼"/>
-	 <label value="999999"/>
+	 <label id="kancolletimer-steel" value="0"/>
 	 <label value="ボ"/>
-	 <label value="999999"/>
+	 <label id="kancolletimer-bauxite" value="0"/>
 	 <vbox><image src="chrome://kancolletimer/content/data/repairkit.png"/></vbox>
-	 <label value="9999"/>
+	 <label id="kancolletimer-bucket" value="0"/>
 	 <vbox><image src="chrome://kancolletimer/content/data/burner.png"/></vbox>
-	 <label value="9999"/>
+	 <label id="kancolletimer-burner" value="0"/>
 	 <label value="資"/>
-	 <label value="9999"/>
+	 <label id="kancolletimer-devkit" value="0"/>
        </hbox>
        <toolbarbutton style="padding-left: 0.7em; padding-right: 0.7em;"
 		      tooltiptext="スクリーンショットを撮影して保存します"
