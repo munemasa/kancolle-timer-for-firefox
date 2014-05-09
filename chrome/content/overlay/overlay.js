@@ -57,7 +57,7 @@ KanColleTimer.MaterialLog = {
     update: {
 	material: function() {
 	    let now = Math.floor(KanColleDatabase.material.timestamp() / 1000);
-	    let resnames = ["fuel", "bullet", "steel", "bauxite", "burner", "bucket", "devkit"];
+	    let resnames = ["fuel", "bullet", "steel", "bauxite", "bucket"];
 
 	    if (!now)
 		return;
@@ -75,17 +75,55 @@ KanColleTimer.MaterialLog = {
 	},
 	memberBasic: function() {
 	    let d = KanColleDatabase.memberBasic.get();
-	    if (!d)
+	    if( !d )
 		return;
-	    try{
-		let rank = ["", "元帥", "大将", "中将", "少将",
-			    "大佐", "中佐", "新米中佐",
-			    "少佐", "中堅少佐", "新米少佐", "", "", "", "" ];
-		document.getElementById('kancolletimer-nickname').value = d.api_nickname;
-		document.getElementById('kancolletimer-level').value = "Lv"+d.api_level;
-		document.getElementById('kancolletimer-rank').value = rank[d.api_rank];
-	    }catch(e){}
+	    let rank = ["", "元帥", "大将", "中将", "少将",
+		"大佐", "中佐", "新米中佐",
+		"少佐", "中堅少佐", "新米少佐", "", "", "", "" ];
+	    document.getElementById( 'kancolletimer-nickname' ).value = d.api_nickname;
+	    document.getElementById( 'kancolletimer-level' ).value = "Lv" + d.api_level;
+	    document.getElementById( 'kancolletimer-rank' ).value = rank[d.api_rank];
 	},
+	headQuarter: function() {
+	    let headquarter;
+	    let maxships;
+	    let maxslotitems;
+	    let ships;
+	    let slotitems;
+	    let shipnumfree = 0;//KanColleTimerConfig.getInt('display.ship-num-free');
+	    let ship_color = null;
+	    let slotitem_color = null;
+
+	    function convnan( t ){
+		return isNaN( t ) ? '-' : t;
+	    }
+
+	    function numcolor( cur, mark, max ){
+		let col = null;
+		if( !isNaN( cur ) ){
+		    if( !isNaN( max ) && cur >= max )
+			col = 'red';
+		    else if( !isNaN( mark ) && cur >= mark )
+			col = 'orange';
+		    else
+			col = 'black';
+		}
+		return col;
+	    }
+
+	    headquarter = KanColleDatabase.headQuarter.get();
+
+	    ships = convnan( headquarter.ship_cur );
+	    maxships = convnan( headquarter.ship_max );
+	    ship_color = numcolor( ships, maxships - shipnumfree, maxships );
+
+	    slotitems = convnan( headquarter.slotitem_cur );
+	    maxslotitems = convnan( headquarter.slotitem_max );
+	    slotitem_color = numcolor( slotitems, maxslotitems - shipnumfree * 4, maxslotitems );
+
+	    document.getElementById( 'kancolletimer-ships' ).value = ships + "/" + maxships + "隻";
+	    document.getElementById( 'kancolletimer-items' ).value = slotitems + "/" + maxslotitems;
+	}
     },
 
     init: function() {

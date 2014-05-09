@@ -66,7 +66,7 @@
 	 <menuitem label="資源グラフ" oncommand="KanColleTimer.Overlay.openResourceGraph(); event.stopPropagation();"/>
 	 <menuseparator/>
 	 <menuitem label="艦これタイマー(ウィンドウ)を開く" oncommand="KanColleTimer.Overlay.open(); event.stopPropagation();"/>
-	 <menuitem label="サイドバーを開閉" oncommand="toggleSidebar('viewKanColleTimerSidebar'); event.stopPropagation();"/>
+	 <menuitem label="サイドバーを開く" oncommand="toggleSidebar('viewKanColleTimerSidebar',true); event.stopPropagation();"/>
        </menupopup>
      </toolbarbutton>
    </toolbarpalette>
@@ -105,7 +105,7 @@
        <toolbarbutton image="chrome://kancolletimer/content/data/icon.png" type="menu">
 	 <menupopup>
 	   <menuitem label="艦これタイマー(ウィンドウ)を開く" oncommand="KanColleTimer.Overlay.open(); event.stopPropagation();"/>
-	   <menuitem label="サイドバーを開閉" oncommand="toggleSidebar('viewKanColleTimerSidebar'); event.stopPropagation();"/>
+	   <menuitem label="サイドバーを開く" oncommand="toggleSidebar('viewKanColleTimerSidebar',true); event.stopPropagation();"/>
 	   <menuseparator/>
 	   <menuitem label="艦これページを開く" oncommand="KanColleTimer.Overlay.openKanCollePage(); event.stopPropagation();"/>
 	 </menupopup>
@@ -114,6 +114,10 @@
 	 <label id="kancolletimer-nickname" value="---"/>
 	 <label id="kancolletimer-rank" value="---"/>
 	 <label id="kancolletimer-level" value="Lv1"/>
+	 <vbox><image src="chrome://kancolletimer/content/data/ship.png"/></vbox>
+	 <label id="kancolletimer-ships" value="---"/>
+	 <vbox><image src="chrome://kancolletimer/content/data/slotitem.png"/></vbox>
+	 <label id="kancolletimer-items" value="---"/>
 	 <vbox><image src="chrome://kancolletimer/content/data/fuel.png"/></vbox>
 	 <label id="kancolletimer-fuel" value="0"/>
 	 <vbox><image src="chrome://kancolletimer/content/data/bullet.png"/></vbox>
@@ -124,10 +128,6 @@
 	 <label id="kancolletimer-bauxite" value="0"/>
 	 <vbox><image src="chrome://kancolletimer/content/data/repairkit.png"/></vbox>
 	 <label id="kancolletimer-bucket" value="0"/>
-	 <vbox><image src="chrome://kancolletimer/content/data/burner.png"/></vbox>
-	 <label id="kancolletimer-burner" value="0"/>
-	 <label value="資"/>
-	 <label id="kancolletimer-devkit" value="0"/>
        </hbox>
        <toolbarbutton style="padding-left: 0.7em; padding-right: 0.7em;"
 		      tooltiptext="スクリーンショットを撮影して保存します"
