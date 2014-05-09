@@ -435,7 +435,8 @@ var KanColleTimerKdockInfo = {
 
 	material: function() {
 	    let d = KanColleDatabase.material.get('burner');
-	    $('burner-number').value = d.api_value;
+	    if (d >= 0)
+		$('burner-number').value = d;
 	},
 
     },
