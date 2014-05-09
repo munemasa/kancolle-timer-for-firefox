@@ -2587,9 +2587,9 @@ function TreeView(){
 	},
 	_lvupg: function(ship_a,ship_b){
 	    let shiptype_a = KanColleDatabase.masterShip.get(ship_a.api_ship_id);
-	    let lv_a = shiptype ? shiptype_a.api_afterlv : 0;
+	    let lv_a = shiptype_a ? shiptype_a.api_afterlv : 0;
 	    let shiptype_b = KanColleDatabase.masterShip.get(ship_b.api_ship_id);
-	    let lv_b = shiptype ? shiptype_b.api_afterlv : 0;
+	    let lv_b = shiptype_b ? shiptype_b.api_afterlv : 0;
 	    if (!lv_a)
 		lv_a = Number.POSITIVE_INFINITY;
 	    if (!lv_b)
