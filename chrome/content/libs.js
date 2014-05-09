@@ -411,11 +411,6 @@ var KanColleTimerKdockInfo = {
 		SetStyleProperty(ndocks[i], 'display', i < d.api_count_kdock ? "":"none");
 	},
 
-	material: function() {
-	    let d = KanColleDatabase.material.get('burner');
-		$('burner-number').value = d.api_value;
-	},
-
     },
 
     restore: function() {
