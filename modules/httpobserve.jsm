@@ -1506,6 +1506,8 @@ var KanColleDatabase = {
     _refcnt: null,
 
     save: function(url, text){
+	return;
+
 	// 通信データを ProfD/kancolletimer.dat/ に保存する.
 	url = url.match(/^http.*\/kcsapi\/(.*)/)[1];
 	url = url.replace('/','__');
