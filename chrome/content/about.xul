@@ -24,7 +24,7 @@
 	    style="color:blue; text-decoration:underline;cursor:pointer"
 	    onclick="OpenDefaultBrowser('http://miku39.jp/blog/wp/?page_id=1705',true);"
 	    value="Open Webpage"/>
-	<label value="Developed by amano."/>
+	<label value="Developed by amano and contributors."/>
       </vbox>
     </hbox>
   </vbox>
