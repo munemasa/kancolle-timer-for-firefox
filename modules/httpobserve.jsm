@@ -1590,8 +1590,8 @@ var KanColleDatabase = {
 		this.memberBasic.update(data.api_data.api_basic);
 		this.memberDeck.update(data.api_data.api_deck_port);
 		this.memberMaterial.update(data.api_data.api_material);
-		this._memberShip2.update(data.api_data.api_ship);
 		this.memberNdock.update(data.api_data.api_ndock);
+		this._memberShip2.update(data.api_data.api_ship);
 	    } else if (url.match(/kcsapi\/api_req_battle_midnight\/(sp_)?battle/)) {
 		this.reqBattleMidnightBattle.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_hensei\/change/)) {
