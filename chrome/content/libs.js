@@ -88,16 +88,16 @@ var KanColleTimerHeadQuarterInfo = {
 	    }
 
 	    function numcolor(cur,mark,max) {
-		let col = null;
+		let style = null;
 		if (!isNaN(cur)) {
 		    if (!isNaN(max) && cur >= max)
-			col = 'red';
+			style = 'no-free-space';
 		    else if (!isNaN(mark) && cur >= mark)
-			col = 'orange';
+			style = 'low-free-space';
 		    else
-			col = 'black';
+			style = '';
 		}
-		return col;
+		return style;
 	    }
 
 	    headquarter = KanColleDatabase.headQuarter.get();
@@ -130,6 +130,7 @@ var KanColleTimerHeadQuarterInfo = {
 	    $('number-of-items').value = slotitems;
 	    $('max-number-of-ships').value = maxships+"隻";
 	    $('max-number-of-items').value = maxslotitems;
+	    $('number-of-ships' ).setAttribute('cond', ship_color);
 	},
 
 	material: function() {

@@ -35,6 +35,14 @@ label[few-minutes-left] {
     color: #e00000;
 }
 
+label[cond=no-free-space] {
+    background-color: red;
+}
+label[cond=low-free-space] {
+    background-color: orange;
+}
+
+
 .fleet-list {
     display: inline-block;
 }

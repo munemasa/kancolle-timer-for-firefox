@@ -90,7 +90,7 @@ KanColleTimer.MaterialLog = {
 	    let maxslotitems;
 	    let ships;
 	    let slotitems;
-	    let shipnumfree = 0;//KanColleTimerConfig.getInt('display.ship-num-free');
+	    let shipnumfree = KanColleTimer.Overlay.getPref().getIntPref('display.ship-num-free');
 	    let ship_color = null;
 	    let slotitem_color = null;
 
@@ -99,16 +99,16 @@ KanColleTimer.MaterialLog = {
 	    }
 
 	    function numcolor( cur, mark, max ){
-		let col = null;
+		let style = null;
 		if( !isNaN( cur ) ){
 		    if( !isNaN( max ) && cur >= max )
-			col = 'red';
+			style = 'no-free-space';
 		    else if( !isNaN( mark ) && cur >= mark )
-			col = 'orange';
+			style = 'low-free-space';
 		    else
-			col = 'black';
+			style = '';
 		}
-		return col;
+		return style;
 	    }
 
 	    headquarter = KanColleDatabase.headQuarter.get();
@@ -121,7 +121,10 @@ KanColleTimer.MaterialLog = {
 	    maxslotitems = convnan( headquarter.slotitem_max );
 	    slotitem_color = numcolor( slotitems, maxslotitems - shipnumfree * 4, maxslotitems );
 
-	    document.getElementById( 'kancolletimer-ships' ).value = ships + "/" + maxships + "隻";
+	    let elem;
+	    elem = document.getElementById( 'kancolletimer-ships' );
+	    elem.value = ships + "/" + maxships + "隻";
+	    elem.setAttribute('cond', ship_color);
 	    document.getElementById( 'kancolletimer-items' ).value = slotitems + "/" + maxslotitems;
 	}
     },
