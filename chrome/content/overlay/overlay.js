@@ -80,9 +80,11 @@ KanColleTimer.MaterialLog = {
 	    let rank = ["", "元帥", "大将", "中将", "少将",
 		"大佐", "中佐", "新米中佐",
 		"少佐", "中堅少佐", "新米少佐", "", "", "", "" ];
-	    document.getElementById( 'kancolletimer-nickname' ).value = d.api_nickname;
-	    document.getElementById( 'kancolletimer-level' ).value = "Lv" + d.api_level;
-	    document.getElementById( 'kancolletimer-rank' ).value = rank[d.api_rank];
+	    try{
+		document.getElementById( 'kancolletimer-nickname' ).value = d.api_nickname;
+		document.getElementById( 'kancolletimer-level' ).value = "Lv" + d.api_level;
+		document.getElementById( 'kancolletimer-rank' ).value = rank[d.api_rank];
+	    }catch(e){}
 	},
 	headQuarter: function() {
 	    let headquarter;
@@ -122,10 +124,12 @@ KanColleTimer.MaterialLog = {
 	    slotitem_color = numcolor( slotitems, maxslotitems - shipnumfree * 4, maxslotitems );
 
 	    let elem;
-	    elem = document.getElementById( 'kancolletimer-ships' );
-	    elem.value = ships + "/" + maxships + "隻";
-	    elem.setAttribute('cond', ship_color);
-	    document.getElementById( 'kancolletimer-items' ).value = slotitems + "/" + maxslotitems;
+	    try{
+		elem = document.getElementById( 'kancolletimer-ships' );
+		elem.value = ships + "/" + maxships + "隻";
+		elem.setAttribute('cond', ship_color);
+		document.getElementById( 'kancolletimer-items' ).value = slotitems + "/" + maxslotitems;
+	    }catch(e){}
 	}
     },
 
