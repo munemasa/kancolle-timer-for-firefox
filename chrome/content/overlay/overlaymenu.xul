@@ -90,6 +90,7 @@
    <!-- ツールバー -->
    <toolbox id="navigator-toolbox">
      <toolbar id="kancolletimer-toolbar" accesskey="k"
+	      context="toolbar-context-menu"
 	      class="chromeclass-toolbar"
 	      customizable="true"
 	      iconsize="small"
