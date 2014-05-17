@@ -396,8 +396,10 @@ var KanColleMaterialDB = function() {
 	reqNyukyoStart: function() {
 	    let t = KanColleDatabase.reqNyukyoStart.timestamp();
 	    let req = KanColleDatabase.reqNyukyoStart.get_req();
+	    let req_highspeed = parseInt(req.api_highspeed, 10);
 
-	    if (!this._ts || isNaN(this._db.bucket) || !req.api_highspeed)
+	    if (!this._ts || isNaN(this._db.bucket) ||
+		isNaN(req_highspeed) || !req_highspeed)
 		return;
 
 	    this._db.bucket--;
@@ -410,10 +412,12 @@ var KanColleMaterialDB = function() {
 	    let t = KanColleDatabase.reqKousyouCreateShipSpeedChange.timestamp();
 	    let req = KanColleDatabase.reqKousyouCreateShipSpeedChange.get_req();
 	    let req_kdock_id = parseInt(req.api_kdock_id, 10);
+	    let req_highspeed = parseInt(req.api_highspeed, 10);
 	    let kdock;
 	    let delta_burner = 1;
 
-	    if (!this._ts || isNaN(this._db.burner) || !req.api_highspeed ||
+	    if (!this._ts || isNaN(this._db.burner) ||
+		isNaN(req_highspeed) || !req_highspeed ||
 		isNaN(req_kdock_id))
 		return;
 
@@ -642,8 +646,8 @@ var KanColleShipDB = function() {
 	    let req_highspeed = parseInt(req.api_highspeed, 10);
 	    let ndock;
 
-	    if (!this._ts ||
-		isNaN(req_ndock_id) || isNaN(req_highspeed))
+	    if (!this._ts || isNaN(req_ndock_id) ||
+		isNaN(req_highspeed) || !req_highspeed)
 		return;
 
 	    ndock = KanColleDatabase.memberNdock.get(req_ndock_id);
@@ -1420,9 +1424,9 @@ var KanColleKdockDB = function() {
 	    let t = KanColleDatabase.reqKousyouCreateShipSpeedChange.timestamp();
 	    let req = KanColleDatabase.reqKousyouCreateShipSpeedChange.get_req();
 	    let req_kdock_id = req.api_kdock_id;
-	    let req_highspeed = req.api_highspeed;
+	    let req_highspeed = parseInt(req.api_highspeed, 10);
 
-	    if (!this._ts || !req_highspeed)
+	    if (!this._ts || isNaN(req_highspeed) || !req_highspeed)
 		return;
 
 	    this._deepcopy();
