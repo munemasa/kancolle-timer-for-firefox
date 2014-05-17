@@ -123,7 +123,7 @@ var KanColleTimerPreference = {
 	$('wallpaper-alpha').value = alpha;
 	this.buildFontList();
 
-	$('audio-playback').method = $('pref-sound-api') ? 'nsisound' : 'html';
+	$('audio-playback').method = $('pref-sound-api').value ? 'nsisound' : 'html';
 	try{
 	    let order = JSON.parse( $('pref-dashboard-order').value );
 	    let listbox = $('order-of-dashboard');
