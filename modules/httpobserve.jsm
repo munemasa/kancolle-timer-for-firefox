@@ -839,8 +839,8 @@ var KanColleDeckDB = function() {
 	    this._ts = KanColleDatabase.reqKousyouDestroyShip.timestamp();
 
 	    this._deepcopy();
-	    this._db.deck[fleet.fleet].splice(fleet.pos,1);
-	    this._db.deck[fleet.fleet].push(-1);
+	    this._db.deck[fleet.fleet].api_ship.splice(fleet.pos,1);
+	    this._db.deck[fleet.fleet].api_ship.push(-1);
 
 	    this._update_fleet();
 	    this._notify();
