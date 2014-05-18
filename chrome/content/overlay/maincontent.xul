@@ -179,7 +179,7 @@
 	    </hbox>
 	  </groupbox>
 	  <groupbox id="group-quest">
-	    <caption>任務(<label id="quest-information-mode" value="-" popup="quest-information-mode-popup"/>)</caption>
+	    <caption>任務(<label id="quest-information-mode" value="-" popup="quest-information-mode-popup" style="cursor:pointer;"/>)</caption>
 	    <menupopup id="quest-information-mode-popup">
 	      <menuitem label=""/>
 	      <menuitem label="全て"               value="0" oncommand="KanColleTimerQuestInfo.changeMode(this);"/>
