@@ -3138,6 +3138,34 @@ function WindowOnTop(win, istop){
 }
 
 /**
+ * 画面をクリックする。
+ * 座標はページの左上が原点（ウィンドウ左上原点ではない）
+ * @param x
+ * @param y
+ */
+function DoClick( x, y ){
+    SendMouseEvent( "mousedown", x, y );
+    SendMouseEvent( "mouseup", x, y );
+}
+
+function SendMouseEvent( name, x, y ){
+    try{
+	var cwu = FindKanColleWindow()
+	    .selectedBrowser.contentWindow
+	    .QueryInterface( Components.interfaces.nsIInterfaceRequestor )
+	    .getInterface( Components.interfaces.nsIDOMWindowUtils );
+	var scrollX = {}, scrollY = {};
+	cwu.getScrollXY( false, scrollX, scrollY );
+	// クライアントウィンドウの左上原点で指定
+	x -= scrollX.value;
+	y -= scrollY.value;
+	if( x < 0 || y < 0 ) return;
+	cwu.sendMouseEvent( name, x, y, 0, 1, 0, true );
+    }catch(e){
+    }
+}
+
+/**
  * サウンド再生をする.
  * @param path ファイルのパス
  */
