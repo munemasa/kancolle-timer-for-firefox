@@ -26,7 +26,18 @@ var KanColleTimer = {
 	$(sound_conf).play();
 	if( KanColleTimerConfig.getBool(popup_conf) &&
 	    (!is1min || KanColleTimerConfig.getBool('popup.1min-before')) ){
-	    ShowPopupNotification(this.imageURL,"艦これタイマー",str,cookie);
+
+	    if( KanColleTimerConfig.getBool("use-notificationbox") ){
+		let notification = GetGlobalNotificationBox();
+		if( notification ){
+		    str += "["+ GetDateString( (new Date()).getTime() ) + "]";
+		    notification.appendNotification( str, null,
+						     "chrome://kancolletimer/content/data/icon.png",
+						     notification.PRIORITY_INFO_HIGH, null );
+		}
+	    }else{
+		ShowPopupNotification(this.imageURL,"艦これタイマー",str,cookie);
+	    }
 	}
     },
 

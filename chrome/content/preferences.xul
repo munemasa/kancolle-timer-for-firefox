@@ -161,6 +161,8 @@
 		  name="extensions.kancolletimer.popup.kdock" type="bool"/>
       <preference id="pref-popup-1min-before"
 		  name="extensions.kancolletimer.popup.1min-before" type="bool"/>
+      <preference id="pref-use-notificationbox"
+		  name="extensions.kancolletimer.use-notificationbox" type="bool"/>
     </preferences>
 
     <vbox>
@@ -171,6 +173,7 @@
 	<checkbox preference="pref-popup-ndock-completed" label="修理完了"/>
 	<checkbox preference="pref-popup-kdock-completed" label="建造完了"/>
       </groupbox>
+      <checkbox preference="pref-use-notificationbox" label="ポップアップ通知のかわりに通知ボックスを使用する"/>
     </vbox>
   </prefpane>
 

@@ -3016,6 +3016,27 @@ function SetStyleProperty(node, prop, value, prio){
 }
 
 /**
+ * 艦これタブを持っているウィンドウインスタンスを返す
+ */
+function FindKanColleWindow(){
+    let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+    let browserEnumerator = wm.getEnumerator("navigator:browser");
+    let url = "www.dmm.com/netgame/social/-/gadgets/=/app_id=854854";
+    while(browserEnumerator.hasMoreElements()) {
+	let browserInstance = browserEnumerator.getNext().gBrowser;
+	// browser インスタンスの全てのタブを確認する.
+	let numTabs = browserInstance.tabContainer.childNodes.length;
+	for(let index=0; index<numTabs; index++) {
+	    let currentBrowser = browserInstance.getBrowserAtIndex(index);
+	    if (currentBrowser.currentURI.spec.indexOf(url) != -1) {
+		return browserInstance;
+	    }
+	}
+    }
+    return null;
+}
+
+/**
  * 艦これを開いているタブを返す
  * @return Tabを返す。なければnull
  */
@@ -3035,6 +3056,14 @@ function FindKanColleTab(){
 	}
     }
     return null;
+}
+
+/**
+ * 艦これを開いているブラウザのglobal-notificationboxを取得する
+ */
+function GetGlobalNotificationBox(){
+    let win = FindKanColleWindow();
+    return win && win.getNotificationBox();
 }
 
 /**
