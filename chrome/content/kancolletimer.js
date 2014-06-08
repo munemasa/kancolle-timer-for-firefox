@@ -80,7 +80,18 @@ var KanColleTimer = {
 	    $('sound.default').play();
 	    if( KanColleTimerConfig.getBool('popup.general-timer') ){
 		let str = "時間になりました。";
-		ShowPopupNotification(this.imageURL,"艦これタイマー",str,"general-timer");
+
+		if( KanColleTimerConfig.getBool("use-notificationbox") ){
+		    let notification = GetGlobalNotificationBox();
+		    if( notification ){
+			str += "["+ GetDateString( (new Date()).getTime() ) + "]";
+			notification.appendNotification( str, null,
+							 "chrome://kancolletimer/content/data/icon.png",
+							 notification.PRIORITY_INFO_HIGH, null );
+		    }
+		}else{
+		    ShowPopupNotification(this.imageURL,"艦これタイマー",str,"general-timer");
+		}
 	    }
 	}
 	$('general-timer').value = GetTimeString( remain );
