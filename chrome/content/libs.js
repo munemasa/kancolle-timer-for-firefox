@@ -3160,7 +3160,7 @@ function SendMouseEvent( name, x, y ){
 	x -= scrollX.value;
 	y -= scrollY.value;
 	if( x < 0 || y < 0 ) return;
-	cwu.sendMouseEvent( name, x, y, 0, 1, 0, true );
+	cwu.sendMouseEventToWindow( name, x, y, 0, 1, 0, true );
     }catch(e){
     }
 }
