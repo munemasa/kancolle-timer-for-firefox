@@ -302,7 +302,9 @@ var Twitter = {
 		let result = JSON.parse( req.responseText );
 		debugprint( 'Twitter:' + result.error );
 		if( !retry ){
-		    Twitter.updateStatusWithMedia( text, picture, true );
+		    setTimeout( function(){
+			Twitter.updateStatusWithMedia( text, picture, true );
+		    }, 3000 );
 		}else{
 		    AlertPrompt( "スクリーンショットのつぶやきに失敗しました。", "艦これタイマー" );
 		}
