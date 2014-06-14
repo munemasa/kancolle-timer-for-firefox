@@ -3,6 +3,7 @@
 // http://www.dmm.com/netgame/social/application/-/detail/=/app_id=854854/
 
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
+KanColleDatabase.typeName = KanColleData.type_name;
 
 var KanColleTimer = {
     imageURL: "http://pics.dmm.com/freegame/app/854854/200.jpg",
