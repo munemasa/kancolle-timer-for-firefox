@@ -3,6 +3,8 @@
 
 var EXPORTED_SYMBOLS = ["KanColleRemainInfo", "KanColleDatabase"];
 
+var __devmode = true;
+
 /*
  * Database
  */
@@ -1510,7 +1512,7 @@ var KanColleDatabase = {
     _refcnt: null,
 
     save: function(url, text){
-	return;
+	if( !__devmode ) return;
 
 	// 通信データを ProfD/kancolletimer.dat/ に保存する.
 	url = url.match(/^http.*\/kcsapi\/(.*)/)[1];
@@ -1539,6 +1541,9 @@ var KanColleDatabase = {
 	    let data = JSON.parse(text);
 
 	    this.save( url, text );
+	    if( __devmode && 'function'==typeof this.__devfunc ){
+		this.__devfunc( req, data );
+	    }
 
 	    if (data.api_result != 1)
 		return;
