@@ -413,8 +413,6 @@ var KanColleTimer = {
 	KanColleTimerQuestInfo.restore();
 	//KanColleTimerFleetInfo.restore();
 
-	this.setWindowOnTop();
-
 	KanColleTimerHeadQuarterInfo.start();
 	KanColleTimerDeckInfo.start();
 	KanColleTimerKdockInfo.start();
@@ -423,6 +421,11 @@ var KanColleTimer = {
 	KanColleTimerFleetInfo.start();
 	KanColleTimerShipTableStart();
 	KanColleTimerMaterialLog.start();
+
+	setTimeout( function(){
+	    KanColleTimer.setWindowOnTop();
+	}, 1000 );
+
     },
 
     destroy: function(){
