@@ -307,6 +307,28 @@ var KanColleTimer = {
 	this._saveScreenshot(file, url);
     },
 
+    onClickAkashiTimerButton: function(){
+	if( this._akashi_timer ){
+	    $( 'akashi-timer-button' ).src = "chrome://kancolletimer/content/data/start.png";
+	    $( 'akashi-timer-bar' ).value = 0;
+	    $( 'akashi-timer-label' ).value = "00:00"
+	    clearInterval( this._akashi_timer_id );
+	    this._akashi_timer = 0;
+	}else{
+	    $( 'akashi-timer-button' ).src = "chrome://kancolletimer/content/data/stop.png";
+	    this._akashi_timer = GetCurrentTime();
+	    this._akashi_timer_id = setInterval( function(){
+		let now = GetCurrentTime();
+		let progress = now - KanColleTimer._akashi_timer;
+		$( 'akashi-timer-label' ).value = GetTimeString( progress ).substring( 3 );
+		$( 'akashi-timer-bar' ).value = Math.floor( progress * 100 / (20 * 60) );
+		if( progress >= 20 * 60 ){
+		    KanColleTimer._akashi_timer = now;
+		}
+	    }, 1000 );
+	}
+    },
+
     findWindow:function(){
 	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
