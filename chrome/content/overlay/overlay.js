@@ -393,6 +393,11 @@ KanColleTimer.Overlay = {
 	let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);
 	w.focus();
     },
+    openDropList: function(){
+	let feature = "chrome,resizable=yes";
+	let w = window.open( "chrome://kancolletimer/content/droplist.xul", "KanColleTimerDropList", feature );
+	w.focus();
+    },
 
     openAbout: function(){
 	let feature="chrome,resizable=yes,centerscreen";

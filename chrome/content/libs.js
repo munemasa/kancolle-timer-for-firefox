@@ -1506,6 +1506,12 @@ function OpenResourceGraph(){
     window.open('chrome://kancolletimer/content/resourcegraph.xul','KanColleTimerResourceGraph','chrome,resizable=yes').focus();
 }
 
+function OpenDropShipList(){
+    let feature = "chrome,resizable=yes";
+    let w = window.open( "chrome://kancolletimer/content/droplist.xul", "KanColleTimerDropList", feature );
+    w.focus();
+}
+
 function OpenAboutDialog(){
     var f='chrome,toolbar,modal=no,resizable=no,centerscreen';
     var w = window.openDialog('chrome://kancolletimer/content/about.xul','KanColleTimerAbout',f);
@@ -3360,7 +3366,7 @@ function CreateFolder(path){
 }
 
 /**
- * ファイルを開く
+ * 指定パスのnsIFileを返す
  */
 function OpenFile(path){
     let localfileCID = '@mozilla.org/file/local;1';
@@ -3373,6 +3379,16 @@ function OpenFile(path){
     catch(e) {
 	return false;
     }
+}
+
+/**
+ * 指定ファイルの入力ストリームを返す
+ */
+function GetInputStream( file ){
+    let istream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+	.createInstance( Components.interfaces.nsIFileInputStream );
+    istream.init( file, 0x01, 0444, 0 );
+    return istream;
 }
 
 // NicoLiveHelperのインストールパスを返す.
@@ -3638,8 +3654,11 @@ function GetCurrentTime(){
     return Math.floor(d.getTime()/1000);
 }
 
-function GetDateString(ms){
+function GetDateString(ms, full){
     let d = new Date(ms);
+    if( full ){
+	return d.toLocaleFormat("%Y-%m-%d %H:%M:%S");
+    }
     return d.toLocaleFormat("%m-%d %H:%M:%S");
 }
 

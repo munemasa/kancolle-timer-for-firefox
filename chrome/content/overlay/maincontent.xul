@@ -50,6 +50,7 @@
 	<toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	  <menupopup>
 	    <menuitem label="保有艦娘リスト" oncommand="OpenShipList();"/>
+	    <menuitem label="建造・ドロップ艦娘一覧" oncommand="OpenDropShipList();"/>
 	    <menuitem label="資源グラフ" oncommand="OpenResourceGraph();"/>
 	    <menuseparator/>
 	    <menuitem id="window-stay-on-top" persist="checked"

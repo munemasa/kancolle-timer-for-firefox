@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
+
+<window id="kancolletimer_droplist"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	persist="screenX screenY width height sizemode"
+	width="640" height="480"
+	windowtype="KanColleTimerDropListWindow"
+	title="建造・ドロップ艦娘一覧">
+
+  <keyset>
+    <!-- CTRL+W: Close this window -->
+    <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+    <!-- CTRL+R: Reload -->
+    <key id="reload" key="r" modifiers="accel" oncommand="OpenDropShipList();"/>
+  </keyset>
+
+  <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/libs.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/data.js" />
+  <script type="application/javascript;version=1.7"
+	  src="chrome://kancolletimer/content/droplist.js" />
+
+  <toolbox>
+    <menubar>
+      <menu label="ツール">
+	<menupopup>
+	  <menuitem label="一覧をCSVに保存..." oncommand="ShipList.saveCvs();"/>
+	  <menuseparator/>
+	  <menuitem label="閉じる" oncommand="window.close();"/>
+	</menupopup>
+      </menu>
+      <menuitem label="!リロード" oncommand="OpenDropShipList();"/>
+    </menubar>
+  </toolbox>
+
+  <vbox flex="1" style="overflow:auto;">
+    <listbox id="dropship-list" flex="1" context="popup-save-csv">
+      <listcols>
+	<listcol/><listcol/><listcol/><listcol/><listcol flex="1"/>
+      </listcols>
+      <listhead>
+	<listheader label="海域"/>
+        <listheader label="敵艦隊名"/>
+        <listheader label="艦種"/>
+        <listheader label="艦名"/>
+        <listheader label="日時"/>
+      </listhead>
+    </listbox>
+  </vbox>
+  
+  <popupset>
+    <menupopup id="popup-save-csv">
+      <menuitem label="一覧をCSVに保存..." oncommand="ShipList.saveCvs();"/>
+<!--
+      <menuitem id="window-stay-on-top" persist="checked"
+		label="常に最前面に表示"
+		type="checkbox" autocheck="true"
+		tooltiptext="Windows/Firefox 17以降でのみ有効"
+		oncommand="WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );"/>
+-->
+    </menupopup>
+  </popupset>
+
+</window>
