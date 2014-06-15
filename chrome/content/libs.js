@@ -3226,6 +3226,16 @@ function ShuffleArray( list ){
 }
 
 /**
+ * ウィンドウを検索する
+ * @param id ウィンドウのID
+ */
+function FindWindow( id ){
+    let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService( Components.interfaces.nsIWindowMediator );
+    let win = wm.getMostRecentWindow( id );
+    return win;
+}
+
+/**
  * ユーザーのProfileディレクトリを返す
  */
 function GetProfileDir(){
@@ -3235,26 +3245,29 @@ function GetProfileDir(){
     return file;
 }
 
-function GetAddonVersion()
-{
+function _GetAddonVersion( id ){
     let version;
     try{
-	let em = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager);
-	let addon = em.getItemForID("kancolletimer@miku39.jp");
+	let em = Components.classes["@mozilla.org/extensions/manager;1"].getService( Components.interfaces.nsIExtensionManager );
+	let addon = em.getItemForID( id );
 	version = addon.version;
-    } catch (x) {
+    }catch(x){
 	// Fx4
-	AddonManager.getAddonByID("kancolletimer@miku39.jp",
-				  function(addon) {
-				      version = addon.version;
-				  });
+	AddonManager.getAddonByID( id,
+				   function( addon ){
+				       version = addon.version;
+				   } );
 	// Piroさん(http://piro.sakura.ne.jp/)が値が設定されるまで待つことをやっていたので真似してしまう.
 	let thread = Components.classes['@mozilla.org/thread-manager;1'].getService().mainThread;
-	while (version === void(0)) {
-	    thread.processNextEvent(true);
+	while( version === void(0) ){
+	    thread.processNextEvent( true );
 	}
     }
     return version;
+}
+
+function GetAddonVersion(){
+    return _GetAddonVersion( "kancolletimer@miku39.jp" );
 }
 
 function GetXmlText(xml,path){

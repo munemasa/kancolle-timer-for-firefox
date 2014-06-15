@@ -330,9 +330,7 @@ var KanColleTimer = {
     },
 
     findWindow:function(){
-	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
-	return win;
+	return FindWindow( "KanColleTimerMainWindow" );
     },
 
     /**
@@ -385,35 +383,6 @@ var KanColleTimer = {
 	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
 	    rows.appendChild( row );
 	}
-    },
-
-    findWindow: function(){
-	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-	let win = wm.getMostRecentWindow("KanColleTimerMainWindow");
-	return win;
-    },
-    open: function(){
-	let feature="chrome,resizable=yes";
-	let win = this.findWindow();
-	if(win){
-	    win.focus();
-	}else{
-	    let w = window.open("chrome://kancolletimer/content/mainwindow.xul","KanColleTimer",feature);
-	    w.focus();
-	}
-    },
-
-    startTimer: function() {
-	if (this._timer)
-	    return;
-	this._timer = setInterval(this.update.bind(this), 1000);
-    },
-
-    stopTimer: function() {
-	if (!this._timer)
-	    return;
-	clearInterval(this._timer);
-	this._timer = null;
     },
 
     init: function(){
