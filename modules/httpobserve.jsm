@@ -1551,7 +1551,7 @@ var KanColleDatabase = {
     appendText: function( file, text ){
 	var os = Components.classes['@mozilla.org/network/file-output-stream;1']
 	    .createInstance( Components.interfaces.nsIFileOutputStream );
-	var flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
+	let flags = 0x02|0x10|0x08;// wronly|append|create
 	os.init( file, flags, 0664, 0 );
 	var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
 	    .createInstance( Components.interfaces.nsIConverterOutputStream );
@@ -1587,7 +1587,8 @@ var KanColleDatabase = {
 	let ship = KanColleDatabase.masterShip.get( data.api_data.api_ship_id );
 	let d = new Date();
 	d = Math.floor( d.getTime() / 1000 );
-	let str = "建造,,"
+	// なぜか"建造"の文字だと文字化けするので、"Created"にする.
+	let str = "Created,,"
 	    + KanColleDatabase.typeName[ship.api_stype]
 	    + ","
 	    + ship.api_name
