@@ -3,46 +3,43 @@ Components.utils.import( "resource://kancolletimermodules/httpobserve.jsm" );
 var DropShipList = {
     allships: [],
 
-    saveCvs: function(){
-	let txt = "";
-
-	for( let k in this.allships ){
-	    let obj = this.allships[k];
-	    txt += obj.type + "," + obj.name + "," + obj.lv + ",";
-	    for( let i in obj.equips ){
-		let name = obj.equips[i];
-		txt += name + ",";
-	    }
-	    txt += "\n";
-	}
-
-	const nsIFilePicker = Components.interfaces.nsIFilePicker;
-	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance( nsIFilePicker );
-	fp.init( window, "一覧をCSVで保存...", nsIFilePicker.modeSave );
-	fp.appendFilters( nsIFilePicker.filterAll );
-	let rv = fp.show();
-	if( rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace ){
-	    let file = fp.file;
-	    let path = fp.file.path;
-	    let os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance( Components.interfaces.nsIFileOutputStream );
-	    let flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
-	    os.init( file, flags, 0664, 0 );
-	    let cos = GetUTF8ConverterOutputStream( os );
-	    cos.writeString( txt );
-	    cos.close();
-	}
-    },
-
     clearListBox: function( list ){
 	while( list.getRowCount() ){
 	    list.removeItemAt( 0 );
 	}
     },
 
-    load: function(){
+    delete: function(){
+	let targets = $('dropship-list' ).selectedItems;
+	for( let t in targets ){
+	    let id = parseInt( targets[t].getAttribute('list_id') );
+	    this.allships = this.allships.filter( function(d){ return d.date!=id; } );
+	}
+	this.createTable();
+	this.save();
+    },
+
+    getFile: function(){
 	let profdir = GetProfileDir();
 	profdir.append( "kancolletimer.dat" )
 	profdir.append( "getship.dat" );
+	return profdir;
+    },
+
+    save: function(){
+	let file = this.getFile();
+	let os = CreateFile( file );
+	os = GetUTF8ConverterOutputStream( os );
+
+	for( let i = 0; i < this.allships.length; i++ ){
+	    let ship = this.allships[i];
+	    let str = ship.area + "," + ship.enemy + "," + ship.type + "," + ship.name + "," + ship.date + "\n";
+	    os.writeString( str );
+	}
+	os.close();
+    },
+    load: function(){
+	let profdir = this.getFile();
 
 	let istream = GetInputStream( profdir );
 	istream = GetUTF8ConverterInputStream( istream );
@@ -77,14 +74,18 @@ var DropShipList = {
 	    let ship = this.allships[i];
 
 	    let elem = CreateElement( 'listitem' );
-	    let style = no != 1 && (no % 10) == 1 ? "border-top: 1px solid black;" : "";
+	    let style = no != 1 && (no % 10) == 1 ? "border-top: 1px solid gray;" : "";
 	    elem.appendChild( CreateListCell( ship.area == "Created" ? "建造" : ship.area ) );
 	    elem.appendChild( CreateListCell( ship.enemy ) );
 	    elem.appendChild( CreateListCell( ship.type ) );
 	    elem.appendChild( CreateListCell( ship.name ) );
 	    elem.appendChild( CreateListCell( GetDateString( ship.date * 1000, true ).replace( "-", "/", "g" ) ) );
+	    elem.setAttribute( 'style', style );
+	    // 秒単位で一致する速度で建造、ドロップできないので日時をIDとして扱ってもいいだろう
+	    elem.setAttribute( 'list_id', ship.date );
 
 	    list.appendChild( elem );
+	    no++;
 	}
     },
 

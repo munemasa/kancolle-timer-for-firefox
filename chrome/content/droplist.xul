@@ -19,11 +19,8 @@
     <key id="reload" key="r" modifiers="accel" oncommand="OpenDropShipList();"/>
   </keyset>
 
-  <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8" />
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/libs.js" />
-  <script type="application/javascript;version=1.7"
-	  src="chrome://kancolletimer/content/data.js" />
   <script type="application/javascript;version=1.7"
 	  src="chrome://kancolletimer/content/droplist.js" />
 
@@ -31,8 +28,10 @@
     <menubar>
       <menu label="ツール">
 	<menupopup>
+          <!--
 	  <menuitem label="一覧をCSVに保存..." oncommand="ShipList.saveCvs();"/>
 	  <menuseparator/>
+	  -->
 	  <menuitem label="閉じる" oncommand="window.close();"/>
 	</menupopup>
       </menu>
@@ -41,7 +40,7 @@
   </toolbox>
 
   <vbox flex="1" style="overflow:auto;">
-    <listbox id="dropship-list" flex="1" context="popup-save-csv">
+    <listbox id="dropship-list" flex="1" seltype="multiple" context="popup-menu">
       <listcols>
 	<listcol/><listcol/><listcol/><listcol/><listcol flex="1"/>
       </listcols>
@@ -56,8 +55,8 @@
   </vbox>
   
   <popupset>
-    <menupopup id="popup-save-csv">
-      <menuitem label="一覧をCSVに保存..." oncommand="ShipList.saveCvs();"/>
+    <menupopup id="popup-menu">
+      <menuitem label="削除" oncommand="DropShipList.delete();"/>
 <!--
       <menuitem id="window-stay-on-top" persist="checked"
 		label="常に最前面に表示"

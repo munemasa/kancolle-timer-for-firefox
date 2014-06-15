@@ -3391,6 +3391,18 @@ function GetInputStream( file ){
     return istream;
 }
 
+/**
+ * ファイルを新規作成してnsiFileOutputStreamを返す。
+ * 既存ファイルは内容を破棄する。
+ */
+function CreateFile( file ){
+    let os = Components.classes['@mozilla.org/network/file-output-stream;1']
+	.createInstance( Components.interfaces.nsIFileOutputStream );
+    let flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
+    os.init( file, flags, 0664, 0 );
+    return os;
+}
+
 // NicoLiveHelperのインストールパスを返す.
 function GetExtensionPath(){
     let id = "kancolletimer@miku39.jp";
