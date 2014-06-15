@@ -3,7 +3,7 @@
 
 var EXPORTED_SYMBOLS = ["KanColleRemainInfo", "KanColleDatabase"];
 
-var __devmode = true;
+var __devmode = false;
 
 /*
  * Database
