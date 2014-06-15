@@ -1570,14 +1570,16 @@ var KanColleDatabase = {
 	    let d = new Date();
 	    d = Math.floor( d.getTime() / 1000 );
 	    let str = data.api_data.api_quest_name
-		    + ","
-		    + data.api_data.api_enemy_info.api_deck_name
-		    + ","
-		    + data.api_data.api_get_ship.api_ship_type
-		    + ","
-		    + data.api_data.api_get_ship.api_ship_name
-		    + ","
-		    + d + "\n";
+		+ ","
+		+ data.api_data.api_enemy_info.api_deck_name
+		+ ","
+		+ data.api_data.api_get_ship.api_ship_type
+		+ ","
+		+ data.api_data.api_get_ship.api_ship_name
+		+ ","
+		+ d + ","
+		+ data.api_data.api_win_rank
+		+"\n";
 	    this.appendText( file, str );
 	}catch(e){}
     },

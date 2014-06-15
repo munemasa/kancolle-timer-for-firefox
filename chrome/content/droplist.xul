@@ -42,11 +42,12 @@
   <vbox flex="1" style="overflow:auto;">
     <listbox id="dropship-list" flex="1" seltype="multiple" context="popup-menu">
       <listcols>
-	<listcol/><listcol/><listcol/><listcol/><listcol flex="1"/>
+	<listcol/><listcol/><listcol/><listcol/><listcol/><listcol flex="1"/>
       </listcols>
       <listhead>
 	<listheader label="海域"/>
         <listheader label="敵艦隊名"/>
+        <listheader label="Rank"/>
         <listheader label="艦種"/>
         <listheader label="艦名"/>
         <listheader label="日時"/>

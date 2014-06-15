@@ -61,6 +61,7 @@ var DropShipList = {
 	    ship.type = data[2];
 	    ship.name = data[3];
 	    ship.date = parseInt( data[4] );
+	    ship.winrank = data[5] || "";
 	    this.allships.push( ship );
 	}
     },
@@ -77,6 +78,7 @@ var DropShipList = {
 	    let style = no != 1 && (no % 10) == 1 ? "border-top: 1px solid gray;" : "";
 	    elem.appendChild( CreateListCell( ship.area == "Created" ? "建造" : ship.area ) );
 	    elem.appendChild( CreateListCell( ship.enemy ) );
+	    elem.appendChild( CreateListCell( ship.winrank ) );
 	    elem.appendChild( CreateListCell( ship.type ) );
 	    elem.appendChild( CreateListCell( ship.name ) );
 	    elem.appendChild( CreateListCell( GetDateString( ship.date * 1000, true ).replace( "-", "/", "g" ) ) );
