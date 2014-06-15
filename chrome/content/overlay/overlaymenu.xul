@@ -63,6 +63,7 @@
 
 	 <menuseparator/>
 	 <menuitem label="保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
+	 <menuitem label="建造・ドロップ艦娘一覧" oncommand="KanColleTimer.Overlay.openDropList(); event.stopPropagation();"/>
 	 <menuitem label="資源グラフ" oncommand="KanColleTimer.Overlay.openResourceGraph(); event.stopPropagation();"/>
 	 <menuseparator/>
 	 <menuitem label="艦これタイマー(ウィンドウ)を開く" oncommand="KanColleTimer.Overlay.open(); event.stopPropagation();"/>
@@ -108,7 +109,12 @@
 	   <menuitem label="艦これタイマー(ウィンドウ)を開く" oncommand="KanColleTimer.Overlay.open(); event.stopPropagation();"/>
 	   <menuitem label="サイドバーを開く" oncommand="toggleSidebar('viewKanColleTimerSidebar',true); event.stopPropagation();"/>
 	   <menuseparator/>
-	   <menuitem label="艦これページを開く" oncommand="KanColleTimer.Overlay.openKanCollePage(); event.stopPropagation();"/>
+	   <menuitem label="ゲームページを開く" oncommand="KanColleTimer.Overlay.openKanCollePage(); event.stopPropagation();"/>
+	   <menuseparator/>
+	   <menuitem label="運営鎮守府Twitter"
+		     oncommand="KanColleTimer.Overlay.openBrowserTab('https://twitter.com/KanColle_STAFF');"/>
+	   <menuitem label="公式コミュニティ"
+		     oncommand="KanColleTimer.Overlay.openBrowserTab('http://www.dmm.com/netgame/social/community/-/detail/=/id=100');"/>
 	 </menupopup>
        </toolbarbutton>
        <hbox align="center">
@@ -141,6 +147,7 @@
        <toolbarbutton image="chrome://kancolletimer/content/data/tool.png" tooltiptext="ツール" type="menu">
 	  <menupopup>
 	    <menuitem label="保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
+	    <menuitem label="建造・ドロップ艦娘一覧" oncommand="KanColleTimer.Overlay.openDropList(); event.stopPropagation();"/>
 	    <menuitem label="資源グラフ" oncommand="KanColleTimer.Overlay.openResourceGraph(); event.stopPropagation();"/>
 	    <menuseparator/>
 	    <menuitem label="設定..." oncommand="event.stopPropagation(); KanColleTimer.Overlay.openSettingsDialog();"/>

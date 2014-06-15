@@ -1506,6 +1506,12 @@ function OpenResourceGraph(){
     window.open('chrome://kancolletimer/content/resourcegraph.xul','KanColleTimerResourceGraph','chrome,resizable=yes').focus();
 }
 
+function OpenDropShipList(){
+    let feature = "chrome,resizable=yes";
+    let w = window.open( "chrome://kancolletimer/content/droplist.xul", "KanColleTimerDropList", feature );
+    w.focus();
+}
+
 function OpenAboutDialog(){
     var f='chrome,toolbar,modal=no,resizable=no,centerscreen';
     var w = window.openDialog('chrome://kancolletimer/content/about.xul','KanColleTimerAbout',f);
@@ -3138,6 +3144,34 @@ function WindowOnTop(win, istop){
 }
 
 /**
+ * 画面をクリックする。
+ * 座標はページの左上が原点（ウィンドウ左上原点ではない）
+ * @param x
+ * @param y
+ */
+function DoClick( x, y ){
+    SendMouseEvent( "mousedown", x, y );
+    SendMouseEvent( "mouseup", x, y );
+}
+
+function SendMouseEvent( name, x, y ){
+    try{
+	var cwu = FindKanColleWindow()
+	    .selectedBrowser.contentWindow
+	    .QueryInterface( Components.interfaces.nsIInterfaceRequestor )
+	    .getInterface( Components.interfaces.nsIDOMWindowUtils );
+	var scrollX = {}, scrollY = {};
+	cwu.getScrollXY( false, scrollX, scrollY );
+	// クライアントウィンドウの左上原点で指定
+	x -= scrollX.value;
+	y -= scrollY.value;
+	if( x < 0 || y < 0 ) return;
+	cwu.sendMouseEventToWindow( name, x, y, 0, 1, 0, true );
+    }catch(e){
+    }
+}
+
+/**
  * サウンド再生をする.
  * @param path ファイルのパス
  */
@@ -3191,6 +3225,15 @@ function ShuffleArray( list ){
     }
 }
 
+/**
+ * ユーザーのProfileディレクトリを返す
+ */
+function GetProfileDir(){
+    let file = Components.classes["@mozilla.org/file/directory_service;1"]
+	.getService( Components.interfaces.nsIProperties )
+	.get( "ProfD", Components.interfaces.nsIFile );
+    return file;
+}
 
 function GetAddonVersion()
 {
@@ -3323,7 +3366,7 @@ function CreateFolder(path){
 }
 
 /**
- * ファイルを開く
+ * 指定パスのnsIFileを返す
  */
 function OpenFile(path){
     let localfileCID = '@mozilla.org/file/local;1';
@@ -3336,6 +3379,28 @@ function OpenFile(path){
     catch(e) {
 	return false;
     }
+}
+
+/**
+ * 指定ファイルの入力ストリームを返す
+ */
+function GetInputStream( file ){
+    let istream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+	.createInstance( Components.interfaces.nsIFileInputStream );
+    istream.init( file, 0x01, 0444, 0 );
+    return istream;
+}
+
+/**
+ * ファイルを新規作成してnsiFileOutputStreamを返す。
+ * 既存ファイルは内容を破棄する。
+ */
+function CreateFile( file ){
+    let os = Components.classes['@mozilla.org/network/file-output-stream;1']
+	.createInstance( Components.interfaces.nsIFileOutputStream );
+    let flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
+    os.init( file, flags, 0664, 0 );
+    return os;
 }
 
 // NicoLiveHelperのインストールパスを返す.
@@ -3601,8 +3666,11 @@ function GetCurrentTime(){
     return Math.floor(d.getTime()/1000);
 }
 
-function GetDateString(ms){
+function GetDateString(ms, full){
     let d = new Date(ms);
+    if( full ){
+	return d.toLocaleFormat("%Y-%m-%d %H:%M:%S");
+    }
     return d.toLocaleFormat("%m-%d %H:%M:%S");
 }
 

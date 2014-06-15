@@ -314,6 +314,13 @@ KanColleTimer.Overlay = {
 	return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
+    openBrowserTab: function( url ){
+	var tab = getBrowser().addTab( url );
+	getBrowser().selectedTab = tab;
+
+	event.stopPropagation(); // 呼び出し元が限られているので一括してここで止める
+    },
+
     openKanCollePage: function(){
 	var url = "http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/";
 	var tab = this.FindKanColleTab();
@@ -384,6 +391,11 @@ KanColleTimer.Overlay = {
     openShipList: function(){
 	let feature="chrome,resizable=yes";
 	let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);
+	w.focus();
+    },
+    openDropList: function(){
+	let feature = "chrome,resizable=yes";
+	let w = window.open( "chrome://kancolletimer/content/droplist.xul", "KanColleTimerDropList", feature );
 	w.focus();
     },
 

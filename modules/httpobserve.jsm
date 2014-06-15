@@ -3,6 +3,8 @@
 
 var EXPORTED_SYMBOLS = ["KanColleRemainInfo", "KanColleDatabase"];
 
+var __devmode = true;
+
 /*
  * Database
  */
@@ -1461,6 +1463,8 @@ var KanColleKdockDB = function() {
 KanColleKdockDB.prototype = new KanColleCombinedDB();
 
 var KanColleDatabase = {
+    typeName: {},		// 艦種データ
+
     postData: new Object(),
 
     // Database
@@ -1509,26 +1513,88 @@ var KanColleDatabase = {
     // Internal variable
     _refcnt: null,
 
-    save: function(url, text){
-	return;
-
-	// 通信データを ProfD/kancolletimer.dat/ に保存する.
-	url = url.match(/^http.*\/kcsapi\/(.*)/)[1];
-	url = url.replace('/','__');
-	
-        var profdir = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("ProfD", Components.interfaces.nsIFile);
-
+    /**
+     * Profileディレクトリ内に用意しているデータ保管場所のパスを返す
+     * @returns nsIFileの形式で返す
+     */
+    getDir: function(){
 	var dirname = "kancolletimer.dat";
+	var profdir = Components.classes["@mozilla.org/file/directory_service;1"]
+	    .getService( Components.interfaces.nsIProperties )
+	    .get( "ProfD", Components.interfaces.nsIFile );
 	profdir.append( dirname );
+	return profdir;
+    },
+
+    // 通信データを ProfD/kancolletimer.dat/ に保存する.
+    save: function(url, text){
+	if( !__devmode ) return;
+
+	url = url.match( /^http.*\/kcsapi\/(.*)/ )[1];
+	url = url.replace( '/', '__' );
+
+	var profdir = this.getDir();
 	profdir.append( url );
 
-	var os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance(Components.interfaces.nsIFileOutputStream);
-	var flags = 0x02|0x08|0x20;// wronly|create|truncate
+	var os = Components.classes['@mozilla.org/network/file-output-stream;1']
+	    .createInstance( Components.interfaces.nsIFileOutputStream );
+	var flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
 	os.init( profdir, flags, 0664, 0 );
-	var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
-    cos.init(os,"UTF-8",0,Components.interfaces.nsIConverterOutputStream.DEFAULT_REPLACEMENT_CHARACTER);
+	var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+	    .createInstance( Components.interfaces.nsIConverterOutputStream );
+	cos.init( os, "UTF-8", 0, Components.interfaces.nsIConverterOutputStream.DEFAULT_REPLACEMENT_CHARACTER );
 	cos.writeString( text );
 	cos.close();
+    },
+
+    // ファイルにテキストを追記する
+    appendText: function( file, text ){
+	var os = Components.classes['@mozilla.org/network/file-output-stream;1']
+	    .createInstance( Components.interfaces.nsIFileOutputStream );
+	let flags = 0x02|0x10|0x08;// wronly|append|create
+	os.init( file, flags, 0664, 0 );
+	var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+	    .createInstance( Components.interfaces.nsIConverterOutputStream );
+	cos.init( os, "UTF-8", 0, Components.interfaces.nsIConverterOutputStream.DEFAULT_REPLACEMENT_CHARACTER );
+	cos.writeString( text );
+	cos.close();
+    },
+
+    // ドロップ艦をファイルに記録
+    // CSVでフォーマットは 海域名(or建造),敵艦隊名(orなし),艦種,艦名,取得時UNIX時間
+    recordDroppedShip: function( data ){
+	let file = this.getDir();
+	file.append( 'getship.dat' );
+
+	let d = new Date();
+	d = Math.floor( d.getTime() / 1000 );
+	let str = data.api_data.api_quest_name
+	    + ","
+	    + data.api_data.api_enemy_info.api_deck_name
+	    + ","
+	    + data.api_data.api_get_ship.api_ship_type
+	    + ","
+	    + data.api_data.api_get_ship.api_ship_name
+	    + ","
+	    + d + "\n";
+	this.appendText( file, str );
+    },
+    // 建造艦をファイルに記録
+    recordCreatedShip: function( data ){
+	let file = this.getDir();
+	file.append( 'getship.dat' );
+
+	let ship = KanColleDatabase.masterShip.get( data.api_data.api_ship_id );
+	let d = new Date();
+	d = Math.floor( d.getTime() / 1000 );
+	// なぜか"建造"の文字だと文字化けするので、"Created"にする.
+	let str = "Created,,"
+	    + KanColleDatabase.typeName[ship.api_stype]
+	    + ","
+	    + ship.api_name
+	    + ","
+	    + d + "\n";
+	this.appendText( file, str );
     },
 
     // Callback
@@ -1539,6 +1605,10 @@ var KanColleDatabase = {
 	    let data = JSON.parse(text);
 
 	    this.save( url, text );
+	    if( __devmode && 'function' == typeof this.__devfunc ){
+		// 外部から__devfuncに関数突っ込んでやるとそれを呼び出すような仕様
+		this.__devfunc( req, data );
+	    }
 
 	    if (data.api_result != 1)
 		return;
@@ -1616,6 +1686,7 @@ var KanColleDatabase = {
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/getship/)) {
 		this.reqKousyouGetShip.update(data.api_data);
 		this._memberKdock.update(data.api_data.api_kdock);
+		this.recordCreatedShip( data );
 	    } else if (url.match(/kcsapi\/api_req_member\/get_practice_enemyinfo/)) {
 		this.reqMemberGetPracticeEnemyInfo.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_member\/updatedeckname/)) {
@@ -1626,6 +1697,7 @@ var KanColleDatabase = {
 		this.reqNyukyoStart.update();
 	    } else if (url.match(/kcsapi\/api_req_sortie\/battleresult/)) {
 		//this.reqSortieBattleResult.update(data.api_data);
+		this.recordDroppedShip( data );
 	    } else if (url.match(/kcsapi\/api_req_sortie\/battle/)) {
 		this.reqSortieBattle.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
