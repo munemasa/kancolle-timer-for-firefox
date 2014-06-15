@@ -3219,6 +3219,15 @@ function ShuffleArray( list ){
     }
 }
 
+/**
+ * ユーザーのProfileディレクトリを返す
+ */
+function GetProfileDir(){
+    let file = Components.classes["@mozilla.org/file/directory_service;1"]
+	.getService( Components.interfaces.nsIProperties )
+	.get( "ProfD", Components.interfaces.nsIFile );
+    return file;
+}
 
 function GetAddonVersion()
 {

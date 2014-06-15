@@ -57,8 +57,7 @@ var Storage = {
      * @return プロフィールディレクトリへのnsIFileを返す
      */
     getProfileDir: function(){
-        let file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("ProfD", Components.interfaces.nsIFile);
-	return file;
+	return GetProfileDir();
     },
 
     /**
