@@ -1563,21 +1563,23 @@ var KanColleDatabase = {
     // ドロップ艦をファイルに記録
     // CSVでフォーマットは 海域名(or建造),敵艦隊名(orなし),艦種,艦名,取得時UNIX時間
     recordDroppedShip: function( data ){
-	let file = this.getDir();
-	file.append( 'getship.dat' );
+	try{
+	    let file = this.getDir();
+	    file.append( 'getship.dat' );
 
-	let d = new Date();
-	d = Math.floor( d.getTime() / 1000 );
-	let str = data.api_data.api_quest_name
-	    + ","
-	    + data.api_data.api_enemy_info.api_deck_name
-	    + ","
-	    + data.api_data.api_get_ship.api_ship_type
-	    + ","
-	    + data.api_data.api_get_ship.api_ship_name
-	    + ","
-	    + d + "\n";
-	this.appendText( file, str );
+	    let d = new Date();
+	    d = Math.floor( d.getTime() / 1000 );
+	    let str = data.api_data.api_quest_name
+		    + ","
+		    + data.api_data.api_enemy_info.api_deck_name
+		    + ","
+		    + data.api_data.api_get_ship.api_ship_type
+		    + ","
+		    + data.api_data.api_get_ship.api_ship_name
+		    + ","
+		    + d + "\n";
+	    this.appendText( file, str );
+	}catch(e){}
     },
     // 建造艦をファイルに記録
     recordCreatedShip: function( data ){
