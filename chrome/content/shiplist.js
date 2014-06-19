@@ -191,10 +191,19 @@ var ShipList = {
 	    elem.appendChild( CreateListCell( obj.cond ) );
 
 	    if( obj.cond >= 50 ){
-		elem.setAttribute( 'style', style + 'background-color: #ffffc0;' );
+		style = style + 'background-color: #ffffc0;';
 	    }else{
-		elem.setAttribute( 'style', style + 'background-color: white;' );
+		style = style + 'background-color: white;';
 	    }
+	    let p = 1.0 * obj.shipinfo.api_nowhp / obj.shipinfo.api_maxhp;
+	    if( p <= 0.25 ){
+		style += "border-left: solid 5px red;";
+	    }else if( p <= 0.50 ){
+		style += "border-left: solid 5px orange;";
+	    }else if( p <= 0.75 ){
+		style += "border-left: solid 5px yellow;";
+	    }
+	    elem.setAttribute( 'style', style );
 
 	    let cell = CreateListCell( obj.ndock_time ? GetTimeString( obj.ndock_time ):"---" );
 	    if( ShipList.isRepairing( obj.ship_id ) ){
@@ -354,6 +363,10 @@ var ShipList = {
 	    obj.cond = ship.api_cond;
 	    obj.ndock_time = parseInt( ship.api_ndock_time / 1000 );
 	    obj.saku = ship.api_sakuteki[0];
+
+	    // 今まで必要な要素だけ個別にコピーしていたけど
+	    // 面倒なので一括して持つようにする
+	    obj.shipinfo = ship;
 
 	    obj.equips = new Array();
 
