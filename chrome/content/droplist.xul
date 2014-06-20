@@ -17,6 +17,8 @@
     <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
     <!-- CTRL+R: Reload -->
     <key id="reload" key="r" modifiers="accel" oncommand="OpenDropShipList();"/>
+    <!-- CTRL+A: Select All -->
+    <key id="reload" key="a" modifiers="accel" oncommand="DropShipList.selectAll();"/>
   </keyset>
 
   <script type="application/javascript;version=1.7"

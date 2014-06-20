@@ -9,6 +9,10 @@ var DropShipList = {
 	}
     },
 
+    selectAll: function(){
+	$('dropship-list').selectAll();
+    },
+
     delete: function(){
 	let targets = $('dropship-list' ).selectedItems;
 	for( let t in targets ){
