@@ -111,7 +111,9 @@ var ShipList = {
 
 	    elem.appendChild( CreateListCell( KanColleData.type_name[masterdata.api_stype], '' ) );
 	    elem.appendChild( CreateListCell( masterdata.api_name ) );
-	    elem.appendChild( CreateListCell( data.api_lv ) );
+
+	    let cell = CreateListCell( data.api_lv );
+	    elem.appendChild( cell );
 	    elem.appendChild( CreateListCell( data.api_cond ) );
 
 	    if( data.api_cond >= 50 ){
@@ -120,10 +122,11 @@ var ShipList = {
 		elem.setAttribute( 'style', 'background-color: white;' );
 	    }
 
-	    let cell = CreateListCell( data.api_ndock_time ? GetTimeString( data.api_ndock_time / 1000 ):"---" );
+	    cell = CreateListCell( data.api_ndock_time ? GetTimeString( data.api_ndock_time / 1000 ):"---" );
 	    if( this.isRepairing( data.api_id ) ){
-		cell.setAttribute( 'style', 'color: gray;' );
+		cell.setAttribute( 'style', 'color: gray; text-align: center;' );
 	    }else{
+		cell.setAttribute( 'style', 'text-align: center;' );
 	    }
 	    elem.appendChild( cell );
 
@@ -191,8 +194,11 @@ var ShipList = {
 		elem.appendChild( CreateListCell( obj.type ) );
 	    }
 	    elem.appendChild( CreateListCell( obj.name ) );
-	    elem.appendChild( CreateListCell( obj.lv ) );
-	    elem.appendChild( CreateListCell( obj.cond ) );
+
+	    let cell = CreateListCell( obj.lv );
+	    elem.appendChild( cell );
+	    cell = CreateListCell( obj.cond );
+	    elem.appendChild( cell );
 
 	    if( obj.cond >= 50 ){
 		style = style + 'background-color: #ffffc0;';
@@ -211,8 +217,9 @@ var ShipList = {
 
 	    let cell = CreateListCell( obj.ndock_time ? GetTimeString( obj.ndock_time ) : "---" );
 	    if( ShipList.isRepairing( obj.ship_id ) ){
-		cell.setAttribute( 'style', 'color: gray;' );
+		cell.setAttribute( 'style', 'color: gray; text-align: center;' );
 	    }else{
+		cell.setAttribute( 'style', 'text-align:center;' );
 	    }
 	    elem.appendChild( cell );
 
