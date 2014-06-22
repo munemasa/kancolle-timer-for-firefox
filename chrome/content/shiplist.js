@@ -129,6 +129,10 @@ var ShipList = {
 
 	    elem.appendChild( CreateListCell( data.api_sakuteki[0] ) );
 
+	    cell = CreateListCell( data.api_exp[2] + "%" );
+	    cell.setAttribute( 'style', 'text-align: right' );
+	    elem.appendChild( cell );
+
 	    for( let i in data.api_slot ){
 		if( data.api_slot[i] < 0 ) continue;
 		let name = FindSlotItemNameById( data.api_slot[i] );
@@ -178,7 +182,7 @@ var ShipList = {
 	let no = 1;
 	ships.forEach( function( obj ){
 	    let elem = CreateElement( 'listitem' );
-	    let style = no != 1 && (no % 10) == 1 ? "border-top: 1px solid black;":"";
+	    let style = no != 1 && (no % 10) == 1 ? "border-top: 1px solid black;" : "";
 
 	    elem.appendChild( CreateListCell( no++ ) );
 	    if( obj.fleet_no ){
@@ -205,7 +209,7 @@ var ShipList = {
 	    }
 	    elem.setAttribute( 'style', style );
 
-	    let cell = CreateListCell( obj.ndock_time ? GetTimeString( obj.ndock_time ):"---" );
+	    let cell = CreateListCell( obj.ndock_time ? GetTimeString( obj.ndock_time ) : "---" );
 	    if( ShipList.isRepairing( obj.ship_id ) ){
 		cell.setAttribute( 'style', 'color: gray;' );
 	    }else{
@@ -214,6 +218,9 @@ var ShipList = {
 
 	    elem.appendChild( CreateListCell( obj.saku ) );
 
+	    cell = CreateListCell( obj.shipinfo.api_exp[2] + "%" );
+	    cell.setAttribute( 'style', 'text-align: right' );
+	    elem.appendChild( cell );
 
 	    for( let i in obj.equips ){
 		let name = obj.equips[i];
