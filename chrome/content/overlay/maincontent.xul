@@ -448,7 +448,7 @@
       </menupopup>
     </popupset>
 
-    <hbox align="center" tooltiptext="明石タイマー">
+    <hbox id="akashi-timer" align="center" tooltiptext="明石タイマー">
       <stack flex="1">
 	<progressmeter id="akashi-timer-bar" mode="determined" value="0" />
 	<label id="akashi-timer-label" value="00:00"/>
