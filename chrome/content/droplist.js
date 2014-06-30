@@ -37,7 +37,7 @@ var DropShipList = {
 
 	for( let i = 0; i < this.allships.length; i++ ){
 	    let ship = this.allships[i];
-	    let str = ship.area + "," + ship.enemy + "," + ship.type + "," + ship.name + "," + ship.date + "\n";
+	    let str = ship.area + "," + ship.enemy + "," + ship.type + "," + ship.name + "," + ship.date + "," + ship.winrank + "\n";
 	    os.writeString( str );
 	}
 	os.close();
