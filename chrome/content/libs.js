@@ -1243,7 +1243,7 @@ var KanColleTimerQuestInfo = {
 		cell.setAttribute('tooltiptext', q.data.api_detail);
 		let category_color = {
 		    0: "",
-		    1: "",
+		    1: "#41c161", // 編成
 		    2: "#df4f42", // 出撃
 		    3: "#7ebb56", // 演習
 		    4: "#45b9c3", // 遠征
@@ -1262,6 +1262,7 @@ var KanColleTimerQuestInfo = {
 		case 3: t = '[週]'; type = 2; break;
 		case 4: t = '[日]'; type = 1; break;  //3,7,0の日
 		case 5: t = '[日]'; type = 1; break;  //2,8の日
+		case 6: t = '[月]'; type = 1; break;  //マンスリー任務
 		default:
 			t = '[' + q.data.api_type + ']';
 		}
@@ -3694,6 +3695,16 @@ function GetUTF8ConverterOutputStream(os)
     return cos;
 }
 
+
+function ZeroPadding( number, digit )
+{
+    let str = "" + number;
+    let n = str.length;
+    for( let i=n; i<digit; i++ ){
+	str = "0" + str;
+    }
+    return str;
+}
 
 /**
  *  現在時刻を秒で返す(UNIX時間).
