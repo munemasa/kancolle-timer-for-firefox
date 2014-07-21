@@ -5,6 +5,7 @@ function debugprint(txt){
 }
 
 var KanColleTimerPreference = {
+    // ダッシュボード表示項目の移動用D&D処理
     startDragging:function(event){
 	let dt = event.dataTransfer;
 	dt.mozSetDataAt('application/x-moz-node', event.target , 0 );
@@ -21,7 +22,6 @@ var KanColleTimerPreference = {
 	    $('order-of-dashboard').appendChild(node);
 	}
 	this.changeDashboardOrder();
-	Application.console.log(txt);
     },
     checkDrag:function(event){
 	let b = event.dataTransfer.types.contains("application/x-moz-node");
@@ -30,10 +30,11 @@ var KanColleTimerPreference = {
 	}
 	return true;
     },
-
+    /**
+     * ダッシュボードの並び順に変化があったときに呼び出して設定に記録する
+     */
     changeDashboardOrder: function(){
 	let items = evaluateXPath2(document,"//xul:listbox[@id='order-of-dashboard']/xul:listitem");
-
 	let i = items.length-1;
 	let tmp = new Array();
 	for( ; i>=0; i--){
@@ -42,6 +43,33 @@ var KanColleTimerPreference = {
 	    }
 	}
 	$('pref-dashboard-order').value = JSON.stringify( tmp );
+    },
+    moveToUpper: function(){
+	let listbox = $( 'order-of-dashboard' );
+	if( listbox.selectedIndex <= 0 ) return;
+	let n = listbox.selectedIndex - 1;
+	let elem = listbox.getItemAtIndex( n );
+	listbox.insertBefore( listbox.currentItem, elem );
+	listbox.selectItem( listbox.getItemAtIndex( n ) );
+	listbox.ensureIndexIsVisible( n );
+	this.changeDashboardOrder();
+    },
+    moveToLower: function(){
+	let listbox = $( 'order-of-dashboard' );
+	if( listbox.selectedIndex < 0 ) return; // 未選択
+	let n;
+	if( listbox.selectedIndex + 2 >= listbox.getRowCount() ){
+	    listbox.appendChild( listbox.currentItem );
+	    n = listbox.getRowCount() - 1;
+	}else{
+	    n = listbox.selectedIndex + 2;
+	    let elem = listbox.getItemAtIndex( n );
+	    listbox.insertBefore( listbox.currentItem, elem );
+	    n--;
+	}
+	listbox.selectItem( listbox.getItemAtIndex( n ) );
+	listbox.ensureIndexIsVisible( n );
+	this.changeDashboardOrder();
     },
 
     playSound: function(target) {

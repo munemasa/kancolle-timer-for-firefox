@@ -20,23 +20,30 @@
 	ダッシュボード画面に表示する項目をチェックしてください。<html:br/>
 	ドラッグ&amp;ドロップで表示順を変更することもできます。
       </description>
-      <listbox id="order-of-dashboard"
-	       oncommand="KanColleTimerPreference.changeDashboardOrder();"
-	       ondragstart="KanColleTimerPreference.startDragging(event);"
-	       ondragenter="KanColleTimerPreference.checkDrag(event);"
-	       ondragover="KanColleTimerPreference.checkDrag(event);"
-	       ondrop="KanColleTimerPreference.dropTab(event);">
-	<listitem id="group-mission" type="checkbox" label="遠征タイマー" value="group-mission"/>
-	<listitem id="group-ndock" type="checkbox" label="入渠ドックタイマー" value="group-ndock"/>
-	<listitem id="group-kdock" type="checkbox" label="建造ドックタイマー" value="group-kdock"/>
-	<listitem id="group-general-timer" type="checkbox" label="汎用タイマー" value="group-general-timer"/>
-	<listitem id="group-info" type="checkbox" label="艦隊司令部情報" value="group-info"/>
-	<listitem id="group-1stfleet" type="checkbox" label="第1艦隊情報" value="group-1stfleet"/>
-	<listitem id="group-fleets" type="checkbox" label="第2〜4艦隊情報" value="group-fleets"/>
-	<listitem id="group-quest" type="checkbox" label="遂行中任務" value="group-quest"/>
-	<listitem id="group-condition" type="checkbox" label="コンディション" value="group-condition"/>
-	<listitem id="log" type="checkbox" label="ログ" value="log"/>
-      </listbox>
+      <hbox>
+	<listbox id="order-of-dashboard"
+		 flex="1"
+		 oncommand="KanColleTimerPreference.changeDashboardOrder();"
+		 ondragstart="KanColleTimerPreference.startDragging(event);"
+		 ondragenter="KanColleTimerPreference.checkDrag(event);"
+		 ondragover="KanColleTimerPreference.checkDrag(event);"
+		 ondrop="KanColleTimerPreference.dropTab(event);">
+	  <listitem id="group-mission" type="checkbox" label="遠征タイマー" value="group-mission"/>
+	  <listitem id="group-ndock" type="checkbox" label="入渠ドックタイマー" value="group-ndock"/>
+	  <listitem id="group-kdock" type="checkbox" label="建造ドックタイマー" value="group-kdock"/>
+	  <listitem id="group-general-timer" type="checkbox" label="汎用タイマー" value="group-general-timer"/>
+	  <listitem id="group-info" type="checkbox" label="艦隊司令部情報" value="group-info"/>
+	  <listitem id="group-1stfleet" type="checkbox" label="第1艦隊情報" value="group-1stfleet"/>
+	  <listitem id="group-fleets" type="checkbox" label="第2〜4艦隊情報" value="group-fleets"/>
+	  <listitem id="group-quest" type="checkbox" label="遂行中任務" value="group-quest"/>
+	  <listitem id="group-condition" type="checkbox" label="コンディション" value="group-condition"/>
+	  <listitem id="log" type="checkbox" label="ログ" value="log"/>
+	</listbox>
+	<vbox>
+	  <button label="↑" oncommand="KanColleTimerPreference.moveToUpper();"/>
+	  <button label="↓" oncommand="KanColleTimerPreference.moveToLower();"/>
+	</vbox>
+      </hbox>
     </vbox>
   </prefpane>
 
