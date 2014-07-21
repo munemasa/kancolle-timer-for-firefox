@@ -489,6 +489,9 @@ KanColleTimerKdockInfo.__proto__ = __KanColleTimerPanel;
 var KanColleTimerMaterialLog = {
     update: {
 	material: function() {
+	    // TODO あとで、毎回この設定を見にいくのはやめるように修正する
+	    if( !KanColleTimerConfig.getBool("record.resource-history") ) return;
+
 	    let now = Math.floor(KanColleDatabase.material.timestamp() / 1000);
 	    let res = KanColleRemainInfo.gResourceData;
 	    let last_data = res[ res.length-1 ];
