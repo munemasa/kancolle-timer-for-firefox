@@ -3667,6 +3667,20 @@ function debugalert(txt){
     AlertPrompt(txt,'');
 }
 
+var noticeid;
+function ShowNotice( txt, dontclear ){
+    debugprint( txt );
+    $( 'noticewin' ).removeAllNotifications( false );
+    $( 'noticewin' ).appendNotification( txt, null, null,
+					 $( 'noticewin' ).PRIORITY_WARNING_LOW, null );
+    clearInterval( noticeid );
+    if( dontclear ) return;
+    noticeid = setInterval( function(){
+	$( 'noticewin' ).removeAllNotifications( false );
+	clearInterval( noticeid );
+    }, 15 * 1000 );
+}
+
 function ShowPopupNotification(imageURL,title,text,cookie){
     let listener = null;
     let clickable = false;
