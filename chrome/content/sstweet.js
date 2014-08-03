@@ -26,7 +26,7 @@ var SSTweet = {
 	let text = $('text').value;
 	Twitter.updateStatusWithMedia(text, File(file.path));
 	//Twitter.updateStatus(text);
-	setTimeout( function(){ $('send-button').disabled = false; }, 3000 );
+	setTimeout( function(){ $('send-button').disabled = false; }, 5000 );
     },
 
     init:function(){

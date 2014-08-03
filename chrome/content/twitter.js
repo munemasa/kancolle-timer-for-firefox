@@ -261,8 +261,8 @@ var Twitter = {
     /**
      * ステータスを更新する(つぶやく)
      * @param text テキスト(文字数チェックしていない)
-     * @param picture 画像データ(DOM File)
-     * @param retry ツイート送信エラー時のリトライかどうかフラグ
+     * @param picture 画像データ(nsIFile)
+     * @param retry リトライ回数
      */
     updateStatusWithMedia: function( text, picture, retry ){
 	if( !this.oauth["oauth_token_secret"] || !this.oauth["oauth_token"] ) return;
@@ -299,12 +299,23 @@ var Twitter = {
 	     */
 	    if( req.status != 200 ){
 		debugprint( "Status=" + req.status );
-		let result = JSON.parse( req.responseText );
-		debugprint( 'Twitter:' + result.error );
-		if( !retry ){
+		let result;
+		try{
+		    result = JSON.parse( req.responseText );
+		    debugprint( 'Twitter:' + result.error );
+		}catch(e){
+		}
+		retry = retry || 0;
+		if( retry < 5 ){
+		    // 5回までリトライ
+		    retry++;
+		    let delay = 3000 * retry;
+		    let str = "つぶやきに失敗しました。" + parseInt( delay / 1000 ) + "秒後にリトライします(" + retry + "/5)";
+		    ShowNotice( str );
+		    debugprint( "retry...wait " + delay + "ms");
 		    setTimeout( function(){
-			Twitter.updateStatusWithMedia( text, picture, true );
-		    }, 3000 );
+			Twitter.updateStatusWithMedia( text, picture, retry );
+		    }, delay );
 		}else{
 		    AlertPrompt( "スクリーンショットのつぶやきに失敗しました。", "艦これタイマー" );
 		}
