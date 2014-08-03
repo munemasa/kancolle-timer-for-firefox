@@ -477,6 +477,7 @@ var KanColleTimer = {
     },
 
     changeCollapseState: function( type ){
+	try{
 	let e, v;
 	switch( type ){
 	case 0:
@@ -516,8 +517,12 @@ var KanColleTimer = {
 	    return;
 	}
 	e.setAttribute('collapsed', v);
+	}catch(e){
+	    debugprint(e);
+	}
     },
     updateCollapseState: function( type ){
+	try{
 	switch( type ){
 	case 0:
 	    // 遠征
@@ -543,6 +548,9 @@ var KanColleTimer = {
 		this.expandConstructionView();
 	    }
 	    break;
+	}
+	}catch(e){
+	    debugprint(e);
 	}
     },
 
