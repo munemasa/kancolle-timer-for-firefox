@@ -300,7 +300,7 @@ var KanColleTimer = {
 
 	// エラー
 	if (!file)
-	    return null;
+	    return;
 
 	file.append("screenshot-" + this.getNowDateString() + (isjpeg ? '.jpg' : '.png'));
 
@@ -361,6 +361,191 @@ var KanColleTimer = {
 	this._timer = null;
     },
 
+    /**
+     * 遠征表示を折りたたむ
+     * 間近に帰投する艦隊のみを表示するように折りたたむ。
+     * 各艦隊の出征状態によって表示する項目を変更する場合にも使用する。
+     */
+    collapseExpeditionView: function(){
+	let fleets_remain = ["fleetremain2", "fleetremain3", "fleetremain4"];
+	let fleets = document.getElementsByClassName( "fleet" );
+	let nearest = Number.MAX_VALUE;
+	let nearest_i = -1;
+
+	for( let i = 0; i < fleets_remain.length; i++ ){
+	    let elem = document.getElementById( fleets_remain[i] );
+	    if( elem.finishTime == Number.NaN) continue;
+	    if( elem.finishTime < nearest ){
+		nearest = elem.finishTime;
+		nearest_i = i;
+	    }
+	}
+	for( let i = 0; i < fleets_remain.length; i++ ){
+	    let elem = fleets[i + 1];
+	    elem.style.display = i == nearest_i ? '' : 'none';
+	}
+	$( 'expedition-collapsed' ).src = "data/collapsed.png";
+    },
+
+    /**
+     * 遠征艦隊をすべて表示する
+     */
+    expandExpeditionView: function(){
+	$( 'expedition-collapsed' ).src = "data/expanded.png";
+
+	let d = KanColleDatabase.memberBasic.get();
+	let fleets;
+	if( !d )
+	    return;
+	fleets = document.getElementsByClassName( "fleet" );
+	for( let i = 0; i < 4; i++ )
+	    SetStyleProperty( fleets[i], 'display',
+			      (i != 0 && i < d.api_count_deck) ? "" : "none" );
+    },
+
+    _expand_kdock_ndock: function( k ){
+	let elems = document.getElementsByClassName( k );
+	for( let i = 0; i < elems.length; i++ ){
+	    elems[i].style.display = '';
+	}
+    },
+
+    /**
+     * k1とk2で得られる要素数は同じにならないといけない
+     * @param k1 残り時間表示しているクラス名
+     * @param k2 表示する項目のクラス名
+     * @private
+     */
+    _collapse_kdock_ndock: function( k1, k2 ){
+	let remains = document.getElementsByClassName( k1 );
+	let nearest = Number.MAX_VALUE;
+	let nearest_i = -1;
+	for( let i = 0; i < remains.length; i++ ){
+	    if( remains[i].finishTime==Number.NaN ) continue;
+	    if( remains[i].finishTime < nearest ){
+		nearest = remains[i].finishTime;
+		nearest_i = i;
+	    }
+	}
+
+	let elems = document.getElementsByClassName( k2 );
+	for( let i = 0; i < elems.length; i++ ){
+	    if( i == nearest_i ){
+		elems[i].style.display = '';
+	    }else{
+		elems[i].style.display = 'none';
+	    }
+	}
+    },
+
+    collapseRepairView: function(){
+	this._collapse_kdock_ndock( "ndockremain", "ndock-box" );
+	$( 'repair-collapsed' ).src = "data/collapsed.png";
+    },
+    expandRepairView: function(){
+	this._expand_kdock_ndock( "ndock-box" );
+	$( 'repair-collapsed' ).src = "data/expanded.png";
+
+	// 未拡張分を非表示にする
+	let docks = KanColleDatabase.memberNdock.list();
+	for( let i = 0; i < docks.length; i++ ){
+	    let d = KanColleDatabase.memberNdock.get( docks[i] );
+	    if( d.api_state < 0 ){
+		$( 'ndock-box' + (i + 1) ).style.display = 'none';
+	    }
+	}
+    },
+
+    collapseConstructionView: function(){
+	this._collapse_kdock_ndock( "kdockremain", "kdock-box" );
+	$( 'construction-collapsed' ).src = "data/collapsed.png";
+    },
+
+    expandConstructionView: function(){
+	this._expand_kdock_ndock( "kdock-box" );
+	$( 'construction-collapsed' ).src = "data/expanded.png";
+
+	// 未拡張分を非表示にする
+	let docks = KanColleDatabase.kdock.list();
+	for( let i = 0; i < docks.length; i++ ){
+	    let d = KanColleDatabase.kdock.get( docks[i] );
+	    if( d.api_state < 0 ){
+		let k = d.api_id;
+		$( 'kdock-box' + k ).style.display = 'none';
+	    }
+	}
+    },
+
+    changeCollapseState: function( type ){
+	let e, v;
+	switch( type ){
+	case 0:
+	    // 遠征
+	    e = $( 'expedition-collapsed' );
+	    if( e.src == "data/expanded.png" ){
+		this.collapseExpeditionView();
+		v = 1;
+	    }else{
+		this.expandExpeditionView();
+		v = 0;
+	    }
+	    break;
+	case 1:
+	    // 入渠
+	    e = $( 'repair-collapsed' );
+	    if( $( 'repair-collapsed' ).src == "data/expanded.png" ){
+		this.collapseRepairView();
+		v = 1;
+	    }else{
+		this.expandRepairView();
+		v = 0;
+	    }
+	    break;
+	case 2:
+	    // 工廠
+	    e = $( 'construction-collapsed' );
+	    if( $( 'construction-collapsed' ).src == "data/expanded.png" ){
+		this.collapseConstructionView();
+		v = 1;
+	    }else{
+		this.expandConstructionView();
+		v = 0;
+	    }
+	    break;
+	default:
+	    return;
+	}
+	e.setAttribute('collapsed', v);
+    },
+    updateCollapseState: function( type ){
+	switch( type ){
+	case 0:
+	    // 遠征
+	    if( $( 'expedition-collapsed' ).src != "data/expanded.png" ){
+		this.collapseExpeditionView();
+	    }else{
+		this.expandExpeditionView();
+	    }
+	    break;
+	case 1:
+	    // 入渠
+	    if( $( 'repair-collapsed' ).src != "data/expanded.png" ){
+		this.collapseRepairView();
+	    }else{
+		this.expandRepairView();
+	    }
+	    break;
+	case 2:
+	    // 工廠
+	    if( $( 'construction-collapsed' ).src != "data/expanded.png" ){
+		this.collapseConstructionView();
+	    }else{
+		this.expandConstructionView();
+	    }
+	    break;
+	}
+    },
+
     createMissionBalanceTable:function(){
 	let balance = KanColleData.mission_hourly_balance;
 	let rows = $('hourly_balance');
@@ -418,6 +603,14 @@ var KanColleTimer = {
 	    KanColleTimer.setWindowOnTop();
 	}, 1000 );
 
+	let k = ["expedition-collapsed", "repair-collapsed", "construction-collapsed"];
+	for( let i = 0; i < k.length; i++ ){
+	    let collapsed = document.getElementById( k[i] ).getAttribute( "collapsed" );
+	    collapsed = parseInt( collapsed );
+	    if( collapsed ){
+		this.changeCollapseState(i);
+	    }
+	}
     },
 
     destroy: function(){

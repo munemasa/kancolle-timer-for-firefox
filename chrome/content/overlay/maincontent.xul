@@ -72,7 +72,13 @@
       <deck id="deck" persist="selectedIndex">
 	<vbox flex="1" style="overflow:auto;" id="tab-timer">
 	  <groupbox id="group-mission">
-	    <caption>遠征</caption>
+	    <caption>
+	      <image id="expedition-collapsed" class="collapse-button"
+		     onclick="KanColleTimer.changeCollapseState(0);"
+                     persist="collapsed" collapsed="0"
+		     src="data/expanded.png"/>
+	      遠征
+	    </caption>
 	    <vbox class="fleet" style="display:none;">
 	      <hbox>
 		<label value="■第1艦隊"/>
@@ -124,7 +130,13 @@
 	  </groupbox>
 	  
 	  <groupbox id="group-ndock">
-	    <caption>入渠ドック[<image style="vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>]</caption>
+	    <caption>
+	      <image id="repair-collapsed" class="collapse-button"
+                     onclick="KanColleTimer.changeCollapseState(1);"
+                     persist="collapsed" collapsed="0"
+		     src="data/expanded.png"/>
+	      入渠ドック[<image style="vertical-align:middle;" src="data/repairkit.png"/><label id="repairkit-number" value="---"/>]
+	    </caption>
 	    <grid>
 	      <columns>
 		<column/>
@@ -157,7 +169,13 @@
 	  </groupbox>
 	  
 	  <groupbox id="group-kdock">
-	    <caption>建造ドック</caption>
+	    <caption>
+	      <image id="construction-collapsed" class="collapse-button"
+                     onclick="KanColleTimer.changeCollapseState(2)"
+                     persist="collapsed" collapsed="0"
+		     src="data/expanded.png"/>
+	      建造ドック
+	    </caption>
 	    <hbox id="kdock-box1" class="kdock-box">
 	      <label id="kdock-label1" value="No.1"/>
 	      <timer id="kdock1" mode="target" class="kdock-time"/>

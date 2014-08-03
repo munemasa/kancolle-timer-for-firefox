@@ -199,6 +199,7 @@ var KanColleTimerDeckInfo = {
 		    KanColleRemainInfo.fleet[i].finishedtime = Number.NaN;
 		}
 	    }
+	    KanColleTimer.updateCollapseState(0);
 	},
 	memberBasic: function() {
 	    let d = KanColleDatabase.memberBasic.get();
@@ -278,15 +279,10 @@ var KanColleTimerNdockInfo = {
 		    $('ndock-box'+(i+1)).style.display = 'none';
 		}
 	    }
+	    KanColleTimer.updateCollapseState(1);
 	},
 	memberBasic: function() {
-	    let d = KanColleDatabase.memberBasic.get();
-	    let ndocks;
-	    if (!d)
-		return;
-	    ndocks  = document.getElementsByClassName("ndock-box");
-	    for( let i = 0; i < 4; i++ )
-		SetStyleProperty(ndocks[i], 'display', i < d.api_count_ndock ? "":"none");
+	    KanColleTimer.updateCollapseState(1);
 	},
 	material: function() {
 	    let d = KanColleDatabase.material.get('bucket');
@@ -404,16 +400,11 @@ var KanColleTimerKdockInfo = {
 		    $('kdock-box'+k).style.display = 'none';
 		}
 	    }
+	    KanColleTimer.updateCollapseState(2);
 	},
 
 	memberBasic: function() {
-	    let d = KanColleDatabase.memberBasic.get();
-	    let ndocks;
-	    if (!d)
-		return;
-	    ndocks = document.getElementsByClassName("kdock-box");
-	    for( let i = 0; i < 4; i++ )
-		SetStyleProperty(ndocks[i], 'display', i < d.api_count_kdock ? "":"none");
+	    KanColleTimer.updateCollapseState(2);
 	},
     },
 
