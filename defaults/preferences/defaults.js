@@ -40,3 +40,6 @@ pref("extensions.kancolletimer.popup.1min-before",false);
 pref("extensions.kancolletimer.use-notificationbox",false);
 
 pref("extensions.kancolletimer.twitter.screen_name","");
+
+pref("extensions.kancolletimer.key1","");
+pref("extensions.kancolletimer.key2","");

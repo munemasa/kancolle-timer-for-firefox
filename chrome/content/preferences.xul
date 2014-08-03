@@ -285,6 +285,25 @@
     <checkbox preference="pref-record-resources" label="保有資源量の状態を記録する"/>
   </prefpane>
 
+  <prefpane id="prefpane-sync" label="同期" image="chrome://kancolletimer/content/data/sync.png">
+    <preferences>
+      <preference id="pref-sync-key1"
+		  name="extensions.kancolletimer.key1" type="unichar"/>
+      <preference id="pref-sync-key2"
+		  name="extensions.kancolletimer.key2" type="unichar"/>
+    </preferences>
+    <vbox>
+      <hbox align="center">
+	<label value="キー１"/>
+	<textbox flex="1" preference="pref-sync-key1"/>
+      </hbox>
+      <hbox alilgn="center">
+	<label value="キー２"/>
+	<textbox flex="1" preference="pref-sync-key2"/>
+      </hbox>
+    </vbox>
+  </prefpane>
+
   <sound id="audio-playback"/>
 
   <script type="application/x-javascript" src="chrome://mozapps/content/preferences/fontbuilder.js"/>
