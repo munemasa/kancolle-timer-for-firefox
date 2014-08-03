@@ -374,7 +374,7 @@ var KanColleTimer = {
 
 	for( let i = 0; i < fleets_remain.length; i++ ){
 	    let elem = document.getElementById( fleets_remain[i] );
-	    if( elem.finishTime == Number.NaN) continue;
+	    if( isNaN( elem.finishTime ) ) continue;
 	    if( elem.finishTime < nearest ){
 		nearest = elem.finishTime;
 		nearest_i = i;
@@ -421,7 +421,7 @@ var KanColleTimer = {
 	let nearest = Number.MAX_VALUE;
 	let nearest_i = -1;
 	for( let i = 0; i < remains.length; i++ ){
-	    if( remains[i].finishTime==Number.NaN ) continue;
+	    if( isNaN(remains[i].finishTime) ) continue;
 	    if( remains[i].finishTime < nearest ){
 		nearest = remains[i].finishTime;
 		nearest_i = i;
