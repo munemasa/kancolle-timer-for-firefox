@@ -292,7 +292,7 @@
       <preference id="pref-sync-key2"
 		  name="extensions.kancolletimer.key2" type="unichar"/>
     </preferences>
-    <vbox>
+    <vbox flex="1">
       <hbox align="center">
 	<label value="キー１"/>
 	<textbox flex="1" preference="pref-sync-key1"/>
@@ -301,6 +301,16 @@
 	<label value="キー２"/>
 	<textbox flex="1" preference="pref-sync-key2"/>
       </hbox>
+      <description style="width: 100px;">
+	実験的な機能です。<html:br/>
+	Android版艦これタイマーLiteにて登録時に使用したキー１，２を指定します。<html:br/>
+	他のユーザーとのキーのかぶりは一切チェックしていませんので、
+	万が一、両方のキーが一致してしまった場合は、
+	最後に登録したデバイスが有効になり、
+	また、他人のデバイスに対して同期が働いてしまいます。<html:br/>
+	意図していないタイミングで誤ったタイマー同期が行なわれた場合は、
+	キーを変更して再登録してください。
+      </description>
     </vbox>
   </prefpane>
 
