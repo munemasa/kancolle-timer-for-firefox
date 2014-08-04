@@ -421,7 +421,7 @@ var KanColleTimer = {
 	let nearest = Number.MAX_VALUE;
 	let nearest_i = -1;
 	for( let i = 0; i < remains.length; i++ ){
-	    if( remains[i].finishTime ) continue;
+	    if( !remains[i].finishTime ) continue;
 	    if( remains[i].finishTime < nearest ){
 		nearest = remains[i].finishTime;
 		nearest_i = i;
