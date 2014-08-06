@@ -126,10 +126,10 @@ var KanColleTimerHeadQuarterInfo = {
 	    //	maxslotitems < 100 + maxships * 4) {
 	    //	maxslotitems = 100 + maxships * 4;
 	    //}
-	    $('number-of-ships').value = ships+"隻";
-	    $('number-of-items').value = slotitems;
-	    $('max-number-of-ships').value = maxships+"隻";
-	    $('max-number-of-items').value = maxslotitems;
+	    $('number-of-ships').setAttribute('value', ships+"隻");
+	    $('number-of-items').setAttribute('value', slotitems);
+	    $('max-number-of-ships').setAttribute('value', maxships+"隻");
+	    $('max-number-of-items').setAttribute('value', maxslotitems);
 	    $('number-of-ships' ).setAttribute('cond', ship_color);
 	},
 
@@ -157,7 +157,7 @@ var KanColleTimerDeckInfo = {
 		    let mission = KanColleDatabase.mission.get(mission_id);
 		    if (mission) {
 			KanColleRemainInfo.mission_name[i] = mission.api_name;
-			$('mission_name'+k).value = mission.api_name;
+			$('mission_name'+k).setAttribute('value', mission.api_name);
 		    }
 		}
 	    }
@@ -175,7 +175,7 @@ var KanColleTimerDeckInfo = {
 		let timeid = 'fleetremain'+k;
 		KanColleRemainInfo.fleet[i] = new Object();
 		KanColleRemainInfo.fleet_name[i] = d.api_name;
-		$(nameid).value = d.api_name; // 艦隊名
+		$(nameid).setAttribute('value', d.api_name); // 艦隊名
 		if( i==0 ){
 		    // 第1艦隊の名前
 		    $('first-fleet-name').setAttribute('label', d.api_name);
@@ -188,7 +188,7 @@ var KanColleTimerDeckInfo = {
 		    if (!mission_name)
 			mission_name = 'UNKNOWN_' + mission_id;
 		    KanColleRemainInfo.mission_name[i] = mission_name;
-		    $('mission_name'+k).value = mission_name;
+		    $('mission_name'+k).setAttribute('value', mission_name);
 
 		    KanColleRemainInfo.fleet[i].finishedtime = d.api_mission[2];    //遠征終了時刻
 		    $(targetid).finishTime = d.api_mission[2];
@@ -220,11 +220,11 @@ var KanColleTimerDeckInfo = {
 	    for( let i = 0; i < 4; i++ ){
 		let k = i + 1;
 		if( KanColleRemainInfo.fleet_name[i] ){
-		    $('fleetname'+k).value = KanColleRemainInfo.fleet_name[i];
+		    $('fleetname'+k).setAttribute('value', KanColleRemainInfo.fleet_name[i]);
 		}
 		if( KanColleRemainInfo.mission_name[i] ){
 		    let mission_name = KanColleRemainInfo.mission_name[i];
-		    $('mission_name'+k).value=mission_name;
+		    $('mission_name'+k).setAttribute('value', mission_name);
 		}
 		if( KanColleRemainInfo.fleet[i] ){
 		    $('fleet'+k).finishTime = KanColleRemainInfo.fleet[i].finishedtime;
@@ -261,7 +261,7 @@ var KanColleTimerNdockInfo = {
 			complete_time = cur;
 		    $("ndock-label"+k).setAttribute('tooltiptext', name);
 		    if( name ){
-			$("ndock-label"+k).value = name;
+			$("ndock-label"+k).setAttribute('value', name);
 		    }
 
 		    KanColleRemainInfo.ndock_ship_id[i] = ship_id;
@@ -269,7 +269,7 @@ var KanColleTimerNdockInfo = {
 		    $(targetid).finishTime = complete_time;
 		    $(timeid).finishTime = complete_time;
 		}else if(d.api_state == 0){
-		    $("ndock-label"+(i+1)).value = "No."+(i+1);
+		    $("ndock-label"+(i+1)).setAttribute('value', "No."+(i+1));
 		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
 		    KanColleRemainInfo.ndock_ship_id[i] = 0;
 		    $(targetid).finishTime = '';
@@ -287,7 +287,7 @@ var KanColleTimerNdockInfo = {
 	material: function() {
 	    let d = KanColleDatabase.material.get('bucket');
 	    if (d >= 0)
-		$('repairkit-number').value = d;
+		$('repairkit-number').setAttribute('value', d);
 	},
     },
 
@@ -817,10 +817,10 @@ var KanColleTimerFleetInfo = {
 		t0 *= 60;
 		let refresh_time = t0 - (now%180);
 		$('refresh-timer').setAttribute('refresh-time', now+refresh_time);
-		$('refresh-timer').value = GetTimeString( refresh_time ).substring(3);
+		$('refresh-timer').setAttribute('value', GetTimeString( refresh_time ).substring(3));
 	    }else{
 		$('refresh-timer').removeAttribute('refresh-time');
-		$('refresh-timer').value = "00:00";
+		$('refresh-timer').setAttribute('value', "00:00");
 	    }
 	}
     },

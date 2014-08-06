@@ -95,17 +95,17 @@ var KanColleTimer = {
 		}
 	    }
 	}
-	$('general-timer').value = GetTimeString( remain );
+	$( 'general-timer' ).setAttribute( 'value', GetTimeString( remain ) );
     },
 
     updateRefreshTimer: function(){
-	let t = $('refresh-timer').getAttribute('refresh-time');
+	let t = $( 'refresh-timer' ).getAttribute( 'refresh-time' );
 	let now = GetCurrentTime();
-	if( t && t>now ){
-	    $('refresh-timer').value = GetTimeString( t - now ).substring(3);
+	if( t && t > now ){
+	    $( 'refresh-timer' ).setAttribute( 'value', GetTimeString( t - now ).substring( 3 ) );
 	}else{
-	    $('refresh-timer').removeAttribute('refresh-time');
-	    $('refresh-timer').value = "00:00";
+	    $( 'refresh-timer' ).removeAttribute( 'refresh-time' );
+	    $( 'refresh-timer' ).setAttribute( 'value', "00:00" );
 	}
     },
 
@@ -311,7 +311,7 @@ var KanColleTimer = {
 	if( this._akashi_timer ){
 	    $( 'akashi-timer-button' ).src = "chrome://kancolletimer/content/data/start.png";
 	    $( 'akashi-timer-bar' ).value = 0;
-	    $( 'akashi-timer-label' ).value = "00:00"
+	    $( 'akashi-timer-label' ).setAttribute( 'value', "00:00" );
 	    clearInterval( this._akashi_timer_id );
 	    this._akashi_timer = 0;
 	}else{
@@ -320,7 +320,7 @@ var KanColleTimer = {
 	    this._akashi_timer_id = setInterval( function(){
 		let now = GetCurrentTime();
 		let progress = now - KanColleTimer._akashi_timer;
-		$( 'akashi-timer-label' ).value = GetTimeString( progress ).substring( 3 );
+		$( 'akashi-timer-label' ).setAttribute( 'value', GetTimeString( progress ).substring( 3 ) );
 		$( 'akashi-timer-bar' ).value = Math.floor( progress * 100 / (20 * 60) );
 		if( progress >= 20 * 60 ){
 		    KanColleTimer._akashi_timer = now;
