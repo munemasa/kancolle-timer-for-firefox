@@ -101,7 +101,7 @@
 	    rcolor = null;
 	  }
 
-	  this.$('time').value = rstr;
+	  this.$('time').setAttribute('value', rstr);
 	  if (rcolor)
 	    this.$('time').style.setProperty('color', rcolor, '');
 	  else
