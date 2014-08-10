@@ -23,10 +23,12 @@ var SSTweet = {
 	data = IO_SERVICE.newURI(data, null, null);
 	wbp.saveURI(data, null, null, null, null, file, null);
 
-	let text = $('text').value;
-	Twitter.updateStatusWithMedia(text, File(file.path));
-	//Twitter.updateStatus(text);
-	setTimeout( function(){ $('send-button').disabled = false; }, 5000 );
+	setTimeout( function(){
+	    let text = $('text').value;
+	    Twitter.updateStatusWithMedia(text, File(file.path));
+	    //Twitter.updateStatus(text);
+	    setTimeout( function(){ $('send-button').disabled = false; }, 5000 );
+	}, 2000 );
     },
 
     init:function(){
