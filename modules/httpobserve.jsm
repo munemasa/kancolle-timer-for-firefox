@@ -1581,7 +1581,9 @@ var KanColleDatabase = {
 		+ data.api_data.api_win_rank
 		+"\n";
 	    this.appendText( file, str );
-	}catch(e){}
+	}catch(e){
+	    debugprint(e);
+	}
     },
     // 建造艦をファイルに記録
     recordCreatedShip: function( data ){
@@ -1699,7 +1701,8 @@ var KanColleDatabase = {
 		this.reqNyukyoSpeedChange.update();
 	    } else if (url.match(/kcsapi\/api_req_nyukyo\/start/)) {
 		this.reqNyukyoStart.update();
-	    } else if (url.match(/kcsapi\/api_req_sortie\/battleresult/)) {
+	    }else if( url.match( /kcsapi\/api_req_sortie\/battleresult/ ) ||
+		url.match( /kcsapi\/api_req_combined_battle\/battleresult/ ) ){
 		//this.reqSortieBattleResult.update(data.api_data);
 		this.recordDroppedShip( data );
 	    } else if (url.match(/kcsapi\/api_req_sortie\/battle/)) {
