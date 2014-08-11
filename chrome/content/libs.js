@@ -193,13 +193,9 @@ var KanColleTimerDeckInfo = {
 		    KanColleRemainInfo.fleet[i].finishedtime = d.api_mission[2];    //遠征終了時刻
 		    $(targetid).finishTime = d.api_mission[2];
 		    $(timeid).finishTime = d.api_mission[2];
-		    $(targetid).update();
-		    $(timeid).update();
 		}else{
 		    $(targetid).finishTime = '';
 		    $(timeid).finishTime = '';
-		    $(targetid).update();
-		    $(timeid).update();
 		    KanColleRemainInfo.fleet[i].finishedtime = Number.NaN;
 		}
 	    }
@@ -272,8 +268,6 @@ var KanColleTimerNdockInfo = {
 		    KanColleRemainInfo.ndock[i].finishedtime = complete_time;
 		    $(targetid).finishTime = complete_time;
 		    $(timeid).finishTime = complete_time;
-		    $(targetid).update();
-		    $(timeid).update();
 		}else if(d.api_state == 0){
 		    $("ndock-label"+(i+1)).setAttribute('value', "No."+(i+1));
 		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
@@ -281,8 +275,6 @@ var KanColleTimerNdockInfo = {
 		    $(targetid).finishTime = '';
 		    $(timeid).finishTime = '';
 		    KanColleRemainInfo.ndock[i].finishedtime = Number.NaN;
-		    $(targetid).update();
-		    $(timeid).update();
 		}else{
 		    $('ndock-box'+(i+1)).style.display = 'none';
 		}
@@ -395,15 +387,11 @@ var KanColleTimerKdockInfo = {
 		    KanColleRemainInfo.kdock[i].finishedtime = complete_time;
 		    $(targetid).finishTime = complete_time;
 		    $(timeid).finishTime = complete_time;
-		    $(targetid).update();
-		    $(timeid).update();
 		}else if (d.api_state == 0) {
 		    // 建造していない
 		    $('kdock-label'+k).setAttribute('tooltiptext','');
 		    $(targetid).finishTime = '';
 		    $(timeid).finishTime = '';
-		    $(targetid).update();
-		    $(timeid).update();
 		    KanColleRemainInfo.kdock[i].finishedtime = Number.NaN;
 		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
 		    KanColleTimerConfig.setInt( "kdock-created-timems"+k, 0 );
