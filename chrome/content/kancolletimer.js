@@ -426,9 +426,11 @@ var KanColleTimer = {
 
 	for( let i = 0; i < fleets_remain.length; i++ ){
 	    let elem = document.getElementById( fleets_remain[i] );
-	    if( !elem.finishTime ) continue;
-	    if( elem.finishTime < nearest ){
-		nearest = elem.finishTime;
+
+	    let ft = parseInt( elem.getAttribute('finishTime') );
+	    if( !ft ) continue;
+	    if( ft < nearest ){
+		nearest = ft;
 		nearest_i = i;
 	    }
 	}
@@ -473,9 +475,10 @@ var KanColleTimer = {
 	let nearest = Number.MAX_VALUE;
 	let nearest_i = -1;
 	for( let i = 0; i < remains.length; i++ ){
-	    if( !remains[i].finishTime ) continue;
-	    if( remains[i].finishTime < nearest ){
-		nearest = remains[i].finishTime;
+	    let ft = parseInt( remains[i].getAttribute('finishTime') );
+	    if( !ft ) continue;
+	    if( ft < nearest ){
+		nearest = ft;
 		nearest_i = i;
 	    }
 	}
