@@ -86,8 +86,8 @@
 	      </hbox>
 	      <hbox>
 		<label id="fleetname1" class="fleetname" value="第1艦隊"/><!-- 艦隊名 -->
-		<timer id="fleet1" class="fleet-time" mode="target"/><!-- 帰還時刻 -->
-		<timer id="fleetremain1" class="fleetremain" mode="time"/><!-- 残り時間 -->
+		<label id="fleet1" class="timer fleet-time" mode="target"/><!-- 帰還時刻 -->
+		<label id="fleetremain1" class="timer fleetremain" mode="time"/><!-- 残り時間 -->
 	      </hbox>
 	    </vbox>
 	    
@@ -98,8 +98,8 @@
 	      </hbox>
 	      <hbox>
 		<label id="fleetname2" class="fleetname" value="第2艦隊"/>
-		<timer id="fleet2" class="fleet-time" mode="target"/>
-		<timer id="fleetremain2" class="fleetremain" mode="time"/>
+		<label id="fleet2" class="timer fleet-time" mode="target"/>
+		<label id="fleetremain2" class="timer fleetremain" mode="time"/>
 	      </hbox>
 	    </vbox>
 	    
@@ -110,8 +110,8 @@
 	      </hbox>
 	      <hbox>
 		<label id="fleetname3" class="fleetname" value="第3艦隊"/>
-		<timer id="fleet3" class="fleet-time" mode="target"/>
-		<timer id="fleetremain3" class="fleetremain" mode="time"/>
+		<label id="fleet3" class="timer fleet-time" mode="target"/>
+		<label id="fleetremain3" class="timer fleetremain" mode="time"/>
 	      </hbox>
 	    </vbox>
 	    
@@ -122,8 +122,8 @@
 	      </hbox>
 	      <hbox>
 		<label id="fleetname4" class="fleetname" value="第4艦隊"/>
-		<timer id="fleet4" class="fleet-time" mode="target"/>
-		<timer id="fleetremain4" class="fleetremain" mode="time"/>
+		<label id="fleet4" class="timer fleet-time" mode="target"/>
+		<label id="fleetremain4" class="timer fleetremain" mode="time"/>
 	      </hbox>
 	    </vbox>
 	    
@@ -146,23 +146,23 @@
 	      <rows>
 		<row id="ndock-box1" class="ndock-box" context="popup-ndock-memo">
 		  <label id="ndock-label1" value="No.1"/>
-		  <timer id="ndock1" mode="target" class="ndock-time"/>
-		  <timer id="ndockremain1" mode="time" class="ndockremain"/>
+		  <label id="ndock1" mode="target" class="timer ndock-time"/>
+		  <label id="ndockremain1" mode="time" class="timer ndockremain"/>
 		</row>
 		<row id="ndock-box2" class="ndock-box" context="popup-ndock-memo">
 		  <label id="ndock-label2" value="No.2"/>
-		  <timer id="ndock2" mode="target" class="ndock-time"/>
-		  <timer id="ndockremain2" mode="time" class="ndockremain"/>
+		  <label id="ndock2" mode="target" class="timer ndock-time"/>
+		  <label id="ndockremain2" mode="time" class="timer ndockremain"/>
 		</row>
 		<row id="ndock-box3" class="ndock-box" context="popup-ndock-memo">
 		  <label id="ndock-label3" value="No.3"/>
-		  <timer id="ndock3" mode="target" class="ndock-time"/>
-		  <timer id="ndockremain3" mode="time" class="ndockremain"/>
+		  <label id="ndock3" mode="target" class="timer ndock-time"/>
+		  <label id="ndockremain3" mode="time" class="timer ndockremain"/>
 		</row>
 		<row id="ndock-box4" class="ndock-box" context="popup-ndock-memo">
 		  <label id="ndock-label4" value="No.4"/>
-		  <timer id="ndock4" mode="target" class="ndock-time"/>
-		  <timer id="ndockremain4" mode="time" class="ndockremain"/>
+		  <label id="ndock4" mode="target" class="timer ndock-time"/>
+		  <label id="ndockremain4" mode="time" class="timer ndockremain"/>
 		</row>
 	      </rows>
 	    </grid>
@@ -178,23 +178,23 @@
 	    </caption>
 	    <hbox id="kdock-box1" class="kdock-box">
 	      <label id="kdock-label1" value="No.1"/>
-	      <timer id="kdock1" mode="target" class="kdock-time"/>
-	      <timer id="kdockremain1" mode="time" class="kdockremain"/>
+	      <label id="kdock1" mode="target" class="timer kdock-time"/>
+	      <label id="kdockremain1" mode="time" class="timer kdockremain"/>
 	    </hbox>
 	    <hbox id="kdock-box2" class="kdock-box">
 	      <label id="kdock-label2" value="No.2"/>
-	      <timer id="kdock2" mode="target" class="kdock-time"/>
-	      <timer id="kdockremain2" mode="time" class="kdockremain"/>
+	      <label id="kdock2" mode="target" class="timer kdock-time"/>
+	      <label id="kdockremain2" mode="time" class="timer kdockremain"/>
 	    </hbox>
 	    <hbox id="kdock-box3" class="kdock-box">
 	      <label id="kdock-label3" value="No.3"/>
-	      <timer id="kdock3" mode="target" class="kdock-time"/>
-	      <timer id="kdockremain3" mode="time" class="kdockremain"/>
+	      <label id="kdock3" mode="target" class="timer kdock-time"/>
+	      <label id="kdockremain3" mode="time" class="timer kdockremain"/>
 	    </hbox>
 	    <hbox id="kdock-box4" class="kdock-box">
 	      <label id="kdock-label4" value="No.4"/>
-	      <timer id="kdock4" mode="target" class="kdock-time"/>
-	      <timer id="kdockremain4" mode="time" class="kdockremain"/>
+	      <label id="kdock4" mode="target" class="timer kdock-time"/>
+	      <label id="kdockremain4" mode="time" class="timer kdockremain"/>
 	    </hbox>
 	  </groupbox>
 	  <groupbox id="group-quest">
