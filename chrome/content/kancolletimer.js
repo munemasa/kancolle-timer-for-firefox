@@ -109,6 +109,56 @@ var KanColleTimer = {
 	}
     },
 
+    /**
+     * カウントダウンタイマーのラベルを全更新する
+     */
+    updateTimers: function(){
+	let timers = document.getElementsByClassName('timer');
+
+	for(let i= 0,elem; elem=timers[i]; i++){
+	    let ft;
+	    let fstr;
+	    let rstr;
+	    let rcolor;
+	    let next = -1;
+
+	    ft = parseInt( elem.getAttribute('finishTime') );
+
+	    if (!isNaN(ft) && ft) {
+		let now = (new Date()).getTime();
+		let diff;
+		diff = ft - now;
+		next = diff;
+		if (diff < 0)
+		    diff = 0;
+
+		if (elem.getAttribute('mode') == 'target') {
+		    if (diff > 60000)
+			next = diff - 60000;
+		    rstr = GetDateString(ft);
+		} else {
+		    if (diff > 0) {
+			next %= 1000;
+			if (!next)
+			    next = 1000;
+		    }
+		    rstr = GetTimeString(Math.ceil(diff/1000));
+		}
+
+		rcolor = diff <= 60000 ? 'red' : null;
+	    } else {
+		rstr = '';
+		rcolor = null;
+	    }
+
+	    elem.setAttribute('value', rstr);
+	    if (rcolor)
+		elem.style.setProperty('color', rcolor, '');
+	    else
+		elem.style.removeProperty('color');
+	}
+    },
+
     update: function(){
 	let cur = (new Date).getTime();
 	let that = this;
@@ -163,6 +213,8 @@ var KanColleTimer = {
 
 	this.updateGeneralTimer();
 	this.updateRefreshTimer();
+
+	this.updateTimers();
 
 	check_timeout('mission', 'fleet', function(i){ return KanColleRemainInfo.fleet_name[i] + 'が遠征から帰還'; });
 	check_timeout('ndock',   'ndock', function(i){ return 'ドック' + (i+1) + 'の修理が完了'; });

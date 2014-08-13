@@ -191,11 +191,11 @@ var KanColleTimerDeckInfo = {
 		    $('mission_name'+k).setAttribute('value', mission_name);
 
 		    KanColleRemainInfo.fleet[i].finishedtime = d.api_mission[2];    //遠征終了時刻
-		    $(targetid).finishTime = d.api_mission[2];
-		    $(timeid).finishTime = d.api_mission[2];
+		    $( targetid ).setAttribute( 'finishTime', d.api_mission[2] );
+		    $( timeid ).setAttribute( 'finishTime', d.api_mission[2] );
 		}else{
-		    $(targetid).finishTime = '';
-		    $(timeid).finishTime = '';
+		    $( targetid ).setAttribute( 'finishTime', '' );
+		    $( timeid ).setAttribute( 'finishTime', '' );
 		    KanColleRemainInfo.fleet[i].finishedtime = Number.NaN;
 		}
 	    }
@@ -227,8 +227,8 @@ var KanColleTimerDeckInfo = {
 		    $('mission_name'+k).setAttribute('value', mission_name);
 		}
 		if( KanColleRemainInfo.fleet[i] ){
-		    $('fleet'+k).finishTime = KanColleRemainInfo.fleet[i].finishedtime;
-		    $('fleetremain'+k).finishTime = KanColleRemainInfo.fleet[i].finishedtime;
+		    $('fleet'+k).setAttribute('finishTime', KanColleRemainInfo.fleet[i].finishedtime);
+		    $('fleetremain'+k).setAttribute('finishTime', KanColleRemainInfo.fleet[i].finishedtime);
 		}
 	    }
 	} catch(x) {
@@ -266,14 +266,14 @@ var KanColleTimerNdockInfo = {
 
 		    KanColleRemainInfo.ndock_ship_id[i] = ship_id;
 		    KanColleRemainInfo.ndock[i].finishedtime = complete_time;
-		    $(targetid).finishTime = complete_time;
-		    $(timeid).finishTime = complete_time;
+		    $( targetid ).setAttribute( 'finishTime', complete_time );
+		    $( timeid ).setAttribute( 'finishTime', complete_time );
 		}else if(d.api_state == 0){
 		    $("ndock-label"+(i+1)).setAttribute('value', "No."+(i+1));
 		    $("ndock-label"+(i+1)).setAttribute('tooltiptext', "");
 		    KanColleRemainInfo.ndock_ship_id[i] = 0;
-		    $(targetid).finishTime = '';
-		    $(timeid).finishTime = '';
+		    $( targetid ).setAttribute( 'finishTime', '' );
+		    $( timeid ).setAttribute( 'finishTime', '' );
 		    KanColleRemainInfo.ndock[i].finishedtime = Number.NaN;
 		}else{
 		    $('ndock-box'+(i+1)).style.display = 'none';
@@ -319,8 +319,8 @@ var KanColleTimerNdockInfo = {
 						  KanColleRemainInfo.ndock_memo[i] );
 		}
 		if( KanColleRemainInfo.ndock[i] ){
-		    $('ndock'+k).finishTime = KanColleRemainInfo.ndock[i].finishedtime;
-		    $('ndockremain'+k).finishTime = KanColleRemainInfo.ndock[i].finishedtime;
+		    $('ndock'+k).setAttribute('finishTime', KanColleRemainInfo.ndock[i].finishedtime);
+		    $('ndockremain'+k).setAttribute('finishTime', KanColleRemainInfo.ndock[i].finishedtime);
 		}
 	    }
 	} catch(x) {
@@ -385,13 +385,13 @@ var KanColleTimerKdockInfo = {
 		    }
 
 		    KanColleRemainInfo.kdock[i].finishedtime = complete_time;
-		    $(targetid).finishTime = complete_time;
-		    $(timeid).finishTime = complete_time;
+		    $( targetid ).setAttribute( 'finishTime', complete_time );
+		    $( timeid ).setAttribute( 'finishTime', complete_time );
 		}else if (d.api_state == 0) {
 		    // 建造していない
 		    $('kdock-label'+k).setAttribute('tooltiptext','');
-		    $(targetid).finishTime = '';
-		    $(timeid).finishTime = '';
+		    $( targetid ).setAttribute( 'finishTime', '' );
+		    $( timeid ).setAttribute( 'finishTime', '' );
 		    KanColleRemainInfo.kdock[i].finishedtime = Number.NaN;
 		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
 		    KanColleTimerConfig.setInt( "kdock-created-timems"+k, 0 );
@@ -414,8 +414,8 @@ var KanColleTimerKdockInfo = {
 	    for(let i=0; i<4; i++){
 		let k = i+1;
 		if( KanColleRemainInfo.kdock[i] ){
-		    $('kdock'+k).finishTime = KanColleRemainInfo.kdock[i].finishedtime;
-		    $('kdockremain'+k).finishTime = KanColleRemainInfo.kdock[i].finishedtime;
+		    $('kdock'+k).setAttribute('finishTime', KanColleRemainInfo.kdock[i].finishedtime);
+		    $('kdockremain'+k).setAttribute('finishTime', KanColleRemainInfo.kdock[i].finishedtime);
 		}
 		// 建造中艦艇の表示復元
 		if( KanColleRemainInfo.construction_shipname[i] ){
@@ -748,12 +748,14 @@ var KanColleTimerFleetInfo = {
 	let min_cond = 100;
 
 	this._showSupplyMark(n, false);
+	let sakuteki = 0;
 	for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
 	    let row = CreateElement('row');
 	    let data = FindOwnShipData( fleet.api_ship[i] );
 	    let masterdata = FindShipData( fleet.api_ship[i] );
 	    if (!masterdata)
 		continue;
+	    if( n == 1 )sakuteki += data.api_sakuteki[0];
 	    row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
 	    row.appendChild( CreateLabel(masterdata.api_name) );
 	    row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
@@ -808,6 +810,7 @@ var KanColleTimerFleetInfo = {
 	}
 	if( n==1 ){
 	    // 第1艦隊のみ状態回復時間を計算する
+	    $('group-1stfleet' ).setAttribute("tooltiptext", "索敵値合計"+sakuteki);
 	    if( min_cond<49 ){
 		let now = GetCurrentTime();
 		let t0 = (49-min_cond);
