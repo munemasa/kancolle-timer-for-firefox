@@ -765,6 +765,8 @@ var KanColleTimerFleetInfo = {
 		label.setAttribute('cond', 'very-low');
 	    }else if( data.api_cond<=29 ){
 		label.setAttribute('cond','low');
+	    }else if( data.api_cond >= 50 ){
+		label.setAttribute('cond','high');
 	    }
 	    min_cond = d3.min( [min_cond, data.api_cond] );
 
