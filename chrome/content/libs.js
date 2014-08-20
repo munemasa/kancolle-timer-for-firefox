@@ -717,13 +717,13 @@ var KanColleTimerFleetInfo = {
 	    if (i >= 1 && i <= 6 && damage[i]) {
 		let hpstyle = this._ship_color(ratio);
 		if (hpstyle) {
-		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration', 'line-through');
-		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-style', 'double');
-		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-color', hpstyle);
+		    SetStyleProperty($('shipstatus-' + data.api_deck_id + '-' + (i)), 'text-decoration', 'line-through');
+		    SetStyleProperty($('shipstatus-' + data.api_deck_id + '-' + (i)), '-moz-text-decoration-style', 'double');
+		    SetStyleProperty($('shipstatus-' + data.api_deck_id + '-' + (i)), '-moz-text-decoration-color', hpstyle);
 		} else {
-		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), 'text-decoration', null);
-		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-style', null);
-		    SetStyleProperty($('shipstatus-' + deckid + '-' + (i)), '-moz-text-decoration-color', null);
+		    SetStyleProperty($('shipstatus-' + data.api_deck_id + '-' + (i)), 'text-decoration', null);
+		    SetStyleProperty($('shipstatus-' + data.api_deck_id + '-' + (i)), '-moz-text-decoration-style', null);
+		    SetStyleProperty($('shipstatus-' + data.api_deck_id + '-' + (i)), '-moz-text-decoration-color', null);
 		}
 	    }
 	}
@@ -1160,7 +1160,11 @@ var KanColleTimerFleetInfo = {
 	    if (data.api_hourai_flag[3])
 		damages.push(this._parse_raibak(data.api_raigeki));
 
-	    this._update_battle(data, damages);
+	    this._update_battle({
+				    api_deck_id: data.api_dock_id,  // typo?
+				    api_maxhps: data.api_maxhps,
+				    api_nowhps: data.api_nowhps,
+				}, damages);
     },
 	reqBattleMidnightBattle: function() {
 	    let data = KanColleDatabase.reqBattleMidnightBattle.get();
@@ -1173,7 +1177,11 @@ var KanColleTimerFleetInfo = {
 	    if (data.api_hougeki)
 		damages.push(this._parse_hourai(data.api_hougeki));
 
-	    this._update_battle(data, damages);
+	    this._update_battle({
+				    api_deck_id: data.api_deck_id,
+				    api_maxhps: data.api_maxhps,
+				    api_nowhps: data.api_nowhps,
+				}, damages);
 	},
 
 	reqSortieBattleResult: function(){
