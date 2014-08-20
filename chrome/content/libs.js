@@ -858,6 +858,8 @@ var KanColleTimerFleetInfo = {
 		    cond.setAttribute('cond','very-low');
 		}else if( data.api_cond<=29 ){
 		    cond.setAttribute('cond','low');
+		}else if( data.api_cond >= 50 ){
+		    cond.setAttribute( 'cond', 'high' );
 		}
 		row.appendChild( cond );
 	    }
