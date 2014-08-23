@@ -1188,7 +1188,99 @@ var KanColleTimerFleetInfo = {
 	    if( this._maxhps && this._nowhps ){
 		this._setFleetOrganization( 1, this._maxhps, this._nowhps );
 	    }
-	}
+	},
+
+	reqCombinedBattleBattle: function() {
+	    let data = KanColleDatabase.reqCombinedBattleBattle.get();
+	    let damages = [];
+	    let damages2 = [];
+
+	    debugprint('maxhps:  ' + data.api_maxhps.toSource());
+	    debugprint('nowhps:  ' + data.api_nowhps.toSource());
+	    debugprint('maxhps2: ' + data.api_maxhps_combined.toSource());
+	    debugprint('nowhps2: ' + data.api_nowhps_combined.toSource());
+
+	    // 索敵 (4つめの要素のフラグなし？)
+	    if (data.api_stage_flag[0])
+		damages.push(this._parse_raibak(data.api_kouku.api_stage1));
+	    if (data.api_stage_flag[1])
+		damages.push(this._parse_raibak(data.api_kouku.api_stage2));
+	    if (data.api_stage_flag[2])
+		damages.push(this._parse_raibak(data.api_kouku.api_stage3));
+	    if (data.api_kouku.api_stage3_combined)
+		damages2.push(this._parse_raibak(data.api_kouku.api_stage3_combined));
+
+	    // 支援
+	    switch (data.api_support_flag) {
+	    case 0:
+		break;
+	    case 1:
+		damages.push(this._parse_support(data.api_support_info.api_support_airatack));
+		break;
+	    case 2:
+		damages.push(this._parse_support(data.api_support_info.api_support_hourai));
+		break;
+	    default:
+		debugprint('support: unknown ' + data.api_support_flag);
+	    }
+
+	    // 開幕 (通常マス)
+	    if (data.api_opening_flag)
+		damages2.push(this._parse_raibak(data.api_opening_atack)); // attackではない
+
+	    // 航空戦闘マス
+	    if (data.api_stage_flag2) {
+		if (data.api_stage_flag2[0])
+		    damages.push(this._parse_raibak(data.api_kouku2.api_stage1));
+		if (data.api_stage_flag2[1])
+		    damages.push(this._parse_raibak(data.api_kouku2.api_stage2));
+		if (data.api_stage_flag2[2])
+		    damages.push(this._parse_raibak(data.api_kouku2.api_stage3));
+		if (data.api_kouku2.api_stage3_combined)
+		    damages2.push(this._parse_raibak(data.api_kouku2.api_stage3_combined));
+	    }
+
+	    // 砲雷撃 (通常マス; 第二艦隊砲撃->第二艦隊雷撃->第一艦隊砲撃(x2)
+	    if (data.api_hourai_flag) {
+		if (data.api_hourai_flag[0])
+		    damages2.push(this._parse_hourai(data.api_hougeki1));
+		if (data.api_hourai_flag[1])
+		    damages2.push(this._parse_raibak(data.api_raigeki));
+		if (data.api_hourai_flag[2])
+		    damages.push(this._parse_hourai(data.api_hougeki2));
+		if (data.api_hourai_flag[3])
+		    damages.push(this._parse_hourai(data.api_hougeki3));
+	    }
+	    this._update_battle({
+				    api_deck_id: data.api_deck_id,  // 1
+				    api_maxhps: data.api_maxhps,
+				    api_nowhps: data.api_nowhps,
+				}, damages);
+	    this._update_battle({
+				    api_deck_id: 2,		    // fixed
+				    api_maxhps: data.api_maxhps_combined,
+				    api_nowhps: data.api_nowhps_combined,
+				}, damages2);
+	},
+	reqCombinedBattleMidnightBattle: function() {
+	    let data = KanColleDatabase.reqCombinedBattleMidnightBattle.get();
+	    let damages = [];
+
+	    debugprint('maxhps: ' + data.api_maxhps.toSource());
+	    debugprint('nowhps: ' + data.api_nowhps.toSource());
+	    debugprint('maxhps2: ' + data.api_maxhps_combined.toSource());
+	    debugprint('nowhps2: ' + data.api_nowhps_combined.toSource());
+
+	    // 索敵
+	    if (data.api_hougeki)
+		damages.push(this._parse_hourai(data.api_hougeki));
+
+	    this._update_battle({
+				    api_deck_id: 2,	    // fixed
+				    api_maxhps: data.api_maxhps_combined,
+				    api_nowhps: data.api_nowhps_combined,
+				}, damages);
+	},
     },
 };
 KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
