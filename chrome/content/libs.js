@@ -699,8 +699,10 @@ var KanColleTimerFleetInfo = {
 	    if (cur < 0)
 		cur = 0;
 
-	    data.sub_nowhps[i] = cur;
-	    data.sub_maxhps[i] = maxhp;
+	    if (data.sub_nowhps)
+		data.sub_nowhps[i] = cur;
+	    if (data.sub_maxhps)
+		data.sub_maxhps[i] = maxhp;
 
 	    ratio = cur / maxhp;
 
