@@ -680,19 +680,31 @@ var KanColleTimerFleetInfo = {
 	for (let i = 0; i < damage.length; i++) {
 	    let cur;
 	    let ratio;
+	    let nowhps;
+	    let maxhps;
 
-	    if (isNaN(damage[i]) || damage[i] < 0 ||
-		data.api_nowhps[i] === undefined || data.api_nowhps[i] < 0 ||
-		data.api_maxhps[i] === undefined || data.api_maxhps[i] < 0)
+	    if (isNaN(damage[i]) || damage[i] < 0)
 		continue;
 
-	    cur = data.api_nowhps[i] - damage[i];
+	    nowhp = data.api_nowhps[i] !== undefined ?
+		    data.api_nowhps[i] : data.sub_nowhps[i];
+	    maxhp = data.api_maxhps[i] !== undefined ?
+		    data.api_maxhps[i] : data.sub_maxhps[i];
+
+	    if (nowhp === undefined || nowhp < 0 ||
+		maxhp === undefined || maxhp < 0)
+		continue;
+
+	    cur = nowhp - damage[i];
 	    if (cur < 0)
 		cur = 0;
 
-	    ratio = cur / data.api_maxhps[i];
+	    data.sub_nowhps[i] = cur;
+	    data.sub_maxhps[i] = maxhp;
 
-	    s += '#' + i + ': ' + cur + '/' + data.api_maxhps[i] + ' = ' + (Math.floor(ratio * 10000) / 10000);
+	    ratio = cur / maxhp;
+
+	    s += '#' + i + ': ' + cur + '/' + maxhp + ' = ' + (Math.floor(ratio * 10000) / 10000);
 
 	    if (ratio >= 1) {
 		s += '';
@@ -1194,6 +1206,8 @@ var KanColleTimerFleetInfo = {
 	    let data = KanColleDatabase.reqCombinedBattleBattle.get();
 	    let damages = [];
 	    let damages2 = [];
+	    let sub_nowhps = [];
+	    let sub_maxhps = [];
 
 	    debugprint('maxhps:  ' + data.api_maxhps.toSource());
 	    debugprint('nowhps:  ' + data.api_nowhps.toSource());
@@ -1255,16 +1269,21 @@ var KanColleTimerFleetInfo = {
 				    api_deck_id: data.api_deck_id,  // 1
 				    api_maxhps: data.api_maxhps,
 				    api_nowhps: data.api_nowhps,
+				    sub_maxhps: sub_maxhps,
+				    sub_nowhps: sub_nowhps,
 				}, damages);
 	    this._update_battle({
 				    api_deck_id: 2,		    // fixed
 				    api_maxhps: data.api_maxhps_combined,
 				    api_nowhps: data.api_nowhps_combined,
+				    sub_maxhps: sub_maxhps,
+				    sub_nowhps: sub_nowhps,
 				}, damages2);
 	},
 	reqCombinedBattleMidnightBattle: function() {
 	    let data = KanColleDatabase.reqCombinedBattleMidnightBattle.get();
 	    let damages = [];
+	    let sub_maxhps, sub_nowhps;
 
 	    debugprint('maxhps: ' + data.api_maxhps.toSource());
 	    debugprint('nowhps: ' + data.api_nowhps.toSource());
@@ -1275,10 +1294,16 @@ var KanColleTimerFleetInfo = {
 	    if (data.api_hougeki)
 		damages.push(this._parse_hourai(data.api_hougeki));
 
+	    // Fill enemy HPs
+	    sub_maxhps = JSON.parse(JSON.stringify(data.api_maxhps));
+	    sub_nowhps = JSON.parse(JSON.stringify(data.api_nowhps));
+
 	    this._update_battle({
 				    api_deck_id: 2,	    // fixed
 				    api_maxhps: data.api_maxhps_combined,
 				    api_nowhps: data.api_nowhps_combined,
+				    sub_maxhps: sub_maxhps,
+				    sub_nowhps: sub_nowhps,
 				}, damages);
 	},
     },
