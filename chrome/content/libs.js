@@ -3109,7 +3109,8 @@ function TreeView(){
 	    let flags = 0x02|0x08|0x20;// writeonly|create|truncate
 	    os.init(file,flags,0664,0);
 	    cos = GetUTF8ConverterOutputStream(os);
-	}
+	} else
+	    return;
 
 	// ZERO-WIDTH NO-BREAK SPACE (used as BOM)
 	// とある表計算ソフトでは、UTF-8な.csvファイルにはこれがないと
