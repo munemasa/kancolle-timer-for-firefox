@@ -1206,8 +1206,8 @@ var KanColleTimerFleetInfo = {
 	    let data = KanColleDatabase.reqCombinedBattleBattle.get();
 	    let damages = [];
 	    let damages2 = [];
-	    let sub_nowhps = [];
-	    let sub_maxhps = [];
+	    let sub_nowhps = [-1];
+	    let sub_maxhps = [-1];
 
 	    debugprint('maxhps:  ' + data.api_maxhps.toSource());
 	    debugprint('nowhps:  ' + data.api_nowhps.toSource());
