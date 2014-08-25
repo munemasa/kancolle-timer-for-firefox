@@ -19,13 +19,15 @@ var AndroidGCM = {
 
 	let tmp = new Array();
 	for( let i = 1; i < expedition.length; i++ ){
-	    let v = isNaN( expedition[i].finishTime ) ? 0 : expedition[i].finishTime;
-	    v = parseInt( v/1000 );
+	    let ft = parseInt( expedition[i].getAttribute( 'finishTime' ) );
+	    let v = isNaN( ft ) ? 0 : ft;
+	    v = parseInt( v / 1000 );
 	    tmp.push( v );
 	}
 	for( let i = 0; i < repair.length; i++ ){
-	    let v = isNaN( repair[i].finishTime ) ? 0 : repair[i].finishTime;
-	    v = parseInt( v/1000 );
+	    let ft = parseInt( repair[i].getAttribute( 'finishTime' ) );
+	    let v = isNaN( ft ) ? 0 : ft;
+	    v = parseInt( v / 1000 );
 	    tmp.push( v );
 	}
 
