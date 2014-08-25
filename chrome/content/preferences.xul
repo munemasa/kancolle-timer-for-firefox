@@ -285,6 +285,31 @@
     <checkbox preference="pref-record-resources" label="保有資源量の状態を記録する"/>
   </prefpane>
 
+  <prefpane id="prefpane-sync" label="同期" image="chrome://kancolletimer/content/data/sync.png">
+    <preferences>
+      <preference id="pref-sync-key1"
+		  name="extensions.kancolletimer.key1" type="unichar"/>
+      <preference id="pref-sync-key2"
+		  name="extensions.kancolletimer.key2" type="unichar"/>
+    </preferences>
+    <vbox flex="1">
+      <hbox align="center">
+	<label value="キー１"/>
+	<textbox flex="1" preference="pref-sync-key1"/>
+      </hbox>
+      <hbox alilgn="center">
+	<label value="キー２"/>
+	<textbox flex="1" preference="pref-sync-key2"/>
+      </hbox>
+      <description style="width: 100px;">
+	実験的な機能です。<html:br/>
+	Android版艦これタイマーSuperLiteにて登録時に使用したキー１，２を指定します。<html:br/>
+	他のユーザーとのキーの重複は一切チェックしていませんので、
+	両方のキーが一致してしまった場合は最後に登録したデバイスが有効になります。<html:br/>
+      </description>
+    </vbox>
+  </prefpane>
+
   <sound id="audio-playback"/>
 
   <script type="application/x-javascript" src="chrome://mozapps/content/preferences/fontbuilder.js"/>

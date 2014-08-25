@@ -21,6 +21,10 @@
 	    src="chrome://kancolletimer/content/data.js" />
     <script type="application/javascript;version=1.7"
 	    src="chrome://kancolletimer/content/kancolletimer.js" />
+
+    <script type="application/javascript;version=1.7"
+	    src="chrome://kancolletimer/content/gcm.js" />
+
     <script>
       <![CDATA[
 	       window.addEventListener("load", function(e){ KanColleTimer.init(); WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') ); }, false);
@@ -61,6 +65,8 @@
 	    <menuitem label="設定..." oncommand="OpenSettingsDialog();"/>
 	    <menuseparator/>
 	    <menuitem label="About" oncommand="OpenAboutDialog();"/>
+            <menuseparator/>
+            <menuitem label="Android Sync(Experimental)" oncommand="AndroidGCM.sync();"/>
 	  </menupopup>
 	</toolbarbutton>
       </toolbar>
@@ -457,7 +463,7 @@
     <sound id="sound.default" src=""/>
     
     <scrollbox width="1" height="1">
-      <html:canvas id="KanColleTimerCapture" display="none" />
+      <html:canvas id="KanColleTimerCapture" style="display:none;" />
     </scrollbox>
     
     <popupset>

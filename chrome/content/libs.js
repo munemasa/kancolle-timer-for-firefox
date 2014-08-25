@@ -3710,6 +3710,19 @@ function GetUTF8ConverterOutputStream(os)
     return cos;
 }
 
+/**
+ * @param method GET or POST
+ * @param uri URI
+ * @param substitution 使用するセッションクッキーを指定(任意)
+ */
+function CreateXHR(method,uri, substitution)
+{
+    let req = new XMLHttpRequest();
+    if( !req ) return null;
+    req.open(method,uri);
+    req.timeout = 30*1000; // 30sec timeout for Gecko 12.0+
+    return req;
+}
 
 function ZeroPadding( number, digit )
 {
