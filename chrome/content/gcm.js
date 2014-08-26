@@ -12,6 +12,7 @@ var AndroidGCM = {
 
 	if( !k1 || !k2 ){
 	    debugprint( "nothing to sync" );
+	    return;
 	}
 
 	let expedition = document.getElementsByClassName( "fleetremain" );
