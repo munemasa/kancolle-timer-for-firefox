@@ -9,7 +9,7 @@
 	    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	    xmlns:html="http://www.w3.org/1999/xhtml">
 
-  <prefpane id="prefpane-dashboard" label="ダッシュボード" image="chrome://kancolletimer/content/data/sticky_large.png">
+  <prefpane id="prefpane-dashboard" label="Dashboard" image="chrome://kancolletimer/content/data/sticky_large.png">
     <preferences>
       <preference id="pref-dashboard-order"
 		  name="extensions.kancolletimer.display.dashboard.order"
@@ -47,7 +47,7 @@
     </vbox>
   </prefpane>
 
-  <prefpane id="prefpane-sound" label="音声通知" image="chrome://kancolletimer/content/data/sound.png">
+  <prefpane id="prefpane-sound" label="音声" image="chrome://kancolletimer/content/data/sound.png">
     <preferences>
       <preference id="pref-sound-default"
 		  name="extensions.kancolletimer.sound.default" type="string"/>
@@ -156,7 +156,7 @@
 
   </prefpane>
 
-  <prefpane id="prefpane-popup" label="ポップアップ通知" image="chrome://kancolletimer/content/data/popupnotification.png">
+  <prefpane id="prefpane-popup" label="Popup" image="chrome://kancolletimer/content/data/popupnotification.png">
     <preferences>
       <preference id="pref-popup-general-timer"
 		  name="extensions.kancolletimer.popup.general-timer" type="bool"/>
