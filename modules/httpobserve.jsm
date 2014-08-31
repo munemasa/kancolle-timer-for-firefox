@@ -503,7 +503,7 @@ var KanColleShipDB = function() {
 	// リクエストに api_shipid が含まれる場合のみ呼ばれる
 	//  XXX: リクエストの api_shipid と整合性を確認すべき?
 	_memberShip3: function() {
-	    let data = KanColleDatabase._memberShip3.get().api_ship_data;
+	    let data = KanColleDatabase._memberShip3.get();
 
 	    if (!this._ts)
 		return;
@@ -1654,7 +1654,7 @@ var KanColleDatabase = {
 		// もし request に api_shipid が含まれていたら、
 		// その艦船についてのみ送られてくる
 		if (KanColleDatabase._memberShip3.get_req().api_shipid)
-		    this._memberShip3.update(data.api_data);
+		    this._memberShip3.update(data.api_data.api_ship_data);
 		else
 		    this._memberShip2.update(data.api_data.api_ship_data);
 
@@ -1687,6 +1687,8 @@ var KanColleDatabase = {
 	    } else if (url.match(/kcsapi\/api_req_kaisou\/powerup/)) {
 		this.reqKaisouPowerup.update(data.api_data);
 		this.memberDeck.update(data.api_data.api_deck);
+		if (data.api_data.api_ship)
+		    this._memberShip3.update([data.api_data.api_ship]);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/createitem/)) {
 		this.reqKousyouCreateItem.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_kousyou\/createship_speedchange/)) {
