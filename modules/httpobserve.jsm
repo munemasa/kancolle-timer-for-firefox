@@ -1147,7 +1147,7 @@ var KanColleSlotitemDB = function() {
 	},
 
 	reqKousyouGetShip: function() {
-	    let data = KanColleDatabase.reqKousyouGetShip.get().api_slotitem;
+	    let data = KanColleDatabase.reqKousyouGetShip.get().api_slotitem || [];
 	    let t = KanColleDatabase.reqKousyouGetShip.timestamp();
 
 	    if (!this._ts)
