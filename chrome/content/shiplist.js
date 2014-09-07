@@ -434,35 +434,37 @@ var ShipList = {
 		value.push( count[d] );
 		value.push( "総数 " + count_all[d] );
 
-		let name = {
-		    "api_houg": "火力",
-		    "api_raig": "雷装",
-		    "api_baku": "爆装",
-		    "api_tyku": "対空",
-		    "api_tais": "対潜",
-		    "api_houm": "命中",
-		    "api_houk": "回避",
-		    "api_saku": "索敵",
-		    "api_raim": "雷撃命中" // かな？
-		};
-		d3.map( data[d] ).keys().forEach( function( k ){
-		    let v = GetSignedValue( data[d][k] );
-		    switch( k ){
-		    case "api_houg": // 火力
-		    case "api_raig": // 雷装
-		    case "api_baku": // 爆装
-		    case "api_tyku": // 対空
-		    case "api_tais": // 対潜
-		    case "api_houm": // 命中
-		    case "api_houk": // 回避
-		    case "api_saku": // 索敵
-			//case "api_raim": // 雷撃命中
-			if( v ) value.push( name[k] + v );
-			break;
-		    }
-		} );
-		return value;
-	    } )
+		       let name = {
+			   "api_houg": "火力",
+			   "api_raig": "雷装",
+			   "api_baku": "爆装",
+			   "api_tyku": "対空",
+			   "api_tais": "対潜",
+			   "api_houm": "命中",
+			   "api_houk": "回避",
+			   "api_saku": "索敵",
+			   "api_raim": "雷撃命中", // かな？
+			   "api_souk": "装甲"
+		       };
+		       d3.map( data[d] ).keys().forEach( function( k ){
+			   let v = GetSignedValue( data[d][k] );
+			   switch( k ){
+			   case "api_houg": // 火力
+			   case "api_raig": // 雷装
+			   case "api_baku": // 爆装
+			   case "api_tyku": // 対空
+			   case "api_tais": // 対潜
+			   case "api_houm": // 命中
+			   case "api_houk": // 回避
+			   case "api_saku": // 索敵
+			   case "api_souk": // 装甲
+			       //case "api_raim": // 雷撃命中
+			       if( v ) value.push( name[k] + v );
+			       break;
+			   }
+		       } );
+		       return value;
+		   } )
 	    .enter()
 	    .append( "label" )
 	    .attr( "value", function( d ){
