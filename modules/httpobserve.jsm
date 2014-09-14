@@ -1150,7 +1150,7 @@ var KanColleSlotitemDB = function() {
 	    let data = KanColleDatabase.reqKousyouGetShip.get().api_slotitem || [];
 	    let t = KanColleDatabase.reqKousyouGetShip.timestamp();
 
-	    if (!this._ts)
+	    if (!this._ts || !data)
 		return;
 
 	    this._deepcopy();
