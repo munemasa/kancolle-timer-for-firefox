@@ -1,9 +1,9 @@
 Components.utils.import( "resource://kancolletimermodules/httpobserve.jsm" );
 
 var ShipList = {
-    allships:      [],
+    allships: [],
     allequipments: [],
-    filter_key:    [],
+    filter_key: [],
 
     saveCvs: function(){
 	let txt = "";
@@ -43,8 +43,8 @@ var ShipList = {
     },
 
     getFleetNo: function( ship_id ){
-	let fleet = KanColleDatabase.deck.lookup(ship_id);
-	if (fleet)
+	let fleet = KanColleDatabase.deck.lookup( ship_id );
+	if( fleet )
 	    return fleet.fleet;
 	return 0;
     },
@@ -103,9 +103,12 @@ var ShipList = {
 	let fleet = KanColleDatabase.deck.get( n );
 
 	let no = 1;
+	let sakuteki = 0;
 	for( let i = 0; fleet.api_ship[i] != -1 && i < 6; i++ ){
 	    let data = FindOwnShipData( fleet.api_ship[i] );
 	    let masterdata = FindShipData( fleet.api_ship[i] );
+
+	    sakuteki += data.api_sakuteki[0];
 
 	    let elem = CreateElement( 'listitem' );
 
@@ -122,7 +125,7 @@ var ShipList = {
 		elem.setAttribute( 'style', 'background-color: white;' );
 	    }
 
-	    cell = CreateListCell( data.api_ndock_time ? GetTimeString( data.api_ndock_time / 1000 ):"---" );
+	    cell = CreateListCell( data.api_ndock_time ? GetTimeString( data.api_ndock_time / 1000 ) : "---" );
 	    if( this.isRepairing( data.api_id ) ){
 		cell.setAttribute( 'style', 'color: gray; text-align: center;' );
 	    }else{
@@ -136,6 +139,14 @@ var ShipList = {
 	    cell.setAttribute( 'style', 'text-align: right' );
 	    elem.appendChild( cell );
 
+	    let n = d3.sum( data.api_onslot );
+	    if( n ){
+	    }else{
+		n = "--";
+	    }
+	    cell = CreateListCell( n );
+	    elem.appendChild( cell );
+
 	    for( let i in data.api_slot ){
 		if( data.api_slot[i] < 0 ) continue;
 		let name = FindSlotItemNameById( data.api_slot[i] );
@@ -143,6 +154,7 @@ var ShipList = {
 	    }
 	    list.appendChild( elem );
 	}
+	$( 'fleet-organization' ).setAttribute( 'tooltiptext', "索敵値" + sakuteki );
     },
 
     _filter_func: [ function( d ){
@@ -201,7 +213,7 @@ var ShipList = {
 	    elem.appendChild( cell );
 
 	    if( obj.cond >= 50 ){
-		style = style + 'background-color: #ffffc0;';
+		style = style + 'background-color: #ffffd0;';
 	    }else{
 		style = style + 'background-color: white;';
 	    }
@@ -212,6 +224,16 @@ var ShipList = {
 		style += "border-left: solid 5px orange;";
 	    }else if( p <= 0.75 ){
 		style += "border-left: solid 5px yellow;";
+	    }
+	    switch( obj.shipinfo.api_sally_area ){
+	    case 0:
+		break;
+	    case 1:
+//		style += "border: inset 2px blue;";
+		break;
+	    case 2:
+//		style += "border: inset 2px yellow;";
+		break;
 	    }
 	    elem.setAttribute( 'style', style );
 
@@ -227,6 +249,18 @@ var ShipList = {
 
 	    cell = CreateListCell( obj.shipinfo.api_exp[2] + "%" );
 	    cell.setAttribute( 'style', 'text-align: right' );
+	    elem.appendChild( cell );
+
+	    let n = d3.sum( obj.shipinfo.api_onslot );
+	    if( n ){
+	    }else{
+		n = "--";
+	    }
+	    cell = CreateListCell( n );
+	    let tmp = obj.shipinfo.api_onslot.filter( function( d ){
+		return d!=0;
+	    } );
+	    elem.setAttribute("tooltiptext", tmp);
 	    elem.appendChild( cell );
 
 	    for( let i in obj.equips ){
@@ -260,15 +294,15 @@ var ShipList = {
 	    .scale( x )
 	    .orient( "bottom" )
 	    .tickFormat( function( d ){
-		return d3.max( [(d * 10), 1] ) + "-";
-	    } );
+			     return d3.max( [(d * 10), 1] ) + "-";
+			 } );
 
 	let yAxis = d3.svg.axis()
 	    .scale( y )
 	    .orient( "left" )
 	    .tickFormat( function( d ){
-		return d + "隻";
-	    } )
+			     return d + "隻";
+			 } )
 	    .ticks( 10 );
 
 	let svg = d3.select( "#histogram" ).append( "svg" )
@@ -293,10 +327,10 @@ var ShipList = {
 	svg.append( "g" )
 	    .attr( "class", "grid" )
 	    .call( d3.svg.axis()
-		.scale( y )
-		.orient( "left" )
-		.tickSize( -width, 0, 0 )
-		.tickFormat( "" )
+		       .scale( y )
+		       .orient( "left" )
+		       .tickSize( -width, 0, 0 )
+		       .tickFormat( "" )
 	    );
 
 	svg.selectAll( ".bar" )
@@ -304,15 +338,15 @@ var ShipList = {
 	    .enter().append( "rect" )
 	    .attr( "class", "bar" )
 	    .attr( "x", function( d, i ){
-		return x( i );
-	    } )
+		       return x( i );
+		   } )
 	    .attr( "width", x.rangeBand() )
 	    .attr( "y", function( d ){
-		return y( d );
-	    } )
+		       return y( d );
+		   } )
 	    .attr( "height", function( d ){
-		return height - y( d );
-	    } );
+		       return height - y( d );
+		   } );
     },
 
     createShipOrganizationList: function(){
@@ -322,7 +356,7 @@ var ShipList = {
 	    let fleet = KanColleDatabase.deck.get( fleets[j] );
 	    let rows = $( 'fleet-' + fleet.api_id );
 
-	let ships = KanColleDatabase.ship.list();
+	    let ships = KanColleDatabase.ship.list();
 	    for( let i = 0; fleet.api_ship[i] != -1 && i < 6; i++ ){
 		let row = CreateElement( 'row' );
 		let data = FindOwnShipData( fleet.api_ship[i] );
@@ -400,7 +434,7 @@ var ShipList = {
     },
 
     findItem: function( slot_id ){
-	for( let i=0; i<this.allequipments;i++){
+	for( let i = 0; i < this.allequipments; i++ ){
 	}
     },
 
@@ -424,15 +458,15 @@ var ShipList = {
 	update.enter()
 	    .append( "row" )
 	    .attr( "style", function( d ){
-		let color = ShipList.getEquipmentColor( data[d] );
-		return "border-left:" + color + " 16px solid; border-bottom: #c0c0c0 1px solid;";
-	    } )
+		       let color = ShipList.getEquipmentColor( data[d] );
+		       return "border-left:" + color + " 16px solid; border-bottom: #c0c0c0 1px solid;";
+		   } )
 	    .selectAll( "label" )
 	    .data( function( d ){
-		let value = new Array();
-		value.push( d );
-		value.push( count[d] );
-		value.push( "総数 " + count_all[d] );
+		       let value = new Array();
+		       value.push( d );
+		       value.push( count[d] );
+		       value.push( "総数 " + count_all[d] );
 
 		       let name = {
 			   "api_houg": "火力",
@@ -468,8 +502,8 @@ var ShipList = {
 	    .enter()
 	    .append( "label" )
 	    .attr( "value", function( d ){
-		return d;
-	    } );
+		       return d;
+		   } );
     },
 
     /**
@@ -511,7 +545,7 @@ var ShipList = {
 	    return KanColleDatabase.ship.get( k );
 	} );
 	this.allships = this.createShipList( ships );
-	this.sort(0); // 艦種別ソートをデフォルトに
+	this.sort( 0 ); // 艦種別ソートをデフォルトに
 	this.showShipList( this.allships );
 
 	this.createShipOrganizationList();
@@ -525,13 +559,13 @@ var ShipList = {
 	} );
 	d3.map( tmp ).keys()
 	    .sort( function( a, b ){
-		return b - a;
-	    } )
+		       return b - a;
+		   } )
 	    .forEach( function( d ){
-		let name = KanColleData.type_name[d];
-		let menuitem = CreateMenuItem( name, name );
-		$( 'menu-shiptype' ).appendChild( menuitem );
-	    } );
+			  let name = KanColleData.type_name[d];
+			  let menuitem = CreateMenuItem( name, name );
+			  $( 'menu-shiptype' ).appendChild( menuitem );
+		      } );
 
 	// 装備アイテムメニュー
 	tmp = new Object();
