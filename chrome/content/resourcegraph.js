@@ -21,10 +21,11 @@ var ResourceGraph = {
     height: 500,
 
     color: {
-	"fuel":    "#69aa60",
-	"bullet":  "#ccbf8e",
-	"steel":   "#6d6d6d",
-	"bauxite": "#e6a97a"
+	"fuel": "#69aa60",
+	"bullet": "#ccbf8e",
+	"steel": "#6d6d6d",
+	"bauxite": "#e6a97a",
+	"bucket": "#000000"
     },
 
     saveToFile: function(){
@@ -36,7 +37,7 @@ var ResourceGraph = {
 	os.init( file, flags, 0644, 0 );
 	let cos = GetUTF8ConverterOutputStream( os );
 
-	cos.writeString( "時刻,燃料,弾薬,鋼材,ボーキサイト\n" );
+	cos.writeString( "時刻,燃料,弾薬,鋼材,ボーキサイト,バケツ\n" );
 
 	var data = KanColleRemainInfo.gResourceData;
 	for( let i = 0; i < data.length; i++ ){
@@ -45,7 +46,8 @@ var ResourceGraph = {
 		d.fuel + "," +
 		d.bullet + "," +
 		d.steel + "," +
-		d.bauxite + "\n";
+		d.bauxite + "," +
+		d.bucket + "\n";
 	    cos.writeString( str );
 	}
 	cos.close();
@@ -56,7 +58,7 @@ var ResourceGraph = {
      * TODO:画面のキャプチャまわりは似通ったコードがあるので整理したい
      * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
      */
-    takeScreenshot:   function( path ){
+    takeScreenshot: function( path ){
 	let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
 	var url = this.takePicture( isjpeg );
 	if( !url ){
@@ -174,10 +176,13 @@ var ResourceGraph = {
 	var width = this.width - margin.left - margin.right;
 	var height = this.height - margin.top - margin.bottom;
 
+	// バケツだけ縦軸のスケールが違うので hoge2 として区別する
 	var x = d3.time.scale().range( [0, width] );
 	var y = d3.scale.linear().range( [height, 0] );
+	var y2 = d3.scale.linear().range( [height, 0] );
 	var xAxis = d3.svg.axis().scale( x ).orient( "bottom" ).tickFormat( d3.time.format( "%m/%d %H:%M" ) );
 	var yAxis = d3.svg.axis().scale( y ).orient( "left" );
+	var yAxis2 = d3.svg.axis().scale( y2 ).orient( "left" );
 
 	var line = d3.svg.line().interpolate( "step-after" )
 	    .x( function( d ){
@@ -186,6 +191,13 @@ var ResourceGraph = {
 	    .y( function( d ){
 		return y( d.value );
 	    } );
+	var line2 = d3.svg.line().interpolate( "step-after" )
+	    .x( function( d ){
+		    return x( d.date );
+		} )
+	    .y( function( d ){
+		    return y2( d.value );
+		} );
 
 	var svg = d3.select( "vbox" ).append( "svg" ).attr( "id", "graph" )
 	    .attr( "width", width + margin.left + margin.right )
@@ -193,8 +205,8 @@ var ResourceGraph = {
 	    .append( "g" )
 	    .attr( "transform", "translate(" + margin.left + "," + margin.top + ")" );
 
-	var keys = d3.keys( data[0] ).filter( function( k ){
-	    let ids = ["fuel", "bullet", "steel", "bauxite" ];
+	var keys = d3.keys( data[ data.length-1 ] ).filter( function( k ){
+	    let ids = ["fuel", "bullet", "steel", "bauxite", "bucket" ];
 	    for( let i = 0; i < ids.length; i++ ){
 		if( !$( ids[i] ).checked && k == ids[i] ){
 		    return false;
@@ -219,12 +231,16 @@ var ResourceGraph = {
 	x.domain( d3.extent( data, function( d ){
 	    return d.date;
 	} ) );
+	// バケツを無視して資源の最大、最小値を得る
 	var min = d3.min( resources, function( r ){
+	    if( r.name == "bucket" ) return Number.MAX_VALUE;
+
 	    return d3.min( r.values, function( v ){
 		return v.value;
 	    } );
 	} );
 	var max = d3.max( resources, function( r ){
+	    if( r.name == "bucket" ) return 0;
 	    return d3.max( r.values, function( v ){
 		return v.value;
 	    } );
@@ -232,7 +248,9 @@ var ResourceGraph = {
 	min = d3.max( [min - 500, 0] );
 	max = max + 500;
 	y.domain( [ min, max ] );
+	y2.domain( [0, 3000] );
 
+	// 日付軸 横にすると隣同士文字がぶつかってしまうので30度ほど傾ける
 	svg.append( "g" )
 	    .attr( "class", "x axis" )
 	    .attr( "transform", "translate(0," + height + ")" )
@@ -255,6 +273,12 @@ var ResourceGraph = {
 	    .style( "text-anchor", "end" )
 	    .text( "資源量" );
 
+	// バケツ軸 右側に表示
+	svg.append( "g" )
+	    .attr( "class", "y axis" )
+	    .attr( "transform", "translate(" + width + ",0)" )
+	    .call( yAxis2 );
+
 	svg.append( "g" )
 	    .attr( "class", "grid" )
 	    .attr( "transform", "translate(0," + height + ")" )
@@ -270,6 +294,7 @@ var ResourceGraph = {
 		.tickFormat( "" )
 	    );
 
+	// 折れ線グラフの作成
 	var resource = svg.selectAll( ".resource" )
 	    .data( resources )
 	    .enter().append( "g" )
@@ -278,25 +303,30 @@ var ResourceGraph = {
 	resource.append( "path" )
 	    .attr( "class", "line" )
 	    .attr( "d", function( d ){
-		return line( d.values );
-	    } )
+		       if( d.name == "bucket" ) return line2( d.values );
+		       return line( d.values );
+		   } )
 	    .style( "stroke", function( d ){
-		return ResourceGraph.color[d.name];
-	    } );
+			return ResourceGraph.color[d.name];
+		    } );
 
 	var resource_name = {
-	    "fuel":    "燃料",
-	    "bullet":  "弾薬",
-	    "steel":   "鋼材",
-	    "bauxite": "ボーキサイト"
+	    "fuel": "燃料",
+	    "bullet": "弾薬",
+	    "steel": "鋼材",
+	    "bauxite": "ボーキサイト",
+	    "bucket" : "バケツ"
 	};
 	resource.append( "text" )
 	    .datum( function( d ){
 		return {name: d.name, value: d.values[d.values.length - 1]};
 	    } )
 	    .attr( "transform", function( d ){
-		return "translate(" + x( d.value.date ) + "," + y( d.value.value ) + ")";
-	    } )
+		       if( d.name == "bucket" ){
+			   return "translate(" + x( d.value.date ) + "," + y2( d.value.value ) + ")";
+		       }
+		       return "translate(" + x( d.value.date ) + "," + y( d.value.value ) + ")";
+		   } )
 	    .attr( "x", 3 )
 	    .attr( "dy", ".35em" )
 	    .text( function( d ){

@@ -492,6 +492,7 @@ var KanColleTimerMaterialLog = {
 		bullet: 2,
 		steel: 3,
 		bauxite: 4,
+		bucket: 5
 	    };
 	    let count = 0;
 
