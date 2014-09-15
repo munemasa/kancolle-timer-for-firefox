@@ -196,6 +196,7 @@ var ResourceGraph = {
 		    return x( d.date );
 		} )
 	    .y( function( d ){
+		    d.value = d.value || 0;
 		    return y2( d.value );
 		} );
 
@@ -303,7 +304,9 @@ var ResourceGraph = {
 	resource.append( "path" )
 	    .attr( "class", "line" )
 	    .attr( "d", function( d ){
-		       if( d.name == "bucket" ) return line2( d.values );
+		       if( d.name == "bucket" ){
+			   return line2( d.values );
+		       }
 		       return line( d.values );
 		   } )
 	    .style( "stroke", function( d ){
