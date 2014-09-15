@@ -172,7 +172,7 @@ var ResourceGraph = {
 
 	var data = KanColleRemainInfo.gResourceData;
 
-	var margin = {top: 20, right: 80, bottom: 30, left: 50};
+	var margin = {top: 20, right: 80, bottom: 42, left: 50};
 	var width = this.width - margin.left - margin.right;
 	var height = this.height - margin.top - margin.bottom;
 
@@ -251,18 +251,18 @@ var ResourceGraph = {
 	y.domain( [ min, max ] );
 	y2.domain( [0, 3000] );
 
-	// 日付軸 横にすると隣同士文字がぶつかってしまうので30度ほど傾ける
+	// 日付軸
 	svg.append( "g" )
 	    .attr( "class", "x axis" )
 	    .attr( "transform", "translate(0," + height + ")" )
 	    .call( xAxis )
 	    .selectAll( "text" )
-	    .attr( "transform", "rotate(-20)" )
-	    .attr( "y", 0 )
-	    .attr( "x", 0 )
-	    .attr( "dy", "-1em" )
-	    .attr( "dx", "-1em" )
-	    .style( "text-anchor", "start" );
+	    .attr( "transform", "rotate(0)" )
+	    .attr( "transform", function( d, i ){
+		       // ひとつごとに位置をずらす
+		       return "translate(0," + 12 * (i % 2) + ")";
+		   } )
+	    .style( "text-anchor", "center" );
 
 	svg.append( "g" )
 	    .attr( "class", "y axis" )
