@@ -42,6 +42,7 @@ var ResourceGraph = {
 	var data = KanColleRemainInfo.gResourceData;
 	for( let i = 0; i < data.length; i++ ){
 	    let d = data[i];
+	    d.bucket = d.bucket || 0;
 	    let str = d.recorded_time + "," +
 		d.fuel + "," +
 		d.bullet + "," +
