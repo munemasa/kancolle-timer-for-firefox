@@ -246,7 +246,7 @@ var ResourceGraph = {
 		return v.value;
 	    } );
 	} );
-	min = d3.max( [min - 500, 0] );
+	min = d3.max( [min - 1000, 0] );
 	max = max + 500;
 	y.domain( [ min, max ] );
 	y2.domain( [0, 3000] );
@@ -257,7 +257,7 @@ var ResourceGraph = {
 	    .attr( "transform", "translate(0," + height + ")" )
 	    .call( xAxis )
 	    .selectAll( "text" )
-	    .attr( "transform", "rotate(-30)" )
+	    .attr( "transform", "rotate(-20)" )
 	    .attr( "y", 0 )
 	    .attr( "x", 0 )
 	    .attr( "dy", "-1em" )
@@ -313,6 +313,7 @@ var ResourceGraph = {
 			return ResourceGraph.color[d.name];
 		    } );
 
+	// 現在値の位置にラベルを表示
 	var resource_name = {
 	    "fuel": "燃料",
 	    "bullet": "弾薬",
