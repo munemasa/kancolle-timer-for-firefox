@@ -56,6 +56,7 @@
       <button label="Twitter認証" oncommand="Twitter.getRequestToken();"/>
       <spacer flex="1"/>
       <button id="send-button" label="つぶやく" oncommand="SSTweet.send();"/>
+      <button id="save-file" label="保存" oncommand="SSTweet.save();"/>
       <button label="キャンセル" oncommand="window.close();"/>
     </hbox>
 
