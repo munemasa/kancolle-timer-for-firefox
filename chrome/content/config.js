@@ -184,7 +184,10 @@ var KanColleTimerConfig = {
     },
     destroy: function(){
 	this.unregister();
-	this.setUnichar("display.log.height", $('log').style.height );
+	try{
+	    this.setUnichar("display.log.height", $('log').style.height );
+	}catch(e){
+	}
     }
 };
 
