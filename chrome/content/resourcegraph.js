@@ -322,21 +322,51 @@ var ResourceGraph = {
 	    "bauxite": "ボーキサイト",
 	    "bucket" : "バケツ"
 	};
+
+	// ラベルの表示位置を事前計算
+	let ypos = new Array();
+	for( let i = 0; i < resources.length; i++ ){
+	    let t = new Object();
+	    t.name = resources[i].name;
+	    let v = resources[i].values[resources[i].values.length - 1].value;
+	    if( resources[i].name == "bucket" ){
+		t.value = y2( v )
+	    }else{
+		t.value = y( v );
+	    }
+	    ypos.push( t );
+	}
+	// 上から順に並べ替え
+	ypos.sort( function( a, b ){
+	    return a.value - b.value;
+	} );
+
+	ypos[ ypos[0].name ] = ypos[0].value;
+	// 重ならないように位置をずらす
+	for( let i = 1; i < ypos.length; i++ ){
+	    let y1 = ypos[i - 1].value;
+	    let y2 = ypos[i].value;
+	    // 文字サイズが12px指定になっているので即値で12を使用
+	    if( y2 <= y1 + 12 ){
+		ypos[i].value = y1 + 12;
+	    }
+	    ypos[ ypos[i].name ] = ypos[i].value;
+	}
+
 	resource.append( "text" )
 	    .datum( function( d ){
-		return {name: d.name, value: d.values[d.values.length - 1]};
-	    } )
-	    .attr( "transform", function( d ){
-		       if( d.name == "bucket" ){
-			   return "translate(" + x( d.value.date ) + "," + y2( d.value.value ) + ")";
-		       }
-		       return "translate(" + x( d.value.date ) + "," + y( d.value.value ) + ")";
+			return {name: d.name, value: d.values[d.values.length - 1]};
+		    } )
+	    .attr( "transform",
+		   function( d ){
+		       let y_tmp = ypos[d.name];
+		       return "translate(" + x( d.value.date ) + "," + y_tmp + ")";
 		   } )
 	    .attr( "x", 3 )
 	    .attr( "dy", ".35em" )
 	    .text( function( d ){
-		return resource_name[d.name];
-	    } );
+		       return resource_name[d.name];
+		   } );
     },
 
     init: function(){
