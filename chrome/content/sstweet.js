@@ -75,6 +75,7 @@ var SSTweet = {
 	data = IO_SERVICE.newURI(data, null, null);
 	wbp.saveURI(data, null, null, null, null, file, null);
 
+	ShowNotice( "スクリーンショットを送信しています...", true );
 	setTimeout( function(){
 	    let text = $('text').value;
 	    Twitter.updateStatusWithMedia(text, File(file.path));
@@ -88,10 +89,10 @@ var SSTweet = {
 	// PNGでアップロードを試すと、サイズ1MBになってつぶやくのに時間がかかるのがネックか
 	if( window.arguments ){
 	    let pic = window.arguments[0];
-	    let data = pic || TakeKanColleScreenshot(true);
+	    let data = pic || TakeKanColleScreenshot(isjpeg);
 	    $('ss-image').src = data.spec;
 	}else{
-	    let data = TakeKanColleScreenshot(true);
+	    let data = TakeKanColleScreenshot(isjpeg);
 	    $('ss-image').src = data.spec;
 	}
 	$('text').focus();

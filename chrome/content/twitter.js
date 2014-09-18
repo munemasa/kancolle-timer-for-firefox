@@ -318,6 +318,7 @@ var Twitter = {
 		    }, delay );
 		}else{
 		    AlertPrompt( "スクリーンショットのつぶやきに失敗しました。", "艦これタイマー" );
+		    ShowNotice( "送信に失敗しました" );
 		}
 	    }else{
 		// 成功

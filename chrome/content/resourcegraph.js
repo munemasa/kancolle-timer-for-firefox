@@ -155,7 +155,8 @@ var ResourceGraph = {
     },
 
     tweet: function(){
-	let pic = this.takePicture( true );
+	let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
+	var pic = this.takePicture( isjpeg );
 	OpenTweetDialog( true, pic );
     },
 
