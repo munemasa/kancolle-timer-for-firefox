@@ -3,8 +3,8 @@
 var SSTweet = {
 
     getTempFile:function(){
-        let file = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("TmpD", Components.interfaces.nsIFile);
-        file.append("kancolletimer-ss-temp.jpg");
+	var file = FileUtils.getFile( "TmpD", ["sskancolle.tmp"] );
+	file.createUnique( Components.interfaces.nsIFile.NORMAL_FILE_TYPE, FileUtils.PERMS_FILE );
 	return file;
     },
 
