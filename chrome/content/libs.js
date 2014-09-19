@@ -1599,12 +1599,12 @@ function TakeKanColleScreenshot_imagemagick(){
 
     // import -window root -crop geometry /tmp/hoge.png
     // 800x480+x+y
-    var file = FileUtils.getFile( "TmpD", ["sskancolle.tmp"] );
+    var file = FileUtils.getFile( "TmpD", ["sskancolle.png"] );
     file.createUnique( Components.interfaces.nsIFile.NORMAL_FILE_TYPE, FileUtils.PERMS_FILE );
     debugprint( file.path );
     var tempfile = file.path;
     var geometry = w + "x" + h + "+" + x + "+" + y;
-    var args = [ "-c", "import", "-window", "root", "-crop", geometry, tempfile ];
+    var args = [ "-c", "import -gravity NorthWest -window root -crop " + geometry + " " + tempfile ];
 
     var shell = Components.classes["@mozilla.org/file/local;1"]
 	.createInstance( Components.interfaces.nsILocalFile );
@@ -1614,8 +1614,17 @@ function TakeKanColleScreenshot_imagemagick(){
     process.init( shell );
     process.run( true, args, args.length );
 
+    let _finished;
     var image = new Image();
+    image.addEventListener("load", function() {
+	_finished = 1;
+    }, false);
     image.src = tempfile.path;
+    // ロード待ち
+    let thread = Components.classes['@mozilla.org/thread-manager;1'].getService().mainThread;
+    while (_finished === void(0)) {
+	thread.processNextEvent(true);
+    }
 
     // canvasにctx.drawImage(image, 0, 0 ); で描く
     var canvas = document.getElementById( "KanColleTimerCapture" );
