@@ -2,6 +2,7 @@
 
 Components.utils.import("resource://gre/modules/ctypes.jsm");
 Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
+Components.utils.import("resource://gre/modules/FileUtils.jsm");
 
 /**
  * いろいろと便利関数などを.
@@ -1556,11 +1557,109 @@ function OpenKanCollePage(){
     }
 }
 
+/**
+ * ImageMagickのimportコマンドを使ってスクリーンショット撮影
+ */
+function TakeKanColleScreenshot_imagemagick(){
+    let tab = FindKanColleTab();
+    if( !tab ) return null;
+    let win = tab.linkedBrowser._contentWindow.wrappedJSObject;
+
+    // コンテンツが表示されている部分のスクリーン座標
+    let left = win.window.content.mozInnerScreenX;
+    let top = win.window.content.mozInnerScreenY;
+
+    var game_frame = win.window.document.getElementById( "game_frame" );
+    if( !game_frame ) return null;
+    var offset_x = game_frame.offsetLeft;
+    var offset_y = game_frame.offsetTop;
+    var flash = game_frame.contentWindow.document.getElementById( "flashWrap" );
+    offset_x += flash.offsetLeft;
+    offset_y += flash.offsetTop;
+
+    var w = flash.clientWidth;
+    var h = flash.clientHeight;
+    // コンテンツ内の艦これ画面の座標を決定
+    var x = offset_x;
+    var y = offset_y;
+
+    // スクロールしている分を勘定に入れる
+    var cwu = FindKanColleWindow()
+	.selectedBrowser.contentWindow
+	.QueryInterface( Components.interfaces.nsIInterfaceRequestor )
+	.getInterface( Components.interfaces.nsIDOMWindowUtils );
+    var scrollX = {}, scrollY = {};
+    cwu.getScrollXY( false, scrollX, scrollY );
+    x -= scrollX.value;
+    y -= scrollY.value;
+
+    // スクリーン座標にする
+    x += left;
+    y += top;
+
+    // import -window root -crop geometry /tmp/hoge.png
+    // 800x480+x+y
+    var file = FileUtils.getFile( "TmpD", ["sskancolle.tmp"] );
+    file.createUnique( Components.interfaces.nsIFile.NORMAL_FILE_TYPE, FileUtils.PERMS_FILE );
+    debugprint( file.path );
+    var tempfile = file.path;
+    var geometry = w + "x" + h + "+" + x + "+" + y;
+    var args = [ "-c", "import", "-window", "root", "-crop", geometry, tempfile ];
+
+    var shell = Components.classes["@mozilla.org/file/local;1"]
+	.createInstance( Components.interfaces.nsILocalFile );
+    shell.initWithPath( "/bin/sh" );
+    var process = Components.classes["@mozilla.org/process/util;1"]
+	.createInstance( Components.interfaces.nsIProcess );
+    process.init( shell );
+    process.run( true, args, args.length );
+
+    var image = new Image();
+    image.src = tempfile.path;
+
+    // canvasにctx.drawImage(image, 0, 0 ); で描く
+    var canvas = document.getElementById( "KanColleTimerCapture" );
+    canvas.style.display = "inline";
+    canvas.width = w;
+    canvas.height = h;
+
+    var ctx = canvas.getContext( "2d" );
+    ctx.clearRect( 0, 0, canvas.width, canvas.height );
+    ctx.save();
+    ctx.scale( 1.0, 1.0 );
+    // x,y,w,h
+    ctx.drawImage( image, 0, 0 );
+    ctx.restore();
+
+    let mask_admiral_name = KanColleTimerConfig.getBool( "screenshot.mask-name" );
+    if( mask_admiral_name ){
+	ctx.fillStyle = "rgb(0,0,0)";
+	ctx.fillRect( 110, 5, 145, 20 );
+    }
+
+    var url;
+    if( isjpeg ){
+	url = canvas.toDataURL( "image/jpeg" );
+    }else{
+	url = canvas.toDataURL( "image/png" );
+    }
+    const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+	.getService( Components.interfaces.nsIIOService );
+    url = IO_SERVICE.newURI( url, null, null );
+
+    canvas.style.display = "none";
+    canvas.width = 1;
+    canvas.height = 1;
+    return url;
+}
+
 
 /**
  * @return スクリーンショットのdataスキーマのnsIURIを返す。艦これのタブがなければnullを返す
  */
 function TakeKanColleScreenshot(isjpeg){
+    if( IsLinux() ) return TakeKanColleScreenshot_imagemagick();
+
     var tab = FindKanColleTab();
     if( !tab ) return null;
     var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
