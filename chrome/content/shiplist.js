@@ -367,6 +367,11 @@ var ShipList = {
 
 		let hbox = CreateElement( 'hbox' );
 		hbox.appendChild( CreateLabel( "" + data.api_cond ) );
+		if( data.api_cond >= 50 ){
+		    hbox.setAttribute( 'style', 'background-color: #ffffc0;' );
+		}else{
+		    hbox.setAttribute( 'style', 'background-color: white;' );
+		}
 		row.appendChild( hbox );
 		if( masterdata.api_fuel_max != data.api_fuel ||
 		    masterdata.api_bull_max != data.api_bull ){
