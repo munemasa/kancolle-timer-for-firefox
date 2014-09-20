@@ -1560,7 +1560,7 @@ function OpenKanCollePage(){
 /**
  * ImageMagickのimportコマンドを使ってスクリーンショット撮影
  */
-function TakeKanColleScreenshot_imagemagick(){
+function TakeKanColleScreenshot_imagemagick(isjpeg){
     let tab = FindKanColleTab();
     if( !tab ) return null;
     let win = tab.linkedBrowser._contentWindow.wrappedJSObject;
@@ -1619,7 +1619,7 @@ function TakeKanColleScreenshot_imagemagick(){
     image.addEventListener("load", function() {
 	_finished = 1;
     }, false);
-    image.src = tempfile.path;
+    image.src = "file://" + tempfile;
     // ロード待ち
     let thread = Components.classes['@mozilla.org/thread-manager;1'].getService().mainThread;
     while (_finished === void(0)) {
@@ -1667,7 +1667,7 @@ function TakeKanColleScreenshot_imagemagick(){
  * @return スクリーンショットのdataスキーマのnsIURIを返す。艦これのタブがなければnullを返す
  */
 function TakeKanColleScreenshot(isjpeg){
-    if( IsLinux() ) return TakeKanColleScreenshot_imagemagick();
+    if( IsLinux() ) return TakeKanColleScreenshot_imagemagick(isjpeg);
 
     var tab = FindKanColleTab();
     if( !tab ) return null;
