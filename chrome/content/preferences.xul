@@ -263,10 +263,13 @@
 		  name="extensions.kancolletimer.screenshot.jpeg" type="bool"/>
       <preference id="pref-screenshot-mask-name"
 		  name="extensions.kancolletimer.screenshot.mask-name" type="bool"/>
+      <preference id="pref-screenshot-imagemagick"
+		  name="extensions.kancolletimer.screenshot.imagemagick" type="bool"/>
     </preferences>
 
-    <checkbox preference="pref-screenshot-jpeg" label="JPEGで保存する"/>
-    <checkbox preference="pref-screenshot-mask-name" label="提督名をマスクする" tooltiptext="スクリーンショット撮影時に提督名を検閲処理します。"/>
+    <checkbox preference="pref-screenshot-jpeg" label="JPEGでスクリーンショットを保存する"/>
+    <checkbox preference="pref-screenshot-imagemagick" label="ImageMagickでスクリーンショットを撮影する(Linuxのみ)"/>
+    <checkbox preference="pref-screenshot-mask-name" label="提督名をマスクする(母港画面のみ)" tooltiptext="スクリーンショット撮影時に提督名を検閲処理します。"/>
     <groupbox>
       <caption>スクリーンショット保存先</caption>
       <hbox>
