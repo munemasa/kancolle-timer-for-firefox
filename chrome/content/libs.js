@@ -276,7 +276,7 @@ var KanColleTimerNdockInfo = {
 		    $( targetid ).setAttribute( 'finishTime', '' );
 		    $( timeid ).setAttribute( 'finishTime', '' );
 		    KanColleRemainInfo.ndock[i].finishedtime = Number.NaN;
-		}else{
+		}else if($('ndock-box'+(i+1)) != null){
 		    $('ndock-box'+(i+1)).style.display = 'none';
 		}
 	    }
@@ -397,7 +397,7 @@ var KanColleTimerKdockInfo = {
 		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
 		    KanColleTimerConfig.setInt( "kdock-created-timems"+k, 0 );
 		    KanColleRemainInfo.construction_shipname[i] = null;
-		}else{
+		}else if($('kdock-box'+k) != null){
 		    $('kdock-box'+k).style.display = 'none';
 		}
 	    }

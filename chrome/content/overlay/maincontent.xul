@@ -148,14 +148,15 @@
 		<column/>
 		<column/>
 		<column/>
+		<column/>
+		<column/>
+		<column/>
 	      </columns>
 	      <rows>
 		<row id="ndock-box1" class="ndock-box" context="popup-ndock-memo">
 		  <label id="ndock-label1" value="No.1"/>
 		  <label id="ndock1" mode="target" class="timer ndock-time"/>
 		  <label id="ndockremain1" mode="time" class="timer ndockremain"/>
-		</row>
-		<row id="ndock-box2" class="ndock-box" context="popup-ndock-memo">
 		  <label id="ndock-label2" value="No.2"/>
 		  <label id="ndock2" mode="target" class="timer ndock-time"/>
 		  <label id="ndockremain2" mode="time" class="timer ndockremain"/>
@@ -164,8 +165,6 @@
 		  <label id="ndock-label3" value="No.3"/>
 		  <label id="ndock3" mode="target" class="timer ndock-time"/>
 		  <label id="ndockremain3" mode="time" class="timer ndockremain"/>
-		</row>
-		<row id="ndock-box4" class="ndock-box" context="popup-ndock-memo">
 		  <label id="ndock-label4" value="No.4"/>
 		  <label id="ndock4" mode="target" class="timer ndock-time"/>
 		  <label id="ndockremain4" mode="time" class="timer ndockremain"/>
@@ -186,8 +185,6 @@
 	      <label id="kdock-label1" value="No.1"/>
 	      <label id="kdock1" mode="target" class="timer kdock-time"/>
 	      <label id="kdockremain1" mode="time" class="timer kdockremain"/>
-	    </hbox>
-	    <hbox id="kdock-box2" class="kdock-box">
 	      <label id="kdock-label2" value="No.2"/>
 	      <label id="kdock2" mode="target" class="timer kdock-time"/>
 	      <label id="kdockremain2" mode="time" class="timer kdockremain"/>
@@ -196,8 +193,6 @@
 	      <label id="kdock-label3" value="No.3"/>
 	      <label id="kdock3" mode="target" class="timer kdock-time"/>
 	      <label id="kdockremain3" mode="time" class="timer kdockremain"/>
-	    </hbox>
-	    <hbox id="kdock-box4" class="kdock-box">
 	      <label id="kdock-label4" value="No.4"/>
 	      <label id="kdock4" mode="target" class="timer kdock-time"/>
 	      <label id="kdockremain4" mode="time" class="timer kdockremain"/>
