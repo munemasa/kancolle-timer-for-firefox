@@ -407,6 +407,7 @@ var KanColleTimerKdockInfo = {
 	memberBasic: function() {
 	    KanColleTimer.updateCollapseState(2);
 	},
+
     },
 
     restore: function() {
@@ -566,8 +567,6 @@ var KanColleTimerFleetInfo = {
     //	    return '?' + pos;
     //},
 
-    _battle_info: null,
-
     _parse_raibak: function(data,damage) {
 	let damage = [-1,0,0,0,0,0,0,0,0,0,0,0,0];
 
@@ -666,12 +665,6 @@ var KanColleTimerFleetInfo = {
 	if (!deckid && data.api_dock_id)
 	    deckid = data.api_dock_id;
 
-	if (!this._battle_info ||
-	    this._battle_info.api_deck_id != deckid) {
-	    debugprint('battle information not found.\n');
-	    return;
-	}
-
 	damage = this._reduce_damage.apply(this, damages);
 
 	for (let i = 0; i < damage.length; i++) {
@@ -679,11 +672,11 @@ var KanColleTimerFleetInfo = {
 	    let ratio;
 
 	    if (isNaN(damage[i]) || damage[i] < 0 ||
-		this._battle_info.api_nowhps[i] === undefined || this._battle_info.api_nowhps[i] < 0 ||
-		this._battle_info.api_maxhps[i] === undefined || this._battle_info.api_maxhps[i] < 0)
+		data.api_nowhps[i] === undefined || data.api_nowhps[i] < 0 ||
+		data.api_maxhps[i] === undefined || data.api_maxhps[i] < 0)
 		continue;
 
-	    cur = this._battle_info.api_nowhps[i] - damage[i];
+	    cur = data.api_nowhps[i] - damage[i];
 	    if (cur < 0)
 		cur = 0;
 
@@ -1110,9 +1103,6 @@ var KanColleTimerFleetInfo = {
 
 		$('shipstatus-'+ id +'-0').setAttribute('tooltiptext', fleet_text);
 	    }
-
-	    // Clear battle information
-	    this._battle_info = null;
 	},
 	ship: 'deck',
 
@@ -1123,14 +1113,6 @@ var KanColleTimerFleetInfo = {
 
 	    debugprint('maxhps: ' + data.api_maxhps.toSource());
 	    debugprint('nowhps: ' + data.api_nowhps.toSource());
-
-	    if (!this._battle_info) {
-		this._battle_info = {
-		    api_deck_id: data.api_dock_id, // 意味的には deck が正しそう
-		    api_maxhps: data.api_maxhps,
-		    api_nowhps: data.api_nowhps,
-		};
-	    }
 
 	    // 索敵
 	    if (data.api_stage_flag[0])
@@ -1173,14 +1155,6 @@ var KanColleTimerFleetInfo = {
 
 	    debugprint('maxhps: ' + data.api_maxhps.toSource());
 	    debugprint('nowhps: ' + data.api_nowhps.toSource());
-
-	    if (!this._battle_info) {
-		this._battle_info = {
-		    api_deck_id: data.api_deck_id, // こっちは deck
-		    api_maxhps: data.api_maxhps,
-		    api_nowhps: data.api_nowhps,
-		};
-	    }
 
 	    // 索敵
 	    if (data.api_hougeki)
