@@ -782,6 +782,8 @@ var KanColleTimerFleetInfo = {
 		label.setAttribute('cond', 'very-low');
 	    }else if( data.api_cond<=29 ){
 		label.setAttribute('cond','low');
+            }else if( data.api_cond<49 ){
+                label.setAttribute('cond','medium');
 	    }else if( data.api_cond >= 50 ){
 		label.setAttribute('cond','high');
 	    }
@@ -799,7 +801,7 @@ var KanColleTimerFleetInfo = {
 	    }
 
 	    if( nowhp <= maxhp*0.25 ){
-		row.style.backgroundColor = '#ff8080';
+		row.style.backgroundColor = '#ff0000';
 	    }else{
 		if( n==1 && $('first-fleet-name').hasAttribute('checked') ){
 		    // 第1艦隊のみ
@@ -873,6 +875,8 @@ var KanColleTimerFleetInfo = {
 		    cond.setAttribute('cond','very-low');
 		}else if( data.api_cond<=29 ){
 		    cond.setAttribute('cond','low');
+                }else if( data.api_cond<49 ){
+                    cond.setAttribute('cond','medium');
 		}else if( data.api_cond >= 50 ){
 		    cond.setAttribute( 'cond', 'high' );
 		}

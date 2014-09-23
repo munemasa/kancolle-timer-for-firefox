@@ -24,11 +24,17 @@ hbox[repair]:after{
     content: url("chrome://kancolletimer/content/data/cross.png");
 }
 
-label[cond='very-low'] {
-    background-color: #fa6b6a;
+label[cond=very-low] {
+    background-color: #ff0000;
 }
-label[cond='low'] {
-    background-color: #eea87a;
+label[cond=low] {
+    background-color: #ff9900;
+}
+label[cond=medium] {
+    background-color: #ffff00;
+}
+label[cond=high] {
+    background-color: #33ffff;
 }
 
 label[few-minutes-left] {
