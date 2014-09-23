@@ -658,6 +658,8 @@ var KanColleTimerFleetInfo = {
 	let damage;
 	let s = '';
 
+        let maxhps = new Array(7);
+        let nowhps = new Array(7);
 	// req_sortie/battle では api_dock_id
 	// req_battle_midnight/battle では api_deck_id
 	// 意味的には deck が正しそうだが…
@@ -704,6 +706,11 @@ var KanColleTimerFleetInfo = {
 	    }
 	    s += '\n';
 
+            if (i >= 1 && i <= 6) {
+              maxhps[i] = data.api_maxhps[i];
+              nowhps[i] = cur;
+            }
+
 	    if (i >= 1 && i <= 6 && damage[i]) {
 		let hpstyle = this._ship_color(ratio);
 		if (hpstyle) {
@@ -717,6 +724,9 @@ var KanColleTimerFleetInfo = {
 		}
 	    }
 	}
+	debugprint('_update_battle maxhps: ' + maxhps.toSource());
+	debugprint('_update_battle nowhps: ' + nowhps.toSource());
+        this._setFleetOrganization(1, maxhps, nowhps);
 
 	debugprint(s);
     },
@@ -740,8 +750,10 @@ var KanColleTimerFleetInfo = {
      * 第n艦隊の編成を表示する
      * @param n 1,2,3,4
      */
-    _setFleetOrganization: function(n) {
+    _setFleetOrganization: function(n, maxhps, nowhps) {
+
 	// 第n艦隊編成
+        let battle = (arguments.length > 1)
 	let fleets = KanColleDatabase.deck.list();
 	let fleet = KanColleDatabase.deck.get(n);
 	if( !fleet ) return;
@@ -751,6 +763,8 @@ var KanColleTimerFleetInfo = {
 
 	this._showSupplyMark(n, false);
 	let sakuteki = 0;
+	let maxhp = 0;
+	let nowhp = 0;
 	for( let i=0; fleet.api_ship[i]!=-1 && i<6; i++){
 	    let row = CreateElement('row');
 	    let data = FindOwnShipData( fleet.api_ship[i] );
@@ -760,7 +774,15 @@ var KanColleTimerFleetInfo = {
 	    if( n == 1 )sakuteki += data.api_sakuteki[0];
 	    row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
 	    row.appendChild( CreateLabel(masterdata.api_name) );
-	    row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp) );
+            if(battle) {
+	      maxhp = parseInt(maxhps[i+1]);
+	      nowhp = parseInt(nowhps[i+1]);
+            }else {
+	      maxhp = parseInt(data.api_maxhp);
+	      nowhp = parseInt(data.api_nowhp);
+            }
+            debugprint('Fleet maxhp: ' + maxhp + ' nowhp: ' + nowhp);
+	    row.appendChild( CreateListCell( nowhp + "/" + maxhp) );
 	    let hbox = CreateElement('hbox');
 	    let label = CreateLabel(""+data.api_cond);
 	    if( data.api_cond<=19 ){
@@ -783,8 +805,6 @@ var KanColleTimerFleetInfo = {
 		hbox.setAttribute('repair','1');
 	    }
 
-	    let maxhp = parseInt(data.api_maxhp);
-	    let nowhp = parseInt(data.api_nowhp);
 	    if( nowhp <= maxhp*0.25 ){
 		row.style.backgroundColor = '#ff8080';
 	    }else{
@@ -809,9 +829,9 @@ var KanColleTimerFleetInfo = {
 		    row.removeAttribute('style');
 		}
 	    }
-
 	    rows.appendChild( row );
 	}
+        if(battle) return;
 	if( n==1 ){
 	    // 第1艦隊のみ状態回復時間を計算する
 	    $('group-1stfleet' ).setAttribute("tooltiptext", "索敵値合計"+sakuteki);
