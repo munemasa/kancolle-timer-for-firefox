@@ -514,6 +514,7 @@ var KanColleTimerMaterialLog = {
 
 	    if (count)
 		res.push( data );
+	    this.writeResourceData();
 	},
     },
 
