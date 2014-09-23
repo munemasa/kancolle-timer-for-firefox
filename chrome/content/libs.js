@@ -774,7 +774,7 @@ var KanColleTimerFleetInfo = {
 	      maxhp = parseInt(data.api_maxhp);
 	      nowhp = parseInt(data.api_nowhp);
             }
-            debugprint('Fleet maxhp: ' + maxhp + ' nowhp: ' + nowhp);
+            // debugprint('Fleet maxhp: ' + maxhp + ' nowhp: ' + nowhp);
 	    row.appendChild( CreateListCell( nowhp + "/" + maxhp) );
 	    let hbox = CreateElement('hbox');
 	    let label = CreateLabel(""+data.api_cond);
