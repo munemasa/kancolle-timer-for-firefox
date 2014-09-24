@@ -719,7 +719,10 @@ var KanColleTimerFleetInfo = {
 	}
 	debugprint('_update_battle maxhps: ' + maxhps.toSource());
 	debugprint('_update_battle nowhps: ' + nowhps.toSource());
-        this._setFleetOrganization(1, maxhps, nowhps);
+
+	// あとでbattleresult時に反映させるために一旦保存
+	this._maxhps = maxhps;
+	this._nowhps = nowhps;
 
 	debugprint(s);
     },
@@ -1162,6 +1165,12 @@ var KanColleTimerFleetInfo = {
 
 	    this._update_battle(data, damages);
 	},
+
+	reqSortieBattleResult: function(){
+	    if( this._maxhps && this._nowhps ){
+		this._setFleetOrganization( 1, this._maxhps, this._nowhps );
+	    }
+	}
     },
 };
 KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;
