@@ -512,9 +512,18 @@ var KanColleTimerMaterialLog = {
 
 	    data.recorded_time = now; // 記録日時
 
-	    if (count)
+	    if( count ){
 		res.push( data );
-	},
+
+		// 資源情報は頻繁に更新があるので毎回セーブはせず、
+		// とりあえず2分タイムアウトでセーブするようにする
+		// (時間はてきとう)
+		clearTimeout( this._id );
+		this._id = setTimeout( function(){
+		    KanColleTimerMaterialLog.writeResourceData();
+		}, 1000 * 120 );
+	    }
+	}
     },
 
     readResourceData: function(){
