@@ -132,6 +132,7 @@ var KanColleTimerHeadQuarterInfo = {
 	    $('max-number-of-ships').setAttribute('value', maxships+"隻");
 	    $('max-number-of-items').setAttribute('value', maxslotitems);
 	    $('number-of-ships' ).setAttribute('cond', ship_color);
+	    $('number-of-items' ).setAttribute('cond', slotitem_color);
 	},
 
 	material: function() {
