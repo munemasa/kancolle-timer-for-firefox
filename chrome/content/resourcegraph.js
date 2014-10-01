@@ -28,6 +28,17 @@ var ResourceGraph = {
 	"bucket": "#000000"
     },
 
+    openSaveFolder: function(){
+	let profdir = GetProfileDir();
+	profdir.append( "kancolletimer.dat" );
+	let profileDir = profdir.path;
+
+	// Show the profile directory.
+	let nsLocalFile = Components.Constructor("@mozilla.org/file/local;1",
+						 "nsILocalFile", "initWithPath");
+	new nsLocalFile(profileDir).reveal();
+    },
+
     saveToFile: function(){
 	let file = OpenFileDialog( "CSVファイルに保存", MODE_SAVE );
 	if( !file ) return;

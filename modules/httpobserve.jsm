@@ -1703,7 +1703,7 @@ var KanColleDatabase = {
 		this.reqNyukyoStart.update();
 	    }else if( url.match( /kcsapi\/api_req_sortie\/battleresult/ ) ||
 		url.match( /kcsapi\/api_req_combined_battle\/battleresult/ ) ){
-		//this.reqSortieBattleResult.update(data.api_data);
+		this.reqSortieBattleResult.update(data.api_data);
 		this.recordDroppedShip( data );
 	    } else if (url.match(/kcsapi\/api_req_sortie\/battle/)) {
 		this.reqSortieBattle.update(data.api_data);
@@ -1803,6 +1803,7 @@ var KanColleDatabase = {
 	    this.reqNyukyoStart = new KanColleSimpleDB();
 	    this.reqSortieBattle = new KanColleSimpleDB();
 	    this.reqBattleMidnightBattle = new KanColleSimpleDB();
+	    this.reqSortieBattleResult = new KanColleSimpleDB();
 
 	    this.ship = new KanColleShipDB();
 	    this.ship.init();
@@ -1855,6 +1856,7 @@ var KanColleDatabase = {
 	    this.ship.exit();
 	    this.ship = null;
 
+	    this.reqSortieBattleResult = null;
 	    this.reqBattleMidnightBattle = null;
 	    this.reqSortieBattle = null;
 	    this.reqNyukyoStart = null;

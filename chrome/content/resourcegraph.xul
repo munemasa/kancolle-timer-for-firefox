@@ -52,6 +52,7 @@
     <checkbox id="steel" checked="true" label="鋼材" oncommand="ResourceGraph.createGraph();"/>
     <checkbox id="bauxite" checked="true" label="ボーキサイト" oncommand="ResourceGraph.createGraph();"/>
     <checkbox id="bucket" checked="true" label="バケツ" oncommand="ResourceGraph.createGraph();"/>
+    <html:a onclick="ResourceGraph.openSaveFolder();">保存フォルダを開く</html:a>
   </hbox>
   <vbox id="box" flex="1" style="overflow:auto;">
   </vbox>

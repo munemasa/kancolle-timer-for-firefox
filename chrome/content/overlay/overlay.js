@@ -128,7 +128,10 @@ KanColleTimer.MaterialLog = {
 		elem = document.getElementById( 'kancolletimer-ships' );
 		elem.value = ships + "/" + maxships + "隻";
 		elem.setAttribute('cond', ship_color);
-		document.getElementById( 'kancolletimer-items' ).value = slotitems + "/" + maxslotitems;
+
+		elem = document.getElementById( 'kancolletimer-items' );
+		elem.value = slotitems + "/" + maxslotitems;
+		elem.setAttribute( 'cond', slotitem_color );
 	    }catch(e){}
 	}
     },
