@@ -132,6 +132,7 @@ var KanColleTimerHeadQuarterInfo = {
 	    $('max-number-of-ships').setAttribute('value', maxships+"隻");
 	    $('max-number-of-items').setAttribute('value', maxslotitems);
 	    $('number-of-ships' ).setAttribute('cond', ship_color);
+	    $('number-of-items' ).setAttribute('cond', slotitem_color);
 	},
 
 	material: function() {
@@ -276,7 +277,7 @@ var KanColleTimerNdockInfo = {
 		    $( targetid ).setAttribute( 'finishTime', '' );
 		    $( timeid ).setAttribute( 'finishTime', '' );
 		    KanColleRemainInfo.ndock[i].finishedtime = Number.NaN;
-		}else if($('ndock-box'+(i+1)) != null){
+		}else{
 		    $('ndock-box'+(i+1)).style.display = 'none';
 		}
 	    }
@@ -397,7 +398,7 @@ var KanColleTimerKdockInfo = {
 		    KanColleTimerConfig.setInt( "kdock-created-time"+k, 0 );
 		    KanColleTimerConfig.setInt( "kdock-created-timems"+k, 0 );
 		    KanColleRemainInfo.construction_shipname[i] = null;
-		}else if($('kdock-box'+k) != null){
+		}else{
 		    $('kdock-box'+k).style.display = 'none';
 		}
 	    }
@@ -512,10 +513,18 @@ var KanColleTimerMaterialLog = {
 
 	    data.recorded_time = now; // 記録日時
 
-	    if (count)
+	    if( count ){
 		res.push( data );
-	    this.writeResourceData();
-	},
+
+		// 資源情報は頻繁に更新があるので毎回セーブはせず、
+		// とりあえず2分タイムアウトでセーブするようにする
+		// (時間はてきとう)
+		clearTimeout( this._id );
+		this._id = setTimeout( function(){
+		    KanColleTimerMaterialLog.writeResourceData();
+		}, 1000 * 120 );
+	    }
+	}
     },
 
     readResourceData: function(){
@@ -720,7 +729,10 @@ var KanColleTimerFleetInfo = {
 	}
 	debugprint('_update_battle maxhps: ' + maxhps.toSource());
 	debugprint('_update_battle nowhps: ' + nowhps.toSource());
-        this._setFleetOrganization(1, maxhps, nowhps);
+
+	// あとでbattleresult時に反映させるために一旦保存
+	this._maxhps = maxhps;
+	this._nowhps = nowhps;
 
 	debugprint(s);
     },
@@ -783,8 +795,6 @@ var KanColleTimerFleetInfo = {
 		label.setAttribute('cond', 'very-low');
 	    }else if( data.api_cond<=29 ){
 		label.setAttribute('cond','low');
-            }else if( data.api_cond<49 ){
-                label.setAttribute('cond','medium');
 	    }else if( data.api_cond >= 50 ){
 		label.setAttribute('cond','high');
 	    }
@@ -802,7 +812,7 @@ var KanColleTimerFleetInfo = {
 	    }
 
 	    if( nowhp <= maxhp*0.25 ){
-		row.style.backgroundColor = '#ff0000';
+		row.style.backgroundColor = '#ff8080';
 	    }else{
 		if( n==1 && $('first-fleet-name').hasAttribute('checked') ){
 		    // 第1艦隊のみ
@@ -876,8 +886,6 @@ var KanColleTimerFleetInfo = {
 		    cond.setAttribute('cond','very-low');
 		}else if( data.api_cond<=29 ){
 		    cond.setAttribute('cond','low');
-                }else if( data.api_cond<49 ){
-                    cond.setAttribute('cond','medium');
 		}else if( data.api_cond >= 50 ){
 		    cond.setAttribute( 'cond', 'high' );
 		}
@@ -1167,6 +1175,12 @@ var KanColleTimerFleetInfo = {
 
 	    this._update_battle(data, damages);
 	},
+
+	reqSortieBattleResult: function(){
+	    if( this._maxhps && this._nowhps ){
+		this._setFleetOrganization( 1, this._maxhps, this._nowhps );
+	    }
+	}
     },
 };
 KanColleTimerFleetInfo.__proto__ = __KanColleTimerPanel;

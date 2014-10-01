@@ -25,9 +25,20 @@ var DropShipList = {
 
     getFile: function(){
 	let profdir = GetProfileDir();
-	profdir.append( "kancolletimer.dat" )
+	profdir.append( "kancolletimer.dat" );
 	profdir.append( "getship.dat" );
 	return profdir;
+    },
+
+    openSaveFolder: function(){
+	let profdir = GetProfileDir();
+	profdir.append( "kancolletimer.dat" );
+	let profileDir = profdir.path;
+
+	// Show the profile directory.
+	let nsLocalFile = Components.Constructor("@mozilla.org/file/local;1",
+						 "nsILocalFile", "initWithPath");
+	new nsLocalFile(profileDir).reveal();
     },
 
     save: function(){
@@ -73,6 +84,12 @@ var DropShipList = {
     createTable: function(){
 	let list = $( 'dropship-list' );
 	this.clearListBox( list );
+
+	let n = this.allships.length;
+	if( n > 500 ){
+	    this.allships = this.allships.slice(-500);
+	}
+	$('number-of-ships').setAttribute('label', this.allships.length + '/'+n+'人を表示しています');
 
 	let no = 1;
 	for( let i = 0; i < this.allships.length; i++ ){
