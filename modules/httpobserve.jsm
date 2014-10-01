@@ -1672,7 +1672,7 @@ var KanColleDatabase = {
 		this.memberMaterial.update(data.api_data.api_material);
 		this.memberNdock.update(data.api_data.api_ndock);
 		this._memberShip2.update(data.api_data.api_ship);
-	    } else if (url.match(/kcsapi\/api_req_battle_midnight\/(sp_)?battle/)) {
+	    } else if (url.match(/kcsapi\/api_req_battle_midnight\/(sp_)?(battle|midnight)/)) {
 		this.reqBattleMidnightBattle.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_hensei\/change/)) {
 		this.reqHenseiChange.update();
