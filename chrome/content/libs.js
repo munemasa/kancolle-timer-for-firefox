@@ -806,7 +806,7 @@ var KanColleTimerFleetInfo = {
 	    }else{
 		if( n==1 && $('first-fleet-name').hasAttribute('checked') ){
 		    // 第1艦隊のみ
-		    let percentage = parseInt( nowhp/maxhp*100 );
+		    let percentage =  nowhp/maxhp*100;
 		    let image;
 		    if(nowhp==maxhp){
 			image = "greenbar.png";
