@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+
 /* for wallpaper */
 vbox{
 /*    background-image: url("file:///C:/Users/amano/Desktop/KdL.jpg");*/
@@ -29,6 +30,10 @@ label[cond='very-low'] {
 }
 label[cond='low'] {
     background-color: #eea87a;
+}
+
+label[cond="high"] {
+    background-color: #ffffc0;
 }
 
 label[few-minutes-left] {
