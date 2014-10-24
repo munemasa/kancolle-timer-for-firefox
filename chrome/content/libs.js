@@ -578,14 +578,14 @@ var KanColleTimerFleetInfo = {
     //},
 
     _parse_raibak: function(data,damage) {
-	let damage = [-1,0,0,0,0,0,0,0,0,0,0,0,0];
+	let _damage = [-1,0,0,0,0,0,0,0,0,0,0,0,0];
 
 	function __parse_xdam(d,pos) {
 	    if (d) {
 		for (let i = 0; i <= 6; i++) {
 		    if (d[i] === undefined || d[i] < 0)
 			continue;
-		    damage[i + pos] = Math.floor(d[i]);
+		    _damage[i + pos] = Math.floor(d[i]);
 		}
 	    }
 	}
@@ -593,9 +593,9 @@ var KanColleTimerFleetInfo = {
 	__parse_xdam(data.api_fdam, 0);
 	__parse_xdam(data.api_edam, 6);
 
-	// debugprint('raibak: ' + data.toSource() + ' => ' + damage.toSource());
-	debugprint('raibak: ' + damage.toSource());
-	return damage;
+	// debugprint('raibak: ' + data.toSource() + ' => ' + _damage.toSource());
+	debugprint('raibak: ' + _damage.toSource());
+	return _damage;
     },
 
     _parse_hourai: function(data) {
