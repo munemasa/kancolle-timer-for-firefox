@@ -346,6 +346,7 @@ var KanColleMaterialDB = function() {
 	burner: Number.NaN,
 	bucket: Number.NaN,
 	devkit: Number.NaN,
+	screw: Number.NaN,
     };
 
     this._update = {
@@ -359,6 +360,7 @@ var KanColleMaterialDB = function() {
 		burner: 5,
 		bucket: 6,
 		devkit: 7,
+		screw: 8,
 	    };
 	    let ok = 0;
 
