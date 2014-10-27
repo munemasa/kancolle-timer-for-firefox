@@ -438,6 +438,26 @@ var KanColleMaterialDB = function() {
 	    this._notify();
 	},
 
+	reqKousyouRemodelSlot: function() {
+	    let t = KanColleDatabase.reqKousyouRemodelSlot.timestamp();
+	    let data = KanColleDatabase.reqKousyouRemodelSlot.get();
+
+	    if (!this._ts || !data)
+		return;
+
+	    this._db.fuel    = data.api_after_material[0];
+	    this._db.bullet  = data.api_after_material[1];
+	    this._db.steel   = data.api_after_material[2];
+	    this._db.bauxite = data.api_after_material[3];
+	    this._db.burner  = data.api_after_material[4];
+	    this._db.bucket  = data.api_after_material[5];
+	    this._db.devkit  = data.api_after_material[6];
+	    this._db.screw   = data.api_after_material[7];
+
+	    this._ts = t;
+	    this._notify();
+	},
+
 	reqNyukyoSpeedChange: function() {
 	    let t = KanColleDatabase.reqNyukyoStart.timestamp();
 
@@ -1496,6 +1516,7 @@ var KanColleDatabase = {
     reqKousyouDestroyItem2: null,	// req_kousyou/destroyitem2
     reqKousyouDestroyShip: null,// req_kousyou/destroyship
     reqKousyouGetShip: null,	// req_kousyou/getship
+    reqKousyouRemodelSlot: null,// req_kousyou/remodel_slot
     reqMemberUpdateDeckName: null,  //req_member/updatedeckname
     reqMemberGetPracticeEnemyInfo: null,    // req_member/get_practice_enemyinfo
     reqNyukyoSpeedChange: null,	// req_nyukyo/speedchange
@@ -1730,6 +1751,8 @@ var KanColleDatabase = {
 		this.reqKousyouGetShip.update(data.api_data);
 		this._memberKdock.update(data.api_data.api_kdock);
 		this.recordCreatedShip( data );
+	    } else if (url.match(/kcsapi\/api_req_kousyou\/remodel_slot$/)) {
+		this.reqKousyouRemodelSlot.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_member\/get_practice_enemyinfo/)) {
 		this.reqMemberGetPracticeEnemyInfo.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_member\/updatedeckname/)) {
@@ -1833,6 +1856,7 @@ var KanColleDatabase = {
 	    this.reqKousyouDestroyItem2 = new KanColleSimpleDB();
 	    this.reqKousyouDestroyShip = new KanColleSimpleDB();
 	    this.reqKousyouGetShip = new KanColleSimpleDB();
+	    this.reqKousyouRemodelSlot = new KanColleSimpleDB();
 	    this.reqHokyuCharge = new KanColleSimpleDB();
 	    this.reqMemberGetPracticeEnemyInfo = new KanColleSimpleDB();
 	    this.reqMemberUpdateDeckName = new KanColleSimpleDB();
@@ -1904,6 +1928,7 @@ var KanColleDatabase = {
 	    this.reqNyukyoSpeedChange = null;
 	    this.reqMemberUpdateDeckName = null;
 	    this.reqMemberGetPracticeEnemyInfo = null;
+	    this.reqKousyouRemodelSlot = null;
 	    this.reqKousyouGetShip = null;
 	    this.reqKousyouDestroyShip = null;
 	    this.reqKousyouDestroyItem2 = null;
