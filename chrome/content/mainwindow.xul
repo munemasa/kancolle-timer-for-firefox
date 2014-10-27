@@ -28,6 +28,8 @@
 	 oncommand="$('deck').selectedIndex=3;"/>
     <key id="tab-move-4" key="4" modifiers="accel"
 	 oncommand="$('deck').selectedIndex=1;"/>
+
+    <key id="sstweet" key="T" modifiers="accel" oncommand="OpenTweetDialog()"/>
   </keyset>
 
   <vbox id="maincontent" flex="1"/>
