@@ -86,14 +86,13 @@ var DropShipList = {
 	this.clearListBox( list );
 
 	let n = this.allships.length;
-	if( n > 500 ){
-	    this.allships = this.allships.slice(-500);
-	}
-	$('number-of-ships').setAttribute('label', this.allships.length + '/'+n+'人を表示しています');
+
+	let ships = this.allships.slice(-500);
+	$('number-of-ships').setAttribute('label', ships.length + '/'+n+'人を表示しています');
 
 	let no = 1;
-	for( let i = 0; i < this.allships.length; i++ ){
-	    let ship = this.allships[i];
+	for( let i = 0; i < ships.length; i++ ){
+	    let ship = ships[i];
 
 	    let elem = CreateElement( 'listitem' );
 	    let style = no != 1 && (no % 10) == 1 ? "border-top: 1px solid gray;" : "";
