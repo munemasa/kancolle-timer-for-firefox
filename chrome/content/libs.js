@@ -1358,9 +1358,6 @@ var KanColleTimerQuestInfo = {
 		modenode.setAttribute('value',str);
 	    }
 
-	    if (!ids.length)
-		return;
-
 	    ids = ids.sort(function(a,b){
 		return quests.list[a].data.api_no - quests.list[b].data.api_no;
 	    });
