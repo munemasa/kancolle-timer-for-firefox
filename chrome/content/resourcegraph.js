@@ -25,7 +25,7 @@ var ResourceGraph = {
 	"bullet": "#ccbf8e",
 	"steel": "#6d6d6d",
 	"bauxite": "#e6a97a",
-	"bucket": "#000000"
+	"bucket": "#8888ff"
     },
 
     openSaveFolder: function(){
@@ -262,7 +262,23 @@ var ResourceGraph = {
 	min = d3.max( [min - 1000, 0] );
 	max = max + 500;
 	y.domain( [ min, max ] );
-	y2.domain( [0, 3000] );
+
+	min = d3.min( resources, function( r ){
+	    if( r.name != "bucket" ) return Number.MAX_VALUE;
+
+	    return d3.min( r.values, function( v ){
+		return v.value;
+	    } );
+	} );
+	max = d3.max( resources, function( r ){
+	    if( r.name != "bucket" ) return 0;
+	    return d3.max( r.values, function( v ){
+		return v.value;
+	    } );
+	} );
+	min = d3.max( [min - 50, 0] );
+	max = d3.min( [3000, max + 50] );
+	y2.domain( [min, max] );
 
 	// 日付軸
 	svg.append( "g" )
