@@ -1583,6 +1583,10 @@ var KanColleDatabase = {
     // CSVでフォーマットは 海域名(or建造),敵艦隊名(orなし),艦種,艦名,取得時UNIX時間
     recordDroppedShip: function( data ){
 	try{
+	    if( !this.getPrefs().getBoolPref("record.ships") ){
+		return;
+	    }
+
 	    let file = this.getDir();
 	    file.append( 'getship.dat' );
 
@@ -1606,6 +1610,9 @@ var KanColleDatabase = {
     },
     // 建造艦をファイルに記録
     recordCreatedShip: function( data ){
+	if( !this.getPrefs().getBoolPref("record.ships") ){
+	    return;
+	}
 	let file = this.getDir();
 	file.append( 'getship.dat' );
 

@@ -717,10 +717,10 @@ var KanColleTimerFleetInfo = {
 	    }
 	    s += '\n';
 
-            if (i >= 1 && i <= 6) {
-              maxhps[i] = data.api_maxhps[i];
-              nowhps[i] = cur;
-            }
+	    if( i >= 1 && i <= 6 ){
+		maxhps[i] = data.api_maxhps[i];
+		nowhps[i] = cur;
+	    }
 
 	    if (i >= 1 && i <= 6 && damage[i]) {
 		let hpstyle = this._ship_color(ratio);

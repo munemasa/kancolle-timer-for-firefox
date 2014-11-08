@@ -10,6 +10,7 @@ pref("extensions.kancolletimer.display.ship-num-free",5);
 pref("extensions.kancolletimer.default-action.toolbar", 0);
 
 pref("extensions.kancolletimer.record.resource-history",false);
+pref("extensions.kancolletimer.record.ships",true);
 
 pref("extensions.kancolletimer.screenshot.path","");
 pref("extensions.kancolletimer.screenshot.jpeg",false);
