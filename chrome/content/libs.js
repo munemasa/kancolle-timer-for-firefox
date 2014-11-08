@@ -739,8 +739,8 @@ var KanColleTimerFleetInfo = {
 	debugprint('_update_battle nowhps: ' + nowhps.toSource());
 
 	// あとでbattleresult時に反映させるために一旦保存
-	this._maxhps = maxhps;
-	this._nowhps = nowhps;
+	this["_maxhps" + data.api_deck_id] = maxhps;
+	this["_nowhps" + data.api_deck_id] = nowhps;
 
 	debugprint(s);
     },
@@ -1193,9 +1193,14 @@ var KanColleTimerFleetInfo = {
 	},
 
 	reqSortieBattleResult: function(){
-	    if( this._maxhps && this._nowhps ){
-		this._setFleetOrganization( 1, this._maxhps, this._nowhps );
+	    if( this._maxhps1 && this._nowhps1 ){
+		this._setFleetOrganization( 1, this._maxhps1, this._nowhps1 );
 	    }
+	    if( this._maxhps2 && this._nowhps2 ){
+		this._setFleetOrganization( 2, this._maxhps2, this._nowhps2 );
+	    }
+	    this._nowhps1 = null;
+	    this._nowhps2 = null;
 	},
 
 	reqCombinedBattleBattle: function() {
