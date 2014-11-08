@@ -3,8 +3,6 @@
 
 var EXPORTED_SYMBOLS = ["KanColleRemainInfo", "KanColleDatabase"];
 
-var __devmode = false;
-
 /*
  * Database
  */
@@ -1526,9 +1524,30 @@ var KanColleDatabase = {
 	return profdir;
     },
 
+    getPrefs: function(){
+	const CI = Components.interfaces;
+	let prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
+	    .getService( CI.nsIPrefService );
+	prefSvc.QueryInterface( CI.nsIPrefBranch );
+	let branch = prefSvc.getBranch( "extensions.kancolletimer." );
+
+	branch.QueryInterface( CI.nsIPrefBranchInternal );
+	return branch;
+    },
+
+    isDevMode: function(){
+	try{
+	    return this.getPrefs().getBoolPref( "devmode" );
+	}catch(e){
+	    return false;
+	}
+    },
+
     // 通信データを ProfD/kancolletimer.dat/ に保存する.
     save: function(url, text){
-	if( !__devmode ) return;
+	if( !this.isDevMode() ){
+	    return;
+	}
 
 	url = url.match( /^http.*\/kcsapi\/(.*)/ )[1];
 	url = url.replace( '/', '__' );
@@ -1611,7 +1630,7 @@ var KanColleDatabase = {
 	    let data = JSON.parse(text);
 
 	    this.save( url, text );
-	    if( __devmode && 'function' == typeof this.__devfunc ){
+	    if( 'function' == typeof this.__devfunc && this.isDevMode() ){
 		// 外部から__devfuncに関数突っ込んでやるとそれを呼び出すような仕様
 		this.__devfunc( req, data );
 	    }
