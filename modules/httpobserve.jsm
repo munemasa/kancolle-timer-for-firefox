@@ -1183,30 +1183,23 @@ var KanColleSlotitemDB = function() {
 	},
 
 	reqKousyouRemodelSlot: function() {
-	    let data = KanColleDatabase.reqKousyouRemodelSlot.get().api_after_slot;
-	    let req = KanColleDatabase.reqKousyouDestroyShip.get_req();
+	    let data = KanColleDatabase.reqKousyouRemodelSlot.get();
 	    let t = KanColleDatabase.reqKousyouRemodelSlot.timestamp();
 	    let req_use_slot_id = [];
 
 	    if (!this._ts || !data)
 		return;
 
-	    if (req.api_use_slot_id) {
-		let ids = req.api_use_slot_id.split(/,/).map(function(v) {
-								return parseInt(v,10);
-							     });
-		if (ids.some(function(v) {
-				return isNaN(v);
-			     }))
-		    return;
+	    this._deepcopy();
 
-		req_use_slot_id = ids;
+	    if (data.api_use_slot_id) {
+		for (let i = 0; i < data.api_use_slot_id.length; i++)
+		    delete this._db.hash[data.api_use_slot_id[i]];
 	    }
 
-	    this._deepcopy();
-	    for (let i = 0; i < req_use_slot_id.length; i++)
-		delete this._db.hash[req_use_slot_id[i]];
-	    this._db.hash[data.api_id] = data;
+	    if (data.api_after_slot && data.api_after_slot.api_id)
+		this._db.hash[data.api_after_slot.api_id] = data.api_after_slot;
+
 	    this._db.list = Object.keys(this._db.hash);
 	    this._ts = t;
 	    this._update_owner();
