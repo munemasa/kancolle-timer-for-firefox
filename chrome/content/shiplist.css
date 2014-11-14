@@ -12,6 +12,18 @@
   font: 12px sans-serif;
 }
 
+listcell[sally_area="1"]:after {
+    content: "(1)";
+    color: #81bee3;
+    text-shadow: 1px 1px 0px #444444;
+}
+listcell[sally_area="2"]:after {
+    content: "(2)";
+    color: #edc96f;
+    text-shadow: 1px 1px 0px #444444;
+}
+
+
 .axis path,
 .axis line {
   fill: none;

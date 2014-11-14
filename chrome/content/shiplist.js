@@ -205,9 +205,11 @@ var ShipList = {
 	    }else{
 		elem.appendChild( CreateListCell( obj.type ) );
 	    }
-	    elem.appendChild( CreateListCell( obj.name ) );
+	    let cell = CreateListCell( obj.name );
+	    cell.setAttribute( 'sally_area', obj.shipinfo.api_sally_area );
+	    elem.appendChild( cell );
 
-	    let cell = CreateListCell( obj.lv );
+	    cell = CreateListCell( obj.lv );
 	    elem.appendChild( cell );
 	    cell = CreateListCell( obj.cond );
 	    elem.appendChild( cell );
@@ -398,7 +400,6 @@ var ShipList = {
 
 	let allships = new Array();
 
-	let list = $( 'ship-list' );
 	let no = 1;
 	for( let j = 0; j < ships.length; j++ ){
 	    let ship = ships[j];
