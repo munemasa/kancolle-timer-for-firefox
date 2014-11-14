@@ -822,7 +822,7 @@ var KanColleTimerFleetInfo = {
 	    if( nowhp <= maxhp*0.25 ){
 		row.style.backgroundColor = '#ff8080';
 	    }else{
-		if( n==1 && $('first-fleet-name').hasAttribute('checked') ){
+		if( true && $('first-fleet-name').hasAttribute('checked') ){
 		    // 第1艦隊のみ
 		    let percentage =  nowhp/maxhp*100;
 		    let image;
