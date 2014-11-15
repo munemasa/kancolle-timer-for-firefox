@@ -74,7 +74,7 @@ KanColleSimpleDB.prototype = {
 
     timestamp: function() { return this._ts.get(); },
 
-    update: function(data) {
+    update: function(data, extradata) {
 	let now = this._ts.set();
 	let g = this._cb.gen();
 	let e;
@@ -83,9 +83,9 @@ KanColleSimpleDB.prototype = {
 
 	while ((e = g.next()) != null) {
 	    if (e.opt)
-		e.func(Math.floor(now / 1000), data);
+		e.func(Math.floor(now / 1000), data, extradata);
 	    else
-		e.func();
+		e.func(extradata);
 	}
 	g.close();
     },
@@ -122,7 +122,7 @@ KanColleDB.prototype = {
 
     timestamp: function() { return this._ts.get(); },
 
-    update: function(data) {
+    update: function(data, extradata) {
 	let now = this._ts.set();
 	let g = this._cb.gen();
 	let e;
@@ -133,9 +133,9 @@ KanColleDB.prototype = {
 
 	while ((e = g.next()) != null) {
 	    if (e.opt)
-		e.func(Math.floor(now / 1000), data);
+		e.func(Math.floor(now / 1000), data, extradata);
 	    else
-		e.func();
+		e.func(extradata);
 	}
 	g.close();
     },
