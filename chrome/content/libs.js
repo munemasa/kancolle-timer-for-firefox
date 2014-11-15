@@ -1203,7 +1203,7 @@ var KanColleTimerFleetInfo = {
 	    this._nowhps2 = null;
 	},
 
-	reqCombinedBattleBattle: function() {
+	reqCombinedBattleBattle: function(extradata) {
 	    let data = KanColleDatabase.reqCombinedBattleBattle.get();
 	    let damages = [];
 	    let damages2 = [];
@@ -1255,9 +1255,20 @@ var KanColleTimerFleetInfo = {
 		    damages2.push(this._parse_raibak(data.api_kouku2.api_stage3_combined));
 	    }
 
-	    // 砲雷撃 (通常マス; 第二艦隊砲撃->第二艦隊雷撃->第一艦隊砲撃(x2)
 	    if (data.api_hourai_flag) {
+		if (extradata == 'water') {
+		    // 砲雷撃 (通常マス; 第一艦隊砲撃(x2)->第二艦隊砲撃->第二艦隊雷撃
 		if (data.api_hourai_flag[0])
+			damages.push(this._parse_hourai(data.api_hougeki1));
+		    if (data.api_hourai_flag[1])
+			damages.push(this._parse_hourai(data.api_hougeki2));
+		    if (data.api_hourai_flag[2])
+			damages2.push(this._parse_hourai(data.api_hougeki3));
+		    if (data.api_hourai_flag[3])
+			damages2.push(this._parse_raibak(data.api_raigeki));
+		} else {
+		    // 砲雷撃 (通常マス; 第二艦隊砲撃->第二艦隊雷撃->第一艦隊砲撃(x2)
+		    if (data.api_hourai_flag[0])
 		    damages2.push(this._parse_hourai(data.api_hougeki1));
 		if (data.api_hourai_flag[1])
 		    damages2.push(this._parse_raibak(data.api_raigeki));
@@ -1265,6 +1276,7 @@ var KanColleTimerFleetInfo = {
 		    damages.push(this._parse_hourai(data.api_hougeki2));
 		if (data.api_hourai_flag[3])
 		    damages.push(this._parse_hourai(data.api_hougeki3));
+	    }
 	    }
 	    this._update_battle({
 				    api_deck_id: data.api_deck_id,  // 1
