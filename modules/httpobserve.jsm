@@ -1702,6 +1702,7 @@ var KanColleDatabase = {
 		this.reqBattleMidnightBattle.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_combined_battle\/battleresult/)) {
 		//this.reqCombinedBattleBattleResult.update(data.api_data);
+		this.recordDroppedShip( data );
 	    } else if (url.match(/kcsapi\/api_req_combined_battle\/(air)?battle/)) {
 		this.reqCombinedBattleBattle.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_combined_battle\/(midnight_battle|sp_midnight)/)) {
