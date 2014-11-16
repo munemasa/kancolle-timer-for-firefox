@@ -1782,7 +1782,7 @@ function TakeKanColleScreenshot(isjpeg){
 	y += top;
     }
 
-    var canvas = document.getElementById("KanColleTimerCapture");
+    var canvas = document.createElementNS("http://www.w3.org/1999/xhtml","canvas");
     canvas.style.display = "inline";
     canvas.width = w;
     canvas.height = h;
