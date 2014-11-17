@@ -431,7 +431,7 @@ var ShipList = {
 		let item = KanColleDatabase.slotitem.get( slot_id );
 		if( item ){
 		    item._owner_ship = obj.name;
-		    obj.equips.push( item.api_name );
+		    obj.equips.push( item.api_name + (item.api_level > 0 ? "+" + item.api_level : "") );
 		}
 	    }
 	    allships.push( obj );
