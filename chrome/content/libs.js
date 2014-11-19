@@ -3584,6 +3584,12 @@ function RemoveChildren(elem){
     }
 }
 
+function ClearListBox( list ){
+    while( list.getRowCount() ){
+	list.removeItemAt( 0 );
+    }
+}
+
 function CreateMenuItem(label,value){
     let elem;
     elem = document.createElementNS(XUL_NS,'menuitem');
