@@ -348,6 +348,10 @@ ShipListTreeView.prototype = {
 		str += "small-damage ";
 	    }
 	}
+	if( column.index == 2 ){
+	    let ship = this._visibleData[idx][-1];
+	    str += "sally"+ ship.api_sally_area + " ";
+	}
 	return str;
     },
     getColumnProperties: function( column, element, prop ){

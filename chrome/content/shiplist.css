@@ -12,8 +12,16 @@ listcell[sally_area="2"]:after {
     text-shadow: 1px 1px 0px #444444;
 }
 
-treecol{
+treecol {
     margin-right: 4px;
+}
+
+treechildren::-moz-tree-cell(sally1) {
+    border-bottom: 4px solid #81bee3;
+}
+
+treechildren::-moz-tree-cell(sally2) {
+    border-bottom: 4px solid #edc96f;
 }
 
 treechildren::-moz-tree-row(dash-separator) {
