@@ -1,22 +1,11 @@
 @charset "UTF-8";
 
-.bar {
-  fill: steelblue;
-}
-
-.bar:hover {
-  fill: brown;
-}
-
-.axis {
-  font: 12px sans-serif;
-}
-
 listcell[sally_area="1"]:after {
     content: "(1)";
     color: #81bee3;
     text-shadow: 1px 1px 0px #444444;
 }
+
 listcell[sally_area="2"]:after {
     content: "(2)";
     color: #edc96f;
@@ -24,11 +13,53 @@ listcell[sally_area="2"]:after {
 }
 
 
+treechildren::-moz-tree-row(dash-separator) {
+    border-top: 1px dashed gray;
+}
+
+treechildren::-moz-tree-row(high-condition) {
+    background-color: #ffffd0;
+}
+
+treechildren::-moz-tree-row(large-damage) {
+    border-left: solid 5px red;
+}
+
+treechildren::-moz-tree-row(mid-damage) {
+    border-left: solid 5px orange;
+}
+
+treechildren::-moz-tree-row(small-damage) {
+    border-left: solid 5px yellow;
+}
+
+splitter {
+    border: 0;
+    -moz-border-end: 1px solid #A9B7C9;
+    min-width: 0;
+    width: 10px;
+    background-color: transparent;
+    -moz-margin-start: -3px;
+    position: relative;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover {
+    fill: brown;
+}
+
+.axis {
+    font: 12px sans-serif;
+}
+
 .axis path,
 .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
 
 .x.axis path {
@@ -39,6 +70,7 @@ listcell[sally_area="2"]:after {
     stroke: lightgrey;
     opacity: 0.7;
 }
+
 .grid path {
-      stroke-width: 0;
+    stroke-width: 0;
 }

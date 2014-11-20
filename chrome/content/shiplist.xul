@@ -6,12 +6,12 @@
 <!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
 
 <window id="kancolletimer_shiplist"
-	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	persist="screenX screenY width height sizemode"
-	width="640" height="480"
-	windowtype="KanColleTimerShipListWindow"
-	title="保有艦娘・装備リスト">
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        persist="screenX screenY width height sizemode"
+        width="640" height="480"
+        windowtype="KanColleTimerShipListWindow"
+        title="保有艦娘・装備リスト">
 
   <keyset>
     <!-- CTRL+W: Close this window -->
@@ -19,22 +19,24 @@
     <key id="reload" key="r" modifiers="accel" oncommand="OpenShipList();"/>
   </keyset>
 
-  <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8" />
+  <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8"/>
   <script type="application/javascript;version=1.7"
-	  src="chrome://kancolletimer/content/libs.js" />
+          src="chrome://kancolletimer/content/libs.js"/>
   <script type="application/javascript;version=1.7"
-	  src="chrome://kancolletimer/content/data.js" />
+          src="chrome://kancolletimer/content/data.js"/>
   <script type="application/javascript;version=1.7"
-	  src="chrome://kancolletimer/content/shiplist.js" />
+          src="chrome://kancolletimer/content/shiplist.js"/>
+  <script type="application/javascript;version=1.7"
+          src="chrome://kancolletimer/content/newshiplist.js"/>
 
   <toolbox>
     <menubar>
       <menu label="ツール">
-	<menupopup>
-	  <menuitem label="艦娘リストをCSVに保存..." oncommand="ShipList.saveCvs();"/>
-	  <menuseparator/>
-	  <menuitem label="閉じる" oncommand="window.close();"/>
-	</menupopup>
+        <menupopup>
+          <menuitem label="艦娘リストをCSVに保存..." oncommand="ShipList.saveCvs();"/>
+          <menuseparator/>
+          <menuitem label="閉じる" oncommand="window.close();"/>
+        </menupopup>
       </menu>
       <menuitem label="!リロード" oncommand="OpenShipList();"/>
     </menubar>
@@ -43,134 +45,230 @@
   <vbox flex="1">
     <tabbox id="tab" flex="1" persist="selectedIndex">
       <tabs>
-	<tab id="tab-ships" label="全艦艇リスト"/>
-	<tab id="tab-histogram" label="レベル分布"/>
-	<tab id="tab-equipment" label="装備アイテム"/>
-	<tab label="艦隊編成"/>
+        <tab id="tab-newshiplist" label="艦娘一覧"/>
+        <tab id="tab-ships" label="全艦艇リスト"/>
+        <tab id="tab-histogram" label="レベル分布"/>
+        <tab id="tab-equipment" label="装備アイテム"/>
+        <tab label="艦隊編成"/>
       </tabs>
       <tabpanels flex="1">
-	<vbox><!-- tab 1 -->
-	  <hbox align="center">
-	    <label value="フィルタリング"/>
-	    <menulist oncommand="ShipList.filterByType(this.value);">
-	      <menupopup id="menu-shiptype">
-		<menuitem label="なし"/>
-	      </menupopup>
-	    </menulist>
-	    <menulist oncommand="ShipList.filterByEquipment(this.value);">
-	      <menupopup id="menu-equipment">
-		<menuitem label="なし"/>
-	      </menupopup>
-	    </menulist>
-	  </hbox>
-	  <listbox id="ship-list" flex="1" context="popup-save-csv">
-	    <listcols>
-	      <listcol/><listcol/><listcol/><listcol/><listcol/><listcol/>
-	      <listcol/><listcol/><listcol/>
-	      <listcol flex="1"/><listcol flex="1"/><listcol flex="1"/><listcol flex="1"/>
-	    </listcols>
-	    <listhead>
-	      <listheader label="#"/><listheader label="艦種" onclick="ShipList.sort(0);"/><listheader label="艦名"/><listheader label="レベル" onclick="ShipList.sort(1);"/><listheader label="状態" onclick="ShipList.sort(2);"/>
-	      <listheader label="入渠時間" onclick="ShipList.sort(3);"/>
-	      <listheader label="索敵"/><listheader label="EXP"/><listheader label="搭載"/>
-	      <listheader label="装備1"/><listheader label="装備2"/><listheader label="装備3"/><listheader label="装備4"/>
-	    </listhead>
-	  </listbox>
-	</vbox><!-- tab 1 -->
+        <vbox>
+          <hbox flex="1">
+            <tree id="ship-category-tree" seltype="single" editable="true"
+                  hidecolumnpicker="true"
+                  onselect="NewShipList.onselect(this.currentIndex);"
+                  ondragstart="NewShipList.handleDragStart(event);"
+                  style="min-width: 125px;" class="plain">
+              <treecols>
+                <treecol flex="1" primary="true" hideheader="true"/>
+              </treecols>
+              <treechildren/>
+            </tree>
+            <splitter/>
+            <vbox flex="1">
+              <tree id="newshiplist-tree" flex="1" editable="false">
+                <treecols>
+                  <treecol id="id-number" flex="1" label="#" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-shiptype" flex="1" label="艦種" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-shipname" flex="1" label="艦名" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-level" flex="1" label="Lv" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-condition" flex="1" label="状態" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-repairtime" flex="1" label="入渠時間" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-search" flex="1" label="索敵" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-exp" flex="1" label="EXP" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-onslot" flex="1" label="搭載" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-equip1" flex="1" label="装備1" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-equip2" flex="1" label="装備2" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-equip3" flex="1" label="装備3" persist="width hidden ordinal"/>
+                  <splitter class="tree-splitter"/>
+                  <treecol id="id-equip4" flex="1" label="装備4" persist="width hidden ordinal"/>
+                </treecols>
+                <treechildren/>
+              </tree>
+            </vbox>
+          </hbox>
+        </vbox>
+        <vbox><!-- tab 2 -->
+          <hbox align="center">
+            <label value="フィルタリング"/>
+            <menulist oncommand="ShipList.filterByType(this.value);">
+              <menupopup id="menu-shiptype">
+                <menuitem label="なし"/>
+              </menupopup>
+            </menulist>
+            <menulist oncommand="ShipList.filterByEquipment(this.value);">
+              <menupopup id="menu-equipment">
+                <menuitem label="なし"/>
+              </menupopup>
+            </menulist>
+          </hbox>
+          <listbox id="ship-list" flex="1" context="popup-save-csv">
+            <listcols>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol flex="1"/>
+              <listcol flex="1"/>
+              <listcol flex="1"/>
+              <listcol flex="1"/>
+            </listcols>
+            <listhead>
+              <listheader label="#"/>
+              <listheader label="艦種" onclick="ShipList.sort(0);"/>
+              <listheader label="艦名"/>
+              <listheader label="レベル" onclick="ShipList.sort(1);"/>
+              <listheader label="状態" onclick="ShipList.sort(2);"/>
+              <listheader label="入渠時間" onclick="ShipList.sort(3);"/>
+              <listheader label="索敵"/>
+              <listheader label="EXP"/>
+              <listheader label="搭載"/>
+              <listheader label="装備1"/>
+              <listheader label="装備2"/>
+              <listheader label="装備3"/>
+              <listheader label="装備4"/>
+            </listhead>
+          </listbox>
+        </vbox>
+        <!-- tab 2 -->
 
-	<vbox style="overflow:auto;" id="histogram"><!-- tab 2 -->
-	</vbox>
+        <vbox style="overflow:auto;" id="histogram"><!-- tab 3 -->
+        </vbox>
 
-	<vbox style="overflow:auto;"><!-- tab 3 -->
-	  <grid>
-	    <columns>
-	      <column/><column/>
-	    </columns>
-	    <rows id="equipment-list">
-	    </rows>
-	  </grid>
-	</vbox>
+        <vbox style="overflow:auto;"><!-- tab 4 -->
+          <grid>
+            <columns>
+              <column/>
+              <column/>
+            </columns>
+            <rows id="equipment-list">
+            </rows>
+          </grid>
+        </vbox>
 
-	<vbox style="overflow:auto;"><!-- tab 4 -->
-	  <hbox class="fleet-list">
-	    <groupbox>
-	      <caption>第1艦隊</caption>
-	      <grid>
-		<columns>
-		  <column/><column/><column/>
-		</columns>
-		<rows id="fleet-1" class="fleet-organization">
-		</rows>
-	      </grid>
-	    </groupbox>
-	    <groupbox>
-	      <caption>第2艦隊</caption>
-	      <grid>
-		<columns>
-		  <column/><column/><column/>
-		</columns>
-		<rows id="fleet-2" class="fleet-organization">
-		</rows>
-	      </grid>
-	    </groupbox>
-	    <groupbox>
-	      <caption>第3艦隊</caption>
-	      <grid>
-		<columns>
-		  <column/><column/><column/>
-		</columns>
-		<rows id="fleet-3" class="fleet-organization">
-		</rows>
-	      </grid>
-	    </groupbox>
-	    <groupbox>
-	      <caption>第4艦隊</caption>
-	      <grid>
-		<columns>
-		  <column/><column/><column/><column/>
-		</columns>
-		<rows id="fleet-4" class="fleet-organization">
-		</rows>
-	      </grid>
-	    </groupbox>
-	  </hbox>
+        <vbox style="overflow:auto;"><!-- tab 5 -->
+          <hbox class="fleet-list">
+            <groupbox>
+              <caption>第1艦隊</caption>
+              <grid>
+                <columns>
+                  <column/>
+                  <column/>
+                  <column/>
+                </columns>
+                <rows id="fleet-1" class="fleet-organization">
+                </rows>
+              </grid>
+            </groupbox>
+            <groupbox>
+              <caption>第2艦隊</caption>
+              <grid>
+                <columns>
+                  <column/>
+                  <column/>
+                  <column/>
+                </columns>
+                <rows id="fleet-2" class="fleet-organization">
+                </rows>
+              </grid>
+            </groupbox>
+            <groupbox>
+              <caption>第3艦隊</caption>
+              <grid>
+                <columns>
+                  <column/>
+                  <column/>
+                  <column/>
+                </columns>
+                <rows id="fleet-3" class="fleet-organization">
+                </rows>
+              </grid>
+            </groupbox>
+            <groupbox>
+              <caption>第4艦隊</caption>
+              <grid>
+                <columns>
+                  <column/>
+                  <column/>
+                  <column/>
+                  <column/>
+                </columns>
+                <rows id="fleet-4" class="fleet-organization">
+                </rows>
+              </grid>
+            </groupbox>
+          </hbox>
 
-	  <radiogroup oncommand="ShipList.setFleetOrganization(this.value);">
-	    <hbox>
-	      <radio label="第1艦隊" value="1" selected="true"/>
-	      <radio label="第2艦隊" value="2"/>
-	      <radio label="第3艦隊" value="3"/>
-	      <radio label="第4艦隊" value="4"/>
-	    </hbox>
-	  </radiogroup>
-	  <listbox id="fleet-organization" rows="6">
-	    <listcols>
-	      <listcol/><listcol/><listcol/><listcol/><listcol/>
-	      <listcol/><listcol/><listcol/>
-	      <listcol flex="1"/><listcol flex="1"/><listcol flex="1"/><listcol flex="1"/>
-	    </listcols>
-	    <listhead>
-	      <listheader label="艦種"/><listheader label="艦名"/><listheader label="レベル"/><listheader label="状態"/>
-	      <listheader label="入渠時間"/>
-	      <listheader label="索敵"/><listheader label="EXP"/><listheader label="搭載"/>
-	      <listheader label="装備1"/><listheader label="装備2"/><listheader label="装備3"/><listheader label="装備4"/>
-	    </listhead>
-	  </listbox>
+          <radiogroup oncommand="ShipList.setFleetOrganization(this.value);">
+            <hbox>
+              <radio label="第1艦隊" value="1" selected="true"/>
+              <radio label="第2艦隊" value="2"/>
+              <radio label="第3艦隊" value="3"/>
+              <radio label="第4艦隊" value="4"/>
+            </hbox>
+          </radiogroup>
+          <listbox id="fleet-organization" rows="6">
+            <listcols>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol/>
+              <listcol flex="1"/>
+              <listcol flex="1"/>
+              <listcol flex="1"/>
+              <listcol flex="1"/>
+            </listcols>
+            <listhead>
+              <listheader label="艦種"/>
+              <listheader label="艦名"/>
+              <listheader label="レベル"/>
+              <listheader label="状態"/>
+              <listheader label="入渠時間"/>
+              <listheader label="索敵"/>
+              <listheader label="EXP"/>
+              <listheader label="搭載"/>
+              <listheader label="装備1"/>
+              <listheader label="装備2"/>
+              <listheader label="装備3"/>
+              <listheader label="装備4"/>
+            </listhead>
+          </listbox>
 
-	</vbox><!-- tab 4 -->
+        </vbox>
+        <!-- tab 4 -->
       </tabpanels>
     </tabbox>
   </vbox>
-  
+
   <popupset>
     <menupopup id="popup-save-csv">
       <menuitem label="艦娘リストをCSVに保存..." oncommand="ShipList.saveCvs();"/>
       <menuseparator/>
       <menuitem id="window-stay-on-top" persist="checked"
-		label="常に最前面に表示"
-		type="checkbox" autocheck="true"
-		tooltiptext="Windows/Firefox 17以降でのみ有効"
-		oncommand="WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );"/>
+                label="常に最前面に表示"
+                type="checkbox" autocheck="true"
+                tooltiptext="Windows/Firefox 17以降でのみ有効"
+                oncommand="WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );"/>
     </menupopup>
   </popupset>
 

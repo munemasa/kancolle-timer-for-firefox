@@ -260,9 +260,9 @@ var ShipList = {
 	    }
 	    cell = CreateListCell( n );
 	    let tmp = obj.shipinfo.api_onslot.filter( function( d ){
-		return d!=0;
+		return d != 0;
 	    } );
-	    elem.setAttribute("tooltiptext", tmp);
+	    elem.setAttribute( "tooltiptext", tmp );
 	    elem.appendChild( cell );
 
 	    for( let i in obj.equips ){
@@ -526,7 +526,7 @@ var ShipList = {
 	return color;
     },
 
-    init: function(){
+    initEquipmentList: function(){
 	// 装備アイテムリスト
 	this.allequipments = KanColleDatabase.slotitem.list().map( function( k ){
 	    let item = KanColleDatabase.slotitem.get( k );
@@ -543,7 +543,10 @@ var ShipList = {
 		return a.api_type[i] - b.api_type[i];
 	    } );
 	}
+    },
 
+    init: function(){
+	this.initEquipmentList();
 	this.createHistogram();
 
 	// 艦艇リスト
