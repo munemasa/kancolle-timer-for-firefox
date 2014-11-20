@@ -12,25 +12,37 @@ listcell[sally_area="2"]:after {
     text-shadow: 1px 1px 0px #444444;
 }
 
-
 treechildren::-moz-tree-row(dash-separator) {
     border-top: 1px dashed gray;
 }
 
 treechildren::-moz-tree-row(high-condition) {
-    background-color: #ffffd0;
+    background-color: #ffffd8;
 }
 
 treechildren::-moz-tree-row(large-damage) {
-    border-left: solid 5px red;
+    border-left: solid 10px red;
+}
+
+treechildren::-moz-tree-cell-text(large-damage) {
+    color: red;
+    font-weight: bold;
 }
 
 treechildren::-moz-tree-row(mid-damage) {
-    border-left: solid 5px orange;
+    border-left: solid 10px orange;
+}
+
+treechildren::-moz-tree-cell-text(mid-damage) {
+    color: orange;
+    font-weight: bold;
 }
 
 treechildren::-moz-tree-row(small-damage) {
-    border-left: solid 5px yellow;
+    border-left: solid 10px yellow;
+}
+
+treechildren::-moz-tree-cell-text(small-damage) {
 }
 
 splitter {

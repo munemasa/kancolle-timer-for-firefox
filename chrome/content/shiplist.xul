@@ -78,7 +78,7 @@
                   <splitter class="tree-splitter"/>
                   <treecol id="id-condition" flex="1" label="状態" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-repairtime" flex="1" label="入渠時間" persist="width hidden ordinal"/>
+                  <treecol id="id-repairtime" style="text-align: center;" flex="1" label="入渠時間" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
                   <treecol id="id-search" flex="1" label="索敵" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
