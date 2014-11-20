@@ -13,7 +13,7 @@ listcell[sally_area="2"]:after {
 }
 
 treecol {
-    margin-right: 4px;
+    margin-left: 4px;
 }
 
 treechildren::-moz-tree-cell(sally1) {
