@@ -226,6 +226,9 @@ function ShipListTreeView( data ){
 ShipListTreeView.prototype = {
     _visibleData: [],
 
+    /**
+     * @param type フィルタリングしたい艦種名。無指定(false)の場合は全て。
+     */
     filterByType: function( type ){
 	let ships = type ? this._data.filter( function( d ){
 	    return KanColleData.type_name[d._spec.api_stype] == type;

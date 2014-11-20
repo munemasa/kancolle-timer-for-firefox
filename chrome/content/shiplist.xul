@@ -74,17 +74,19 @@
                   <splitter class="tree-splitter"/>
                   <treecol id="id-shipname" flex="1" label="艦名" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-level" flex="1" label="Lv" persist="width hidden ordinal"/>
+                  <treecol id="id-level" flex="1" style="text-align: right;" label="Lv" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-condition" flex="1" label="状態" persist="width hidden ordinal"/>
+                  <treecol id="id-condition" flex="1" style="text-align: right;" label="状態" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-repairtime" style="text-align: center;" flex="1" label="入渠時間" persist="width hidden ordinal"/>
+                  <treecol id="id-repairtime" style="text-align: center;" flex="1" label="入渠時間"
+                           persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-search" flex="1" label="索敵" persist="width hidden ordinal"/>
+                  <treecol id="id-search" flex="1" style="text-align: right;" label="索敵"
+                           persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-exp" flex="1" label="EXP" persist="width hidden ordinal"/>
+                  <treecol id="id-exp" flex="1" style="text-align: right;" label="EXP" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-onslot" flex="1" label="搭載" persist="width hidden ordinal"/>
+                  <treecol id="id-onslot" flex="1" style="text-align: right;" label="搭載" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
                   <treecol id="id-equip1" flex="1" label="装備1" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
