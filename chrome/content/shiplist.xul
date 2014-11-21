@@ -54,7 +54,8 @@
       <tabpanels flex="1">
         <vbox>
           <hbox flex="1">
-            <tree id="ship-category-tree" seltype="single" editable="true"
+            <tree id="ship-category-tree" seltype="single"
+                  editable="true"
                   hidecolumnpicker="true"
                   onselect="NewShipList.onselect(this.currentIndex);"
                   ondragstart="NewShipList.handleDragStart(event);"
@@ -66,9 +67,9 @@
             </tree>
             <splitter/>
             <vbox flex="1">
-              <tree id="newshiplist-tree" flex="1" editable="false">
+              <tree id="newshiplist-tree" flex="1" editable="false" enableColumnDrag="true">
                 <treecols>
-                  <treecol id="id-number" flex="1" label="#" persist="width hidden ordinal"/>
+                  <treecol id="id-number" style="text-align: right;" flex="1" label="#" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
                   <treecol id="id-shiptype" flex="1" label="艦種" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
@@ -78,7 +79,7 @@
                   <splitter class="tree-splitter"/>
                   <treecol id="id-condition" flex="1" style="text-align: right;" label="状態" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-repairtime" style="text-align: center;" flex="1" label="入渠時間"
+                  <treecol id="id-repairtime" style="text-align: center;" flex="1" label="入渠"
                            persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
                   <treecol id="id-search" flex="1" style="text-align: right;" label="索敵"

@@ -239,6 +239,54 @@ ShipListTreeView.prototype = {
 	this.treebox.invalidate();
     },
 
+    sort: function( type ){
+	this._visibleData.sort( function( a, b ){
+	    var tmpa = 0;
+	    var tmpb = 0;
+	    var order = -1; // descending order
+	    a = a[-1];
+	    b = b[-1];
+	    switch( type ){
+	    case 0: // 艦種
+		tmpa = a._spec.api_stype;
+		tmpb = b._spec.api_stype;
+		if( tmpa == tmpb ){
+		    tmpa = b._spec.api_sortno;
+		    tmpb = a._spec.api_sortno;
+		}
+		break;
+	    case 1: // レベル
+		tmpa = a.api_lv;
+		tmpb = b.api_lv;
+		if( tmpa == tmpb ){
+		    tmpa = b._spec.api_sortno;
+		    tmpb = a._spec.api_sortno;
+		}
+		break;
+	    case 2: // 状態
+		tmpa = a.api_cond;
+		tmpb = b.api_cond;
+		break;
+	    case 3: // 入渠時間
+		tmpa = a.api_ndock_time;
+		tmpb = b.api_ndock_time;
+		break;
+	    }
+	    return (tmpa - tmpb) * order;
+	} );
+	let n = 1;
+	for( let o of this._visibleData ){
+	    o[0] = n++;
+	}
+	this.treebox.invalidate();
+    },
+
+    _resetSortDirection: function(){
+	for( let e of $( 'newshiplist-tree' ).getElementsByTagName( 'treecol' ) ){
+	    e.setAttribute( 'sortDirection', 'natural' );
+	}
+
+    },
     setShipList: function( data ){
 	let n = this.rowCount;
 	this._buildVisibleData( data );
@@ -350,7 +398,7 @@ ShipListTreeView.prototype = {
 	}
 	if( column.index == 2 ){
 	    let ship = this._visibleData[idx][-1];
-	    str += "sally"+ ship.api_sally_area + " ";
+	    str += "sally" + ship.api_sally_area + " ";
 	}
 	return str;
     },
@@ -376,6 +424,44 @@ ShipListTreeView.prototype = {
     getCellValue: function( idx, column ){
     },
     cycleHeader: function( col, elem ){
+	var sortDir = col.element.getAttribute( "sortDirection" );
+	switch( sortDir ){
+	case "ascending":
+	    sortDir = "descending";
+	    break;
+	case "descending":
+	    sortDir = "natural";
+	    break;
+	default:
+	    sortDir = "descending";
+	    break;
+	}
+
+	let flag = [0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0];
+	if( !flag[col.index] ) return;
+
+	if( sortDir != "natural" ){
+	    switch( col.index ){
+	    case 1: // 艦種
+		this.sort( 0 );
+		break;
+	    case 3: // Level
+		this.sort( 1 );
+		break;
+	    case 4: // condition
+		this.sort( 2 );
+		break;
+	    case 5: // repair time
+		this.sort( 3 );
+		break;
+	    }
+	    this._resetSortDirection();
+	    col.element.setAttribute( "sortDirection", sortDir );
+	}else{
+	    this.sort( 0 );
+	    col.element.setAttribute( "sortDirection", 'natural' );
+	}
+
     },
     selectionChanged: function(){
     },
@@ -419,10 +505,12 @@ var NewShipList = {
 	    data.id.match( /fleet-(\d)/ );
 	    let n = parseInt( RegExp.$1 );
 	    this.showFleetOrganization( n );
+	    this.shipListTreeView._resetSortDirection();
 	    break;
 
 	case "kind-all":
 	    this.shipListTreeView.filterByType();
+	    this.shipListTreeView._resetSortDirection();
 	    break;
 
 	default:
@@ -431,6 +519,7 @@ var NewShipList = {
 		let n = parseInt( RegExp.$1 );
 		let target_type = KanColleData.type_name[n];
 		this.shipListTreeView.filterByType( target_type );
+		this.shipListTreeView._resetSortDirection();
 	    }
 	    break;
 	}
