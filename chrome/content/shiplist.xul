@@ -67,7 +67,8 @@
             </tree>
             <splitter/>
             <vbox flex="1">
-              <tree id="newshiplist-tree" flex="1" editable="false" enableColumnDrag="true">
+              <tree id="newshiplist-tree" flex="2" editable="false" enableColumnDrag="true"
+                    onselect="NewShipList.onShipListSelected(this.currentIndex);">
                 <treecols>
                   <treecol id="id-number" style="text-align: right;" flex="1" label="#" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
@@ -77,7 +78,8 @@
                   <splitter class="tree-splitter"/>
                   <treecol id="id-level" flex="1" style="text-align: right;" label="Lv" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-condition" flex="1" style="text-align: right;" label="状態" persist="width hidden ordinal"/>
+                  <treecol id="id-condition" flex="1" style="text-align: right;" label="状態"
+                           persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
                   <treecol id="id-repairtime" style="text-align: center;" flex="1" label="入渠"
                            persist="width hidden ordinal"/>
@@ -87,7 +89,8 @@
                   <splitter class="tree-splitter"/>
                   <treecol id="id-exp" flex="1" style="text-align: right;" label="EXP" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
-                  <treecol id="id-onslot" flex="1" style="text-align: right;" label="搭載" persist="width hidden ordinal"/>
+                  <treecol id="id-onslot" flex="1" style="text-align: right;" label="搭載"
+                           persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
                   <treecol id="id-equip1" flex="1" label="装備1" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
@@ -99,6 +102,66 @@
                 </treecols>
                 <treechildren/>
               </tree>
+              <splitter/>
+              <vbox style="overflow: auto;">
+                <groupbox id="ship-spec-group" flex="1">
+                  <caption>性能諸元</caption>
+                  <hbox>
+                    <label id="api_stype" value=""/>
+                    <label id="api_name" value=""/>
+                  </hbox>
+                  <grid>
+                    <columns>
+                      <column style="border-left: 1px solid gray;"/>
+                      <column style="border-right: 1px solid gray;"/>
+                      <column/>
+                      <column style="border-right: 1px solid gray;"/>
+                      <column/>
+                      <column style="border-right: 1px solid gray;"/>
+                      <column/>
+                      <column style="border-right: 1px solid gray;"/>
+                      <column/>
+                      <column style="border-right: 1px solid gray;"/>
+                      <column/>
+                      <column style="border-right: 1px solid gray;"/>
+                    </columns>
+                    <rows>
+                      <row>
+                        <label value="耐久"/>
+                        <label id="api_maxhp" value="---"/>
+                        <label value="装甲"/>
+                        <label id="api_soukou" value="---"/>
+                        <label value="回避"/>
+                        <label id="api_kaihi" value="---"/>
+                        <label value="搭載"/>
+                        <label id="api_onslot" value="---"/>
+                        <label value="速力"/>
+                        <label id="api_soku" value="---"/>
+                        <label value="射程"/>
+                        <label id="api_leng" value="---"/>
+                      </row>
+                      <row>
+                        <label value="火力"/>
+                        <label id="api_karyoku" value="---"/>
+                        <label value="雷装"/>
+                        <label id="api_raisou" value="---"/>
+                        <label value="対空"/>
+                        <label id="api_taiku" value="---"/>
+                        <label value="対潜"/>
+                        <label id="api_taisen" value="---"/>
+                        <label value="索敵"/>
+                        <label id="api_sakuteki" value="---"/>
+                        <label value="運"/>
+                        <label id="api_lucky" value="---"/>
+                      </row>
+                    </rows>
+                  </grid>
+                  <label id="api_slot0" value=""/>
+                  <label id="api_slot1" value=""/>
+                  <label id="api_slot2" value=""/>
+                  <label id="api_slot3" value=""/>
+                </groupbox>
+              </vbox>
             </vbox>
           </hbox>
         </vbox>

@@ -418,7 +418,7 @@ ShipListTreeView.prototype = {
     },
 
     getImageSrc: function( idx, column ){
-	if( column.index!=2 ) return;
+	if( column.index != 2 ) return;
 	let ship = this._visibleData[idx][-1];
 	return ShipList.isRepairing( ship.api_id ) ? "chrome://kancolletimer/content/data/cross.png" : "";
     },
@@ -528,6 +528,44 @@ var NewShipList = {
 	}
     },
 
+    // 艦娘リストを選択したとき
+    onShipListSelected: function( n ){
+	let ship = this.shipListTreeView._visibleData[n][-1];
+
+	$( 'api_stype' ).value = KanColleData.type_name[ ship._spec.api_stype ];
+	$( 'api_name' ).value = ship._spec.api_name;
+	$( 'api_maxhp' ).value = ship.api_maxhp;
+	$( 'api_soukou' ).value = ship.api_soukou[0];
+	$( 'api_kaihi' ).value = ship.api_kaihi[0];
+	$( 'api_onslot' ).value = d3.sum( ship.api_onslot );
+	$( 'api_soku' ).value = ship._spec.api_soku < 10 ? "低速" : "高速";
+	$( 'api_leng' ).value = ["", "短", "中", "長", "超長"][ship.api_leng];
+	$( 'api_karyoku' ).value = ship.api_karyoku[0];
+	$( 'api_raisou' ).value = ship.api_raisou[0];
+	$( 'api_taiku' ).value = ship.api_taiku[0];
+	$( 'api_taisen' ).value = ship.api_taisen[0];
+	$( 'api_sakuteki' ).value = ship.api_sakuteki[0];
+	$( 'api_lucky' ).value = ship.api_lucky[0];
+
+	for( let i = 0; i < 4; i++ ){
+	    let slot_id = ship.api_slot[i];
+	    if( slot_id == -1 ){
+		$( 'api_slot' + i ).value = "";
+		$( 'api_slot' + i ).removeAttribute( 'style' );
+		continue;
+	    }
+	    let item = KanColleDatabase.slotitem.get( slot_id );
+	    if( item ){
+		let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+		$( 'api_slot' + i ).value = masterdata.api_name
+		    + (item.api_level > 0 ? "+" + item.api_level : "");
+
+		let color = ShipList.getEquipmentColor( masterdata );
+		let str = "border-left:" + color + " 8px solid; padding-left: 4px;";
+		$( 'api_slot' + i ).setAttribute( 'style', str );
+	    }
+	}
+    },
     /**
      * 艦隊編成のリストを作成する
      */
