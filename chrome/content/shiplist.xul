@@ -105,63 +105,76 @@
               </tree>
               <splitter/>
               <vbox id="ship-spec-group" persist="height" style="overflow: auto;">
-                <groupbox flex="1">
-                  <caption>性能諸元</caption>
-                  <hbox>
-                    <label id="api_stype" value="艦種"/>
-                    <label id="api_name" value="艦名"/>
-                  </hbox>
-                  <grid>
-                    <columns>
-                      <column style="border-left: 1px solid gray;"/>
-                      <column style="border-right: 1px solid gray;"/>
-                      <column/>
-                      <column style="border-right: 1px solid gray;"/>
-                      <column/>
-                      <column style="border-right: 1px solid gray;"/>
-                      <column/>
-                      <column style="border-right: 1px solid gray;"/>
-                      <column/>
-                      <column style="border-right: 1px solid gray;"/>
-                      <column/>
-                      <column style="border-right: 1px solid gray;"/>
-                    </columns>
-                    <rows>
-                      <row>
-                        <label value="耐久"/>
-                        <label id="api_maxhp" value="---"/>
-                        <label value="装甲"/>
-                        <label id="api_soukou" value="---"/>
-                        <label value="回避"/>
-                        <label id="api_kaihi" value="---"/>
-                        <label value="搭載"/>
-                        <label id="api_onslot" value="---"/>
-                        <label value="速力"/>
-                        <label id="api_soku" value="---"/>
-                        <label value="射程"/>
-                        <label id="api_leng" value="---"/>
-                      </row>
-                      <row>
-                        <label value="火力"/>
-                        <label id="api_karyoku" value="---"/>
-                        <label value="雷装"/>
-                        <label id="api_raisou" value="---"/>
-                        <label value="対空"/>
-                        <label id="api_taiku" value="---"/>
-                        <label value="対潜"/>
-                        <label id="api_taisen" value="---"/>
-                        <label value="索敵"/>
-                        <label id="api_sakuteki" value="---"/>
-                        <label value="運"/>
-                        <label id="api_lucky" value="---"/>
-                      </row>
-                    </rows>
-                  </grid>
-                  <label id="api_slot0" value=""/>
-                  <label id="api_slot1" value=""/>
-                  <label id="api_slot2" value=""/>
-                  <label id="api_slot3" value=""/>
-                </groupbox>
+                <stack>
+                  <groupbox flex="1">
+                    <caption>性能諸元</caption>
+                    <hbox>
+                      <label id="api_stype" value="艦種"/>
+                      <label id="api_name" value="艦名"/>
+                    </hbox>
+                    <grid>
+                      <columns>
+                        <column style="border-left: 1px solid gray;"/>
+                        <column style="border-right: 1px solid gray;"/>
+                        <column/>
+                        <column style="border-right: 1px solid gray;"/>
+                        <column/>
+                        <column style="border-right: 1px solid gray;"/>
+                        <column/>
+                        <column style="border-right: 1px solid gray;"/>
+                        <column/>
+                        <column style="border-right: 1px solid gray;"/>
+                        <column/>
+                        <column style="border-right: 1px solid gray;"/>
+                      </columns>
+                      <rows>
+                        <row>
+                          <label value="耐久"/>
+                          <label id="api_maxhp" value="---"/>
+                          <label value="装甲"/>
+                          <label id="api_soukou" value="---"/>
+                          <label value="回避"/>
+                          <label id="api_kaihi" value="---"/>
+                          <label value="搭載"/>
+                          <label id="api_onslot" value="---"/>
+                          <label value="速力"/>
+                          <label id="api_soku" value="---"/>
+                          <label value="射程"/>
+                          <label id="api_leng" value="---"/>
+                        </row>
+                        <row>
+                          <label value="火力"/>
+                          <label id="api_karyoku" value="---"/>
+                          <label value="雷装"/>
+                          <label id="api_raisou" value="---"/>
+                          <label value="対空"/>
+                          <label id="api_taiku" value="---"/>
+                          <label value="対潜"/>
+                          <label id="api_taisen" value="---"/>
+                          <label value="索敵"/>
+                          <label id="api_sakuteki" value="---"/>
+                          <label value="運"/>
+                          <label id="api_lucky" value="---"/>
+                        </row>
+                      </rows>
+                    </grid>
+                    <label id="api_slot0" value=""/>
+                    <label id="api_slot1" value=""/>
+                    <label id="api_slot2" value=""/>
+                    <label id="api_slot3" value=""/>
+                  </groupbox>
+                  <vbox>
+                    <hbox>
+                      <spacer flex="1"/>
+                      <menulist id="newshiplist-equipment-filter"
+                                oncommand="NewShipList.filterByEquipment(this.value);">
+                        <menupopup id="newshiplist-menu-equipment">
+                          <menuitem label="装備フィルタ：なし"/>
+                        </menupopup>
+                      </menulist>
+                    </hbox>
+                  </vbox>
+                </stack>
               </vbox>
             </vbox>
           </hbox>

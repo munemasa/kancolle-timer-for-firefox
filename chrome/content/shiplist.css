@@ -1,5 +1,11 @@
 @charset "UTF-8";
 
+#newshiplist-equipment-filter {
+}
+
+#newshiplist-equipment-filter:hover {
+}
+
 listcell[sally_area="1"]:after {
     content: "(1)";
     color: #81bee3;

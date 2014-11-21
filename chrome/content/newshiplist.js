@@ -225,11 +225,19 @@ function ShipListTreeView( data ){
 
 ShipListTreeView.prototype = {
     _visibleData: [],
+    _currentData: [],
+    _filterType: "",
+    _filterEquip: "",
 
     /**
      * @param type フィルタリングしたい艦種名。無指定(false)の場合は全て。
      */
     filterByType: function( type ){
+	this._filterType = type;
+	if( this._filterEquip ){
+	    this.filterByEquipment( this._filterEquip );
+	    return;
+	}
 	let ships = type ? this._data.filter( function( d ){
 	    return KanColleData.type_name[d._spec.api_stype] == type;
 	} ) : this._data;
@@ -237,8 +245,43 @@ ShipListTreeView.prototype = {
 	this._buildVisibleData( ships );
 	this.treebox.rowCountChanged( this.rowCount, this.rowCount - n );
 	this.treebox.invalidate();
+	this.selection.clearSelection();
     },
 
+    /**
+     * 装備アイテムでフィルタリング。
+     * @param equip
+     */
+    filterByEquipment: function( equip ){
+	this._filterEquip = equip;
+	if( this._filterType == "/fleet" ) return;
+
+	let typename = this._filterType;
+	let ships = this._filterType ? this._data.filter( function( d ){
+	    return KanColleData.type_name[d._spec.api_stype] == typename;
+	} ) : this._data;
+
+	let n = this.rowCount;
+
+	this._buildVisibleData( ships );
+	this._visibleData = this._visibleData.filter( function( d ){
+	    for( let tmp of d ){
+		if( "string" == typeof tmp ){
+		    if( tmp.indexOf( equip ) == 0 ) return true;
+		}
+	    }
+	    return false;
+	} );
+
+	this.treebox.rowCountChanged( this.rowCount, this.rowCount - n );
+	this.treebox.invalidate();
+	this.selection.clearSelection();
+    },
+
+    /**
+     * 表示物の並べ替え
+     * @param type
+     */
     sort: function( type ){
 	this._visibleData.sort( function( a, b ){
 	    var tmpa = 0;
@@ -279,6 +322,7 @@ ShipListTreeView.prototype = {
 	    o[0] = n++;
 	}
 	this.treebox.invalidate();
+	this.selection.clearSelection();
     },
 
     _resetSortDirection: function(){
@@ -287,11 +331,16 @@ ShipListTreeView.prototype = {
 	}
 
     },
+
     setShipList: function( data ){
+	// 艦隊の艦娘リストの場合に装備アイテムフィルタリングしないようにするためのキーワード
+	this._filterType = "/fleet";
+
 	let n = this.rowCount;
 	this._buildVisibleData( data );
 	this.treebox.rowCountChanged( this.rowCount, this.rowCount - n );
 	this.treebox.invalidate();
+	this.selection.clearSelection();
     },
 
     _buildVisibleData: function( data ){
@@ -530,6 +579,7 @@ var NewShipList = {
 
     // 艦娘リストを選択したとき
     onShipListSelected: function( n ){
+	if( this.shipListTreeView.selection.count == 0 ) return;
 	let ship = this.shipListTreeView._visibleData[n][-1];
 
 	$( 'api_stype' ).value = KanColleData.type_name[ ship._spec.api_stype ];
@@ -586,6 +636,10 @@ var NewShipList = {
 	    ships.push( data );
 	}
 	this.shipListTreeView.setShipList( ships );
+    },
+
+    filterByEquipment: function( equip ){
+	this.shipListTreeView.filterByEquipment( equip );
     },
 
     /**
@@ -685,6 +739,20 @@ var NewShipList = {
 
 	this.shipListTreeView = new ShipListTreeView( this.allships );
 	$( "newshiplist-tree" ).view = this.shipListTreeView;
+
+
+	// 装備アイテムメニュー
+	tmp = new Object();
+	ShipList.allequipments.forEach( function( d ){
+	    tmp[ d.api_name ] = d;
+	} );
+	d3.map( tmp ).keys().forEach( function( d ){
+	    let menuitem = CreateMenuItem( d, d );
+	    let color = ShipList.getEquipmentColor( tmp[ d ] );
+	    menuitem.appendChild( CreateLabel( d, d ) );
+	    menuitem.setAttribute( "style", "border-left: " + color + " 16px solid;" );
+	    $( 'newshiplist-menu-equipment' ).appendChild( menuitem );
+	} );
 
     }
 };
