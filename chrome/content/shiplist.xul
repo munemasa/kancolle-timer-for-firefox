@@ -159,10 +159,30 @@
                         </row>
                       </rows>
                     </grid>
-                    <label id="api_slot0" value=""/>
-                    <label id="api_slot1" value=""/>
-                    <label id="api_slot2" value=""/>
-                    <label id="api_slot3" value=""/>
+                    <grid>
+                      <columns>
+                        <column/>
+                        <column/>
+                      </columns>
+                      <rows>
+                        <row>
+                          <label id="api_slot0" value=""/>
+                          <label id="api_onslot0" value=""/>
+                        </row>
+                        <row>
+                          <label id="api_slot1" value=""/>
+                          <label id="api_onslot1" value=""/>
+                        </row>
+                        <row>
+                          <label id="api_slot2" value=""/>
+                          <label id="api_onslot2" value=""/>
+                        </row>
+                        <row>
+                          <label id="api_slot3" value=""/>
+                          <label id="api_onslot3" value=""/>
+                        </row>
+                      </rows>
+                    </grid>
                   </groupbox>
                   <vbox>
                     <hbox>

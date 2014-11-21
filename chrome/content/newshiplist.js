@@ -604,6 +604,11 @@ var NewShipList = {
 
 	for( let i = 0; i < 4; i++ ){
 	    let slot_id = ship.api_slot[i];
+	    if( ship.api_onslot[i] ){
+		$( 'api_onslot' + i ).value = '搭載機数(' + ship.api_onslot[i] + ')';
+	    }else{
+		$( 'api_onslot' + i ).value = '';
+	    }
 	    if( slot_id == -1 ){
 		$( 'api_slot' + i ).value = "";
 		$( 'api_slot' + i ).removeAttribute( 'style' );
@@ -612,11 +617,12 @@ var NewShipList = {
 	    let item = KanColleDatabase.slotitem.get( slot_id );
 	    if( item ){
 		let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
-		$( 'api_slot' + i ).value = masterdata.api_name
+		let str = masterdata.api_name
 		    + (item.api_level > 0 ? "+" + item.api_level : "");
+		$( 'api_slot' + i ).value = str;
 
 		let color = ShipList.getEquipmentColor( masterdata );
-		let str = "border-left:" + color + " 8px solid; padding-left: 4px;";
+		str = "border-left:" + color + " 8px solid; padding-left: 4px;";
 		$( 'api_slot' + i ).setAttribute( 'style', str );
 	    }
 	}
