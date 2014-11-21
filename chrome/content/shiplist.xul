@@ -55,6 +55,7 @@
         <vbox>
           <hbox flex="1">
             <tree id="ship-category-tree" seltype="single"
+                  persist="width"
                   editable="true"
                   hidecolumnpicker="true"
                   onselect="NewShipList.onselect(this.currentIndex);"
@@ -66,7 +67,7 @@
               <treechildren/>
             </tree>
             <splitter/>
-            <vbox flex="1">
+            <vbox id="newshiplist-right-pane" flex="1" persist="width">
               <tree id="newshiplist-tree" persist="height" flex="2" editable="false" enableColumnDrag="true"
                     onselect="NewShipList.onShipListSelected(this.currentIndex);">
                 <treecols>
@@ -107,8 +108,8 @@
                 <groupbox flex="1">
                   <caption>性能諸元</caption>
                   <hbox>
-                    <label id="api_stype" value=""/>
-                    <label id="api_name" value=""/>
+                    <label id="api_stype" value="艦種"/>
+                    <label id="api_name" value="艦名"/>
                   </hbox>
                   <grid>
                     <columns>
