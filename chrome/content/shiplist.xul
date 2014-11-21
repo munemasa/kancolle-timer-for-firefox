@@ -111,6 +111,7 @@
                     <hbox>
                       <label id="api_stype" value="艦種"/>
                       <label id="api_name" value="艦名"/>
+                      <label id="api_lv" value=""/>
                     </hbox>
                     <grid>
                       <columns>
@@ -182,6 +183,7 @@
         </vbox>
         <vbox><!-- tab 2 -->
           <hbox align="center">
+            <label value="この一覧は廃止予定" style="font-weight:bold;color:red;"/>
             <label value="フィルタリング"/>
             <menulist oncommand="ShipList.filterByType(this.value);">
               <menupopup id="menu-shiptype">

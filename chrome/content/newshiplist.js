@@ -272,6 +272,10 @@ ShipListTreeView.prototype = {
 	    }
 	    return false;
 	} );
+	let no = 1;
+	for( let o of this._visibleData ){
+	    o[0] = no++;
+	}
 
 	this.treebox.rowCountChanged( this.rowCount, this.rowCount - n );
 	this.treebox.invalidate();
@@ -584,6 +588,7 @@ var NewShipList = {
 
 	$( 'api_stype' ).value = KanColleData.type_name[ ship._spec.api_stype ];
 	$( 'api_name' ).value = ship._spec.api_name;
+	$( 'api_lv' ).value = "Lv " + ship.api_lv;
 	$( 'api_maxhp' ).value = ship.api_maxhp;
 	$( 'api_soukou' ).value = ship.api_soukou[0];
 	$( 'api_kaihi' ).value = ship.api_kaihi[0];

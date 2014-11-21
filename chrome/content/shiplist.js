@@ -597,7 +597,7 @@ var ShipList = {
 	let non_equipments = this.allequipments.filter( function( d ){
 	    return !d._owner_ship;
 	} );
-	$( "tab-ships" ).setAttribute( "label", "艦娘(" + ships.length + ")" );
+	$( "tab-ships" ).setAttribute( "label", "旧艦娘一覧(" + ships.length + ")" );
 	$( "tab-equipment" ).setAttribute( "label", "未装備品(" + non_equipments.length + ")" );
     }
 
