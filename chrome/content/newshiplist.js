@@ -418,6 +418,9 @@ ShipListTreeView.prototype = {
     },
 
     getImageSrc: function( idx, column ){
+	if( column.index!=2 ) return;
+	let ship = this._visibleData[idx][-1];
+	return ShipList.isRepairing( ship.api_id ) ? "chrome://kancolletimer/content/data/cross.png" : "";
     },
     getProgressMode: function( idx, column ){
     },
