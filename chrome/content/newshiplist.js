@@ -685,6 +685,7 @@ var NewShipList = {
 
 	this.shipListTreeView = new ShipListTreeView( this.allships );
 	$( "newshiplist-tree" ).view = this.shipListTreeView;
+
     }
 };
 

@@ -67,7 +67,7 @@
             </tree>
             <splitter/>
             <vbox flex="1">
-              <tree id="newshiplist-tree" flex="2" editable="false" enableColumnDrag="true"
+              <tree id="newshiplist-tree" persist="height" flex="2" editable="false" enableColumnDrag="true"
                     onselect="NewShipList.onShipListSelected(this.currentIndex);">
                 <treecols>
                   <treecol id="id-number" style="text-align: right;" flex="1" label="#" persist="width hidden ordinal"/>
@@ -103,8 +103,8 @@
                 <treechildren/>
               </tree>
               <splitter/>
-              <vbox style="overflow: auto;">
-                <groupbox id="ship-spec-group" flex="1">
+              <vbox id="ship-spec-group" persist="height" style="overflow: auto;">
+                <groupbox flex="1">
                   <caption>性能諸元</caption>
                   <hbox>
                     <label id="api_stype" value=""/>
