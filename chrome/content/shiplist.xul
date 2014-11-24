@@ -59,6 +59,7 @@
                   persist="width"
                   editable="true"
                   hidecolumnpicker="true"
+                  treelines="true"
                   onselect="NewShipList.onselect(this.currentIndex);"
                   context="popup-create-group"
                   style="min-width: 125px;" class="plain">

@@ -170,9 +170,9 @@ ShipCategoryTreeView.prototype = {
 
     canDrop: function( targetIndex, orientation, dataTransfer ){
 	console.log( "canDrop(" + targetIndex + ", " + orientation + ")" );
-	// DROP_BEFORE -1
-	// DROP_ON 0
-	// DROP_AFTER 1
+	// Components.interfaces.nsITreeView.DROP_BEFORE -1
+	// Components.interfaces.nsITreeView.DROP_ON  0
+	// Components.interfaces.nsITreeView.DROP_AFTER 1
 	if( !this._visibleData[targetIndex].id.match( /^ud-/ ) ) return false;
 	if( !dataTransfer.types.contains( "text/x-kt-ship-list" ) )
 	    return false;

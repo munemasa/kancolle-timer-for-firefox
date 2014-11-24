@@ -18,7 +18,7 @@ listcell[sally_area="2"]:after {
     text-shadow: 1px 1px 0px #444444;
 }
 
-treecol {
+tree#newshiplist-tree treecol {
     margin-left: 4px;
 }
 
@@ -62,6 +62,16 @@ treechildren::-moz-tree-row(small-damage) {
 
 treechildren::-moz-tree-cell-text(small-damage) {
 }
+
+treechildren::-moz-tree-row(dropAfter) {
+    background-color: #ddddff;
+    border: 1px solid #0000ff;
+}
+treechildren::-moz-tree-row(dropBefore) {
+    background-color: #ddddff;
+    border: 1px solid #0000ff;
+}
+
 
 splitter {
     border: 0;
