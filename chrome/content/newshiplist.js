@@ -85,10 +85,16 @@ ShipCategoryTreeView.prototype = {
 	    if( i == this._data.length ) break;
 	}
 
-	let newid = "ud-" + newvalue;
+	let old_id = this._visibleData[row].id;
+	let new_id = "ud-" + newvalue;
+
 	this._visibleData[row].id = "ud-" + newvalue;
 	this._visibleData[row].name = newvalue;
 	this.treebox.invalidate();
+
+	console.log( old_id + "->" + new_id );
+	let list = Storage.readObject( "ship-group-" + old_id, [] );
+	Storage.writeObject( "ship-group-" + new_id, list );
 
 	NewShipList.saveGroup();
     },
@@ -169,7 +175,7 @@ ShipCategoryTreeView.prototype = {
     },
 
     canDrop: function( targetIndex, orientation, dataTransfer ){
-	console.log( "canDrop(" + targetIndex + ", " + orientation + ")" );
+	//console.log( "canDrop(" + targetIndex + ", " + orientation + ")" );
 	// Components.interfaces.nsITreeView.DROP_BEFORE -1
 	// Components.interfaces.nsITreeView.DROP_ON  0
 	// Components.interfaces.nsITreeView.DROP_AFTER 1
@@ -182,15 +188,12 @@ ShipCategoryTreeView.prototype = {
     drop: function( targetIndex, orientation, dataTransfer ){
 	if( !this.canDrop( targetIndex, orientation, dataTransfer ) )
 	    return;
-	console.log( "drop" );
 
 	let target_id = this._visibleData[targetIndex].id;
 	let data = dataTransfer.mozGetDataAt( "text/x-kt-ship-list", 0 );
-	console.log( data );
 
 	let list = Storage.readObject( "ship-group-" + target_id, [] );
 	list = list.concat( JSON.parse( data ) );
-	console.log( list );
 	Storage.writeObject( "ship-group-" + target_id, list );
     },
 
@@ -240,7 +243,9 @@ ShipListTreeView.prototype = {
      */
     filterByEquipment: function( equip ){
 	this._filterEquip = equip;
+	console.log( this._filterType);
 	if( this._filterType == "/fleet" ) return;
+	console.log("filter by "+equip);
 
 	let typename = this._filterType;
 	let ships = this._filterType ? this._data.filter( function( d ){
@@ -514,7 +519,54 @@ ShipListTreeView.prototype = {
     performActionOnRow: function( action, row ){
     },
     performActionOnCell: function( action, row, col ){
+    },
+
+    canDrop: function( targetIndex, orientation, dataTransfer ){
+	//console.log( "canDrop(" + targetIndex + ", " + orientation + ")" );
+	// Components.interfaces.nsITreeView.DROP_BEFORE -1
+	// Components.interfaces.nsITreeView.DROP_ON  0
+	// Components.interfaces.nsITreeView.DROP_AFTER 1
+	if( !dataTransfer.types.contains( "text/x-kt-ship-list" ) )
+	    return false;
+
+	let data = dataTransfer.mozGetDataAt( "text/x-kt-ship-list", 0 );
+	let tmp = JSON.parse( data );
+	if( tmp.length > 1 ) return false;
+
+	let n = $( 'ship-category-tree' ).currentIndex;
+	let current_category = NewShipList.shipCategoryTreeView._visibleData[n].id;
+	if( !current_category.match( /^ud-/ ) ) return false;
+
+	return true;
+    },
+    drop: function( targetIndex, orientation, dataTransfer ){
+	if( !this.canDrop( targetIndex, orientation, dataTransfer ) )
+	    return;
+
+	let data = dataTransfer.mozGetDataAt( "text/x-kt-ship-list", 0 );
+	let source_ship_id = JSON.parse( data )[0];
+
+	let i;
+	for( i = 0; i < this._visibleData.length; i++ ){
+	    let ship = this._visibleData[i][-1];
+	    let id = ship.api_id;
+	    if( id == source_ship_id ) break;
+	}
+
+	let removedItems = this._visibleData.splice( i, 1 );
+	this._visibleData.splice( targetIndex, 0, removedItems[0] );
+	this.treebox.invalidate();
+
+	let newlist = new Array();
+	for( let item of this._visibleData ){
+	    newlist.push( item[-1].api_id );
+	}
+
+	let n = $( 'ship-category-tree' ).currentIndex;
+	let current_category = NewShipList.shipCategoryTreeView._visibleData[n].id;
+	Storage.writeObject( "ship-group-" + current_category, newlist );
     }
+
 }
 ;
 
@@ -531,9 +583,6 @@ var NewShipList = {
 	if( selection.count < 1 )
 	    return;
 
-	console.log( this.shipListTreeView.selection );
-
-
 	let list = new Array();
 	for( let i = 0; i < this.shipListTreeView._visibleData.length; i++ ){
 	    if( selection.isSelected( i ) ){
@@ -544,10 +593,6 @@ var NewShipList = {
 
 	event.dataTransfer.setData( "text/x-kt-ship-list", JSON.stringify( list ) );
 	event.dataTransfer.dropEffect = "copy";
-
-	console.log( sourceIndex );
-	console.log( ship );
-	console.log( list );
     },
 
     // ツリービューを選択したときの処理
@@ -677,12 +722,10 @@ var NewShipList = {
     },
 
     showUserDefinedGroupShip: function( id ){
-	console.log( id );
 	let list = Storage.readObject( "ship-group-" + id, [] );
 	let ships = list.map( function( k ){
 	    return KanColleDatabase.ship.get( k );
 	} );
-	console.log( ships );
 
 	for( let ship of ships ){
 	    let spec = FindShipData( ship.api_id );
@@ -852,6 +895,32 @@ var NewShipList = {
 	this.saveGroup();
     },
 
+    deleteShip: function(){
+	let selection = this.shipListTreeView.selection;
+	if( selection.count < 1 )
+	    return;
+
+	let n = $( 'ship-category-tree' ).currentIndex;
+	let group_id = this.shipCategoryTreeView._visibleData[n].id;
+
+	let key = "ship-group-" + group_id;
+	let list = Storage.readObject( key, [] );
+
+	for( let i = 0; i < this.shipListTreeView._visibleData.length; i++ ){
+	    if( selection.isSelected( i ) ){
+		let ship = this.shipListTreeView._visibleData[i][-1];
+		let id = ship.api_id;
+
+		list = list.filter( function( d ){
+		    return d !== id;
+		} );
+	    }
+	}
+
+	Storage.writeObject( key, list );
+	this.showUserDefinedGroupShip( group_id );
+    },
+
     onpopupshowing: function(){
 	// ユーザー定義カテゴリの時のみメニューを開く
 	let elem = $( 'ship-category-tree' );
@@ -860,6 +929,17 @@ var NewShipList = {
 	    return true;
 	}
 	return false;
+    },
+
+    onpopupshowingSaveCvs: function(){
+	let n = $( 'ship-category-tree' ).currentIndex;
+	if( n != -1 && this.shipCategoryTreeView._visibleData[n].id.match( /^ud-/ ) ){
+	    $( 'ship-delete-menu' ).hidden = false;
+	    $( 'ship-delete-menu' ).nextSibling.hidden = false;
+	}else{
+	    $( 'ship-delete-menu' ).hidden = true;
+	    $( 'ship-delete-menu' ).nextSibling.hidden = true;
+	}
     },
 
     init: function(){

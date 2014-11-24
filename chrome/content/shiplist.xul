@@ -319,7 +319,9 @@
   </vbox>
 
   <popupset>
-    <menupopup id="popup-save-csv">
+    <menupopup id="popup-save-csv" onpopupshowing="return NewShipList.onpopupshowingSaveCvs();">
+      <menuitem id="ship-delete-menu" label="削除" oncommand="NewShipList.deleteShip();"/>
+      <menuseparator/>
       <menuitem label="艦娘リストをCSVに保存..." oncommand="NewShipList.saveCvs();"/>
       <menuseparator/>
       <menuitem id="window-stay-on-top" persist="checked"

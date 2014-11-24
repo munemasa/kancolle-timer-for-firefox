@@ -63,12 +63,12 @@ treechildren::-moz-tree-row(small-damage) {
 treechildren::-moz-tree-cell-text(small-damage) {
 }
 
-treechildren::-moz-tree-row(dropAfter) {
-    background-color: #ddddff;
+#ship-category-tree treechildren::-moz-tree-row(dropAfter) {
+    background-color: #eeeeff;
     border: 1px solid #0000ff;
 }
-treechildren::-moz-tree-row(dropBefore) {
-    background-color: #ddddff;
+#ship-category-tree treechildren::-moz-tree-row(dropBefore) {
+    background-color: #eeeeff;
     border: 1px solid #0000ff;
 }
 
