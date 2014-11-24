@@ -627,6 +627,48 @@ var NewShipList = {
 	    }
 	}
     },
+
+    saveCvs: function(){
+	let txt = "";
+
+	for( let s of this.shipListTreeView._visibleData ){
+	    let ship = s[-1];
+
+	    let row = new Array();
+	    row.push( KanColleData.type_name[ship._spec.api_stype] );
+	    row.push( ship._spec.api_name );
+	    row.push( ship.api_lv );
+	    for( let i in ship.api_slot ){
+		if( ship.api_slot[i] < 0 ) continue;
+		let item = KanColleDatabase.slotitem.get( ship.api_slot[i] );
+		if( item ){
+		    let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+		    row.push( masterdata.api_name + (item.api_level > 0 ? "★+" + item.api_level : "") );
+		}
+	    }
+
+	    txt += row.join('\t');
+
+	    txt += "\n";
+	}
+
+	const nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance( nsIFilePicker );
+	fp.init( window, "艦娘リストの保存...", nsIFilePicker.modeSave );
+	fp.appendFilters( nsIFilePicker.filterAll );
+	let rv = fp.show();
+	if( rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace ){
+	    let file = fp.file;
+	    let path = fp.file.path;
+	    let os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance( Components.interfaces.nsIFileOutputStream );
+	    let flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
+	    os.init( file, flags, 0664, 0 );
+	    let cos = GetUTF8ConverterOutputStream( os );
+	    cos.writeString( txt );
+	    cos.close();
+	}
+    },
+
     /**
      * 艦隊編成のリストを作成する
      */

@@ -23,11 +23,11 @@ treecol {
 }
 
 treechildren::-moz-tree-cell(sally1) {
-    border-bottom: 4px solid #81bee3;
+    border-left: 4px solid #81bee3;
 }
 
 treechildren::-moz-tree-cell(sally2) {
-    border-bottom: 4px solid #edc96f;
+    border-left: 4px solid #acdc93;
 }
 
 treechildren::-moz-tree-row(dash-separator) {
@@ -35,7 +35,7 @@ treechildren::-moz-tree-row(dash-separator) {
 }
 
 treechildren::-moz-tree-row(high-condition) {
-    background-color: #ffffd8;
+    background-color: #ffffd0;
 }
 
 treechildren::-moz-tree-row(large-damage) {

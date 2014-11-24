@@ -46,7 +46,6 @@
     <tabbox id="tab" flex="1" persist="selectedIndex">
       <tabs>
         <tab id="tab-newshiplist" label="艦娘一覧"/>
-        <tab id="tab-ships" label="全艦艇リスト"/>
         <tab id="tab-histogram" label="レベル分布"/>
         <tab id="tab-equipment" label="装備アイテム"/>
         <tab label="艦隊編成"/>
@@ -69,7 +68,8 @@
             <splitter/>
             <vbox id="newshiplist-right-pane" flex="1" persist="width">
               <tree id="newshiplist-tree" persist="height" flex="2" editable="false" enableColumnDrag="true"
-                    onselect="NewShipList.onShipListSelected(this.currentIndex);">
+                    onselect="NewShipList.onShipListSelected(this.currentIndex);"
+                    context="popup-save-csv">
                 <treecols>
                   <treecol id="id-number" style="text-align: right;" flex="1" label="#" persist="width hidden ordinal"/>
                   <splitter class="tree-splitter"/>
@@ -201,60 +201,11 @@
             </vbox>
           </hbox>
         </vbox>
-        <vbox><!-- tab 2 -->
-          <hbox align="center">
-            <label value="この一覧は廃止予定" style="font-weight:bold;color:red;"/>
-            <label value="フィルタリング"/>
-            <menulist oncommand="ShipList.filterByType(this.value);">
-              <menupopup id="menu-shiptype">
-                <menuitem label="なし"/>
-              </menupopup>
-            </menulist>
-            <menulist oncommand="ShipList.filterByEquipment(this.value);">
-              <menupopup id="menu-equipment">
-                <menuitem label="なし"/>
-              </menupopup>
-            </menulist>
-          </hbox>
-          <listbox id="ship-list" flex="1" context="popup-save-csv">
-            <listcols>
-              <listcol/>
-              <listcol/>
-              <listcol/>
-              <listcol/>
-              <listcol/>
-              <listcol/>
-              <listcol/>
-              <listcol/>
-              <listcol/>
-              <listcol flex="1"/>
-              <listcol flex="1"/>
-              <listcol flex="1"/>
-              <listcol flex="1"/>
-            </listcols>
-            <listhead>
-              <listheader label="#"/>
-              <listheader label="艦種" onclick="ShipList.sort(0);"/>
-              <listheader label="艦名"/>
-              <listheader label="レベル" onclick="ShipList.sort(1);"/>
-              <listheader label="状態" onclick="ShipList.sort(2);"/>
-              <listheader label="入渠時間" onclick="ShipList.sort(3);"/>
-              <listheader label="索敵"/>
-              <listheader label="EXP"/>
-              <listheader label="搭載"/>
-              <listheader label="装備1"/>
-              <listheader label="装備2"/>
-              <listheader label="装備3"/>
-              <listheader label="装備4"/>
-            </listhead>
-          </listbox>
-        </vbox>
-        <!-- tab 2 -->
 
-        <vbox style="overflow:auto;" id="histogram"><!-- tab 3 -->
+        <vbox style="overflow:auto;" id="histogram"><!-- tab 2 -->
         </vbox>
 
-        <vbox style="overflow:auto;"><!-- tab 4 -->
+        <vbox style="overflow:auto;"><!-- tab 3 -->
           <grid>
             <columns>
               <column/>
@@ -265,7 +216,7 @@
           </grid>
         </vbox>
 
-        <vbox style="overflow:auto;"><!-- tab 5 -->
+        <vbox style="overflow:auto;"><!-- tab 4 -->
           <hbox class="fleet-list">
             <groupbox>
               <caption>第1艦隊</caption>
@@ -365,7 +316,7 @@
 
   <popupset>
     <menupopup id="popup-save-csv">
-      <menuitem label="艦娘リストをCSVに保存..." oncommand="ShipList.saveCvs();"/>
+      <menuitem label="艦娘リストをCSVに保存..." oncommand="NewShipList.saveCvs();"/>
       <menuseparator/>
       <menuitem id="window-stay-on-top" persist="checked"
                 label="常に最前面に表示"
