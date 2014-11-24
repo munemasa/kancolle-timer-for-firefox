@@ -170,66 +170,28 @@ ShipCategoryTreeView.prototype = {
 
     canDrop: function( targetIndex, orientation, dataTransfer ){
 	console.log( "canDrop(" + targetIndex + ", " + orientation + ")" );
-	return false;
-	if( !dataTransfer.types.contains( "text/x-moz-tree-index" ) )
-	    return false;
-	if( this.selection.count != 1 )
-	    return false;
-	var sourceIndex = this.selection.currentIndex;
-	if( sourceIndex == -1 )
-	    return false;
-	if( sourceIndex == targetIndex )
-	    return false;
-	if( sourceIndex == (targetIndex + orientation) )
+	// DROP_BEFORE -1
+	// DROP_ON 0
+	// DROP_AFTER 1
+	if( !this._visibleData[targetIndex].id.match( /^ud-/ ) ) return false;
+	if( !dataTransfer.types.contains( "text/x-kt-ship-list" ) )
 	    return false;
 
-	return false;
+	return true;
     },
     drop: function( targetIndex, orientation, dataTransfer ){
 	if( !this.canDrop( targetIndex, orientation, dataTransfer ) )
 	    return;
-	var sourceIndex = this.selection.currentIndex;
-	if( sourceIndex < targetIndex ){
-	    if( orientation == Components.interfaces.nsITreeView.DROP_BEFORE )
-		targetIndex--;
-	}
-	else{
-	    if( orientation == Components.interfaces.nsITreeView.DROP_AFTER )
-		targetIndex++;
-	}
-	this.moveItem( sourceIndex, targetIndex );
-    },
-    moveItem: function( aSourceIndex, aTargetIndex ){
-	if( aTargetIndex < 0 || aTargetIndex > this.rowCount - 1 )
-	    return;
+	console.log( "drop" );
 
-	let src_id = this._visibleData[aSourceIndex].id;
-	let srcidx;
-	for( srcidx = 0; srcidx < this._data.length; srcidx++ ){
-	    if( this._data[srcidx].id == src_id ) break;
-	}
-	let removedItems = this._data.splice( srcidx, 1 );
+	let target_id = this._visibleData[targetIndex].id;
+	let data = dataTransfer.mozGetDataAt( "text/x-kt-ship-list", 0 );
+	console.log( data );
 
-	let dst_id = this._visibleData[aTargetIndex].id;
-	let dstidx;
-	for( dstidx = 0; dstidx < this._data.length; dstidx++ ){
-	    if( this._data[dstidx].id == dst_id ) break;
-	}
-
-	if( this._visibleData[aTargetIndex].type == TYPE_FOLDER ){
-	    removedItems[0].parentId = this._visibleData[aTargetIndex].id;
-	}else{
-	    removedItems[0].parentId = this._visibleData[aTargetIndex].parentId;
-	}
-	this._data.splice( dstidx, 0, removedItems[0] );
-	this._buildVisibleData();
-
-	this.treebox.invalidate();
-	// select moved item again
-	this.selection.clearSelection();
-	this.selection.select( aTargetIndex );
-	this.treebox.ensureRowIsVisible( aTargetIndex );
-	this.treebox.treeBody.parentNode.focus();
+	let list = Storage.readObject( "ship-group-" + target_id, [] );
+	list = list.concat( JSON.parse( data ) );
+	console.log( list );
+	Storage.writeObject( "ship-group-" + target_id, list );
     },
 
     updateData: function( data ){
@@ -564,13 +526,28 @@ var NewShipList = {
 	// ignore when dragging scrollbar
 	if( event.target.localName != "treechildren" )
 	    return;
-	// disallow dragging multiple rows
-	if( this.shipCategoryTreeView.selection.count != 1 )
+	let selection = this.shipListTreeView.selection;
+
+	if( selection.count < 1 )
 	    return;
-	// set current row index to transfer data
-	var sourceIndex = this.shipCategoryTreeView.selection.currentIndex;
-	event.dataTransfer.setData( "text/x-moz-tree-index", sourceIndex );
-	event.dataTransfer.dropEffect = "move";
+
+	console.log( this.shipListTreeView.selection );
+
+
+	let list = new Array();
+	for( let i = 0; i < this.shipListTreeView._visibleData.length; i++ ){
+	    if( selection.isSelected( i ) ){
+		let ship = this.shipListTreeView._visibleData[i][-1];
+		list.push( ship.api_id );
+	    }
+	}
+
+	event.dataTransfer.setData( "text/x-kt-ship-list", JSON.stringify( list ) );
+	event.dataTransfer.dropEffect = "copy";
+
+	console.log( sourceIndex );
+	console.log( ship );
+	console.log( list );
     },
 
     // ツリービューを選択したときの処理
@@ -601,6 +578,11 @@ var NewShipList = {
 		let target_type = KanColleData.type_name[n];
 		this.shipListTreeView.filterByType( target_type );
 		this.shipListTreeView._resetSortDirection();
+		break;
+	    }
+	    if( data.id.match( /^ud-/ ) ){
+		// ユーザー定義グループ
+		this.showUserDefinedGroupShip( data.id );
 	    }
 	    break;
 	}
@@ -692,6 +674,34 @@ var NewShipList = {
 	    cos.writeString( txt );
 	    cos.close();
 	}
+    },
+
+    showUserDefinedGroupShip: function( id ){
+	console.log( id );
+	let list = Storage.readObject( "ship-group-" + id, [] );
+	let ships = list.map( function( k ){
+	    return KanColleDatabase.ship.get( k );
+	} );
+	console.log( ships );
+
+	for( let ship of ships ){
+	    let spec = FindShipData( ship.api_id );
+	    let fleet_no = ShipList.getFleetNo( ship.api_id );
+	    ship._spec = spec;
+	    ship._equips = new Array();
+	    ship._fleet_no = fleet_no;
+	    for( let i in ship.api_slot ){
+		let slot_id = ship.api_slot[i];
+		if( slot_id == -1 ) continue;
+		let item = KanColleDatabase.slotitem.get( slot_id );
+		if( item ){
+		    let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+		    ship._equips.push( masterdata.api_name + (item.api_level > 0 ? "+" + item.api_level : "") );
+		}
+	    }
+	}
+	this.shipListTreeView.setShipList( ships );
+	this.shipListTreeView._resetSortDirection();
     },
 
     /**
@@ -908,11 +918,11 @@ var NewShipList = {
 	} );
 	console.log( data );
 
-	Storage.writeObject("ship-group-category", data);
+	Storage.writeObject( "ship-group-category", data );
     },
 
     loadGroup: function(){
-	let data = Storage.readObject("ship-group-category", null);
+	let data = Storage.readObject( "ship-group-category", null );
 	if( !data ) return;
 	gShipCategoryData = data;
     },

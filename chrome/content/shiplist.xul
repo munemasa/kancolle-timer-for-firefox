@@ -60,7 +60,6 @@
                   editable="true"
                   hidecolumnpicker="true"
                   onselect="NewShipList.onselect(this.currentIndex);"
-                  ondragstart="NewShipList.handleDragStart(event);"
                   context="popup-create-group"
                   style="min-width: 125px;" class="plain">
               <treecols>
@@ -72,6 +71,7 @@
             <vbox id="newshiplist-right-pane" flex="1" persist="width">
               <tree id="newshiplist-tree" persist="height" flex="2" editable="false" enableColumnDrag="true"
                     onselect="NewShipList.onShipListSelected(this.currentIndex);"
+                    ondragstart="NewShipList.handleDragStart(event);"
                     context="popup-save-csv">
                 <treecols>
                   <treecol id="id-number" style="text-align: right;" flex="1" label="#" persist="width hidden ordinal"/>
