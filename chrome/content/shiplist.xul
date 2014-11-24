@@ -23,10 +23,12 @@
   <script type="application/javascript;version=1.7"
           src="chrome://kancolletimer/content/libs.js"/>
   <script type="application/javascript;version=1.7"
+          src="chrome://kancolletimer/content/storage.js"/>
+  <script type="application/javascript;version=1.7"
           src="chrome://kancolletimer/content/data.js"/>
   <script type="application/javascript;version=1.7"
           src="chrome://kancolletimer/content/shiplist.js"/>
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
           src="chrome://kancolletimer/content/newshiplist.js"/>
 
   <toolbox>

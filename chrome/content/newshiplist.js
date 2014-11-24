@@ -89,6 +89,8 @@ ShipCategoryTreeView.prototype = {
 	this._visibleData[row].id = "ud-" + newvalue;
 	this._visibleData[row].name = newvalue;
 	this.treebox.invalidate();
+
+	NewShipList.saveGroup();
     },
     setTree: function( treebox ){
 	this.treebox = treebox;
@@ -816,7 +818,6 @@ var NewShipList = {
 	let newitem = new ShipCategoryListItem( "ud-" + newvalue, TYPE_ITEM, newvalue, "ud", true, false );
 
 	let target_id = this.shipCategoryTreeView._visibleData[n].id;
-	console.log( target_id );
 	if( target_id == 'ud' ){
 	    gShipCategoryData.push( newitem );
 	}else{
@@ -825,7 +826,8 @@ var NewShipList = {
 	}
 
 	this.shipCategoryTreeView.updateData( gShipCategoryData );
-	console.log( gShipCategoryData );
+
+	this.saveGroup();
     },
 
     deleteGroup: function(){
@@ -836,7 +838,8 @@ var NewShipList = {
 	let deleteTarget = this.findGroup( this.shipCategoryTreeView._visibleData[n].id );
 	gShipCategoryData.splice( deleteTarget, 1 );
 	this.shipCategoryTreeView.updateData( gShipCategoryData );
-	console.log( gShipCategoryData );
+
+	this.saveGroup();
     },
 
     onpopupshowing: function(){
@@ -850,6 +853,8 @@ var NewShipList = {
     },
 
     init: function(){
+	this.loadGroup();
+
 	this.allships = this.createShipArray();
 
 	console.log( this.allships );
@@ -894,6 +899,26 @@ var NewShipList = {
 	    $( 'newshiplist-menu-equipment' ).appendChild( menuitem );
 	} );
 
+    },
+
+    saveGroup: function(){
+	let data = gShipCategoryData.filter( function( d ){
+	    if( d.id.match( /^kind-\d+/ ) ) return false;
+	    return true;
+	} );
+	console.log( data );
+
+	Storage.writeObject("ship-group-category", data);
+    },
+
+    loadGroup: function(){
+	let data = Storage.readObject("ship-group-category", null);
+	if( !data ) return;
+	gShipCategoryData = data;
+    },
+
+    destroy: function(){
+	this.saveGroup();
     }
 };
 
@@ -902,4 +927,6 @@ window.addEventListener( "load", function( e ){
     NewShipList.init();
 }, false );
 
-
+window.addEventListener( "unload", function( e ){
+    NewShipList.destroy();
+}, false );
