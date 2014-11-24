@@ -59,6 +59,7 @@
                   hidecolumnpicker="true"
                   onselect="NewShipList.onselect(this.currentIndex);"
                   ondragstart="NewShipList.handleDragStart(event);"
+                  context="popup-create-group"
                   style="min-width: 125px;" class="plain">
               <treecols>
                 <treecol flex="1" primary="true" hideheader="true"/>
@@ -323,6 +324,12 @@
                 type="checkbox" autocheck="true"
                 tooltiptext="Windows/Firefox 17以降でのみ有効"
                 oncommand="WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );"/>
+    </menupopup>
+
+    <menupopup id="popup-create-group" onpopupshowing="return NewShipList.onpopupshowing();">
+      <menuitem label="新規グループ作成" oncommand="NewShipList.createGroup();"/>
+      <menuseparator/>
+      <menuitem label="削除" oncommand="NewShipList.deleteGroup();"/>
     </menupopup>
   </popupset>
 

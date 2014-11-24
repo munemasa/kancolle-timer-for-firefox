@@ -6,9 +6,18 @@ Components.utils.import( "resource://kancolletimermodules/httpobserve.jsm" );
 
 const TYPE_ITEM = 1;
 const TYPE_FOLDER = 2;
-const TYPE_SEPARATOR = 3;
 
-var gShipTreeView;
+var gShipCategoryData = [
+    new ShipCategoryListItem( "fleet", TYPE_FOLDER, "艦隊別", "root", true, true ),
+    new ShipCategoryListItem( "fleet-1", TYPE_ITEM, "第1艦隊", "fleet", true, true ),
+    new ShipCategoryListItem( "fleet-2", TYPE_ITEM, "第2艦隊", "fleet", true, true ),
+    new ShipCategoryListItem( "fleet-3", TYPE_ITEM, "第3艦隊", "fleet", true, true ),
+    new ShipCategoryListItem( "fleet-4", TYPE_ITEM, "第4艦隊", "fleet", true, true ),
+    new ShipCategoryListItem( "kind", TYPE_FOLDER, "艦種別", "root", true, true ),
+    new ShipCategoryListItem( "kind-all", TYPE_ITEM, "全て", "kind", true, true ),
+    // 7
+    new ShipCategoryListItem( "ud", TYPE_FOLDER, "ユーザー定義", "root", true, true )
+];
 
 
 function ShipCategoryListItem( aId, aType, aName, aParent, aOpen, aLocked ){
@@ -22,18 +31,6 @@ function ShipCategoryListItem( aId, aType, aName, aParent, aOpen, aLocked ){
     this.empty = null;
     this.level = null;
 }
-
-var gShipCategoryData = [
-    new ShipCategoryListItem( "fleet", TYPE_FOLDER, "艦隊別", "root", true, true ),
-    new ShipCategoryListItem( "fleet-1", TYPE_ITEM, "第1艦隊", "fleet", true, true ),
-    new ShipCategoryListItem( "fleet-2", TYPE_ITEM, "第2艦隊", "fleet", true, true ),
-    new ShipCategoryListItem( "fleet-3", TYPE_ITEM, "第3艦隊", "fleet", true, true ),
-    new ShipCategoryListItem( "fleet-4", TYPE_ITEM, "第4艦隊", "fleet", true, true ),
-    new ShipCategoryListItem( "kind", TYPE_FOLDER, "艦種別", "root", true, true ),
-    new ShipCategoryListItem( "kind-all", TYPE_ITEM, "全て", "kind", true, true ),
-    // 7
-    new ShipCategoryListItem( "userdefined", TYPE_FOLDER, "ユーザー定義", "root", true, true )
-];
 
 function ShipCategoryTreeView( data ){
     this._data = data;
@@ -74,7 +71,23 @@ ShipCategoryTreeView.prototype = {
 	return str;
     },
     setCellText: function( row, col, value ){
-	this._data[row].name = value;
+
+	let n = 2;
+	let newvalue = value;
+	while( 1 ){
+	    let i;
+	    for( i = 0; i < this._data.length; i++ ){
+		if( newvalue == this._data[i].name ){
+		    newvalue = value + "(" + n + ")";
+		    n++;
+		}
+	    }
+	    if( i == this._data.length ) break;
+	}
+
+	let newid = "ud-" + newvalue;
+	this._visibleData[row].id = "ud-" + newvalue;
+	this._visibleData[row].name = newvalue;
 	this.treebox.invalidate();
     },
     setTree: function( treebox ){
@@ -215,6 +228,15 @@ ShipCategoryTreeView.prototype = {
 	this.selection.select( aTargetIndex );
 	this.treebox.ensureRowIsVisible( aTargetIndex );
 	this.treebox.treeBody.parentNode.focus();
+    },
+
+    updateData: function( data ){
+	let n = this.rowCount;
+
+	this._data = data;
+	this._buildVisibleData();
+	this.treebox.rowCountChanged( this.rowCount, this.rowCount - n );
+	this.treebox.invalidate();
     }
 
 };
@@ -552,6 +574,7 @@ var NewShipList = {
     // ツリービューを選択したときの処理
     onselect: function( idx ){
 	let data = this.shipCategoryTreeView._visibleData[idx];
+	if( !data ) return;
 
 	switch( data.id ){
 	case "fleet-1":
@@ -647,7 +670,7 @@ var NewShipList = {
 		}
 	    }
 
-	    txt += row.join('\t');
+	    txt += row.join( '\t' );
 
 	    txt += "\n";
 	}
@@ -760,6 +783,70 @@ var NewShipList = {
 
 	this.sort( ships, 0 );// 艦種ソート
 	return ships;
+    },
+
+
+    findGroup: function( id ){
+	for( let i = 0; i < gShipCategoryData.length; i++ ){
+	    let item = gShipCategoryData[i];
+	    if( item.id == id ) return i;
+	}
+	return -1;
+    },
+    createGroup: function(){
+	let elem = $( 'ship-category-tree' );
+	let n = elem.currentIndex;
+
+	let name = InputPrompt( "グループ名を入力してください", "新規グループ作成" );
+	if( !name ) return;
+
+	let no = 2;
+	let newvalue = name;
+	while( 1 ){
+	    let i;
+	    for( i = 0; i < gShipCategoryData.length; i++ ){
+		if( newvalue == gShipCategoryData[i].name ){
+		    newvalue = name + "(" + no + ")";
+		    no++;
+		}
+	    }
+	    if( i == gShipCategoryData.length ) break;
+	}
+
+	let newitem = new ShipCategoryListItem( "ud-" + newvalue, TYPE_ITEM, newvalue, "ud", true, false );
+
+	let target_id = this.shipCategoryTreeView._visibleData[n].id;
+	console.log( target_id );
+	if( target_id == 'ud' ){
+	    gShipCategoryData.push( newitem );
+	}else{
+	    let targetIndex = this.findGroup( target_id );
+	    gShipCategoryData.splice( targetIndex + 1, 0, newitem );
+	}
+
+	this.shipCategoryTreeView.updateData( gShipCategoryData );
+	console.log( gShipCategoryData );
+    },
+
+    deleteGroup: function(){
+	let elem = $( 'ship-category-tree' );
+	let n = elem.currentIndex;
+	if( this.shipCategoryTreeView._visibleData[n].id == 'ud' ) return;
+
+	let deleteTarget = this.findGroup( this.shipCategoryTreeView._visibleData[n].id );
+	gShipCategoryData.splice( deleteTarget, 1 );
+	this.shipCategoryTreeView.updateData( gShipCategoryData );
+	console.log( gShipCategoryData );
+    },
+
+    onpopupshowing: function(){
+	// ユーザー定義カテゴリの時のみメニューを開く
+	let elem = $( 'ship-category-tree' );
+	let n = elem.currentIndex;
+	if( this.shipCategoryTreeView._visibleData[n].id.match( /^ud/ ) ){
+	    return true;
+	}
+	return false;
     },
 
     init: function(){
