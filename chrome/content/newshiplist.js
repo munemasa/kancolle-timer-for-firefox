@@ -92,7 +92,10 @@ ShipCategoryTreeView.prototype = {
 	this._visibleData[row].name = newvalue;
 	this.treebox.invalidate();
 
-	console.log( old_id + "->" + new_id );
+	// 名前変えたときに新しい名前で現状のデータで上書きのため、
+	// 不要なファイルが残ってしまうのは置いておいて、
+	// 古いファイルは残したままでとりあえず問題なし
+	console.log( old_id + " -> " + new_id );
 	let list = Storage.readObject( "ship-group-" + old_id, [] );
 	Storage.writeObject( "ship-group-" + new_id, list );
 
