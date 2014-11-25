@@ -623,8 +623,24 @@ ShipListTreeView.prototype = {
 	Storage.writeObject( "ship-group-" + current_category, newlist );
     }
 
-}
-;
+};
+
+var AutoRefreshShipList = {
+    update: {
+	deck: function(){
+	    NewShipList.refreshShipList();
+	},
+	ship: 'deck'
+    },
+    init: function(){
+	this._update_init();
+    },
+
+    exit: function(){
+	this._update_exit();
+    }
+};
+AutoRefreshShipList.__proto__ = __KanColleTimerPanel;
 
 
 var NewShipList = {
@@ -1079,10 +1095,14 @@ var NewShipList = {
 	    $( 'newshiplist-menu-equipment' ).appendChild( menuitem );
 	} );
 
+	AutoRefreshShipList.init();
+	AutoRefreshShipList.start();
     },
 
     destroy: function(){
 	this.saveGroup();
+	AutoRefreshShipList.stop();
+	AutoRefreshShipList.exit();
     }
 };
 

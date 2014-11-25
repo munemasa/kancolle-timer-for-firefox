@@ -70,8 +70,10 @@
                 </treecols>
                 <treechildren/>
               </tree>
+              <!--
               <button label="表示を更新" oncommand="NewShipList.refreshShipList();"
                       tooltiptext="リロードしないで艦娘一覧表示を更新します"/>
+                      -->
             </vbox>
             <splitter/>
             <vbox id="newshiplist-right-pane" flex="1" persist="width">
