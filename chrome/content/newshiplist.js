@@ -710,6 +710,8 @@ var NewShipList = {
 	$( 'api_sakuteki' ).value = ship.api_sakuteki[0];
 	$( 'api_lucky' ).value = ship.api_lucky[0];
 
+	$( 'api_exp' ).value = "EXP " + FormatCommas( ship.api_exp[0] ) + " (Next " + FormatCommas( ship.api_exp[1] ) + ")";
+
 	for( let i = 0; i < 4; i++ ){
 	    let slot_id = ship.api_slot[i];
 	    if( ship.api_onslot[i] ){

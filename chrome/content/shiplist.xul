@@ -70,7 +70,8 @@
                 </treecols>
                 <treechildren/>
               </tree>
-              <button label="表示を更新" oncommand="NewShipList.refreshShipList();"/>
+              <button label="表示を更新" oncommand="NewShipList.refreshShipList();"
+                      tooltiptext="リロードしないで艦娘一覧表示を更新します"/>
             </vbox>
             <splitter/>
             <vbox id="newshiplist-right-pane" flex="1" persist="width">
@@ -120,6 +121,7 @@
                       <label id="api_stype" value="艦種"/>
                       <label id="api_name" value="艦名"/>
                       <label id="api_lv" value=""/>
+                      <label id="api_exp" value=""/>
                     </hbox>
                     <grid>
                       <columns>
