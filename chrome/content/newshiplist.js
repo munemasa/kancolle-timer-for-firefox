@@ -346,6 +346,7 @@ ShipListTreeView.prototype = {
 	    let ship_id = item[-1].api_id;
 
 	    let ship = KanColleDatabase.ship.get( ship_id );
+	    if( !ship ) continue;
 	    let spec = FindShipData( ship.api_id );
 	    let fleet_no = ShipList.getFleetNo( ship.api_id );
 	    ship._spec = spec;
@@ -1041,7 +1042,9 @@ var NewShipList = {
 		      } );
 	if( this.shipCategoryTreeView ){
 	    this.shipCategoryTreeView.updateData( newlist );
+	    this.shipListTreeView._data = this.allships;
 	    this.shipListTreeView.updateVisibleData();
+	    $( "tab-newshiplist" ).setAttribute( "label", "艦娘一覧(" + this.allships.length + ")" );
 	}else{
 	    gShipCategoryData = newlist;
 	}
