@@ -55,19 +55,23 @@
       <tabpanels flex="1">
         <vbox>
           <hbox flex="1">
-            <tree id="ship-category-tree" seltype="single"
-                  persist="width"
-                  editable="true"
-                  hidecolumnpicker="true"
-                  treelines="true"
-                  onselect="NewShipList.onselect(this.currentIndex);"
-                  context="popup-create-group"
-                  style="min-width: 125px;" class="plain">
-              <treecols>
-                <treecol flex="1" primary="true" hideheader="true"/>
-              </treecols>
-              <treechildren/>
-            </tree>
+            <vbox flex="1">
+              <tree id="ship-category-tree" seltype="single"
+                    flex="1"
+                    persist="width"
+                    editable="true"
+                    hidecolumnpicker="true"
+                    treelines="true"
+                    onselect="NewShipList.onselect(this.currentIndex);"
+                    context="popup-create-group"
+                    style="min-width: 125px;" class="plain">
+                <treecols>
+                  <treecol flex="1" primary="true" hideheader="true"/>
+                </treecols>
+                <treechildren/>
+              </tree>
+              <button label="表示を更新" oncommand="NewShipList.refreshShipList();"/>
+            </vbox>
             <splitter/>
             <vbox id="newshiplist-right-pane" flex="1" persist="width">
               <tree id="newshiplist-tree" persist="height" flex="2" editable="false" enableColumnDrag="true"

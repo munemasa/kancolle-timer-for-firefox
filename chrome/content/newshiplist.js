@@ -246,9 +246,7 @@ ShipListTreeView.prototype = {
      */
     filterByEquipment: function( equip ){
 	this._filterEquip = equip;
-	console.log( this._filterType);
 	if( this._filterType == "/fleet" ) return;
-	console.log("filter by "+equip);
 
 	let typename = this._filterType;
 	let ships = this._filterType ? this._data.filter( function( d ){
@@ -339,6 +337,60 @@ ShipListTreeView.prototype = {
 	this.treebox.rowCountChanged( this.rowCount, this.rowCount - n );
 	this.treebox.invalidate();
 	this.selection.clearSelection();
+    },
+
+    updateVisibleData: function(){
+	let no = 1;
+	for( let i = 0; i < this._visibleData.length; i++ ){
+	    let item = this._visibleData[i];
+	    let ship_id = item[-1].api_id;
+
+	    let ship = KanColleDatabase.ship.get( ship_id );
+	    let spec = FindShipData( ship.api_id );
+	    let fleet_no = ShipList.getFleetNo( ship.api_id );
+	    ship._spec = spec;
+	    ship._equips = new Array();
+	    ship._fleet_no = fleet_no;
+	    for( let i in ship.api_slot ){
+		let slot_id = ship.api_slot[i];
+		if( slot_id == -1 ) continue;
+		let item = KanColleDatabase.slotitem.get( slot_id );
+		if( item ){
+		    let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+		    ship._equips.push( masterdata.api_name + (item.api_level > 0 ? "+" + item.api_level : "") );
+		}
+	    }
+
+	    let row = new Array();
+	    row.push( no );
+	    fleet_no = ShipList.getFleetNo( ship.api_id );
+	    row.push( KanColleData.type_name[ship._spec.api_stype] + (fleet_no ? "(" + fleet_no + ")" : "") );
+	    row.push( ship._spec.api_name );
+	    row.push( ship.api_lv );
+	    row.push( ship.api_cond );
+	    row.push( ship.api_ndock_time ? GetTimeString( parseInt( ship.api_ndock_time / 1000 ) ) : "---" );
+	    row.push( ship.api_sakuteki[0] );
+	    row.push( ship.api_exp[2] + "%" );
+	    let n = d3.sum( ship.api_onslot );
+	    if( n ){
+	    }else{
+		n = "--";
+	    }
+	    row.push( n );
+	    for( let i in ship.api_slot ){
+		if( ship.api_slot[i] < 0 ) continue;
+		let item = KanColleDatabase.slotitem.get( ship.api_slot[i] );
+		if( item ){
+		    let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+		    row.push( masterdata.api_name + (item.api_level > 0 ? "★+" + item.api_level : "") );
+		}
+	    }
+
+	    row[-1] = ship;
+	    this._visibleData[i] = row;
+	    no++;
+	}
+	this.treebox.invalidate();
     },
 
     _buildVisibleData: function( data ){
@@ -945,11 +997,24 @@ var NewShipList = {
 	}
     },
 
-    init: function(){
-	this.loadGroup();
+    saveGroup: function(){
+	let data = gShipCategoryData.filter( function( d ){
+	    if( d.id.match( /^kind-\d+/ ) ) return false;
+	    return true;
+	} );
+	console.log( data );
 
+	Storage.writeObject( "ship-group-category", data );
+    },
+
+    loadGroup: function(){
+	let data = Storage.readObject( "ship-group-category", null );
+	if( !data ) return;
+	gShipCategoryData = data;
+    },
+
+    refreshShipList: function(){
 	this.allships = this.createShipArray();
-
 	console.log( this.allships );
 
 	// 艦種別メニュー項目を作成
@@ -960,6 +1025,11 @@ var NewShipList = {
 	    // 高速戦艦(9)の分はスキップする
 	    if( data.api_stype != 9 ) tmp[ data.api_stype ] = 1;
 	} );
+
+	let newlist = gShipCategoryData.filter( function( d ){
+	    return !d.id.match( /^kind-\d+/ );
+	} );
+
 	d3.map( tmp ).keys()
 	    .sort( function( a, b ){
 		       return a - b;
@@ -967,8 +1037,20 @@ var NewShipList = {
 	    .forEach( function( d ){
 			  let name = KanColleData.type_name[d];
 			  let cat = new ShipCategoryListItem( "kind-" + d, TYPE_ITEM, name, "kind", true, true );
-			  gShipCategoryData.splice( 7, 0, cat );
+			  newlist.splice( 7, 0, cat );
 		      } );
+	if( this.shipCategoryTreeView ){
+	    this.shipCategoryTreeView.updateData( newlist );
+	    this.shipListTreeView.updateVisibleData();
+	}else{
+	    gShipCategoryData = newlist;
+	}
+    },
+
+    init: function(){
+	this.loadGroup();
+
+	this.refreshShipList();
 
 	$( "tab-newshiplist" ).setAttribute( "label", "艦娘一覧(" + this.allships.length + ")" );
 
@@ -992,22 +1074,6 @@ var NewShipList = {
 	    $( 'newshiplist-menu-equipment' ).appendChild( menuitem );
 	} );
 
-    },
-
-    saveGroup: function(){
-	let data = gShipCategoryData.filter( function( d ){
-	    if( d.id.match( /^kind-\d+/ ) ) return false;
-	    return true;
-	} );
-	console.log( data );
-
-	Storage.writeObject( "ship-group-category", data );
-    },
-
-    loadGroup: function(){
-	let data = Storage.readObject( "ship-group-category", null );
-	if( !data ) return;
-	gShipCategoryData = data;
     },
 
     destroy: function(){
