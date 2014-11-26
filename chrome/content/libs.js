@@ -1173,7 +1173,7 @@ var KanColleTimerFleetInfo = {
 				    api_maxhps: data.api_maxhps,
 				    api_nowhps: data.api_nowhps,
 				}, damages);
-    },
+	},
 	reqBattleMidnightBattle: function() {
 	    let data = KanColleDatabase.reqBattleMidnightBattle.get();
 	    let damages = [];

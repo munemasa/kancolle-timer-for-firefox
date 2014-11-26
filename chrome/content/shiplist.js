@@ -260,9 +260,9 @@ var ShipList = {
 	    }
 	    cell = CreateListCell( n );
 	    let tmp = obj.shipinfo.api_onslot.filter( function( d ){
-		return d!=0;
+		return d != 0;
 	    } );
-	    elem.setAttribute("tooltiptext", tmp);
+	    elem.setAttribute( "tooltiptext", tmp );
 	    elem.appendChild( cell );
 
 	    for( let i in obj.equips ){
@@ -526,7 +526,7 @@ var ShipList = {
 	return color;
     },
 
-    init: function(){
+    initEquipmentList: function(){
 	// 装備アイテムリスト
 	this.allequipments = KanColleDatabase.slotitem.list().map( function( k ){
 	    let item = KanColleDatabase.slotitem.get( k );
@@ -543,7 +543,10 @@ var ShipList = {
 		return a.api_type[i] - b.api_type[i];
 	    } );
 	}
+    },
 
+    init: function(){
+	this.initEquipmentList();
 	this.createHistogram();
 
 	// 艦艇リスト
@@ -551,40 +554,9 @@ var ShipList = {
 	    return KanColleDatabase.ship.get( k );
 	} );
 	this.allships = this.createShipList( ships );
-	this.sort( 0 ); // 艦種別ソートをデフォルトに
-	this.showShipList( this.allships );
 
 	this.createShipOrganizationList();
 	this.createEquipmentList();
-
-	// 艦種メニュー
-	let tmp = new Object();
-	ships.forEach( function( d ){
-	    let data = FindShipData( d.api_id );
-	    if( data.api_stype != 9 ) tmp[ data.api_stype ] = 1;
-	} );
-	d3.map( tmp ).keys()
-	    .sort( function( a, b ){
-		       return b - a;
-		   } )
-	    .forEach( function( d ){
-			  let name = KanColleData.type_name[d];
-			  let menuitem = CreateMenuItem( name, name );
-			  $( 'menu-shiptype' ).appendChild( menuitem );
-		      } );
-
-	// 装備アイテムメニュー
-	tmp = new Object();
-	this.allequipments.forEach( function( d ){
-	    tmp[ d.api_name ] = d;
-	} );
-	d3.map( tmp ).keys().forEach( function( d ){
-	    let menuitem = CreateMenuItem( d, d );
-	    let color = ShipList.getEquipmentColor( tmp[ d ] );
-	    menuitem.appendChild( CreateLabel( d, d ) );
-	    menuitem.setAttribute( "style", "border-left: " + color + " 16px solid;" );
-	    $( 'menu-equipment' ).appendChild( menuitem );
-	} );
 
 	this.setFleetOrganization( 1 );
 
@@ -594,7 +566,6 @@ var ShipList = {
 	let non_equipments = this.allequipments.filter( function( d ){
 	    return !d._owner_ship;
 	} );
-	$( "tab-ships" ).setAttribute( "label", "艦娘(" + ships.length + ")" );
 	$( "tab-equipment" ).setAttribute( "label", "未装備品(" + non_equipments.length + ")" );
     }
 
