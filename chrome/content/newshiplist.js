@@ -1063,6 +1063,13 @@ var NewShipList = {
 	    this.shipListTreeView._data = this.allships;
 	    this.shipListTreeView.updateVisibleData();
 	    $( "tab-newshiplist" ).setAttribute( "label", "艦娘一覧(" + this.allships.length + ")" );
+
+	    let idx = this.shipCategoryTreeView.selection.currentIndex;
+	    let data = this.shipCategoryTreeView._visibleData[idx];
+	    if( data.id.match( /fleet-(\d)/ ) ){
+		let n = parseInt( RegExp.$1 );
+		this.showFleetOrganization( n );
+	    }
 	}else{
 	    gShipCategoryData = newlist;
 	}
