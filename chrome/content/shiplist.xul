@@ -35,7 +35,7 @@
     <menubar>
       <menu label="ツール">
         <menupopup>
-          <menuitem label="艦娘リストをCSVに保存..." oncommand="ShipList.saveCvs();"/>
+          <menuitem label="艦娘リストをCSVに保存..." oncommand="NewShipList.saveCvs();"/>
           <menuseparator/>
           <menuitem label="閉じる" oncommand="window.close();"/>
         </menupopup>
