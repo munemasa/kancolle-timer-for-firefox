@@ -82,10 +82,14 @@ KanColleSimpleDB.prototype = {
 	this._raw = data;
 
 	while ((e = g.next()) != null) {
-	    if (e.opt)
-		e.func(Math.floor(now / 1000), data, extradata);
-	    else
-		e.func(extradata);
+	    try{
+		if (e.opt)
+		    e.func(Math.floor(now / 1000), data, extradata);
+		else
+		    e.func(extradata);
+	    }catch(e){
+		debugprint(e);
+	    }
 	}
 	g.close();
     },
