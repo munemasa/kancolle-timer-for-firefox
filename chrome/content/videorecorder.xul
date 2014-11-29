@@ -20,6 +20,11 @@
 
   <script type="application/javascript;version=1.7"
           src="chrome://kancolletimer/content/libs.js"/>
+  <script type="application/javascript;version=1.7"
+          src="chrome://kancolletimer/content/utils/prefutils.js" />
+  <script type="application/javascript;version=1.7"
+          src="chrome://kancolletimer/content/config.js" />
+
   <script type="application/javascript"
           src="chrome://kancolletimer/content/videorecorder.js"/>
 
@@ -44,6 +49,13 @@
     </hbox>
 
     <scale id="seekbar" min="0" max="0" onchange="VideoRecorder.showFrame(this.value);"/>
+    <hbox>
+      <button label="録画開始" oncommand="VideoRecorder.start();"/>
+      <button label="録画終了" oncommand="VideoRecorder.stop();"/>
+      <button label="再生" oncommand="VideoRecorder.play();"/>
+      <button label="停止" oncommand="VideoRecorder.pause();"/>
+      <button label="つぶやく" oncommand="VideoRecorder.tweet();"/>
+    </hbox>
   </vbox>
 
   <statusbar id="statusbar">

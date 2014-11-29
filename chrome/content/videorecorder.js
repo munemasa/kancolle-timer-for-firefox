@@ -50,6 +50,21 @@ var VideoRecorder = {
 	$( 'message' ).label = "Recording..."
     },
 
+    tweet: function(){
+	let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
+	let url;
+	let canvas = this.data[ this.cnt ];
+	if( isjpeg ){
+	    url = canvas.toDataURL( "image/jpeg" );
+	}else{
+	    url = canvas.toDataURL( "image/png" );
+	}
+	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+	    .getService( Components.interfaces.nsIIOService );
+	url = IO_SERVICE.newURI( url, null, null );
+	OpenTweetDialog( true, url );
+    },
+
     stop: function(){
 	clearInterval( this.timer_id );
 	$( 'seekbar' ).setAttribute( 'max', this.data.length - 1 );
