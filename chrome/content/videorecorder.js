@@ -81,6 +81,53 @@ var VideoRecorder = {
 	this.showFrame( 0 );
     },
 
+
+    /**
+     * 動画を、指定のファイル名 + "-X.png" という連番で保存する
+     */
+    save: function(){
+	let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
+
+	let defaultdir = KanColleTimerConfig.getUnichar( "screenshot.path" );
+	let nsIFilePicker = Components.interfaces.nsIFilePicker;
+	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance( nsIFilePicker );
+
+	fp.init( window, "保存先を選んでください", nsIFilePicker.modeSave );
+	if( defaultdir ){
+	    let file = Components.classes['@mozilla.org/file/local;1']
+		.createInstance( Components.interfaces.nsILocalFile );
+	    file.initWithPath( defaultdir );
+	    if( file.exists() && file.isDirectory() )
+		fp.displayDirectory = file;
+	}
+	fp.appendFilters( nsIFilePicker.filterImages );
+	fp.defaultString = "video" + (isjpeg ? ".jpg" : ".png");
+	fp.defaultExtension = isjpeg ? "jpg" : "png";
+	let ret = fp.show();
+	if( (ret != nsIFilePicker.returnOK && ret != nsIFilePicker.returnReplace) || !fp.file )
+	    return null;
+
+	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+	    .getService( Components.interfaces.nsIIOService );
+	for( let n = 0; n < this.data.length; n++ ){
+	    let canvas = this.data[ n ];
+	    let url;
+	    if( isjpeg ){
+		url = canvas.toDataURL( "image/jpeg" );
+	    }else{
+		url = canvas.toDataURL( "image/png" );
+	    }
+	    var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
+		.createInstance( Components.interfaces.nsIWebBrowserPersist );
+	    url = IO_SERVICE.newURI( url, null, null );
+	    var file = Components.classes["@mozilla.org/file/local;1"]
+		.createInstance( Components.interfaces.nsILocalFile );
+	    file.initWithPath( fp.file.path + "-" + n + (isjpeg ? ".jpg" : ".png") );
+	    wbp.saveURI( url, null, null, null, null, file, null );
+	}
+
+    },
+
     init: function(){
 	console.log( 'init' );
 	var ctx = $( 'video-playback' ).getContext( "2d" );
