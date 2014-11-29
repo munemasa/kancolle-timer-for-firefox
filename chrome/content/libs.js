@@ -1664,6 +1664,12 @@ function OpenDropShipList(){
     w.focus();
 }
 
+function OpenVideoRecorder(){
+    let feature = "chrome,resizable=yes";
+    let w = window.open( "chrome://kancolletimer/content/videorecorder.xul", "KanColleTimerVideoRecorder", feature );
+    w.focus();
+}
+
 function OpenAboutDialog(){
     var f='chrome,toolbar,modal=no,resizable=no,centerscreen';
     var w = window.openDialog('chrome://kancolletimer/content/about.xul','KanColleTimerAbout',f);
@@ -1830,6 +1836,38 @@ function TakeKanColleScreenshot(isjpeg){
     canvas.width = 1;
     canvas.height = 1;
     return url;
+}
+
+/**
+ * @return スクリーンショットのdataスキーマのnsIURIを返す。艦これのタブがなければnullを返す
+ */
+function TakeKanColleScreenshot_canvas(isjpeg){
+    var tab = FindKanColleTab();
+    if( !tab ) return null;
+    var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
+
+    var game_frame = win.window.document.getElementById("game_frame");
+    if (!game_frame) return null;
+    var offset_x = game_frame.offsetLeft;
+    var offset_y = game_frame.offsetTop;
+    var flash = game_frame.contentWindow.document.getElementById("flashWrap");
+    offset_x += flash.offsetLeft;
+    offset_y += flash.offsetTop;
+
+    var w = flash.clientWidth;
+    var h = flash.clientHeight;
+    var x = offset_x;
+    var y = offset_y;
+
+    var canvas = document.createElementNS("http://www.w3.org/1999/xhtml","canvas");
+    canvas.style.display = "inline";
+    canvas.width = w;
+    canvas.height = h;
+
+    var ctx = canvas.getContext("2d");
+    // x,y,w,h
+    ctx.drawWindow( win, x, y, w, h, "rgb(255,255,255)" );
+    return canvas;
 }
 
 /*
