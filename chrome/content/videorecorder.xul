@@ -10,7 +10,7 @@
         persist="screenX screenY width height sizemode"
         width="800" height="480"
         windowtype="KanColleTimerVideoRecorderWindow"
-        title="艦これビデオレコーダー">
+        title="艦これビデオレコーダー(仮)">
 
   <keyset>
     <!-- CTRL+W: Close this window -->

@@ -50,7 +50,7 @@
 	    <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimer.takeScreenshot();"/>
 	    <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimer.takeScreenshotSeriography();"/>
             <menuseparator/>
-            <menuitem label="ビデオレコーダー" oncommand="OpenVideoRecorder();"/>
+            <menuitem label="ビデオレコーダー(仮)" oncommand="OpenVideoRecorder();"/>
 	  </menupopup>
 	</toolbarbutton>
 	<toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
