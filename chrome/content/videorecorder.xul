@@ -67,8 +67,11 @@
     </hbox>
   </vbox>
 
-  <statusbar id="statusbar">
-    <statusbarpanel id="message" label="" flex="1"/>
+  <statusbar id="statusbar" flex="1">
+    <stack flex="1">
+      <progressmeter id="saving-progress" mode="determined" value="0" flex="1"/>
+      <statusbarpanel id="message" label="" flex="1"/>
+    </stack>
   </statusbar>
 
 </window>

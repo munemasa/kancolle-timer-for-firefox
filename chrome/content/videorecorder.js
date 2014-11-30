@@ -109,6 +109,7 @@ var VideoRecorder = {
 
 	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
 	    .getService( Components.interfaces.nsIIOService );
+	console.log( 'saving...' );
 	for( let n = 0; n < this.data.length; n++ ){
 	    let canvas = this.data[ n ];
 	    let url;
@@ -124,8 +125,18 @@ var VideoRecorder = {
 		.createInstance( Components.interfaces.nsILocalFile );
 	    file.initWithPath( fp.file.path + "-" + n + (isjpeg ? ".jpg" : ".png") );
 	    wbp.saveURI( url, null, null, null, null, file, null );
-	}
 
+	    let thread = Components.classes['@mozilla.org/thread-manager;1'].getService().mainThread;
+	    thread.processNextEvent( false );
+
+	    // 最初のうちだけ処理開始しているのが分かりやすいように 5%表示からスタートするように
+	    $( 'saving-progress' ).value = Math.max( parseInt( n * 100 / this.data.length ), 5 );
+	    $( 'message' ).label = (n + 1) + ' frame(s) saved.';
+
+	    if( this._break ) break;
+	}
+	console.log( 'done.' );
+	$( 'saving-progress' ).value = 0;
     },
 
     init: function(){
@@ -145,9 +156,16 @@ var VideoRecorder = {
 	ctx.moveTo( 0, 480 );
 	ctx.lineTo( 800, 0 );
 	ctx.stroke();
+    },
+    destroy: function(){
+	this._break = true;
     }
 };
 
 window.addEventListener( "load", function( e ){
     VideoRecorder.init();
+}, false );
+
+window.addEventListener( "unload", function( e ){
+    VideoRecorder.destroy();
 }, false );
