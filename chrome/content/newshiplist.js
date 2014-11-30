@@ -279,6 +279,11 @@ ShipListTreeView.prototype = {
      * @param type
      */
     sort: function( type ){
+	if( typeof type == 'number' ){
+	    this._sorttype = type;
+	}else{
+	    type = this._sorttype;
+	}
 	this._visibleData.sort( function( a, b ){
 	    var tmpa = 0;
 	    var tmpb = 0;
@@ -680,12 +685,12 @@ var NewShipList = {
 	    data.id.match( /fleet-(\d)/ );
 	    let n = parseInt( RegExp.$1 );
 	    this.showFleetOrganization( n );
-	    this.shipListTreeView._resetSortDirection();
+	    this.shipListTreeView.sort();
 	    break;
 
 	case "kind-all":
 	    this.shipListTreeView.filterByType();
-	    this.shipListTreeView._resetSortDirection();
+	    this.shipListTreeView.sort();
 	    break;
 
 	default:
@@ -694,12 +699,13 @@ var NewShipList = {
 		let n = parseInt( RegExp.$1 );
 		let target_type = KanColleData.type_name[n];
 		this.shipListTreeView.filterByType( target_type );
-		this.shipListTreeView._resetSortDirection();
+		this.shipListTreeView.sort();
 		break;
 	    }
 	    if( data.id.match( /^ud-/ ) ){
 		// ユーザー定義グループ
 		this.showUserDefinedGroupShip( data.id );
+		this.shipListTreeView.sort();
 	    }
 	    break;
 	}
@@ -818,7 +824,6 @@ var NewShipList = {
 	    }
 	}
 	this.shipListTreeView.setShipList( ships );
-	this.shipListTreeView._resetSortDirection();
     },
 
     /**
