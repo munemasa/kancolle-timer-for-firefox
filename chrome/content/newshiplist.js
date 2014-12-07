@@ -281,6 +281,7 @@ ShipListTreeView.prototype = {
     sort: function( type ){
 	if( typeof type == 'number' ){
 	    this._sorttype = type;
+	    if( type == -1 ) type = 0;
 	}else{
 	    type = this._sorttype;
 	}
@@ -566,7 +567,7 @@ ShipListTreeView.prototype = {
 	    this._resetSortDirection();
 	    col.element.setAttribute( "sortDirection", sortDir );
 	}else{
-	    this.sort( 0 );
+	    this.sort( -1 );
 	    col.element.setAttribute( "sortDirection", 'natural' );
 	}
 
@@ -678,6 +679,16 @@ var NewShipList = {
 	if( !data ) return;
 
 	switch( data.id ){
+	case "fleet":
+	    let ships = new Array();
+	    for( let i = 1; i <= 4; i++ ){
+		let s = this.getFleetOrganization( i );
+		ships = ships.concat( s );
+	    }
+	    this.shipListTreeView.setShipList( ships );
+	    this.shipListTreeView.sort();
+	    break;
+
 	case "fleet-1":
 	case "fleet-2":
 	case "fleet-3":
@@ -824,6 +835,24 @@ var NewShipList = {
 	    }
 	}
 	this.shipListTreeView.setShipList( ships );
+    },
+
+    getFleetOrganization: function( n ){
+	let fleet = KanColleDatabase.deck.get( n );
+	let no = 1;
+	let sakuteki = 0;
+
+	let ships = new Array();
+
+	for( let i = 0; fleet.api_ship[i] != -1 && i < 6; i++ ){
+	    let data = FindOwnShipData( fleet.api_ship[i] );
+	    let masterdata = FindShipData( fleet.api_ship[i] );
+	    data._spec = masterdata;
+
+	    sakuteki += data.api_sakuteki[0];
+	    ships.push( data );
+	}
+	return ships;
     },
 
     /**
@@ -1066,6 +1095,8 @@ var NewShipList = {
 	if( this.shipCategoryTreeView ){
 	    this.shipCategoryTreeView.updateData( newlist );
 	    this.shipListTreeView._data = this.allships;
+	    // 表示されている艦娘のステータス表示を更新するだけで
+	    // リストに表示されている艦娘の増減はしない
 	    this.shipListTreeView.updateVisibleData();
 	    $( "tab-newshiplist" ).setAttribute( "label", "艦娘一覧(" + this.allships.length + ")" );
 
@@ -1076,6 +1107,15 @@ var NewShipList = {
 		if( data.id.match( /fleet-(\d)/ ) ){
 		    let n = parseInt( RegExp.$1 );
 		    this.showFleetOrganization( n );
+		}
+		if( data.id == 'fleet' ){
+		    let ships = new Array();
+		    for( let i = 1; i <= 4; i++ ){
+			let s = this.getFleetOrganization( i );
+			ships = ships.concat( s );
+		    }
+		    this.shipListTreeView.setShipList( ships );
+		    this.shipListTreeView.sort();
 		}
 	    }
 	}else{
