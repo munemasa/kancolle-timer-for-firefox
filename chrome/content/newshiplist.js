@@ -819,6 +819,7 @@ var NewShipList = {
 	} );
 
 	for( let ship of ships ){
+	    if( !ship ) continue;
 	    let spec = FindShipData( ship.api_id );
 	    let fleet_no = ShipList.getFleetNo( ship.api_id );
 	    ship._spec = spec;
@@ -834,6 +835,9 @@ var NewShipList = {
 		}
 	    }
 	}
+	ships = ships.filter( function( ship ){
+	    return ship;
+	} );
 	this.shipListTreeView.setShipList( ships );
     },
 
