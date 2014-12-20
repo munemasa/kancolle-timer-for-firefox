@@ -239,7 +239,7 @@ var ShipList = {
 	    }
 	    elem.setAttribute( 'style', style );
 
-	    let cell = CreateListCell( obj.ndock_time ? GetTimeString( obj.ndock_time ) : "---" );
+	    cell = CreateListCell( obj.ndock_time ? GetTimeString( obj.ndock_time ) : "---" );
 	    if( ShipList.isRepairing( obj.ship_id ) ){
 		cell.setAttribute( 'style', 'color: gray; text-align: center;' );
 	    }else{
