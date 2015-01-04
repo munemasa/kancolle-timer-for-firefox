@@ -259,7 +259,8 @@ ShipListTreeView.prototype = {
 	this._visibleData = this._visibleData.filter( function( d ){
 	    for( let tmp of d ){
 		if( "string" == typeof tmp ){
-		    if( tmp.indexOf( equip ) == 0 ) return true;
+		    tmp = tmp.match( /(.*)(★\+\d)*$/ )[1];
+		    if( tmp == equip ) return true;
 		}
 	    }
 	    return false;
