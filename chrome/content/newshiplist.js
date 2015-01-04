@@ -727,7 +727,7 @@ var NewShipList = {
 	if( this.shipListTreeView.selection.count == 0 ) return;
 	let ship = this.shipListTreeView._visibleData[n][-1];
 
-	$( 'api_stype' ).value = KanColleData.type_name[ ship._spec.api_stype ];
+	$( 'api_stype' ).value = KanColleData.type_name[ship._spec.api_stype];
 	$( 'api_name' ).value = ship._spec.api_name;
 	$( 'api_lv' ).value = "Lv " + ship.api_lv;
 	$( 'api_maxhp' ).value = ship.api_maxhp;
@@ -1080,7 +1080,7 @@ var NewShipList = {
 	    let data = FindShipData( d.api_id );
 	    // 艦これでは戦艦と高速戦艦（金剛型）の表示上の区別がないので
 	    // 高速戦艦(9)の分はスキップする
-	    if( data.api_stype != 9 ) tmp[ data.api_stype ] = 1;
+	    if( data.api_stype != 9 ) tmp[data.api_stype] = 1;
 	} );
 
 	let newlist = gShipCategoryData.filter( function( d ){
@@ -1089,13 +1089,13 @@ var NewShipList = {
 
 	d3.map( tmp ).keys()
 	    .sort( function( a, b ){
-		       return a - b;
-		   } )
+		return a - b;
+	    } )
 	    .forEach( function( d ){
-			  let name = KanColleData.type_name[d];
-			  let cat = new ShipCategoryListItem( "kind-" + d, TYPE_ITEM, name, "kind", true, true );
-			  newlist.splice( 7, 0, cat );
-		      } );
+		let name = KanColleData.type_name[d];
+		let cat = new ShipCategoryListItem( "kind-" + d, TYPE_ITEM, name, "kind", true, true );
+		newlist.splice( 7, 0, cat );
+	    } );
 	if( this.shipCategoryTreeView ){
 	    this.shipCategoryTreeView.updateData( newlist );
 	    this.shipListTreeView._data = this.allships;
@@ -1144,11 +1144,11 @@ var NewShipList = {
 	// 装備アイテムメニュー
 	tmp = new Object();
 	ShipList.allequipments.forEach( function( d ){
-	    tmp[ d.api_name ] = d;
+	    tmp[d.api_name] = d;
 	} );
 	d3.map( tmp ).keys().forEach( function( d ){
 	    let menuitem = CreateMenuItem( d, d );
-	    let color = ShipList.getEquipmentColor( tmp[ d ] );
+	    let color = ShipList.getEquipmentColor( tmp[d] );
 	    menuitem.appendChild( CreateLabel( d, d ) );
 	    menuitem.setAttribute( "style", "border-left: " + color + " 16px solid;" );
 	    $( 'newshiplist-menu-equipment' ).appendChild( menuitem );
