@@ -203,7 +203,7 @@
                                 oncommand="NewShipList.filterByEquipment(this.value);">
                         <menupopup id="newshiplist-menu-equipment"
                                    style="height: 30em;">
-                          <menuitem label="装備フィルタ：なし"/>
+                          <menuitem label="装備フィルタ：なし" value=""/>
                         </menupopup>
                       </menulist>
                     </hbox>
