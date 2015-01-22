@@ -16,9 +16,10 @@ function make_y_axis( y ){
 	.ticks( 5 );
 }
 
-var ResourceGraph = {
+let ResourceGraph = {
     width:  960,
     height: 500,
+    zoomRate: 1.1,
 
     color: {
 	"fuel": "#69aa60",
@@ -50,7 +51,7 @@ var ResourceGraph = {
 
 	cos.writeString( "時刻,燃料,弾薬,鋼材,ボーキサイト,バケツ\n" );
 
-	var data = KanColleRemainInfo.gResourceData;
+	let data = KanColleRemainInfo.gResourceData;
 	for( let i = 0; i < data.length; i++ ){
 	    let d = data[i];
 	    d.bucket = d.bucket || 0;
@@ -72,15 +73,15 @@ var ResourceGraph = {
      */
     takeScreenshot: function( path ){
 	let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
-	var url = this.takePicture( isjpeg );
+	let url = this.takePicture( isjpeg );
 	if( !url ){
 	    AlertPrompt( "画像データを生成できませんでした。", "艦これタイマー" );
 	    return null;
 	}
 
-	var file = null;
+	let file = null;
 	if( !path ){
-	    var fp = Components.classes['@mozilla.org/filepicker;1']
+	    let fp = Components.classes['@mozilla.org/filepicker;1']
 		.createInstance( Components.interfaces.nsIFilePicker );
 	    fp.init( window, "画像の保存", fp.modeSave );
 	    fp.appendFilters( fp.filterImages );
@@ -89,7 +90,7 @@ var ResourceGraph = {
 		fp.displayDirectory = OpenFile( KanColleTimerConfig.getUnichar( "screenshot.path" ) );
 	    }
 
-	    var datestr = this.getNowDateString();
+	    let datestr = this.getNowDateString();
 	    fp.defaultString = "screenshot-" + datestr + (isjpeg ? ".jpg":".png");
 	    if( fp.show() == fp.returnCancel || !fp.file ) return null;
 
@@ -99,25 +100,25 @@ var ResourceGraph = {
 	    let localfileIID = Components.interfaces.nsILocalFile;
 	    file = Components.classes[localfileCID].createInstance( localfileIID );
 	    file.initWithPath( path );
-	    var datestr = this.getNowDateString();
-	    var filename = "screenshot-" + datestr + (isjpeg ? ".jpg":".png");
+	    let datestr = this.getNowDateString();
+	    let filename = "screenshot-" + datestr + (isjpeg ? ".jpg":".png");
 	    file.append( filename );
 	}
 
-	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
+	let wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
 	    .createInstance( Components.interfaces.nsIWebBrowserPersist );
 	wbp.saveURI( url, null, null, null, null, file, null );
 	return true;
     },
     getNowDateString: function(){
-	var d = new Date();
-	var month = d.getMonth() + 1;
+	let d = new Date();
+	let month = d.getMonth() + 1;
 	month = month < 10 ? "0" + month:month;
-	var date = d.getDate() < 10 ? "0" + d.getDate():d.getDate();
-	var hour = d.getHours() < 10 ? "0" + d.getHours():d.getHours();
-	var min = d.getMinutes() < 10 ? "0" + d.getMinutes():d.getMinutes();
-	var sec = d.getSeconds() < 10 ? "0" + d.getSeconds():d.getSeconds();
-	var ms = d.getMilliseconds();
+	let date = d.getDate() < 10 ? "0" + d.getDate():d.getDate();
+	let hour = d.getHours() < 10 ? "0" + d.getHours():d.getHours();
+	let min = d.getMinutes() < 10 ? "0" + d.getMinutes():d.getMinutes();
+	let sec = d.getSeconds() < 10 ? "0" + d.getSeconds():d.getSeconds();
+	let ms = d.getMilliseconds();
 	if( ms < 10 ){
 	    ms = "000" + ms;
 	}else if( ms < 100 ){
@@ -167,7 +168,7 @@ var ResourceGraph = {
 
     tweet: function(){
 	let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
-	var pic = this.takePicture( isjpeg );
+	let pic = this.takePicture( isjpeg );
 	OpenTweetDialog( true, pic );
     },
 
@@ -183,28 +184,28 @@ var ResourceGraph = {
     createGraph: function(){
 	RemoveElement( $( 'graph' ) );
 
-	var data = KanColleRemainInfo.gResourceData;
+	let data = KanColleRemainInfo.gResourceData;
 
-	var margin = {top: 20, right: 80, bottom: 42, left: 50};
-	var width = this.width - margin.left - margin.right;
-	var height = this.height - margin.top - margin.bottom;
+	let margin = {top: 20, right: 80, bottom: 42, left: 50};
+	let width = this.width - margin.left - margin.right;
+	let height = this.height - margin.top - margin.bottom;
 
 	// バケツだけ縦軸のスケールが違うので hoge2 として区別する
-	var x = d3.time.scale().range( [0, width] );
-	var y = d3.scale.linear().range( [height, 0] );
-	var y2 = d3.scale.linear().range( [height, 0] );
-	var xAxis = d3.svg.axis().scale( x ).orient( "bottom" ).tickFormat( d3.time.format( "%m/%d %H:%M" ) );
-	var yAxis = d3.svg.axis().scale( y ).orient( "left" );
-	var yAxis2 = d3.svg.axis().scale( y2 ).orient( "left" );
+	let x = d3.time.scale().range( [0, width] );
+	let y = d3.scale.linear().range( [height, 0] );
+	let y2 = d3.scale.linear().range( [height, 0] );
+	let xAxis = d3.svg.axis().scale( x ).orient( "bottom" ).tickFormat( d3.time.format( "%m/%d %H:%M" ) );
+	let yAxis = d3.svg.axis().scale( y ).orient( "left" );
+	let yAxis2 = d3.svg.axis().scale( y2 ).orient( "left" );
 
-	var line = d3.svg.line().interpolate( "step-after" )
+	let line = d3.svg.line().interpolate( "step-after" )
 	    .x( function( d ){
 		return x( d.date );
 	    } )
 	    .y( function( d ){
 		return y( d.value );
 	    } );
-	var line2 = d3.svg.line().interpolate( "step-after" )
+	let line2 = d3.svg.line().interpolate( "step-after" )
 	    .x( function( d ){
 		    return x( d.date );
 		} )
@@ -213,13 +214,16 @@ var ResourceGraph = {
 		    return y2( d.value );
 		} );
 
-	var svg = d3.select( "vbox" ).append( "svg" ).attr( "id", "graph" )
-	    .attr( "width", width + margin.left + margin.right )
-	    .attr( "height", height + margin.top + margin.bottom )
+	let w = width + margin.left + margin.right;
+	let h = height + margin.top + margin.bottom;
+	let svg = d3.select( "vbox" ).append( "svg" ).attr( "id", "graph" )
+	    .attr( "width", w )
+	    .attr( "height", h )
+	    .attr( "viewBox", "0 0 " + w + " " + h )
 	    .append( "g" )
 	    .attr( "transform", "translate(" + margin.left + "," + margin.top + ")" );
 
-	var keys = d3.keys( data[ data.length-1 ] ).filter( function( k ){
+	let keys = d3.keys( data[ data.length-1 ] ).filter( function( k ){
 	    let ids = ["fuel", "bullet", "steel", "bauxite", "bucket" ];
 	    for( let i = 0; i < ids.length; i++ ){
 		if( !$( ids[i] ).checked && k == ids[i] ){
@@ -233,7 +237,7 @@ var ResourceGraph = {
 	    d.date = new Date( d.recorded_time * 1000 );
 	} );
 
-	var resources = keys.map( function( k ){
+	let resources = keys.map( function( k ){
 	    return {
 		name:   k,
 		values: data.map( function( d ){
@@ -246,14 +250,14 @@ var ResourceGraph = {
 	    return d.date;
 	} ) );
 	// バケツを無視して資源の最大、最小値を得る
-	var min = d3.min( resources, function( r ){
+	let min = d3.min( resources, function( r ){
 	    if( r.name == "bucket" ) return Number.MAX_VALUE;
 
 	    return d3.min( r.values, function( v ){
 		return v.value;
 	    } );
 	} );
-	var max = d3.max( resources, function( r ){
+	let max = d3.max( resources, function( r ){
 	    if( r.name == "bucket" ) return 0;
 	    return d3.max( r.values, function( v ){
 		return v.value;
@@ -325,7 +329,7 @@ var ResourceGraph = {
 	    );
 
 	// 折れ線グラフの作成
-	var resource = svg.selectAll( ".resource" )
+	let resource = svg.selectAll( ".resource" )
 	    .data( resources )
 	    .enter().append( "g" )
 	    .attr( "class", "resource" );
@@ -343,7 +347,7 @@ var ResourceGraph = {
 		    } );
 
 	// 現在値の位置にラベルを表示
-	var resource_name = {
+	let resource_name = {
 	    "fuel": "燃料",
 	    "bullet": "弾薬",
 	    "steel": "鋼材",
@@ -397,6 +401,74 @@ var ResourceGraph = {
 		   } );
     },
 
+    zoom: function( zoomType ){
+	// MSDNのサンプルから
+	let theSvgElement = $( 'graph' );
+	let viewBox = theSvgElement.getAttribute( 'viewBox' );	// Grab the object representing the SVG element's viewBox attribute.
+	let viewBoxValues = viewBox.split( ' ' );				// Create an array and insert each individual view box attribute value (assume they're seperated by a single whitespace character).
+
+	viewBoxValues[2] = parseFloat( viewBoxValues[2] );		// Convert string "numeric" values to actual numeric values.
+	viewBoxValues[3] = parseFloat( viewBoxValues[3] );
+
+	if( zoomType == 'zoomIn' ){
+	    viewBoxValues[2] /= this.zoomRate;	// Decrease the width and height attributes of the viewBox attribute to zoom in.
+	    viewBoxValues[3] /= this.zoomRate;
+	}
+	else if( zoomType == 'zoomOut' ){
+	    viewBoxValues[2] *= this.zoomRate;	// Increase the width and height attributes of the viewBox attribute to zoom out.
+	    viewBoxValues[3] *= this.zoomRate;
+	}
+	else{
+	    alert( "function zoom(zoomType) given invalid zoomType parameter." );
+	}
+
+	theSvgElement.setAttribute( 'viewBox', viewBoxValues.join( ' ' ) );	// Convert the viewBoxValues array into a string with a white space character between the given values.
+    },
+
+    zoomViaMouseWheel: function( mouseWheelEvent ){
+	if( mouseWheelEvent.deltaY < 0 ){
+	    this.zoom( 'zoomIn' );
+	}else{
+	    this.zoom( 'zoomOut' );
+	}
+	/* When the mouse is over the webpage, don't let the mouse wheel scroll the entire webpage: */
+	mouseWheelEvent.cancelBubble = true;
+	return false;
+    },
+
+    mouseDown: function( e ){
+	this._down = true;
+	this._x = e.layerX;
+	this._y = e.layerY;
+    },
+    mouseMove: function( e ){
+	if( this._down ){
+	    let theSvgElement = $( 'graph' );
+	    let viewBox = theSvgElement.getAttribute( 'viewBox' );
+	    let viewBoxValues = viewBox.split( ' ' );
+
+	    viewBoxValues[0] = parseFloat( viewBoxValues[0] );
+	    viewBoxValues[1] = parseFloat( viewBoxValues[1] );
+
+	    let dx = this._x - e.layerX;
+	    let dy = this._y - e.layerY;
+
+	    dx *= parseFloat(viewBoxValues[2]) / this.width;
+	    dy *= parseFloat(viewBoxValues[3]) / this.height;
+
+	    viewBoxValues[0] += dx;
+	    viewBoxValues[1] += dy;
+
+	    this._x = e.layerX;
+	    this._y = e.layerY;
+
+	    theSvgElement.setAttribute( 'viewBox', viewBoxValues.join( ' ' ) );
+	}
+    },
+    mouseUp: function( e ){
+	this._down = false;
+    },
+
     init: function(){
 	document.title += " " + new Date();
 	this.createGraph();
@@ -409,3 +481,18 @@ window.addEventListener( "load", function( e ){
     ResourceGraph.init();
     //WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );
 }, false );
+
+window.addEventListener( 'wheel', function( e ){
+    ResourceGraph.zoomViaMouseWheel(e);
+}, false );
+
+window.addEventListener( 'mousedown', function( e ){
+    ResourceGraph.mouseDown( e );
+}, false );
+window.addEventListener( 'mousemove', function( e ){
+    ResourceGraph.mouseMove( e );
+}, false );
+window.addEventListener( 'mouseup', function( e ){
+    ResourceGraph.mouseUp( e );
+}, false );
+

@@ -21,13 +21,13 @@
 
   <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8"></script>
 
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/utils/prefutils.js" />
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/config.js" />
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/libs.js" />
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/resourcegraph.js" />
 
   <toolbox>
