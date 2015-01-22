@@ -265,6 +265,9 @@ let ResourceGraph = {
 	} );
 	min = d3.max( [min - 1000, 0] );
 	max = max + 500;
+	if( max > 300000 ){
+	    max = 300000;
+	}
 	y.domain( [ min, max ] );
 
 	min = d3.min( resources, function( r ){
@@ -282,6 +285,9 @@ let ResourceGraph = {
 	} );
 	min = d3.max( [min - 50, 0] );
 	max = d3.min( [3000, max + 50] );
+	if( max > 3000 ){
+	    max = 3000;
+	}
 	y2.domain( [min, max] );
 
 	// 日付軸
