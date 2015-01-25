@@ -303,21 +303,26 @@ let ResourceGraph = {
 		   } )
 	    .style( "text-anchor", "center" );
 
-	svg.append( "g" )
-	    .attr( "class", "y axis" )
-	    .call( yAxis )
-	    .append( "text" )
-	    .attr( "transform", "rotate(-90)" )
-	    .attr( "y", 6 )
-	    .attr( "dy", ".71em" )
-	    .style( "text-anchor", "end" )
-	    .text( "資源量" );
+	if( $( 'fuel' ).getAttribute( 'checked' ) || $( 'bullet' ).getAttribute( 'checked' ) ||
+	    $( 'steel' ).getAttribute( 'checked' ) || $( 'bauxite' ).getAttribute( 'checked' ) ){
+	    svg.append( "g" )
+		.attr( "class", "y axis" )
+		.call( yAxis )
+		.append( "text" )
+		.attr( "transform", "rotate(-90)" )
+		.attr( "y", 6 )
+		.attr( "dy", ".71em" )
+		.style( "text-anchor", "end" )
+		.text( "資源量" );
+	}
 
-	// バケツ軸 右側に表示
-	svg.append( "g" )
-	    .attr( "class", "y axis" )
-	    .attr( "transform", "translate(" + width + ",0)" )
-	    .call( yAxis2 );
+	if( $( 'bucket' ).getAttribute( 'checked' ) ){
+	    // バケツ軸 右側に表示
+	    svg.append( "g" )
+		.attr( "class", "y axis" )
+		.attr( "transform", "translate(" + width + ",0)" )
+		.call( yAxis2 );
+	}
 
 	svg.append( "g" )
 	    .attr( "class", "grid" )
