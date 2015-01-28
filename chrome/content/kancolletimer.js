@@ -248,9 +248,7 @@ var KanColleTimer = {
     _saveScreenshot: function(file,url){
 	if (!file || !url)
 	    return;
-	Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-	    .createInstance(Components.interfaces.nsIWebBrowserPersist)
-	    .saveURI(url, null, null, null, null, file, null);
+	SaveUrlToFile( url, file );
     },
     /**
      * スクリーンショット撮影

@@ -1,20 +1,22 @@
 // vim: set ts=8 sw=4 sts=4 ff=dos :
 
-Components.utils.import("resource://gre/modules/ctypes.jsm");
-Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
-Components.utils.import("resource://gre/modules/FileUtils.jsm");
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cu = Components.utils;
+
+Cu.import("resource://gre/modules/ctypes.jsm");
+Cu.import("resource://gre/modules/FileUtils.jsm");
+Cu.import("resource://gre/modules/Downloads.jsm");
+Cu.import("resource://gre/modules/Task.jsm");
+Cu.import("resource://gre/modules/AddonManager.jsm");
+Cu.import("resource://kancolletimermodules/httpobserve.jsm");
+
+let FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils;
 
 /**
  * いろいろと便利関数などを.
  */
-try{
-    // Fx4.0
-    Components.utils.import("resource://gre/modules/AddonManager.jsm");
-} catch (x) {
-} 
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
 
 const MODE_SAVE = Ci.nsIFilePicker.modeSave;
 
@@ -3349,6 +3351,8 @@ function ZoomKanCollePage( scale ){
     return 0;
 }
 
+// ここから後ろが汎用的な関数書いているところ
+
 /**
  * 艦これを開いているブラウザのglobal-notificationboxを取得する
  */
@@ -3672,15 +3676,12 @@ function CreateFolder(path){
 /**
  * 指定パスのnsIFileを返す
  */
-function OpenFile(path){
-    let localfileCID = '@mozilla.org/file/local;1';
-    let localfileIID =Components.interfaces.nsILocalFile;
-    try {
-	let file = Components.classes[localfileCID].createInstance(localfileIID);
-	file.initWithPath(path);
-	return file;
-    }
-    catch(e) {
+function OpenFile( path ){
+    try{
+	let nsifile = new FileUtils.File( path );
+	return nsifile;
+    }catch( e ){
+	console.log( "file or directory not found: " + path );
 	return false;
     }
 }
@@ -3790,6 +3791,18 @@ function OpenFileDialog( caption, mode )
 	return file;
     }
     return null;
+}
+
+/**
+ * 指定のURLをfile(nsIFile)に保存する
+ * @param url
+ * @param file
+ */
+function SaveUrlToFile( url, file )
+{
+    Task.spawn(function () {
+	yield Downloads.fetch( url, file );
+    }).then(null, Components.utils.reportError);
 }
 
 /**

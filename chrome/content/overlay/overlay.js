@@ -196,6 +196,15 @@ KanColleTimer.Overlay = {
 	}
     },
 
+    SaveUrlToFile: function( url, file ){
+	let Downloads = Components.utils.import("resource://gre/modules/Downloads.jsm").Downloads;
+	let Task = Components.utils.import("resource://gre/modules/Task.jsm").Task;
+
+	Task.spawn(function () {
+	    yield Downloads.fetch( url, file );
+	}).then(null, Components.utils.reportError);
+    },
+
     /**
      * スクリーンショット撮影
      * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
@@ -276,10 +285,7 @@ KanColleTimer.Overlay = {
 	    var filename = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
 	    file.append(filename);
 	}
-	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-	    .createInstance(Components.interfaces.nsIWebBrowserPersist);
-	wbp.saveURI(url, null, null, null, null, file, null);
-
+	this.SaveUrlToFile( url, file );
 	return true;
     },
 

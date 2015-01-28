@@ -118,13 +118,9 @@ var VideoRecorder = {
 	    }else{
 		url = canvas.toDataURL( "image/png" );
 	    }
-	    var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-		.createInstance( Components.interfaces.nsIWebBrowserPersist );
 	    url = IO_SERVICE.newURI( url, null, null );
-	    var file = Components.classes["@mozilla.org/file/local;1"]
-		.createInstance( Components.interfaces.nsILocalFile );
-	    file.initWithPath( fp.file.path + "-" + n + (isjpeg ? ".jpg" : ".png") );
-	    wbp.saveURI( url, null, null, null, null, file, null );
+	    let file = OpenFile( fp.file.path + "-" + n + (isjpeg ? ".jpg" : ".png") );
+	    SaveUrlToFile( url, file );
 
 	    let thread = Components.classes['@mozilla.org/thread-manager;1'].getService().mainThread;
 	    thread.processNextEvent( false );

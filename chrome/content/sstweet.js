@@ -46,18 +46,15 @@ var SSTweet = {
 	fp.defaultString = "screenshot-"+ this.getNowDateString() + (isjpeg?".jpg":".png");
 	fp.defaultExtension = isjpeg ? "jpg" : "png";
 	ret = fp.show();
-	if ((ret != nsIFilePicker.returnOK && ret != nsIFilePicker.returnReplace) || !fp.file)
+	if ((ret != nsIFilePicker.returnOK && ret != nsIFilePicker.returnReplace) || !fp.file){
 	    return null;
+	}
 
-	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-	    .createInstance(Components.interfaces.nsIWebBrowserPersist);
-
-	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
-	    .getService(Components.interfaces.nsIIOService);
-
+	const IO_SERVICE = Cc['@mozilla.org/network/io-service;1'].getService( Ci.nsIIOService );
 	let data = $('ss-image').src;
 	data = IO_SERVICE.newURI(data, null, null);
-	wbp.saveURI(data, null, null, null, null, fp.file, null);
+
+	SaveUrlToFile( data, fp.file );
     },
 
     send: function(){
@@ -67,13 +64,11 @@ var SSTweet = {
 
 	let file = this.getTempFile();
 	debugprint(file.path);
-	var wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-            .createInstance(Components.interfaces.nsIWebBrowserPersist);
 
-	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
-            .getService(Components.interfaces.nsIIOService);
-	data = IO_SERVICE.newURI(data, null, null);
-	wbp.saveURI(data, null, null, null, null, file, null);
+	const IO_SERVICE = Cc['@mozilla.org/network/io-service;1']
+	    .getService( Ci.nsIIOService );
+	data = IO_SERVICE.newURI( data, null, null );
+	SaveUrlToFile( data, file );
 
 	ShowNotice( "スクリーンショットを送信しています...", true );
 	setTimeout( function(){

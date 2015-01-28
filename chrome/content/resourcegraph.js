@@ -105,9 +105,7 @@ let ResourceGraph = {
 	    file.append( filename );
 	}
 
-	let wbp = Components.classes['@mozilla.org/embedding/browser/nsWebBrowserPersist;1']
-	    .createInstance( Components.interfaces.nsIWebBrowserPersist );
-	wbp.saveURI( url, null, null, null, null, file, null );
+	SaveUrlToFile( url, file );
 	return true;
     },
     getNowDateString: function(){

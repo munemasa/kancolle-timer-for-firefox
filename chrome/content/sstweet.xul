@@ -21,21 +21,21 @@
     <key id="closewindow2" keycode="VK_ESCAPE" oncommand="window.close();"/>
   </keyset>
 
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/utils/oauth.js" />
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/utils/sha1.js" />
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/twitter.js" />
 
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/utils/prefutils.js" />
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/libs.js" />
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/config.js" />
 
-  <script type="application/javascript;version=1.7"
+  <script type="application/javascript"
 	  src="chrome://kancolletimer/content/sstweet.js" />
 
   <notificationbox id="noticewin">
