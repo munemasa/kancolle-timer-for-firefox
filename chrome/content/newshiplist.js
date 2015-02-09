@@ -748,19 +748,40 @@ var NewShipList = {
 
 	$( 'api_exp' ).value = "EXP " + FormatCommas( ship.api_exp[0] ) + " (Next " + FormatCommas( ship.api_exp[1] ) + ")";
 
+	let name = {
+	    "api_houg": "火力",
+	    "api_raig": "雷装",
+	    "api_baku": "爆装",
+	    "api_tyku": "対空",
+	    "api_tais": "対潜",
+	    "api_houm": "命中",
+	    "api_houk": "回避",
+	    "api_saku": "索敵",
+	    //"api_raim": "雷撃命中", // かな？
+	    "api_souk": "装甲"
+	};
+
+	console.log(ship);
 	for( let i = 0; i < 4; i++ ){
 	    let slot_id = ship.api_slot[i];
 	    if( ship.api_onslot[i] ){
-		$( 'api_onslot' + i ).value = '搭載機数(' + ship.api_onslot[i] + ')';
+		$( 'api_onslot' + i ).value = '搭載機数(' + ship.api_onslot[i] + ') ';
 	    }else{
 		$( 'api_onslot' + i ).value = '';
 	    }
+
 	    if( slot_id == -1 ){
 		$( 'api_slot' + i ).value = "";
 		$( 'api_slot' + i ).removeAttribute( 'style' );
 		continue;
 	    }
 	    let item = KanColleDatabase.slotitem.get( slot_id );
+	    let tmp = "";
+	    for( let k in item ){
+		if( name[k] && GetSignedValue( item[k] ) ){
+		    tmp += name[k] + GetSignedValue( item[k] ) + " ";
+		}
+	    }
 	    if( item ){
 		let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
 		let str = masterdata.api_name
@@ -770,6 +791,7 @@ var NewShipList = {
 		let color = ShipList.getEquipmentColor( masterdata );
 		str = "border-left:" + color + " 8px solid; padding-left: 4px;";
 		$( 'api_slot' + i ).setAttribute( 'style', str );
+		$( 'api_onslot' + i ).value += tmp;
 	    }
 	}
     },
