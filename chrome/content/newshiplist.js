@@ -761,7 +761,6 @@ var NewShipList = {
 	    "api_souk": "装甲"
 	};
 
-	console.log(ship);
 	for( let i = 0; i < 4; i++ ){
 	    let slot_id = ship.api_slot[i];
 	    if( ship.api_onslot[i] ){
