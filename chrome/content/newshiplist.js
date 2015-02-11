@@ -775,10 +775,11 @@ var NewShipList = {
 		continue;
 	    }
 	    let item = KanColleDatabase.slotitem.get( slot_id );
+	    let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
 	    let tmp = "";
-	    for( let k in item ){
-		if( name[k] && GetSignedValue( item[k] ) ){
-		    tmp += name[k] + GetSignedValue( item[k] ) + " ";
+	    for( let k in masterdata ){
+		if( name[k] && GetSignedValue( masterdata[k] ) ){
+		    tmp += name[k] + GetSignedValue( masterdata[k] ) + " ";
 		}
 	    }
 	    if( item ){
