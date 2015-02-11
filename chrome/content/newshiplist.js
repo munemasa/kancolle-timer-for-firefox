@@ -790,7 +790,8 @@ var NewShipList = {
 		let color = ShipList.getEquipmentColor( masterdata );
 		str = "border-left:" + color + " 8px solid; padding-left: 4px;";
 		$( 'api_slot' + i ).setAttribute( 'style', str );
-		$( 'api_onslot' + i ).value += tmp;
+		let tmp2 = $( 'api_onslot' + i ).value;
+		$( 'api_onslot' + i ).setAttribute( 'value', tmp2 + tmp );
 	    }
 	}
     },
