@@ -36,9 +36,9 @@ var DropShipList = {
 	let profileDir = profdir.path;
 
 	// Show the profile directory.
-	let nsLocalFile = Components.Constructor("@mozilla.org/file/local;1",
-						 "nsILocalFile", "initWithPath");
-	new nsLocalFile(profileDir).reveal();
+	let nsFile = Components.Constructor("@mozilla.org/file/local;1",
+						 "nsIFile", "initWithPath");
+	new nsFile(profileDir).reveal();
     },
 
     save: function(){
