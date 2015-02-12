@@ -123,11 +123,11 @@ ShipCategoryTreeView.prototype = {
     getLevel: function( idx ){
 	return this._visibleData[idx].level;
     },
-    getRowProperties: function( idx, prop ){
+    getRowProperties: function( idx ){
     },
-    getCellProperties: function( idx, column, prop ){
+    getCellProperties: function( idx, column ){
     },
-    getColumnProperties: function( column, element, prop ){
+    getColumnProperties: function( column ){
     },
 
     getParentIndex: function( idx ){
@@ -468,7 +468,7 @@ ShipListTreeView.prototype = {
     getLevel: function( idx ){
 	return 0;
     },
-    getRowProperties: function( idx, prop ){
+    getRowProperties: function( idx ){
 	let str = "";
 	// 10行ごとの区切り
 	let tmp = idx != 0 && (idx % 10) == 0 ? "dash-separator " : "";
@@ -492,7 +492,7 @@ ShipListTreeView.prototype = {
 
 	return str;
     },
-    getCellProperties: function( idx, column, prop ){
+    getCellProperties: function( idx, column ){
 	let str = "";
 	if( column.index == 1 || column.index == 2 ){
 	    let ship = this._visibleData[idx][-1];
@@ -511,7 +511,7 @@ ShipListTreeView.prototype = {
 	}
 	return str;
     },
-    getColumnProperties: function( column, element, prop ){
+    getColumnProperties: function( column ){
     },
 
     getParentIndex: function( idx ){
