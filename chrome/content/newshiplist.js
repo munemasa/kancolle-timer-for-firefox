@@ -785,7 +785,7 @@ var NewShipList = {
 	    if( item ){
 		let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
 		let str = masterdata.api_name
-		    + (item.api_level > 0 ? "+" + item.api_level : "");
+		    + (item.api_level > 0 ? "★+" + item.api_level : "");
 		$( 'api_slot' + i ).value = str;
 
 		let color = ShipList.getEquipmentColor( masterdata );
