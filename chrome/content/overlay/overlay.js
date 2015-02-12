@@ -185,7 +185,7 @@ KanColleTimer.Overlay = {
      */
     OpenFile:function(path){
 	let localfileCID = '@mozilla.org/file/local;1';
-	let localfileIID =Components.interfaces.nsILocalFile;
+	let localfileIID =Components.interfaces.nsIFile;
 	try {
 	    let file = Components.classes[localfileCID].createInstance(localfileIID);
 	file.initWithPath(path);
@@ -278,7 +278,7 @@ KanColleTimer.Overlay = {
 	    file = fp.file;
 	}else{
 	    let localfileCID = '@mozilla.org/file/local;1';
-	    let localfileIID =Components.interfaces.nsILocalFile;
+	    let localfileIID =Components.interfaces.nsIFile;
 	    file = Components.classes[localfileCID].createInstance(localfileIID);
 	    file.initWithPath(path);
 	    var datestr = this.getNowDateString();

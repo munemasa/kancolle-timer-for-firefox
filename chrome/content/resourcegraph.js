@@ -36,7 +36,7 @@ let ResourceGraph = {
 
 	// Show the profile directory.
 	let nsLocalFile = Components.Constructor("@mozilla.org/file/local;1",
-						 "nsILocalFile", "initWithPath");
+						 "nsIFile", "initWithPath");
 	new nsLocalFile(profileDir).reveal();
     },
 
@@ -97,7 +97,7 @@ let ResourceGraph = {
 	    file = fp.file;
 	}else{
 	    let localfileCID = '@mozilla.org/file/local;1';
-	    let localfileIID = Components.interfaces.nsILocalFile;
+	    let localfileIID = Components.interfaces.nsIFile;
 	    file = Components.classes[localfileCID].createInstance( localfileIID );
 	    file.initWithPath( path );
 	    let datestr = this.getNowDateString();

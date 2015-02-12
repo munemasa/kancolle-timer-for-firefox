@@ -1732,7 +1732,7 @@ function GetScreenshotImage_imagemagick( w, h, x, y ){
     var args = [ "-c", "import -gravity NorthWest -window root -crop " + geometry + " " + tempfile ];
 
     var shell = Components.classes["@mozilla.org/file/local;1"]
-	.createInstance( Components.interfaces.nsILocalFile );
+	.createInstance( Components.interfaces.nsIFile );
     shell.initWithPath( "/bin/sh" );
     var process = Components.classes["@mozilla.org/process/util;1"]
 	.createInstance( Components.interfaces.nsIProcess );
@@ -3468,7 +3468,7 @@ function PlaySound( path ){
     try{
 	//debugprint(path);
 	let IOService = Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService);
-	let localFile = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsILocalFile);
+	let localFile = Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsIFile);
 	let sound = Cc["@mozilla.org/sound;1"].createInstance(Ci.nsISound);
 	localFile.initWithPath( path );
 	sound.play(IOService.newFileURI(localFile));

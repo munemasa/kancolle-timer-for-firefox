@@ -37,7 +37,7 @@ var SSTweet = {
 	fp.init(window, "保存ファイルを選んでください", nsIFilePicker.modeSave);
 	if (defaultdir) {
 	    let file = Components.classes['@mozilla.org/file/local;1']
-		.createInstance(Components.interfaces.nsILocalFile);
+		.createInstance(Components.interfaces.nsIFile);
 	    file.initWithPath(defaultdir);
 	    if (file.exists() && file.isDirectory())
 		fp.displayDirectory = file;
