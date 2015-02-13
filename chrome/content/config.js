@@ -53,7 +53,7 @@ var KanColleTimerConfig = {
     register:function(){
 	let prefService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
 	this._branch = prefService.getBranch("extensions.kancolletimer.");
-	this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2);
+	this._branch.QueryInterface(Components.interfaces.nsIPrefBranch);
 	this._branch.addObserver("", this, false);
     },
     unregister:function(){
