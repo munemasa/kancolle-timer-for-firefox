@@ -401,7 +401,9 @@ var KanColleTimer = {
     startTimer: function() {
 	if (this._timer)
 	    return;
-	this._timer = setInterval(this.update.bind(this), 1000);
+	this._timer = setInterval( function(){
+	    KanColleTimer.update();
+	}, 1000);
     },
 
     stopTimer: function() {
