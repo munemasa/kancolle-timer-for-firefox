@@ -464,9 +464,12 @@ var ShipList = {
 	update.enter()
 	    .append( "row" )
 	    .attr( "style", function( d ){
-		       let color = ShipList.getEquipmentColor( data[d] );
-		       return "border-left:" + color + " 16px solid; border-bottom: #c0c0c0 1px solid;";
-		   } )
+		let color = ShipList.getEquipmentColor( data[d] );
+		let str = "border-left:" + color + " 16px solid; border-bottom: #c0c0c0 1px solid;";
+		let color2 = ShipList.getEquipmentSubColor( data[d] ) || color;
+		str = "box-shadow: -8px 0 0 0 " + color2 + ", -16px 0 0 0 " + color + "; margin-left: 16px; border-bottom: #c0c0c0 1px solid;";
+		return str;
+	    } )
 	    .selectAll( "label" )
 	    .data( function( d ){
 		       let value = new Array();
@@ -523,6 +526,16 @@ var ShipList = {
 	    // 主砲・副砲扱いの高角砲たち
 	    color = "#66cc77";
 	}
+	return color;
+    },
+    getEquipmentSubColor: function( d ){
+	let subcolor = {
+	    6:  '#39b74e',	// 制空戦闘機
+	    7:  '#ea6a6a',	// 艦爆
+	    8:  '#65bcff',	// 艦攻
+	    9:  '#ffc000'	// 彩雲
+	};
+	let color = subcolor[ d.api_type[2] ];
 	return color;
     },
 
