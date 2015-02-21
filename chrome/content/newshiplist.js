@@ -1098,7 +1098,7 @@ var NewShipList = {
 
     refreshShipList: function(){
 	this.allships = this.createShipArray();
-	console.log( this.allships );
+	//console.log( this.allships );
 
 	// 艦種別メニュー項目を作成
 	let tmp = new Object();
