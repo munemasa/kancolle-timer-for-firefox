@@ -789,7 +789,7 @@ var NewShipList = {
 		$( 'api_slot' + i ).value = str;
 
 		let color = ShipList.getEquipmentColor( masterdata );
-		let color2 = ShipList.getEquipmentSubColor( masterdata );
+		let color2 = ShipList.getEquipmentSubColor( masterdata ) || color;
 		str = "border-left:" + color + " 8px solid; padding-left: 4px;";
 		str = "box-shadow: -6px 0 0 0 " + color2 + ", -12px 0 0 0 " + color + "; margin-left: 16px; padding-left: 4px;";
 		$( 'api_slot' + i ).setAttribute( 'style', str );
