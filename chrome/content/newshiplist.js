@@ -260,7 +260,7 @@ ShipListTreeView.prototype = {
 	    for( let tmp of d ){
 		if( equip == "" ) return true;
 		if( "string" == typeof tmp ){
-		    tmp = tmp.match( /(.*?)(★\+\d)*$/ )[1];
+		    tmp = tmp.match( /(.*?)(★\+\d+)*$/ )[1];
 
 		    if( tmp == equip ) return true;
 		}
