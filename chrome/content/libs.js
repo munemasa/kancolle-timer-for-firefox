@@ -3919,11 +3919,11 @@ function debugprint(txt){
     if( $('debug-textbox') )
 	$('debug-textbox').value += txt + "\n";
      */
-    Application.console.log(txt);
+    console.log(txt);
 }
 
 function debugconsole(txt){
-    Application.console.log(txt);
+    console.log(txt);
 }
 
 function debugalert(txt){
