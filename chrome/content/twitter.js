@@ -110,13 +110,9 @@ var Twitter = {
 	};
 	let url = this.requestTokenURL;
 	req.open( 'POST', url );
-	req.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
-
-	let str = new Array();
-	for( let i = 0, item; item = message.parameters[i]; i++ ){
-	    str.push( item[0] + "=" + item[1] );
-	}
-	req.send( str.join( '&' ) );
+	req.setRequestHeader( 'Authorization',
+	    OAuth.getAuthorizationHeader( 'http://miku39.jp/', message.parameters ) );
+	req.send('');
     },
 
     // Twitterトークンを全削除.
