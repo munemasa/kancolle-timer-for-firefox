@@ -24,7 +24,7 @@ var Twitter = {
     consumer: "xdPBjJ6WAF8YccCD7mAXQ",
     consumerSecret: "0KQ1WuRvniIu7bYp6X0kCzYf0Dhc0Yxsh3tvC1I8Go",
 
-    requestTokenURL: "https://twitter.com/oauth/request_token",
+    requestTokenURL: "https://api.twitter.com/oauth/request_token",
     authenticateURL: "https://api.twitter.com/oauth/authenticate", // ?oauth_token=hoge
     accessTokenURL: "https://api.twitter.com/oauth/access_token",
     authorizeURL: "https://api.twitter.com/oauth/authorize",
