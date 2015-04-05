@@ -21,7 +21,6 @@ function KanColleScreenCapture(msg){
     console.log( x + "," + y + "," + w + "," + h );
 
     var canvas = content.document.createElement("canvas");
-    console.log(canvas);
     canvas.style.display = "inline";
     canvas.width = w;
     canvas.height = h;
