@@ -54,7 +54,7 @@ function KanColleScreenCapture(msg){
     canvas.width = 1;
     canvas.height = 1;
 
-    // data�X�L�[�}�̕�����ŕԂ�
+    // dataスキーマの文字列で返す
     //"kancolletimer:save-image"
     sendAsyncMessage(route, {}, { image : url });
     return url;
