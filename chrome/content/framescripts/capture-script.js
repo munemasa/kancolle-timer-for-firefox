@@ -1,6 +1,8 @@
 function KanColleScreenCapture(msg){
     console.log("KanColle Screen Capture for E10S");
 
+    let route = msg.objects.route;
+
     let isjpeg = msg.objects.is_jpeg;
 
     var win = content;
@@ -53,8 +55,9 @@ function KanColleScreenCapture(msg){
     canvas.height = 1;
 
     // dataスキーマの文字列で返す
-    sendAsyncMessage("kancolletimer:save-image", {}, { image : url });
+    //"kancolletimer:save-image"
+    sendAsyncMessage(route, {}, { image : url });
     return url;
 }
 
-addMessageListener("kancolletimer:capture", KanColleScreenCapture);
+addMessageListener("kancolletimer@miku39.jp:capture", KanColleScreenCapture);

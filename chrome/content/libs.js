@@ -1847,7 +1847,7 @@ function TakeKanColleScreenshotE10S(isjpeg){
     let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
     mm.loadFrameScript(script, true);
 
-    let do_masking = KanColleTimerConfig.getBool("screenshot.mask-name");
+    let event_name = "kancolletimer:save-image";
     let handleMessage = function( message ){
 	let url = message.objects.image;
 	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
@@ -1865,88 +1865,13 @@ function TakeKanColleScreenshotE10S(isjpeg){
 
 	SaveUrlToFile( url, fp.file );
 
-	mm.removeMessageListener( "kancolletimer:save-image", handleMessage );
+	mm.removeMessageListener( event_name, handleMessage );
     };
-    mm.addMessageListener( "kancolletimer:save-image", handleMessage );
 
-    mm.sendAsyncMessage("kancolletimer:capture",{}, {is_jpeg:isjpeg, do_masking: do_masking } );
+    mm.addMessageListener( event_name, handleMessage );
 
-    var tab = FindKanColleTab();
-    if( !tab ) return null;
-    var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
-
-    var game_frame = win.window.document.getElementById("game_frame");
-    if (!game_frame) return null;
-    var offset_x = game_frame.offsetLeft;
-    var offset_y = game_frame.offsetTop;
-    var flash = game_frame.contentWindow.document.getElementById("flashWrap");
-    offset_x += flash.offsetLeft;
-    offset_y += flash.offsetTop;
-
-    var w = flash.clientWidth;
-    var h = flash.clientHeight;
-    var x = offset_x;
-    var y = offset_y;
-
-    if( use_imagemagick ){
-	// コンテンツが表示されている部分のスクリーン座標
-	let left = win.window.content.mozInnerScreenX;
-	let top = win.window.content.mozInnerScreenY;
-
-	// スクロールしている分を勘定に入れる
-	let cwu = FindKanColleWindow()
-	    .selectedBrowser.contentWindow
-	    .QueryInterface( Components.interfaces.nsIInterfaceRequestor )
-	    .getInterface( Components.interfaces.nsIDOMWindowUtils );
-	let scrollX = {}, scrollY = {};
-	cwu.getScrollXY( false, scrollX, scrollY );
-	x -= scrollX.value;
-	y -= scrollY.value;
-
-	// スクリーン座標にする
-	x += left;
-	y += top;
-    }
-
-    var canvas = document.createElementNS("http://www.w3.org/1999/xhtml","canvas");
-    canvas.style.display = "inline";
-    canvas.width = w;
-    canvas.height = h;
-
-    var ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.save();
-    ctx.scale(1.0, 1.0);
-
-    if( use_imagemagick ){
-	var image = GetScreenshotImage_imagemagick( w, h, x, y );
-	ctx.drawImage( image, 0, 0 );
-    }else{
-	// x,y,w,h
-	ctx.drawWindow(win, x, y, w, h, "rgb(255,255,255)");
-    }
-    ctx.restore();
-
-    let mask_admiral_name = KanColleTimerConfig.getBool("screenshot.mask-name");
-    if( mask_admiral_name ){
-	ctx.fillStyle = "rgb(0,0,0)";
-	ctx.fillRect(110, 5, 145, 20);
-    }
-
-    var url;
-    if( isjpeg ){
-	url = canvas.toDataURL("image/jpeg");
-    }else{
-	url = canvas.toDataURL("image/png");
-    }
-    const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
-	.getService(Components.interfaces.nsIIOService);
-    url = IO_SERVICE.newURI(url, null, null);
-
-    canvas.style.display = "none";
-    canvas.width = 1;
-    canvas.height = 1;
-    return url;
+    let do_masking = KanColleTimerConfig.getBool( "screenshot.mask-name" );
+    mm.sendAsyncMessage( "kancolletimer@miku39.jp:capture", {}, {route: event_name, is_jpeg: isjpeg, do_masking: do_masking} );
 }
 
 /**
