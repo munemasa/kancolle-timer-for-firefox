@@ -1,6 +1,17 @@
 // vim: set ts=8 sw=4 sts=4 ff=dos :
 
 var KanColleTimerConfig = {
+    e10sEnabled: function(){
+	// Firefox nightly (Firefox 40) browser.tabs.remote.autostart.1 で e10s のオン・オフが分かる
+	// Releaseまでに変わらないでいるとうれしい
+	try{
+	    let e10s = KanColleTimerConfig.getSpecificBranch( "browser.tabs.remote." ).getBoolPref( "autostart.1" );
+	    return e10s;
+	}catch( e ){
+	    return false;
+	}
+    },
+
     getBranch:function(){
 	var prefs = new PrefsWrapper1("extensions.kancolletimer.");
 	return prefs;
