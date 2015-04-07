@@ -1844,8 +1844,8 @@ function TakeKanColleScreenshotE10S(isjpeg){
     let mm = GetKanColleTabMessageManager();
     console.log(mm);
 
-    let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
-    mm.loadFrameScript(script, true);
+    //let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
+    //mm.loadFrameScript(script, false);
 
     let event_name = "kancolletimer:save-image";
     let handleMessage = function( message ){
@@ -1875,9 +1875,10 @@ function TakeKanColleScreenshotE10S(isjpeg){
 }
 
 /**
- * @return スクリーンショットのdataスキーマのnsIURIを返す。艦これのタブがなければnullを返す
+ * @return スクリーンショットのcanvasを返す。艦これのタブがなければnullを返す
  */
 function TakeKanColleScreenshot_canvas(isjpeg){
+    // TODO e10s対応
     var tab = FindKanColleTab();
     if( !tab ) return null;
     var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
@@ -3372,6 +3373,7 @@ function GetKanColleTabMessageManager(){
 	for( let index = 0; index < numTabs; index++ ){
 	    let currentBrowser = browserInstance.getBrowserAtIndex( index );
 	    if( currentBrowser.currentURI.spec.indexOf( url ) != -1 ){
+		console.log(currentBrowser);
 		return currentBrowser.messageManager;
 	    }
 	}
