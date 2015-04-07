@@ -485,9 +485,15 @@ KanColleTimer.Overlay = {
 window.addEventListener("load", function(){
     KanColleTimer.Overlay.init();
 
-    //let mm = KanColleTimer.Overlay.GetKanColleTabMessageManager();
-    //let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
-    //mm.loadFrameScript(script, true);
+    // 艦これページのあるbrowserだけにフレームスクリプトがあればいいのだけど
+    // フレームスクリプトのロード済みの確認やアンロードの手段が今のところないので、
+    // スクショ撮るたびにフレームスクリプトをロードするわけにもいかず、
+    // 仕方なくグローバルMMに遅延ロードを指定して、
+    // すべてのbrowserに1回はキャプチャスクリプトを読ませる方法を取ることにする
+    let globalMM = Cc["@mozilla.org/globalmessagemanager;1"]
+	.getService( Ci.nsIMessageListenerManager );
+    let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
+    globalMM.loadFrameScript( script, true );
 }, false);
 
 window.addEventListener("unload", function(){
