@@ -228,6 +228,7 @@ KanColleTimer.Overlay = {
      * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
      */
     takeScreenshot: function( path ){
+	// TODO e10s対応
 	var isjpeg = this.getPref().getBoolPref("screenshot.jpeg");
 	var tab = this.FindKanColleTab();
 	if( !tab ) return null;
@@ -308,6 +309,7 @@ KanColleTimer.Overlay = {
     },
 
     takeScreenshotSeriography:function(){
+	// TODO e10s対応
 	var path = this.getPref().getUnicharPref("screenshot.path");
 	this.takeScreenshot(path);
     },

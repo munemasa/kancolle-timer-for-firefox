@@ -82,6 +82,7 @@ var SSTweet = {
     init:function(){
 	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
 	// PNGでアップロードを試すと、サイズ1MBになってつぶやくのに時間がかかるのがネックか
+	// TODO e10s対応
 	if( window.arguments ){
 	    let pic = window.arguments[0];
 	    let data = pic || TakeKanColleScreenshot(isjpeg);

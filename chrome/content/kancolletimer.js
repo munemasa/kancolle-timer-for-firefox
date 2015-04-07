@@ -255,6 +255,7 @@ var KanColleTimer = {
      * @param isjpeg JPEGかどうか
      */
     _takeScreenshot: function(isjpeg){
+	// TODO e10s対応
 	let url = TakeKanColleScreenshot(isjpeg);
 	if (!url) {
 	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");

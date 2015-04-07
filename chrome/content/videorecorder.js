@@ -43,6 +43,7 @@ var VideoRecorder = {
 	let t;
 	t = 1000 / this.fps;
 	this.timer_id = setInterval( function(){
+	    // TODO e10s対応
 	    let frame = TakeKanColleScreenshot_canvas();
 	    VideoRecorder.data.push( frame );
 
