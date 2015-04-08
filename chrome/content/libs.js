@@ -1842,7 +1842,6 @@ function TakeKanColleScreenshot(isjpeg){
 
 function TakeKanColleScreenshotE10S(isjpeg){
     let mm = GetKanColleTabMessageManager();
-    console.log(mm);
 
     //let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
     //mm.loadFrameScript(script, false);
@@ -1888,7 +1887,6 @@ function RequestKanColleScreenshot( route, callback ){
     let mm = GetKanColleTabMessageManager();
     if( !mm ) return;
 
-    console.log( mm );
     //let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
     //mm.loadFrameScript(script, false);
 
@@ -3410,7 +3408,7 @@ function GetKanColleTabMessageManager(){
 	for( let index = 0; index < numTabs; index++ ){
 	    let currentBrowser = browserInstance.getBrowserAtIndex( index );
 	    if( currentBrowser.currentURI.spec.indexOf( url ) != -1 ){
-		console.log(currentBrowser);
+		//console.log(currentBrowser);
 		return currentBrowser.messageManager;
 	    }
 	}

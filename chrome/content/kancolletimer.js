@@ -250,57 +250,43 @@ var KanColleTimer = {
 	    return;
 	SaveUrlToFile( url, file );
     },
-    /**
-     * スクリーンショット撮影
-     * @param isjpeg JPEGかどうか
-     */
-    _takeScreenshot: function(isjpeg){
-	// TODO e10s対応
-	let url = TakeKanColleScreenshot(isjpeg);
-	if (!url) {
-	    AlertPrompt("艦隊これくしょんのページが見つかりませんでした。","艦これタイマー");
-	    return null;
-	}
-	return url;
-    },
 
     /**
      * スクリーンショット撮影
      */
     takeScreenshot: function(){
-	let ret;
-	let defaultdir = KanColleTimerConfig.getUnichar("screenshot.path");
-	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
-	let nsIFilePicker = Components.interfaces.nsIFilePicker;
-	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-	let url = this._takeScreenshot(isjpeg);
+	// e10s対応
+	RequestKanColleScreenshot( "kancolletimer@miku39.jp:save-one-image", function( url ){
+	    let ret;
+	    let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
+	    let defaultdir = KanColleTimerConfig.getUnichar( "screenshot.path" );
+	    let nsIFilePicker = Components.interfaces.nsIFilePicker;
+	    let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance( nsIFilePicker );
 
-	if (!url)
-	    return;
+	    fp.init( window, "保存ファイルを選んでください", nsIFilePicker.modeSave );
+	    if( defaultdir ){
+		let file = Components.classes['@mozilla.org/file/local;1']
+		    .createInstance( Components.interfaces.nsIFile );
+		file.initWithPath( defaultdir );
+		if( file.exists() && file.isDirectory() )
+		    fp.displayDirectory = file;
+	    }
+	    fp.appendFilters( nsIFilePicker.filterImages );
+	    fp.defaultString = "screenshot-" + KanColleTimer.getNowDateString() + (isjpeg ? ".jpg" : ".png");
+	    fp.defaultExtension = isjpeg ? "jpg" : "png";
+	    ret = fp.show();
+	    if( (ret != nsIFilePicker.returnOK && ret != nsIFilePicker.returnReplace) || !fp.file )
+		return null;
 
-	fp.init(window, "保存ファイルを選んでください", nsIFilePicker.modeSave);
-	if (defaultdir) {
-	    let file = Components.classes['@mozilla.org/file/local;1']
-		       .createInstance(Components.interfaces.nsIFile);
-	    file.initWithPath(defaultdir);
-	    if (file.exists() && file.isDirectory())
-		fp.displayDirectory = file;
-	}
-	fp.appendFilters(nsIFilePicker.filterImages);
-	fp.defaultString = "screenshot-"+ this.getNowDateString() + (isjpeg?".jpg":".png");
-	fp.defaultExtension = isjpeg ? "jpg" : "png";
-	ret = fp.show();
-	if ((ret != nsIFilePicker.returnOK && ret != nsIFilePicker.returnReplace) || !fp.file)
-	    return null;
-
-	this._saveScreenshot(fp.file, url);
+	    KanColleTimer._saveScreenshot( fp.file, url );
+	} );
     },
 
     /**
      * スクリーンショット連続撮影用フォルダ選択
      * @return nsIFile
      */
-    takeScreenshotSeriographySelectFolder: function(){
+    selectScreenshotFolder: function(){
 	let defaultdir = KanColleTimerConfig.getUnichar("screenshot.path");
 	let ret;
 	let nsIFilePicker = Components.interfaces.nsIFilePicker;
@@ -327,35 +313,33 @@ var KanColleTimer = {
      * スクリーンショット連続撮影
      */
     takeScreenshotSeriography: function(){
-	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
-	let url = this._takeScreenshot(isjpeg);
-	let file = null;
-	let dir;
+	// e10s対応
+	RequestKanColleScreenshot( "kancolletimer@miku39.jp:save-images", function( url ){
+	    console.log("continuous shot");
+	    let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
+	    let file = null;
+	    let dir = KanColleTimerConfig.getUnichar( "screenshot.path" );
+	    if( dir ){
+		file = Components.classes['@mozilla.org/file/local;1']
+		    .createInstance( Components.interfaces.nsIFile );
+		file.initWithPath( dir );
+	    }
 
-	if (!url)
-	    return;
+	    // フォルダのチェック。フォルダでなければ、(再)選択
+	    do{
+		if( file && file.exists() && file.isDirectory() )
+		    break;
+		file = this.selectScreenshotFolder();
+	    }while( file );
 
-	dir = KanColleTimerConfig.getUnichar("screenshot.path");
-	if (dir) {
-	    file = Components.classes['@mozilla.org/file/local;1']
-		   .createInstance(Components.interfaces.nsIFile);
-	    file.initWithPath(dir);
-	}
+	    // エラー
+	    if( !file )
+		return;
 
-	// フォルダのチェック。フォルダでなければ、(再)選択
-	do {
-	    if (file && file.exists() && file.isDirectory())
-		break;
-	    file = this.takeScreenshotSeriographySelectFolder();
-	} while(file);
+	    file.append( "screenshot-" + KanColleTimer.getNowDateString() + (isjpeg ? '.jpg' : '.png') );
 
-	// エラー
-	if (!file)
-	    return;
-
-	file.append("screenshot-" + this.getNowDateString() + (isjpeg ? '.jpg' : '.png'));
-
-	this._saveScreenshot(file, url);
+	    KanColleTimer._saveScreenshot( file, url );
+	} );
     },
 
     onClickAkashiTimerButton: function(){
