@@ -1904,9 +1904,13 @@ function RequestKanColleScreenshot( route, callback ){
 
     mm.addMessageListener( route, handleMessage );
 
-    let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+    let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
     let do_masking = KanColleTimerConfig.getBool( "screenshot.mask-name" );
-    mm.sendAsyncMessage( "kancolletimer@miku39.jp:capture", {}, {route: route, is_jpeg: isjpeg, do_masking: do_masking} );
+    mm.sendAsyncMessage( "kancolletimer@miku39.jp:capture", {}, {
+	route: route,
+	is_jpeg: isjpeg,
+	do_masking: do_masking
+    } );
 }
 
 /**
