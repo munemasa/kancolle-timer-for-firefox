@@ -1874,6 +1874,43 @@ function TakeKanColleScreenshotE10S(isjpeg){
     mm.sendAsyncMessage( "kancolletimer@miku39.jp:capture", {}, {route: event_name, is_jpeg: isjpeg, do_masking: do_masking} );
 }
 
+
+/**
+ * スクリーンショットを撮影したら nsURI として callback に渡す
+ * @param route
+ * @param callback
+ * @constructor
+ */
+function RequestKanColleScreenshot( route, callback ){
+    // 用事が済んだらメッセージのリスナーを削除するので
+    // 動画撮影用じゃなくてワンショット撮影用
+    // 動画のときはリスナー維持してリクエスト送りまくる方がいい
+    let mm = GetKanColleTabMessageManager();
+    if( !mm ) return;
+
+    console.log( mm );
+    //let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
+    //mm.loadFrameScript(script, false);
+
+    let handleMessage = function( message ){
+	let url = message.objects.image;
+	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+	    .getService( Components.interfaces.nsIIOService );
+	let urlobject = IO_SERVICE.newURI( url, null, null );
+
+	if( typeof(callback) == 'function' ){
+	    callback( urlobject );
+	}
+	mm.removeMessageListener( route, handleMessage );
+    };
+
+    mm.addMessageListener( route, handleMessage );
+
+    let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
+    let do_masking = KanColleTimerConfig.getBool( "screenshot.mask-name" );
+    mm.sendAsyncMessage( "kancolletimer@miku39.jp:capture", {}, {route: route, is_jpeg: isjpeg, do_masking: do_masking} );
+}
+
 /**
  * @return スクリーンショットのcanvasを返す。艦これのタブがなければnullを返す
  */

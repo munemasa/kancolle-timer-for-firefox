@@ -80,16 +80,21 @@ var SSTweet = {
     },
 
     init:function(){
-	let isjpeg = KanColleTimerConfig.getBool("screenshot.jpeg");
 	// PNGでアップロードを試すと、サイズ1MBになってつぶやくのに時間がかかるのがネックか
-	// TODO e10s対応
+	// e10s対応
 	if( window.arguments ){
 	    let pic = window.arguments[0];
-	    let data = pic || TakeKanColleScreenshot(isjpeg);
-	    $('ss-image').src = data.spec;
+	    if( pic ){
+		$('ss-image').src = pic.spec;
+	    }else{
+		RequestKanColleScreenshot("kancolletimer@miku39.jp:sstweet", function(url){
+		    $('ss-image').src = url.spec;
+		});
+	    }
 	}else{
-	    let data = TakeKanColleScreenshot(isjpeg);
-	    $('ss-image').src = data.spec;
+	    RequestKanColleScreenshot("kancolletimer@miku39.jp:sstweet", function(url){
+		$('ss-image').src = url.spec;
+	    });
 	}
 	$('text').focus();
 
