@@ -1910,6 +1910,7 @@ function RequestKanColleScreenshot( route, callback ){
 }
 
 /**
+ * ビデオレコーダーでしか使っていない
  * @return スクリーンショットのcanvasを返す。艦これのタブがなければnullを返す
  */
 function TakeKanColleScreenshot_canvas(isjpeg){

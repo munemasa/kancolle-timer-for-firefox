@@ -223,93 +223,78 @@ KanColleTimer.Overlay = {
 	}).then(null, Components.utils.reportError);
     },
 
+    RequestKanColleScreenshot: function( route, callback ){
+	// 用事が済んだらメッセージのリスナーを削除するので
+	// 動画撮影用じゃなくてワンショット撮影用
+	// 動画のときはリスナー維持してリクエスト送りまくる方がいい
+	let mm = this.GetKanColleTabMessageManager();
+	if( !mm ) return;
+
+	//let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
+	//mm.loadFrameScript(script, false);
+
+	let handleMessage = function( message ){
+	    let url = message.objects.image;
+	    const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+		.getService( Components.interfaces.nsIIOService );
+	    let urlobject = IO_SERVICE.newURI( url, null, null );
+
+	    if( typeof(callback) == 'function' ){
+		callback( urlobject );
+	    }
+	    mm.removeMessageListener( route, handleMessage );
+	};
+
+	mm.addMessageListener( route, handleMessage );
+
+	let isjpeg = this.getPref().getBoolPref( "screenshot.jpeg" );
+	let do_masking = this.getPref().getBoolPref( "screenshot.mask-name" );
+	mm.sendAsyncMessage( "kancolletimer@miku39.jp:capture", {}, {
+	    route: route,
+	    is_jpeg: isjpeg,
+	    do_masking: do_masking
+	} );
+    },
+
     /**
      * スクリーンショット撮影
      * @param path 保存先のパス(指定なしだとファイル保存ダイアログを出す)
      */
     takeScreenshot: function( path ){
-	// TODO e10s対応
-	var isjpeg = this.getPref().getBoolPref("screenshot.jpeg");
-	var tab = this.FindKanColleTab();
-	if( !tab ) return null;
-	var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
+	// e10s対応
+	this.RequestKanColleScreenshot( "kancolletimer@miku39.jp:save-image-ovr", function( url ){
+	    var isjpeg = KanColleTimer.Overlay.getPref().getBoolPref( "screenshot.jpeg" );
 
-	var game_frame = win.window.document.getElementById("game_frame");
-	var offset_x = game_frame.offsetLeft;
-	var offset_y = game_frame.offsetTop;
-	var flash = game_frame.contentWindow.document.getElementById("flashWrap");
-	offset_x += flash.offsetLeft;
-	offset_y += flash.offsetTop;
+	    var file = null;
+	    if( !path ){
+		var fp = Components.classes['@mozilla.org/filepicker;1']
+		    .createInstance( Components.interfaces.nsIFilePicker );
+		fp.init( window, "艦これスクリーンショットの保存", fp.modeSave );
+		fp.appendFilters( fp.filterImages );
+		fp.defaultExtension = isjpeg ? "jpg" : "png";
+		if( KanColleTimer.Overlay.getPref().getUnicharPref( "screenshot.path" ) ){
+		    fp.displayDirectory = KanColleTimer.Overlay.OpenFile( KanColleTimer.Overlay.getPref().getUnicharPref( "screenshot.path" ) );
+		}
 
-	var w = flash.clientWidth;
-	var h = flash.clientHeight;
-	var x = offset_x;
-	var y = offset_y;
+		var datestr = KanColleTimer.Overlay.getNowDateString();
+		fp.defaultString = "screenshot-" + datestr + (isjpeg ? ".jpg" : ".png");
+		if( fp.show() == fp.returnCancel || !fp.file ) return null;
 
-	var canvas = document.getElementById("KanColleTimerCapture");
-	canvas.style.display = "inline";
-	canvas.width = w;
-	canvas.height = h;
-
-	var ctx = canvas.getContext("2d");
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.save();
-	ctx.scale(1.0, 1.0);
-	// x,y,w,h
-	ctx.drawWindow(win, x, y, w, h, "rgb(255,255,255)");
-	ctx.restore();
-
-	let mask_admiral_name = this.getPref().getBoolPref("screenshot.mask-name");
-	if( mask_admiral_name ){
-	    ctx.fillStyle = "rgb(0,0,0)";
-	    ctx.fillRect(110, 5, 145, 20);
-	}
-
-	var url;
-	if( isjpeg ){
-	    url = canvas.toDataURL("image/jpeg");
-	}else{
-	    url = canvas.toDataURL("image/png");
-	}
-	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
-            .getService(Components.interfaces.nsIIOService);
-	url = IO_SERVICE.newURI(url, null, null);
-
-	canvas.style.display = "none";
-	canvas.width = 1;
-	canvas.height = 1;
-
-	var file = null;
-	if( !path ){
-	    var fp = Components.classes['@mozilla.org/filepicker;1']
-		.createInstance(Components.interfaces.nsIFilePicker);
-	    fp.init(window, "艦これスクリーンショットの保存", fp.modeSave);
-	    fp.appendFilters(fp.filterImages);
-	    fp.defaultExtension = isjpeg?"jpg":"png";
-	    if( this.getPref().getUnicharPref("screenshot.path") ){
-		fp.displayDirectory = this.OpenFile( this.getPref().getUnicharPref("screenshot.path"));
+		file = fp.file;
+	    }else{
+		let localfileCID = '@mozilla.org/file/local;1';
+		let localfileIID = Components.interfaces.nsIFile;
+		file = Components.classes[localfileCID].createInstance( localfileIID );
+		file.initWithPath( path );
+		var datestr = KanColleTimer.Overlay.getNowDateString();
+		var filename = "screenshot-" + datestr + (isjpeg ? ".jpg" : ".png");
+		file.append( filename );
 	    }
-
-	    var datestr = this.getNowDateString();
-	    fp.defaultString = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
-	    if ( fp.show() == fp.returnCancel || !fp.file ) return null;
-
-	    file = fp.file;
-	}else{
-	    let localfileCID = '@mozilla.org/file/local;1';
-	    let localfileIID =Components.interfaces.nsIFile;
-	    file = Components.classes[localfileCID].createInstance(localfileIID);
-	    file.initWithPath(path);
-	    var datestr = this.getNowDateString();
-	    var filename = "screenshot-"+ datestr + (isjpeg?".jpg":".png");
-	    file.append(filename);
-	}
-	this.SaveUrlToFile( url, file );
-	return true;
+	    KanColleTimer.Overlay.SaveUrlToFile( url, file );
+	} );
     },
 
     takeScreenshotSeriography:function(){
-	// TODO e10s対応
 	var path = this.getPref().getUnicharPref("screenshot.path");
 	this.takeScreenshot(path);
     },
