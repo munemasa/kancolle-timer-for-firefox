@@ -2,10 +2,9 @@
 
 var KanColleTimerConfig = {
     e10sEnabled: function(){
-	// Firefox nightly (Firefox 40) browser.tabs.remote.autostart.1 で e10s のオン・オフが分かる
-	// Releaseまでに変わらないでいるとうれしい
+	// Firefox nightly (Firefox 40) browser.tabs.remote.autostart で e10s のオン・オフが分かる
 	try{
-	    let e10s = KanColleTimerConfig.getSpecificBranch( "browser.tabs.remote." ).getBoolPref( "autostart.1" );
+	    let e10s = KanColleTimerConfig.getSpecificBranch( "browser.tabs.remote." ).getBoolPref( "autostart" );
 	    return e10s;
 	}catch( e ){
 	    return false;
