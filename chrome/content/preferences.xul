@@ -268,7 +268,9 @@
     </preferences>
 
     <checkbox preference="pref-screenshot-jpeg" label="JPEGでスクリーンショットを保存する"/>
+    <!--
     <checkbox preference="pref-screenshot-imagemagick" label="ImageMagickでスクリーンショットを撮影する(Linuxのみ)"/>
+    -->
     <checkbox preference="pref-screenshot-mask-name" label="提督名をマスクする(母港画面のみ)" tooltiptext="スクリーンショット撮影時に提督名を検閲処理します。"/>
     <groupbox>
       <caption>スクリーンショット保存先</caption>
