@@ -1754,6 +1754,7 @@ function GetScreenshotImage_imagemagick( w, h, x, y ){
 }
 
 /**
+ * E10S対応により、未使用
  * @return スクリーンショットのdataスキーマのnsIURIを返す。艦これのタブがなければnullを返す
  */
 function TakeKanColleScreenshot(isjpeg){
@@ -1839,40 +1840,6 @@ function TakeKanColleScreenshot(isjpeg){
     canvas.height = 1;
     return url;
 }
-
-function TakeKanColleScreenshotE10S(isjpeg){
-    let mm = GetKanColleTabMessageManager();
-
-    //let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
-    //mm.loadFrameScript(script, false);
-
-    let event_name = "kancolletimer:save-image";
-    let handleMessage = function( message ){
-	let url = message.objects.image;
-	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
-	    .getService( Components.interfaces.nsIIOService );
-	url = IO_SERVICE.newURI( url, null, null );
-
-	let nsIFilePicker = Components.interfaces.nsIFilePicker;
-	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance( nsIFilePicker );
-
-	fp.init( window, "保存ファイルを選んでください", nsIFilePicker.modeSave );
-	fp.appendFilters( nsIFilePicker.filterImages );
-	ret = fp.show();
-	if( (ret != nsIFilePicker.returnOK && ret != nsIFilePicker.returnReplace) || !fp.file )
-	    return null;
-
-	SaveUrlToFile( url, fp.file );
-
-	mm.removeMessageListener( event_name, handleMessage );
-    };
-
-    mm.addMessageListener( event_name, handleMessage );
-
-    let do_masking = KanColleTimerConfig.getBool( "screenshot.mask-name" );
-    mm.sendAsyncMessage( "kancolletimer@miku39.jp:capture", {}, {route: event_name, is_jpeg: isjpeg, do_masking: do_masking} );
-}
-
 
 /**
  * スクリーンショットを撮影したら nsURI として callback に渡す
