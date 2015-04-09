@@ -153,6 +153,14 @@ var VideoRecorder = {
 	ctx.moveTo( 0, 480 );
 	ctx.lineTo( 800, 0 );
 	ctx.stroke();
+
+	if( KanColleTimerConfig.e10sEnabled() ){
+	    console.log( "enable e10s" );
+	    setTimeout( function(){
+		AlertPrompt( "E10Sが有効になっているため録画はできません", "ビデオレコーダーカッコカリ" );
+
+	    }, 1000 );
+	}
     },
     destroy: function(){
 	this._break = true;
