@@ -308,6 +308,9 @@ KanColleTimer.Overlay = {
     openResourceGraph: function(){
 	window.open('chrome://kancolletimer/content/resourcegraph.xul','KanColleTimerResourceGraph','chrome,resizable=yes').focus();
     },
+    openChromeWindow: function( url, name ){
+	window.open( url, name, 'chrome,resizable=yes' ).focus();
+    },
 
     getNowDateString: function(){
 	var d = new Date();

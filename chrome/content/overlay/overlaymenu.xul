@@ -65,6 +65,7 @@
 	 <menuitem label="保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
 	 <menuitem label="建造・ドロップ艦娘一覧" oncommand="KanColleTimer.Overlay.openDropList(); event.stopPropagation();"/>
 	 <menuitem label="資源グラフ" oncommand="KanColleTimer.Overlay.openResourceGraph(); event.stopPropagation();"/>
+	 <menuitem label="改修工廠稼働日程" oncommand="KanColleTimer.Overlay.openChromeWindow('chrome://kancolletimer/content/powerup.xul','KanColleTimerPowerupWindow');; event.stopPropagation();"/>
 	 <menuseparator/>
 	 <menuitem label="艦これタイマー(ウィンドウ)を開く" oncommand="KanColleTimer.Overlay.open(); event.stopPropagation();"/>
 	 <menuitem label="サイドバーを開く" oncommand="toggleSidebar('viewKanColleTimerSidebar',true); event.stopPropagation();"/>
@@ -149,6 +150,7 @@
 	    <menuitem label="保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
 	    <menuitem label="建造・ドロップ艦娘一覧" oncommand="KanColleTimer.Overlay.openDropList(); event.stopPropagation();"/>
 	    <menuitem label="資源グラフ" oncommand="KanColleTimer.Overlay.openResourceGraph(); event.stopPropagation();"/>
+	    <menuitem label="改修工廠稼働日程" oncommand="KanColleTimer.Overlay.openChromeWindow('chrome://kancolletimer/content/powerup.xul','KanColleTimerPowerupWindow');; event.stopPropagation();"/>
 	    <menuseparator/>
 	    <menuitem label="設定..." oncommand="event.stopPropagation(); KanColleTimer.Overlay.openSettingsDialog();"/>
 	    <menuseparator/>
