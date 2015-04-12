@@ -119,7 +119,9 @@ var KanColleTimerConfig = {
 	try{
 	    $('sbKanColleTimerSidebar').style.fontFamily = font;
 	} catch (x) {
-	    $('kancolletimermainwindow').style.fontFamily = font;
+	    try{
+		$('kancolletimermainwindow').style.fontFamily = font;
+	    }catch(x){}
 	}
 
 	font = this.getUnichar('display.font-size') || "";
