@@ -1650,6 +1650,10 @@ function SaveShipList(){
     ShipListView.saveShipList();
 }
 
+function OpenChromeWindow( url, name ){
+    window.open( url, name, 'chrome,resizable=yes' ).focus();
+}
+
 function OpenShipList(){
     let feature="chrome,resizable=yes";
     let w = window.open("chrome://kancolletimer/content/shiplist.xul","KanColleTimerShipList",feature);
