@@ -43,6 +43,7 @@
 	<toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
 		       oncommand="$('deck').selectedIndex=1;"/>
 	<toolbarbutton tooltiptext="保有艦娘リスト" image="data/list.png" oncommand="OpenShipList();"/>
+	<toolbarbutton tooltiptext="改修工廠稼動日程" image="data/calendar.png" oncommand="OpenChromeWindow('chrome://kancolletimer/content/powerup.xul','KanColleTimerPowerupWindow');"/>
 	<toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">
 	  <menupopup>
 	    <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
