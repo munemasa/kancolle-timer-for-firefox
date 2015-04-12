@@ -22,13 +22,13 @@ var Powerup = {
     expand: function(){
 	let elems = document.getElementsByClassName( 'on-off' );
 	for( let elem of elems ){
-	    elem.setAttribute( 'checked', 'true' );
+	    elem.checked = true;
 	}
     },
     collapse: function(){
 	let elems = document.getElementsByClassName( 'on-off' );
 	for( let elem of elems ){
-	    elem.removeAttribute( 'checked' );
+	    elem.checked = false;
 	}
     },
 
