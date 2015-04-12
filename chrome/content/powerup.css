@@ -1,0 +1,28 @@
+label.equip-name {
+    display: block;
+    padding: 5px;
+    margin: 0;
+    border: 1px outset #fff;
+    font-weight: bold;
+}
+
+description {
+    margin: 0;
+    padding: 1em;
+}
+
+label.equip-name:hover {
+    cursor: pointer;
+}
+
+input[type="checkbox"].on-off {
+    display: none;
+}
+
+input[type="checkbox"].on-off + description {
+    display: none;
+}
+
+input[type="checkbox"].on-off:checked + description {
+    display: block;
+}

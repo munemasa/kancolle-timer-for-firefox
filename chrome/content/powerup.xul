@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/powerup.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
+
+<window id="kancolletimer_powerup"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	persist="screenX screenY width height sizemode"
+	width="640" height="480"
+	windowtype="KanColleTimerPowerUpWindow"
+	title="改修工廠稼働日程">
+
+  <keyset>
+    <!-- CTRL+W: Close this window -->
+    <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+    <key id="reload" key="r" modifiers="accel" oncommand="window.location.reload();"/>
+  </keyset>
+
+  <script type="application/javascript"
+	  src="chrome://kancolletimer/content/utils/prefutils.js" />
+  <script type="application/javascript"
+	  src="chrome://kancolletimer/content/config.js" />
+  <script type="application/javascript"
+	  src="chrome://kancolletimer/content/libs.js" />
+  <script type="application/javascript"
+          src="chrome://kancolletimer/content/powerup.js" />
+
+  <vbox id="box" flex="1" style="">
+    <hbox flex="1">
+      <vbox>
+        <button label="Today" oncommand="Powerup.today();"/>
+        <datepicker id="calendar" type="grid" onchange="Powerup.createView();"/>
+        <button label="Expand" oncommand="Powerup.expand();"/>
+        <button label="Collapse" oncommand="Powerup.collapse();"/>
+      </vbox>
+
+      <vbox flex="1" id="body" style="overflow:auto;">
+      </vbox>
+    </hbox>
+  </vbox>
+
+</window>
