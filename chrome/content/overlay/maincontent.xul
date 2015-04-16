@@ -35,13 +35,13 @@
     <toolbox>
       <toolbar>
 	<toolbarbutton tooltiptext="タイマー" image="data/alarm.png"
-		       oncommand="$('deck').selectedIndex=0;"/>
+		       oncommand="$('deck').selectedIndex=0; KanColleTimer.setTitle();"/>
 	<toolbarbutton tooltiptext="編成・任務" image="data/quest.png"
-		       oncommand="$('deck').selectedIndex=2;"/>
+		       oncommand="$('deck').selectedIndex=2; KanColleTimer.setTitle();"/>
 	<toolbarbutton tooltiptext="ダッシュボード" image="data/sticky.png"
-		       oncommand="$('deck').selectedIndex=3;"/>
+		       oncommand="$('deck').selectedIndex=3; KanColleTimer.setTitle();"/>
 	<toolbarbutton tooltiptext="遠征収支" image="data/mission_balance.png"
-		       oncommand="$('deck').selectedIndex=1;"/>
+		       oncommand="$('deck').selectedIndex=1; KanColleTimer.setTitle();"/>
 	<toolbarbutton tooltiptext="保有艦娘リスト" image="data/list.png" oncommand="OpenShipList();"/>
 	<toolbarbutton tooltiptext="改修工廠稼動日程" image="data/calendar.png" oncommand="OpenChromeWindow('chrome://kancolletimer/content/powerup.xul','KanColleTimerPowerupWindow');"/>
 	<toolbarbutton image="data/toolbarcamera.png" tooltiptext="撮影" type="menu">

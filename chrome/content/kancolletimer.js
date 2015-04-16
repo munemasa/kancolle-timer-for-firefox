@@ -618,7 +618,29 @@ var KanColleTimer = {
 	}
     },
 
+    setTitle: function(){
+	switch( $( 'deck' ).selectedIndex ){
+	case '0':
+	    document.title = '艦これタイマー【タイマー】';
+	    break;
+	case '1':
+	    document.title = '艦これタイマー【遠征収支】';
+	    break;
+	case '2':
+	    document.title = '艦これタイマー【編成・任務】';
+	    break;
+	case '3':
+	    document.title = '艦これタイマー【ダッシュボード】';
+	    break;
+	default:
+	    document.title = '艦これタイマー';
+	    break;
+	}
+    },
+
     init: function(){
+	KanColleTimer.setTitle();
+
 	KanColleDatabase.init();
 	KanColleTimerHeadQuarterInfo.init();
 	KanColleTimerDeckInfo.init();
