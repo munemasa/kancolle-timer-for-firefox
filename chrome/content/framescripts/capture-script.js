@@ -29,6 +29,7 @@ function KanColleGetFrame(){
 function KanColleScreenCapture( msg ){
     //console.log("KanColle Screen Capture for E10S");
     let canvas = KanColleGetFrame();
+    if( !canvas ) return;
 
     let route = msg.objects.route;
     let isjpeg = msg.objects.is_jpeg;
@@ -52,6 +53,7 @@ function KanColleScreenCapture( msg ){
     canvas.width = 1;
     canvas.height = 1;
 
+    console.log( "kancolle screenshot captured." );
     // dataスキーマの文字列で返す
     //"kancolletimer:save-image"
     sendAsyncMessage( route, {}, {image: url} );
