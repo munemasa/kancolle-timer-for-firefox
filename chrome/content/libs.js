@@ -1773,8 +1773,10 @@ function TakeKanColleScreenshot(isjpeg){
 
     var game_frame = win.window.document.getElementById("game_frame");
     if (!game_frame) return null;
-    var offset_x = game_frame.offsetLeft;
-    var offset_y = game_frame.offsetTop;
+    let rect = game_frame.getBoundingClientRect();
+    var offset_x = rect.x + win.pageXOffset;
+    var offset_y = rect.y + win.pageYOffset;
+
     var flash = game_frame.contentWindow.document.getElementById("flashWrap");
     offset_x += flash.offsetLeft;
     offset_y += flash.offsetTop;
@@ -1896,8 +1898,9 @@ function TakeKanColleScreenshot_canvas(isjpeg){
 
     var game_frame = win.window.document.getElementById("game_frame");
     if (!game_frame) return null;
-    var offset_x = game_frame.offsetLeft;
-    var offset_y = game_frame.offsetTop;
+    let rect = game_frame.getBoundingClientRect();
+    var offset_x = rect.x + win.pageXOffset;
+    var offset_y = rect.y + win.pageYOffset;
     var flash = game_frame.contentWindow.document.getElementById("flashWrap");
     offset_x += flash.offsetLeft;
     offset_y += flash.offsetTop;
