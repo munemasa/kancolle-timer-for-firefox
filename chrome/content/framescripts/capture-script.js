@@ -6,7 +6,8 @@ function KanColleGetFrame(){
     let rect = game_frame.getBoundingClientRect();
     var offset_x = rect.x + win.window.pageXOffset;
     var offset_y = rect.y + win.window.pageYOffset;
-    var flash = game_frame.contentWindow.document.getElementById( "flashWrap" );
+//    var flash = game_frame.contentWindow.document.getElementById( "flashWrap" );
+    var flash = game_frame.contentWindow.document.getElementsByTagName( "embed" )[0];
     offset_x += flash.offsetLeft;
     offset_y += flash.offsetTop;
 
@@ -29,7 +30,12 @@ function KanColleGetFrame(){
 
 function KanColleScreenCapture( msg ){
     //console.log("KanColle Screen Capture for E10S");
-    let canvas = KanColleGetFrame();
+    let canvas;
+    try{
+	canvas = KanColleGetFrame();
+    }catch( e ){
+	console.log( e );
+    }
     if( !canvas ) return;
 
     let route = msg.objects.route;
