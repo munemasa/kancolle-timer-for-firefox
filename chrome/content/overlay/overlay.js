@@ -155,6 +155,10 @@ KanColleTimer.Overlay = {
     getPref:function(){
 	return new PrefsWrapper1("extensions.kancolletimer.");
     },
+    getSpecificBranch:function(branch){
+	var prefs = new PrefsWrapper1(branch);
+	return prefs;
+    },
 
     findWindow:function(){
 	let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
@@ -224,6 +228,17 @@ KanColleTimer.Overlay = {
     },
 
     RequestKanColleScreenshot: function( route, callback ){
+	let isjpeg = this.getPref().getBoolPref( "screenshot.jpeg" );
+	let do_masking = this.getPref().getBoolPref( "screenshot.mask-name" );
+
+	if( !this.e10sEnabled() ){
+	    let url = this.TakeKanColleScreenshot( isjpeg );
+	    if( typeof(callback) == 'function' ){
+		callback( url );
+	    }
+	    return;
+	}
+
 	// 用事が済んだらメッセージのリスナーを削除するので
 	// 動画撮影用じゃなくてワンショット撮影用
 	// 動画のときはリスナー維持してリクエスト送りまくる方がいい
@@ -247,13 +262,78 @@ KanColleTimer.Overlay = {
 
 	mm.addMessageListener( route, handleMessage );
 
-	let isjpeg = this.getPref().getBoolPref( "screenshot.jpeg" );
-	let do_masking = this.getPref().getBoolPref( "screenshot.mask-name" );
 	mm.sendAsyncMessage( "kancolletimer@miku39.jp:capture", {}, {
 	    route: route,
 	    is_jpeg: isjpeg,
 	    do_masking: do_masking
 	} );
+    },
+
+    e10sEnabled: function(){
+	// Firefox nightly (Firefox 40) browser.tabs.remote.autostart で e10s のオン・オフが分かる
+	try{
+	    let e10s = this.getSpecificBranch( "browser.tabs.remote." ).getBoolPref( "autostart" );
+	    return e10s;
+	}catch( e ){
+	    return false;
+	}
+    },
+
+    TakeKanColleScreenshot: function( isjpeg ){
+	var tab = this.FindKanColleTab();
+	if( !tab ) return null;
+	var win = tab.linkedBrowser._contentWindow.wrappedJSObject;
+
+	var game_frame = win.window.document.getElementById( "game_frame" );
+	if( !game_frame ) return null;
+	let rect = game_frame.getBoundingClientRect();
+	var offset_x = rect.x + win.pageXOffset;
+	var offset_y = rect.y + win.pageYOffset;
+
+	//    var flash = game_frame.contentWindow.document.getElementById("flashWrap");
+	var flash = game_frame.contentWindow.document.getElementsByTagName( "embed" )[0];
+	offset_x += flash.offsetLeft;
+	offset_y += flash.offsetTop;
+
+	var w = flash.clientWidth;
+	var h = flash.clientHeight;
+	var x = offset_x;
+	var y = offset_y;
+
+	var canvas = document.createElementNS( "http://www.w3.org/1999/xhtml", "canvas" );
+	canvas.style.display = "inline";
+	canvas.width = w;
+	canvas.height = h;
+
+	var ctx = canvas.getContext( "2d" );
+	ctx.clearRect( 0, 0, canvas.width, canvas.height );
+	ctx.save();
+	ctx.scale( 1.0, 1.0 );
+
+	// x,y,w,h
+	ctx.drawWindow( win, x, y, w, h, "rgb(255,255,255)" );
+	ctx.restore();
+
+	let mask_admiral_name = this.getPref().getBoolPref( "screenshot.mask-name" );
+	if( mask_admiral_name ){
+	    ctx.fillStyle = "rgb(0,0,0)";
+	    ctx.fillRect( 110, 5, 145, 20 );
+	}
+
+	var url;
+	if( isjpeg ){
+	    url = canvas.toDataURL( "image/jpeg" );
+	}else{
+	    url = canvas.toDataURL( "image/png" );
+	}
+	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+	    .getService( Components.interfaces.nsIIOService );
+	url = IO_SERVICE.newURI( url, null, null );
+
+	canvas.style.display = "none";
+	canvas.width = 1;
+	canvas.height = 1;
+	return url;
     },
 
     /**

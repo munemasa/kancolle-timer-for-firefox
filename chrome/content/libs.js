@@ -1758,14 +1758,11 @@ function GetScreenshotImage_imagemagick( w, h, x, y ){
 }
 
 /**
- * E10S対応により、未使用
+ * E10Sオフのときに使用する、frame-scriptを使わない従来の方式
  * @return スクリーンショットのdataスキーマのnsIURIを返す。艦これのタブがなければnullを返す
  */
 function TakeKanColleScreenshot(isjpeg){
     let use_imagemagick = false;
-    if( IsLinux() ){
-	use_imagemagick = KanColleTimerConfig.getBool("screenshot.imagemagick");
-    }
 
     var tab = FindKanColleTab();
     if( !tab ) return null;
@@ -1777,7 +1774,8 @@ function TakeKanColleScreenshot(isjpeg){
     var offset_x = rect.x + win.pageXOffset;
     var offset_y = rect.y + win.pageYOffset;
 
-    var flash = game_frame.contentWindow.document.getElementById("flashWrap");
+//    var flash = game_frame.contentWindow.document.getElementById("flashWrap");
+    var flash = game_frame.contentWindow.document.getElementsByTagName("embed")[0];
     offset_x += flash.offsetLeft;
     offset_y += flash.offsetTop;
 
@@ -1854,6 +1852,21 @@ function TakeKanColleScreenshot(isjpeg){
  * @constructor
  */
 function RequestKanColleScreenshot( route, callback ){
+    let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
+    let do_masking = KanColleTimerConfig.getBool( "screenshot.mask-name" );
+
+    if( !KanColleTimerConfig.e10sEnabled() ){
+	try{
+	    let url = TakeKanColleScreenshot();
+	    if( typeof(callback) == 'function' ){
+		callback( url );
+	    }
+	}catch( e ){
+	    console.log( e );
+	}
+	return;
+    }
+
     // 用事が済んだらメッセージのリスナーを削除するので
     // 動画撮影用じゃなくてワンショット撮影用
     // 動画のときはリスナー維持してリクエスト送りまくる方がいい
@@ -1877,8 +1890,6 @@ function RequestKanColleScreenshot( route, callback ){
 
     mm.addMessageListener( route, handleMessage );
 
-    let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
-    let do_masking = KanColleTimerConfig.getBool( "screenshot.mask-name" );
     mm.sendAsyncMessage( "kancolletimer@miku39.jp:capture", {}, {
 	route: route,
 	is_jpeg: isjpeg,
