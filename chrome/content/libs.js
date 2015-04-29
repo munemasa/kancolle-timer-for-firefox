@@ -1857,7 +1857,7 @@ function RequestKanColleScreenshot( route, callback ){
 
     if( !KanColleTimerConfig.e10sEnabled() ){
 	try{
-	    let url = TakeKanColleScreenshot();
+	    let url = TakeKanColleScreenshot( isjpeg );
 	    if( typeof(callback) == 'function' ){
 		callback( url );
 	    }
