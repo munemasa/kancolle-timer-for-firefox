@@ -30,6 +30,10 @@ treechildren::-moz-tree-cell(sally2) {
     border-left: 4px solid #acdc93;
 }
 
+treechildren::-moz-tree-cell(sally3) {
+    border-left: 4px solid #c79d68;
+}
+
 treechildren::-moz-tree-row(dash-separator) {
     border-top: 1px dashed gray;
 }
