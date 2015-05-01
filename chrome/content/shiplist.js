@@ -201,6 +201,30 @@ var ShipList = {
 	}
     },
 
+    updateOwnerShip: function(){
+	this.allequipments.forEach( function( elem ){
+	    elem._owner_ship = null;
+	} );
+
+	let ships = KanColleDatabase.ship.list().map( function( k ){
+	    return KanColleDatabase.ship.get( k );
+	} );
+
+	for( let j = 0; j < ships.length; j++ ){
+	    let ship = ships[j];
+	    let data = FindShipData( ship.api_id );
+	    for( let i in ship.api_slot ){
+		let slot_id = ship.api_slot[i];
+		if( slot_id == -1 ) continue;
+
+		let item = KanColleDatabase.slotitem.get( slot_id );
+		if( item ){
+		    item._owner_ship = data.api_name;
+		}
+	    }
+	}
+    },
+
     createEquipmentList: function(){
 	let count = new Object();
 	let count_all = new Object();
@@ -317,6 +341,8 @@ var ShipList = {
 
     init: function(){
 	this.initEquipmentList();
+	this.updateOwnerShip();
+
 	this.createHistogram();
 
 	this.createShipOrganizationList();
