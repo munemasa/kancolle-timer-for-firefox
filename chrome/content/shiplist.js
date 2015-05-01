@@ -1,46 +1,7 @@
 Components.utils.import( "resource://kancolletimermodules/httpobserve.jsm" );
 
 var ShipList = {
-    allships: [],
     allequipments: [],
-    filter_key: [],
-
-    saveCvs: function(){
-	let txt = "";
-
-	for( let k in this.allships ){
-	    let obj = this.allships[k];
-	    txt += obj.type + "," + obj.name + "," + obj.lv + ",";
-	    for( let i in obj.equips ){
-		let name = obj.equips[i];
-		txt += name + ",";
-	    }
-	    txt += "\n";
-	}
-
-	const nsIFilePicker = Components.interfaces.nsIFilePicker;
-	let fp = Components.classes["@mozilla.org/filepicker;1"].createInstance( nsIFilePicker );
-	fp.init( window, "艦娘リストの保存...", nsIFilePicker.modeSave );
-	fp.appendFilters( nsIFilePicker.filterAll );
-	let rv = fp.show();
-	if( rv == nsIFilePicker.returnOK || rv == nsIFilePicker.returnReplace ){
-	    let file = fp.file;
-	    let path = fp.file.path;
-	    let os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance( Components.interfaces.nsIFileOutputStream );
-	    let flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
-	    os.init( file, flags, 0664, 0 );
-	    let cos = GetUTF8ConverterOutputStream( os );
-	    cos.writeString( txt );
-	    cos.close();
-	}
-    },
-
-    clearListBox: function( list ){
-
-	while( list.getRowCount() ){
-	    list.removeItemAt( 0 );
-	}
-    },
 
     getFleetNo: function( ship_id ){
 	let fleet = KanColleDatabase.deck.lookup( ship_id );
@@ -56,49 +17,12 @@ var ShipList = {
 	return false;
     },
 
-    sort: function( type ){
-	this.allships.sort( function( a, b ){
-	    var tmpa = 0;
-	    var tmpb = 0;
-	    var order = -1;
-	    switch( type ){
-	    case 0: // 艦種
-		tmpa = a.stype;
-		tmpb = b.stype;
-		if( tmpa == tmpb ){
-		    tmpa = b.sort_no;
-		    tmpb = a.sort_no;
-		}
-		break;
-	    case 1: // レベル
-		tmpa = a.lv;
-		tmpb = b.lv;
-		if( tmpa == tmpb ){
-		    tmpa = b.sort_no;
-		    tmpb = a.sort_no;
-		}
-		break;
-	    case 2: // 状態
-		tmpa = a.cond;
-		tmpb = b.cond;
-		break;
-	    case 3: // 入渠時間
-		tmpa = a.ndock_time;
-		tmpb = b.ndock_time;
-		break;
-	    }
-	    return (tmpa - tmpb) * order;
-	} );
-	let list = this.filter( this.allships );
-	this.showShipList( list );
-    },
-
     /**
      * 艦隊編成のリストを作成する
      */
     setFleetOrganization: function( n ){
 	let list = $( 'fleet-organization' );
-	this.clearListBox( list );
+	ClearListBox( list );
 	// 艦隊編成
 	let fleet = KanColleDatabase.deck.get( n );
 
@@ -155,122 +79,6 @@ var ShipList = {
 	    list.appendChild( elem );
 	}
 	$( 'fleet-organization' ).setAttribute( 'tooltiptext', "索敵値" + sakuteki );
-    },
-
-    _filter_func: [ function( d ){
-	let type = ShipList.filter_key[0];
-	if( !type ) return true;
-	return d.type == type;
-    }, function( d ){
-	let equip = ShipList.filter_key[1];
-	if( !equip ) return true;
-	for( let i in d.equips ){
-	    if( equip == d.equips[i] ) return true;
-	}
-	return false;
-    }],
-
-    filterByType: function( type ){
-	this.filter_key[0] = type;
-	let ships = this.filter( this.allships );
-	this.showShipList( ships );
-    },
-
-    filterByEquipment: function( equip ){
-	this.filter_key[1] = equip;
-	let ships = this.filter( this.allships );
-	this.showShipList( ships );
-    },
-
-    filter: function( list ){
-	return list.filter( this._filter_func[0] ).filter( this._filter_func[1] );
-    },
-
-    /**
-     * 艦娘リストを作成する
-     */
-    showShipList: function( ships ){
-	let list = $( 'ship-list' );
-
-	this.clearListBox( list );
-
-	let no = 1;
-	ships.forEach( function( obj ){
-	    let elem = CreateElement( 'listitem' );
-	    let style = no != 1 && (no % 10) == 1 ? "border-top: 1px solid black;" : "";
-
-	    elem.appendChild( CreateListCell( no++ ) );
-	    if( obj.fleet_no ){
-		elem.appendChild( CreateListCell( obj.type + '(' + obj.fleet_no + ')' ) );
-	    }else{
-		elem.appendChild( CreateListCell( obj.type ) );
-	    }
-	    let cell = CreateListCell( obj.name );
-	    cell.setAttribute( 'sally_area', obj.shipinfo.api_sally_area );
-	    elem.appendChild( cell );
-
-	    cell = CreateListCell( obj.lv );
-	    elem.appendChild( cell );
-	    cell = CreateListCell( obj.cond );
-	    elem.appendChild( cell );
-
-	    if( obj.cond >= 50 ){
-		style = style + 'background-color: #ffffd0;';
-	    }else{
-		style = style + 'background-color: white;';
-	    }
-	    let p = 1.0 * obj.shipinfo.api_nowhp / obj.shipinfo.api_maxhp;
-	    if( p <= 0.25 ){
-		style += "border-left: solid 5px red;";
-	    }else if( p <= 0.50 ){
-		style += "border-left: solid 5px orange;";
-	    }else if( p <= 0.75 ){
-		style += "border-left: solid 5px yellow;";
-	    }
-	    switch( obj.shipinfo.api_sally_area ){
-	    case 0:
-		break;
-	    case 1:
-//		style += "border: inset 2px blue;";
-		break;
-	    case 2:
-//		style += "border: inset 2px yellow;";
-		break;
-	    }
-	    elem.setAttribute( 'style', style );
-
-	    cell = CreateListCell( obj.ndock_time ? GetTimeString( obj.ndock_time ) : "---" );
-	    if( ShipList.isRepairing( obj.ship_id ) ){
-		cell.setAttribute( 'style', 'color: gray; text-align: center;' );
-	    }else{
-		cell.setAttribute( 'style', 'text-align:center;' );
-	    }
-	    elem.appendChild( cell );
-
-	    elem.appendChild( CreateListCell( obj.saku ) );
-
-	    cell = CreateListCell( obj.shipinfo.api_exp[2] + "%" );
-	    cell.setAttribute( 'style', 'text-align: right' );
-	    elem.appendChild( cell );
-
-	    let n = d3.sum( obj.shipinfo.api_onslot );
-	    if( n ){
-	    }else{
-		n = "--";
-	    }
-	    cell = CreateListCell( n );
-	    let tmp = obj.shipinfo.api_onslot.filter( function( d ){
-		return d != 0;
-	    } );
-	    elem.setAttribute( "tooltiptext", tmp );
-	    elem.appendChild( cell );
-
-	    for( let i in obj.equips ){
-		let name = obj.equips[i];
-		elem.appendChild( CreateListCell( name ) );
-	    }
-	    list.appendChild( elem );
-	} );
     },
 
     createHistogram: function(){
@@ -393,57 +201,6 @@ var ShipList = {
 	}
     },
 
-    createShipList: function( ships ){
-	this.allequipments.forEach( function( elem ){
-	    elem._owner_ship = null;
-	} );
-
-	let allships = new Array();
-
-	let no = 1;
-	for( let j = 0; j < ships.length; j++ ){
-	    let ship = ships[j];
-	    let data = FindShipData( ship.api_id );
-	    let fleet_no = this.getFleetNo( ship.api_id );
-
-	    let obj = new Object();
-	    obj.ship_id = ship.api_id;
-	    obj.sort_no = data.api_sortno;
-	    obj.fleet_no = fleet_no;
-	    obj.type = KanColleData.type_name[data.api_stype];
-	    obj.stype = data.api_stype;
-	    obj.name = data.api_name;
-	    obj.lv = ship.api_lv;
-	    obj.cond = ship.api_cond;
-	    obj.ndock_time = parseInt( ship.api_ndock_time / 1000 );
-	    obj.saku = ship.api_sakuteki[0];
-
-	    // 今まで必要な要素だけ個別にコピーしていたけど
-	    // 面倒なので一括して持つようにする
-	    obj.shipinfo = ship;
-
-	    obj.equips = new Array();
-
-	    for( let i in ship.api_slot ){
-		let slot_id = ship.api_slot[i];
-		if( slot_id == -1 ) continue;
-
-		let item = KanColleDatabase.slotitem.get( slot_id );
-		if( item ){
-		    item._owner_ship = obj.name;
-		    obj.equips.push( item.api_name + (item.api_level > 0 ? "+" + item.api_level : "") );
-		}
-	    }
-	    allships.push( obj );
-	}
-	return allships;
-    },
-
-    findItem: function( slot_id ){
-	for( let i = 0; i < this.allequipments; i++ ){
-	}
-    },
-
     createEquipmentList: function(){
 	let count = new Object();
 	let count_all = new Object();
@@ -561,12 +318,6 @@ var ShipList = {
     init: function(){
 	this.initEquipmentList();
 	this.createHistogram();
-
-	// 艦艇リスト
-	let ships = KanColleDatabase.ship.list().map( function( k ){
-	    return KanColleDatabase.ship.get( k );
-	} );
-	this.allships = this.createShipList( ships );
 
 	this.createShipOrganizationList();
 	this.createEquipmentList();
