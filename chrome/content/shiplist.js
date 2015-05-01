@@ -2,6 +2,7 @@ Components.utils.import( "resource://kancolletimermodules/httpobserve.jsm" );
 
 var ShipList = {
     allequipments: [],
+    equipment_owner: null, // 装備品のオーナー艦娘
 
     getFleetNo: function( ship_id ){
 	let fleet = KanColleDatabase.deck.lookup( ship_id );
@@ -219,20 +220,64 @@ var ShipList = {
 
 		let item = KanColleDatabase.slotitem.get( slot_id );
 		if( item ){
-		    item._owner_ship = data.api_name;
+		    item._owner_ship = data;
 		}
 	    }
 	}
     },
 
+    popupEquipmentOwner: function( elem ){
+	let equip = elem.getAttribute( 'equipment' );
+	let unique = this.equipment_owner[equip].filter( function( itm, i, a ){
+	    return i == a.indexOf( itm );
+	} );
+
+	unique.sort( function(a,b){
+	    let tmpa = a.api_stype;
+	    let tmpb = b.api_stype;
+	    if( tmpa == tmpb ){
+		tmpa = b.api_sortno;
+		tmpb = a.api_sortno;
+	    }
+	    return tmpb - tmpa;
+	});
+
+	let listbox = $( 'owner-list-box' );
+	ClearListBox( listbox );
+
+	if( unique.length == 0 ){
+	    unique.push( {'api_stype': 0, 'api_name': '装備艦娘なし'} );
+	}
+
+	unique.forEach( function( item ){
+	    let listitem = CreateElement( 'listitem' );
+	    listitem.appendChild( CreateListCell( KanColleData.type_name[item.api_stype] ) );
+	    listitem.appendChild( CreateListCell( item.api_name ) );
+	    listbox.appendChild( listitem );
+	} );
+
+
+	$('owner-list').openPopup( elem, 'after_start', 0, 0 );
+    },
+
     createEquipmentList: function(){
-	let count = new Object();
-	let count_all = new Object();
+	let count = new Object(); // 未装備数
+	let count_all = new Object(); // 所持総数
 	let data = new Object();
+
+	this.equipment_owner = new Object();
 	this.allequipments.forEach( function( d ){
 	    let k = d.api_name;
 	    if( !count[k] ) count[k] = 0;
-	    if( !d._owner_ship ) count[ k ]++;
+
+	    if( !ShipList.equipment_owner[k] ){
+		ShipList.equipment_owner[k] = new Array();
+	    }
+	    if( !d._owner_ship ){
+		count[k]++;
+	    }else{
+		ShipList.equipment_owner[k].push( d._owner_ship );
+	    }
 	    data[k] = d;
 
 	    if( !count_all[d.api_name] ) count_all[d.api_name] = 0;
@@ -251,6 +296,10 @@ var ShipList = {
 		str = "box-shadow: -8px 0 0 0 " + color2 + ", -16px 0 0 0 " + color + "; margin-left: 16px; border-bottom: #c0c0c0 1px solid;";
 		return str;
 	    } )
+	    .attr( "equipment", function( d ){
+		return d;
+	    } )
+	    .attr( "onclick", "ShipList.popupEquipmentOwner(this);" )
 	    .selectAll( "label" )
 	    .data( function( d ){
 		       let value = new Array();

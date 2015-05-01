@@ -4,6 +4,7 @@ var KanColleData = {
 
 
     type_name:      {
+	0: "",
 	2:  "駆逐艦",
 	3:  "軽巡洋艦",
 	4:  "重雷装巡洋艦",

@@ -6,16 +6,9 @@
 #newshiplist-equipment-filter:hover {
 }
 
-listcell[sally_area="1"]:after {
-    content: "(1)";
-    color: #81bee3;
-    text-shadow: 1px 1px 0px #444444;
-}
-
-listcell[sally_area="2"]:after {
-    content: "(2)";
-    color: #edc96f;
-    text-shadow: 1px 1px 0px #444444;
+#equipment-list *:hover {
+    cursor: pointer;
+    text-shadow: 1px 1px 0px #bbbbbb;
 }
 
 tree#newshiplist-tree treecol {
@@ -86,6 +79,9 @@ splitter {
     -moz-margin-start: -3px;
     position: relative;
 }
+
+
+/*--- 資源グラフ用 ---*/
 
 .bar {
     fill: steelblue;

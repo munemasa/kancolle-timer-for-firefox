@@ -326,6 +326,15 @@
     </tabbox>
   </vbox>
 
+  <panel id="owner-list" position="after_start">
+    <listbox id="owner-list-box">
+      <listcols>
+        <listcol/>
+        <listcol flex="1"/>
+      </listcols>
+    </listbox>
+  </panel>
+
   <popupset>
     <menupopup id="popup-save-csv" onpopupshowing="return NewShipList.onpopupshowingSaveCvs();">
       <menuitem id="ship-delete-menu" label="削除" oncommand="NewShipList.deleteShip();"/>
