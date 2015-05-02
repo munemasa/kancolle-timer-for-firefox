@@ -330,6 +330,7 @@
     <listbox id="owner-list-box">
       <listcols>
         <listcol/>
+        <listcol/>
         <listcol flex="1"/>
       </listcols>
     </listbox>

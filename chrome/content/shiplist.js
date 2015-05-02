@@ -211,6 +211,17 @@ var ShipList = {
 	    return KanColleDatabase.ship.get( k );
 	} );
 
+	// _spec は艦娘一覧を生成するときにセットされているので修正時に要注意
+	ships.sort( function( a, b ){
+	    let tmpa = a._spec.api_stype;
+	    let tmpb = b._spec.api_stype;
+	    if( tmpa == tmpb ){
+		tmpa = b._spec.api_sortno;
+		tmpb = a._spec.api_sortno;
+	    }
+	    return tmpb - tmpa;
+	} );
+
 	for( let j = 0; j < ships.length; j++ ){
 	    let ship = ships[j];
 	    let data = FindShipData( ship.api_id );
@@ -220,6 +231,7 @@ var ShipList = {
 
 		let item = KanColleDatabase.slotitem.get( slot_id );
 		if( item ){
+		    data["_page_no"] = 1 + parseInt(j/10);
 		    item._owner_ship = data;
 		}
 	    }
@@ -251,6 +263,7 @@ var ShipList = {
 
 	unique.forEach( function( item ){
 	    let listitem = CreateElement( 'listitem' );
+	    listitem.appendChild( CreateListCell( item._page_no || "" ) );
 	    listitem.appendChild( CreateListCell( KanColleData.type_name[item.api_stype] ) );
 	    listitem.appendChild( CreateListCell( item.api_name ) );
 	    listbox.appendChild( listitem );
