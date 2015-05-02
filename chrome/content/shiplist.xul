@@ -330,13 +330,13 @@
     <label id="owner-equip-name" style="text-shadow: 1px 1px 0px #bbbbbb;"/>
     <listbox id="owner-list-box">
       <listcols>
-        <listcol style="border-right: solid 1px gray; padding-right: 1em;"/>
-        <listcol style="border-right: solid 1px gray; padding-right: 1em;"/>
-        <listcol style="border-right: solid 1px gray; padding-right: 1em;"/>
-        <listcol style="border-right: solid 1px gray; padding-right: 1em;"/>
-        <listcol style="border-right: solid 1px gray; padding-right: 1em;"/>
-        <listcol style="border-right: solid 1px gray; padding-right: 1em;"/>
-        <listcol style="border-right: solid 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
       </listcols>
     </listbox>
   </panel>
