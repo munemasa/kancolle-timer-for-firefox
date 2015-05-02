@@ -51,7 +51,7 @@ var ScreenShotOrganization = {
     },
 
     tweet: function(){
-	let url = CanvasToURI( this.canvas, "image/png" );
+	let url = CanvasToURI( this.canvas, KanColleTimerConfig.getBool( "screenshot.jpeg" ) ? "image/jpeg" : "image/png" );
 	OpenTweetDialog( true, url );
     },
 

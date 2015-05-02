@@ -3898,11 +3898,12 @@ function CanvasToURI( canvas, format ){
 /**
  * HTML canvasをファイルに保存する
  * @param canvas
+ * @param format
  * @returns {null}
- * @constructor
  */
-function SaveCanvas( canvas ){
-    let url = canvas.toDataURL( "image/png" );
+function SaveCanvas( canvas, format ){
+    format = format || "image/png";
+    let url = canvas.toDataURL( format );
     const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
 	.getService( Components.interfaces.nsIIOService );
     let newurl = IO_SERVICE.newURI( url, null, null );
@@ -3912,13 +3913,14 @@ function SaveCanvas( canvas ){
 	.createInstance( Components.interfaces.nsIFilePicker );
     fp.init( window, "画像の保存...", fp.modeSave );
     fp.appendFilters( fp.filterImages );
-    fp.defaultExtension = "png";
+
+    fp.defaultExtension = format == "image/jpeg" ? "jpg" : "png";
     if( KanColleTimerConfig.getUnichar( "screenshot.path" ) ){
 	fp.displayDirectory = OpenFile( KanColleTimerConfig.getUnichar( "screenshot.path" ) );
     }
 
-    fp.defaultString = "screenshot.png";
-    if( fp.show() == fp.returnCancel || !fp.file ) return null;
+    fp.defaultString = format == "image/jpeg" ? "screenshot.jpg" : "screenshot.png";
+    if( fp.show() == fp.returnCancel || !fp.file ) return;
 
     file = fp.file;
 

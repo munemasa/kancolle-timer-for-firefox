@@ -27,8 +27,10 @@
         <hbox align="center">
             <label id="text" value="1枚目を撮影してください。"/>
             <button label="撮影" oncommand="ScreenShotOrganization.getScreenshot();"/>
-            <button label="画像を保存" oncommand="SaveCanvas(ScreenShotOrganization.canvas);"/>
+            <button label="画像を保存"
+                    oncommand="SaveCanvas(ScreenShotOrganization.canvas, KanColleTimerConfig.getBool( 'screenshot.jpeg' ) ? 'image/jpeg' : 'image/png');"/>
             <button label="つぶやく" oncommand="ScreenShotOrganization.tweet();"/>
+            <label value="カラム数"/>
             <menulist id="columns" persist="value" value="3"
                       oncommand="ScreenShotOrganization.changeColumns(parseInt(this.value));">
                 <menupopup>
