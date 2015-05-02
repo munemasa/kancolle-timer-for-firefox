@@ -25,10 +25,7 @@ var ScreenShotOrganization = {
 		ScreenShotOrganization._cnt %= 6;
 		$( 'text' ).value = (ScreenShotOrganization._cnt + 1) + "枚目を撮影してください。";
 
-		let url = canvas.toDataURL( "image/png" );
-		const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
-		    .getService( Components.interfaces.nsIIOService );
-		url = IO_SERVICE.newURI( url, null, null );
+		let url = CanvasToURI( canvas, "image/png" );
 		$( 'picture' ).src = url.spec;
 	    };
 	    img.src = url.spec;
@@ -36,10 +33,7 @@ var ScreenShotOrganization = {
     },
 
     tweet: function(){
-	let url = this.canvas.toDataURL( "image/png" );
-	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
-	    .getService( Components.interfaces.nsIIOService );
-	url = IO_SERVICE.newURI( url, null, null );
+	let url = CanvasToURI( this.canvas, "image/png" );
 	OpenTweetDialog( true, url );
     },
 

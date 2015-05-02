@@ -3879,6 +3879,28 @@ function SaveUrlToFile( url, file )
     }).then(null, Components.utils.reportError);
 }
 
+/**
+ * HTML canvasを nsIURL に変換して返す
+ * @param canvas
+ * @param format
+ * @returns {*}
+ * @constructor
+ */
+function CanvasToURI( canvas, format ){
+    format = format || "image/png";
+    let url = canvas.toDataURL( format );
+    const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+	.getService( Components.interfaces.nsIIOService );
+    let newurl = IO_SERVICE.newURI( url, null, null );
+    return newurl;
+}
+
+/**
+ * HTML canvasをファイルに保存する
+ * @param canvas
+ * @returns {null}
+ * @constructor
+ */
 function SaveCanvas( canvas ){
     let url = canvas.toDataURL( "image/png" );
     const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
