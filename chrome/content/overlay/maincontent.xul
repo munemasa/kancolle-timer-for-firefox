@@ -48,8 +48,9 @@
 	  <menupopup>
 	    <menuitem label="スクリーンショットをつぶやく" oncommand="OpenTweetDialog();"/>
 	    <menuseparator/>
-	    <menuitem label="スクリーンショットを撮影(1枚)" oncommand="KanColleTimer.takeScreenshot();"/>
+	    <menuitem label="保存先を指定してスクリーンショットを保存" oncommand="KanColleTimer.takeScreenshot();"/>
 	    <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimer.takeScreenshotSeriography();"/>
+            <menuitem label="改装画面から艦隊編成を撮影" oncommand="OpenSsOrganization();"/>
             <menuseparator/>
             <menuitem label="ビデオレコーダー(仮)" oncommand="OpenVideoRecorder();"/>
 	  </menupopup>

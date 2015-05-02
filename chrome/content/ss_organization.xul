@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
+
+<window id="kancolletimer_ss_organization"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        persist="screenX screenY width height sizemode"
+        width="750" height="450"
+        windowtype="KanColleTimerSsOrganizationWindow"
+        title="艦隊編成を撮影">
+
+    <keyset>
+        <!-- CTRL+W: Close this window -->
+        <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+        <key id="reload" key="r" modifiers="accel" oncommand="OpenSsOrganization();"/>
+    </keyset>
+
+    <script type="application/javascript" src="chrome://kancolletimer/content/libs.js"/>
+    <script type="application/javascript" src="chrome://kancolletimer/content/utils/prefutils.js"/>
+    <script type="application/javascript" src="chrome://kancolletimer/content/config.js"/>
+    <script type="application/javascript" src="chrome://kancolletimer/content/ss_organization.js"/>
+
+    <vbox flex="1" style="overflow:auto;">
+        <hbox align="center">
+            <label id="text" value="1枚目を撮影してください。"/>
+            <button label="撮影" oncommand="ScreenShotOrganization.getScreenshot();"/>
+            <button label="画像を保存" oncommand="SaveCanvas(ScreenShotOrganization.canvas);"/>
+            <button label="つぶやく" oncommand="ScreenShotOrganization.tweet();"/>
+        </hbox>
+        <hbox flex="1" style="width: 50%;">
+            <vbox>
+                <image id="picture" width="680" height="365"/>
+            </vbox>
+        </hbox>
+    </vbox>
+
+</window>

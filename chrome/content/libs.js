@@ -1676,6 +1676,13 @@ function OpenVideoRecorder(){
     w.focus();
 }
 
+function OpenSsOrganization(){
+    let feature = "chrome,resizable=yes";
+    let w = window.open( "chrome://kancolletimer/content/ss_organization.xul", "KanColleTimerSsOrganization", feature );
+    w.focus();
+}
+
+
 function OpenAboutDialog(){
     var f='chrome,toolbar,modal=no,resizable=no,centerscreen';
     var w = window.openDialog('chrome://kancolletimer/content/about.xul','KanColleTimerAbout',f);
@@ -3870,6 +3877,30 @@ function SaveUrlToFile( url, file )
     Task.spawn(function () {
 	yield Downloads.fetch( url, file );
     }).then(null, Components.utils.reportError);
+}
+
+function SaveCanvas( canvas ){
+    let url = canvas.toDataURL( "image/png" );
+    const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
+	.getService( Components.interfaces.nsIIOService );
+    let newurl = IO_SERVICE.newURI( url, null, null );
+
+    let file = null;
+    let fp = Components.classes['@mozilla.org/filepicker;1']
+	.createInstance( Components.interfaces.nsIFilePicker );
+    fp.init( window, "画像の保存...", fp.modeSave );
+    fp.appendFilters( fp.filterImages );
+    fp.defaultExtension = "png";
+    if( KanColleTimerConfig.getUnichar( "screenshot.path" ) ){
+	fp.displayDirectory = OpenFile( KanColleTimerConfig.getUnichar( "screenshot.path" ) );
+    }
+
+    fp.defaultString = "screenshot.png";
+    if( fp.show() == fp.returnCancel || !fp.file ) return null;
+
+    file = fp.file;
+
+    SaveUrlToFile( newurl, file );
 }
 
 /**
