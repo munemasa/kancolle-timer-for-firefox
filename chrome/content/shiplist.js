@@ -232,8 +232,8 @@ var ShipList = {
 
 		let item = KanColleDatabase.slotitem.get( slot_id );
 		if( item ){
-		    data["_page_no"] = 1 + parseInt(j/10);
-		    item._owner_ship = data;
+		    ship["_page_no"] = 1 + parseInt(j/10);
+		    item._owner_ship = ship;
 		}
 	    }
 	}
@@ -241,11 +241,23 @@ var ShipList = {
 
     popupEquipmentOwner: function( elem ){
 	let equip = elem.getAttribute( 'equipment' );
+	let listbox = $( 'owner-list-box' );
+
+	if( this.equipment_owner[equip].length==0){
+	    $('owner-equip-name').value = "装備している艦娘はいません";
+	    $('owner-list').openPopup( elem, 'after_start', 0, 0 );
+	    listbox.style.display = "none";
+	    return;
+	}
+
 	let unique = this.equipment_owner[equip].filter( function( itm, i, a ){
 	    return i == a.indexOf( itm );
 	} );
 
 	unique.sort( function(a,b){
+	    a = FindShipData( a.api_id );
+	    b = FindShipData( b.api_id );
+
 	    let tmpa = a.api_stype;
 	    let tmpb = b.api_stype;
 	    if( tmpa == tmpb ){
@@ -255,23 +267,29 @@ var ShipList = {
 	    return tmpb - tmpa;
 	});
 
-	let listbox = $( 'owner-list-box' );
 	ClearListBox( listbox );
+	listbox.style.display = "";
+	$( 'owner-equip-name' ).value = equip;
 
-	if( unique.length == 0 ){
-	    unique.push( {'api_stype': 0, 'api_name': '装備艦娘なし'} );
-	}
-
-	$('owner-equip-name').value = equip;
-
-	unique.forEach( function( item ){
+	unique.forEach( function( ship ){
+	    item = FindShipData( ship.api_id );
 	    let listitem = CreateElement( 'listitem' );
-	    listitem.appendChild( CreateListCell( item._page_no || "" ) );
+	    listitem.appendChild( CreateListCell( ship._page_no || "" ) );
 	    listitem.appendChild( CreateListCell( KanColleData.type_name[item.api_stype] ) );
 	    listitem.appendChild( CreateListCell( item.api_name ) );
+
+	    for( let slot_id of ship.api_slot ){
+		if( slot_id == -1 ) continue;
+		let item = KanColleDatabase.slotitem.get( slot_id );
+		if( item ){
+		    let masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+		    let str = masterdata.api_name + (item.api_level > 0 ? "★+" + item.api_level : "");
+		    listitem.appendChild( CreateListCell( str ) );
+		}
+	    }
+
 	    listbox.appendChild( listitem );
 	} );
-
 
 	$('owner-list').openPopup( elem, 'after_start', 0, 0 );
     },
