@@ -211,13 +211,14 @@ var ShipList = {
 	    return KanColleDatabase.ship.get( k );
 	} );
 
-	// _spec は艦娘一覧を生成するときにセットされているので修正時に要注意
 	ships.sort( function( a, b ){
-	    let tmpa = a._spec.api_stype;
-	    let tmpb = b._spec.api_stype;
+	    let spec_a = FindShipData( a.api_id );
+	    let spec_b = FindShipData( b.api_id );
+	    let tmpa = spec_a.api_stype;
+	    let tmpb = spec_b.api_stype;
 	    if( tmpa == tmpb ){
-		tmpa = b._spec.api_sortno;
-		tmpb = a._spec.api_sortno;
+		tmpa = spec_b.api_sortno;
+		tmpb = spec_a.api_sortno;
 	    }
 	    return tmpb - tmpa;
 	} );
