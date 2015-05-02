@@ -29,6 +29,17 @@
             <button label="撮影" oncommand="ScreenShotOrganization.getScreenshot();"/>
             <button label="画像を保存" oncommand="SaveCanvas(ScreenShotOrganization.canvas);"/>
             <button label="つぶやく" oncommand="ScreenShotOrganization.tweet();"/>
+            <menulist id="columns" persist="value" value="3"
+                      oncommand="ScreenShotOrganization.changeColumns(parseInt(this.value));">
+                <menupopup>
+                    <menuitem label="1" value="1"/>
+                    <menuitem label="2" value="2"/>
+                    <menuitem label="3" value="3"/>
+                    <menuitem label="4" value="4"/>
+                    <menuitem label="5" value="5"/>
+                    <menuitem label="6" value="6"/>
+                </menupopup>
+            </menulist>
         </hbox>
         <hbox flex="1" style="width: 50%;">
             <vbox>

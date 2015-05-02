@@ -1,6 +1,11 @@
 var ScreenShotOrganization = {
     _cnt: 0,
     canvas: null,
+    w: 453,
+    h: 365,
+
+    row: 2,
+    col: 3,
 
     getScreenshot: function(){
 	let canvas = this.canvas;
@@ -16,8 +21,8 @@ var ScreenShotOrganization = {
 		let base_x = 330;
 		let base_y = 103;
 
-		let x = (cnt % 3) * w;
-		let y = parseInt( cnt / 3 ) * h;
+		let x = (cnt % ScreenShotOrganization.col) * w;
+		let y = parseInt( cnt / ScreenShotOrganization.col ) * h;
 
 		ctx.drawImage( img, base_x, base_y, w, h, x, y, w, h );
 
@@ -32,6 +37,19 @@ var ScreenShotOrganization = {
 	} );
     },
 
+    changeColumns: function( n ){
+	let width = this.w * n;
+	let height = this.h * parseInt( 6 / n + 0.999 );
+	this.canvas.width = width;
+	this.canvas.height = height;
+	$( 'picture' ).width = width / 2;
+	$( 'picture' ).height = height / 2;
+	this.col = n;
+
+	this._cnt = 0;
+	$( 'text' ).value = "1枚目を撮影してください。";
+    },
+
     tweet: function(){
 	let url = CanvasToURI( this.canvas, "image/png" );
 	OpenTweetDialog( true, url );
@@ -42,6 +60,8 @@ var ScreenShotOrganization = {
 	this.canvas.style.display = "inline";
 	this.canvas.width = 1360;
 	this.canvas.height = 730;
+
+	this.changeColumns( parseInt( $( 'columns' ).value ) );
     }
 
 };
