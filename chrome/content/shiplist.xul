@@ -327,6 +327,7 @@
   </vbox>
 
   <panel id="owner-list" position="after_start">
+    <label id="owner-equip-name" style="text-shadow: 1px 1px 0px #bbbbbb;"/>
     <listbox id="owner-list-box">
       <listcols>
         <listcol/>

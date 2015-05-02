@@ -261,6 +261,8 @@ var ShipList = {
 	    unique.push( {'api_stype': 0, 'api_name': '装備艦娘なし'} );
 	}
 
+	$('owner-equip-name').value = equip;
+
 	unique.forEach( function( item ){
 	    let listitem = CreateElement( 'listitem' );
 	    listitem.appendChild( CreateListCell( item._page_no || "" ) );
