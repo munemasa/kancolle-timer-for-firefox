@@ -242,6 +242,7 @@ var ShipList = {
     popupEquipmentOwner: function( elem ){
 	let equip = elem.getAttribute( 'equipment' );
 	let listbox = $( 'owner-list-box' );
+	ClearListBox( listbox );
 
 	if( this.equipment_owner[equip].length==0){
 	    $('owner-equip-name').value = "装備している艦娘はいません";
@@ -267,7 +268,6 @@ var ShipList = {
 	    return tmpb - tmpa;
 	});
 
-	ClearListBox( listbox );
 	listbox.style.display = "";
 	$( 'owner-equip-name' ).value = equip;
 
