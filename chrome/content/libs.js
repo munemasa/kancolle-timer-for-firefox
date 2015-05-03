@@ -16,12 +16,17 @@ let FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils;
 /**
  * いろいろと便利関数などを.
  */
-
-
 const MODE_SAVE = Ci.nsIFilePicker.modeSave;
 
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const HTML_NS= "http://www.w3.org/1999/xhtml";
+
+// MIMEタイプ別ファイル名拡張子
+const MimeTypeExt = {
+    "image/png": "png",
+    "image/jpeg": "jpg"
+};
+
 
 var __KanColleTimerPanel = {
     update: null,
@@ -3903,12 +3908,13 @@ function SaveCanvas( canvas, format ){
     fp.init( window, "画像の保存...", fp.modeSave );
     fp.appendFilters( fp.filterImages );
 
-    fp.defaultExtension = format == "image/jpeg" ? "jpg" : "png";
+    let ext = MimeTypeExt[format] || "";
+    fp.defaultExtension = ext;
     if( KanColleTimerConfig.getUnichar( "screenshot.path" ) ){
 	fp.displayDirectory = OpenFile( KanColleTimerConfig.getUnichar( "screenshot.path" ) );
     }
 
-    fp.defaultString = format == "image/jpeg" ? "screenshot.jpg" : "screenshot.png";
+    fp.defaultString = "screenshot." + ext;
     if( fp.show() == fp.returnCancel || !fp.file ) return;
 
     file = fp.file;
