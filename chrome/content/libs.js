@@ -1836,19 +1836,8 @@ function TakeKanColleScreenshot(isjpeg){
 	ctx.fillRect(110, 5, 145, 20);
     }
 
-    var url;
-    if( isjpeg ){
-	url = canvas.toDataURL("image/jpeg");
-    }else{
-	url = canvas.toDataURL("image/png");
-    }
-    const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
-        .getService(Components.interfaces.nsIIOService);
-    url = IO_SERVICE.newURI(url, null, null);
+    let url = CanvasToURI( canvas, isjpeg ? "image/jpeg" : "image/png" );
 
-    canvas.style.display = "none";
-    canvas.width = 1;
-    canvas.height = 1;
     return url;
 }
 
@@ -3944,7 +3933,7 @@ function SaveObjectToFile(obj,caption)
 	let path = fp.file.path;
 	let os = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance(Components.interfaces.nsIFileOutputStream);
 	let flags = 0x02|0x08|0x20;// wronly|create|truncate
-	os.init(file,flags,0664,0);
+	os.init(file,flags,0o0664,0);
 	let cos = GetUTF8ConverterOutputStream(os);
 	cos.writeString( JSON.stringify(obj) );
 	cos.close();
@@ -3966,7 +3955,7 @@ function LoadObjectFromFile(caption)
 	let file = fp.file;
 	let path = fp.file.path;
 	let istream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-	istream.init(file, 0x01, 0444, 0);
+	istream.init(file, 0x01, 0o0444, 0);
 	istream.QueryInterface(Components.interfaces.nsILineInputStream);
 	let cis = GetUTF8ConverterInputStream(istream);
 	// 行を配列に読み込む
