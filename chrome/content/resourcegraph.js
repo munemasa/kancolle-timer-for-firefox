@@ -148,14 +148,7 @@ let ResourceGraph = {
 	ctx.restore();
 
 	let pic;
-	if( isjpeg ){
-	    pic = canvas.toDataURL( "image/jpeg" );
-	}else{
-	    pic = canvas.toDataURL( "image/png" );
-	}
-	const IO_SERVICE = Components.classes['@mozilla.org/network/io-service;1']
-	    .getService( Components.interfaces.nsIIOService );
-	pic = IO_SERVICE.newURI( pic, null, null );
+	pic = CanvasToURI(canvas, isjpeg?"image/jpeg":"image/png");
 
 	canvas.style.display = "none";
 	canvas.width = 1;
