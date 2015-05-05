@@ -1738,14 +1738,15 @@ function OpenKanCollePage(){
  * @returns <image> Image() を返す
  */
 function GetScreenshotImage_imagemagick( w, h, x, y ){
-// import -window root -crop geometry /tmp/hoge.png
+    // import -window root -crop geometry /tmp/hoge.png
     // 800x480+x+y
+    /*
     var file = FileUtils.getFile( "TmpD", ["sskancolle.png"] );
     file.createUnique( Components.interfaces.nsIFile.NORMAL_FILE_TYPE, FileUtils.PERMS_FILE );
     debugprint( file.path );
     var tempfile = file.path;
     var geometry = w + "x" + h + "+" + x + "+" + y;
-    var args = [ "-c", "import -gravity NorthWest -window root -crop " + geometry + " " + tempfile ];
+    var args = ["-c", "import -gravity NorthWest -window root -crop " + geometry + " " + tempfile];
 
     var shell = Components.classes["@mozilla.org/file/local;1"]
 	.createInstance( Components.interfaces.nsIFile );
@@ -1767,6 +1768,7 @@ function GetScreenshotImage_imagemagick( w, h, x, y ){
 	thread.processNextEvent( true );
     }
     return image;
+     */
 }
 
 /**
@@ -3615,24 +3617,26 @@ function GetProfileDir(){
     return file;
 }
 
-function _GetAddonVersion( id ){
-    let version;
-    // Fx4
-    AddonManager.getAddonByID( id,
-	function( addon ){
-	    version = addon.version;
-	} );
-    // Piroさん(http://piro.sakura.ne.jp/)が値が設定されるまで待つことをやっていたので真似してしまう.
-    let thread = Components.classes['@mozilla.org/thread-manager;1'].getService().mainThread;
-    while( version === void(0) ){
-	thread.processNextEvent( true );
-    }
-    return version;
-}
+let _addon;
+AddonManager.getAddonByID( "kancolletimer@miku39.jp",
+    function( addon ){
+	_addon = addon;
+    } );
 
 function GetAddonVersion(){
-    return _GetAddonVersion( "kancolletimer@miku39.jp" );
+    try{
+	return _addon.version;
+    }catch(e){
+	return "[version undetermined]";
+    }
 }
+
+// NicoLiveHelperのインストールパスを返す.
+function GetExtensionPath(){
+    ext = _addon.getResourceURI( '/' ).QueryInterface( Components.interfaces.nsIFileURL ).file.clone();
+    return ext;
+}
+
 
 function GetXmlText(xml,path){
     try{
@@ -3742,7 +3746,7 @@ function CreateListCell(label){
 function CreateFolder(path){
     let file = OpenFile(path);
     if( !file.exists() || !file.isDirectory() ) {   // if it doesn't exist, create
-	file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0755);
+	file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0o0755);
 	return true;
     }
     return false;
@@ -3767,7 +3771,7 @@ function OpenFile( path ){
 function GetInputStream( file ){
     let istream = Components.classes["@mozilla.org/network/file-input-stream;1"]
 	.createInstance( Components.interfaces.nsIFileInputStream );
-    istream.init( file, 0x01, 0444, 0 );
+    istream.init( file, 0x01, 0o0444, 0 );
     return istream;
 }
 
@@ -3779,26 +3783,8 @@ function CreateFile( file ){
     let os = Components.classes['@mozilla.org/network/file-output-stream;1']
 	.createInstance( Components.interfaces.nsIFileOutputStream );
     let flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
-    os.init( file, flags, 0664, 0 );
+    os.init( file, flags, 0o0664, 0 );
     return os;
-}
-
-// NicoLiveHelperのインストールパスを返す.
-function GetExtensionPath(){
-    let id = "kancolletimer@miku39.jp";
-    let ext;
-    let _addon;
-    AddonManager.getAddonByID( "kancolletimer@miku39.jp",
-	function( addon ){
-	    _addon = addon;
-	} );
-    // Piroさん(http://piro.sakura.ne.jp/)が値が設定されるまで待つことをやっていたので真似してしまう.
-    let thread = Components.classes['@mozilla.org/thread-manager;1'].getService().mainThread;
-    while( _addon === void(0) ){
-	thread.processNextEvent( true );
-    }
-    ext = _addon.getResourceURI( '/' ).QueryInterface( Components.interfaces.nsIFileURL ).file.clone();
-    return ext;
 }
 
 function PlayAlertSound(){
