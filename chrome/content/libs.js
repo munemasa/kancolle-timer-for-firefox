@@ -13,6 +13,8 @@ Cu.import("resource://kancolletimermodules/httpobserve.jsm");
 
 let FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils;
 
+const _addon_id = "kancolletimer@miku39.jp";
+
 /**
  * いろいろと便利関数などを.
  */
@@ -3618,7 +3620,7 @@ function GetProfileDir(){
 }
 
 let _addon;
-AddonManager.getAddonByID( "kancolletimer@miku39.jp",
+AddonManager.getAddonByID( _addon_id,
     function( addon ){
 	_addon = addon;
     } );
