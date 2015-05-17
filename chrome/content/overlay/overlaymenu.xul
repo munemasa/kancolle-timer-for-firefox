@@ -91,7 +91,7 @@
 
    <!-- ツールバー -->
    <toolbox id="navigator-toolbox">
-     <toolbar id="kancolletimer-toolbar" accesskey="k"
+     <toolbar id="kancolletimer-toolbar-new" accesskey="k"
 	      context="toolbar-context-menu"
 	      class="chromeclass-toolbar"
 	      customizable="true"
@@ -99,7 +99,7 @@
 	      persist="collapsed,hidden"
 	      inherits="collapsed,hidden" mode="full"
 	      grippytooltiptext="艦これタイマー"
-	      defaultset="kt-toolbar-mainitem"
+	      defaultset="kt-toolbar-mainitem,kt-toolbar-profile,kt-toolbar-resources,kt-toolbar-screenshot,kt-toolbar-twitter,kt-toolbar-etc"
 	      toolbarname="艦これタイマーツールバー"/>
    </toolbox>
    
@@ -118,10 +118,16 @@
 		     oncommand="KanColleTimer.Overlay.openBrowserTab('http://www.dmm.com/netgame/social/community/-/detail/=/id=100');"/>
 	 </menupopup>
        </toolbarbutton>
+     </toolbaritem>
+     <toolbaritem id="kt-toolbar-profile">
        <hbox align="center">
 	 <label id="kancolletimer-nickname" value="---"/>
 	 <label id="kancolletimer-rank" value="---"/>
 	 <label id="kancolletimer-level" value="Lv1"/>
+       </hbox>
+     </toolbaritem>
+     <toolbaritem id="kt-toolbar-resources">
+       <hbox align="center">
 	 <vbox><image src="chrome://kancolletimer/content/data/ship.png"/></vbox>
 	 <label id="kancolletimer-ships" value="---"/>
 	 <vbox><image src="chrome://kancolletimer/content/data/slotitem.png"/></vbox>
@@ -137,14 +143,20 @@
 	 <vbox><image src="chrome://kancolletimer/content/data/repairkit.png"/></vbox>
 	 <label id="kancolletimer-bucket" value="0"/>
        </hbox>
+     </toolbaritem>
+     <toolbaritem id="kt-toolbar-screenshot">
        <toolbarbutton style="padding-left: 0.7em; padding-right: 0.7em;"
 		      tooltiptext="スクリーンショットを撮影して保存します"
 		      oncommand="event.stopPropagation(); KanColleTimer.Overlay.takeScreenshot();"
 		      image="chrome://kancolletimer/content/data/toolbarcamera.png"/>
+     </toolbaritem>
+     <toolbaritem id="kt-toolbar-twitter">
        <toolbarbutton style="padding-left: 0.5em; padding-right: 0.5em;"
 		      tooltiptext="スクリーンショットをつぶやきます"
 		      oncommand="event.stopPropagation(); KanColleTimer.Overlay.openTweetDialog();"
 		      image="chrome://kancolletimer/content/data/twitter_logo.png"/>
+     </toolbaritem>
+     <toolbaritem id="kt-toolbar-etc">
        <toolbarbutton image="chrome://kancolletimer/content/data/tool.png" tooltiptext="ツール" type="menu">
 	  <menupopup>
 	    <menuitem label="保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
