@@ -364,6 +364,38 @@ var KanColleTimer = {
 	}
     },
 
+    openEquipmentsPopup: function( elem, n ){
+	let setFleetOrganization = function( n ){
+	    let list = $( 'equipment-list-box' );
+	    ClearListBox( list );
+	    let fleet = KanColleDatabase.deck.get( n );
+	    let i;
+	    for( i = 0; fleet.api_ship[i] != -1 && i < 6; i++ ){
+		let data = FindOwnShipData( fleet.api_ship[i] );
+		let masterdata = FindShipData( fleet.api_ship[i] );
+
+		let elem = CreateElement( 'listitem' );
+		elem.appendChild( CreateListCell( masterdata.api_name ) );
+
+		for( let slot_id of data.api_slot ){
+		    if( slot_id == -1 ) continue;
+		    let item = KanColleDatabase.slotitem.get( slot_id );
+		    if( item ){
+			masterdata = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+			let str = masterdata.api_name + (item.api_level > 0 ? "★+" + item.api_level : "");
+			elem.appendChild( CreateListCell( str ) );
+		    }
+		}
+
+		list.appendChild( elem );
+	    }
+	    list.setAttribute( 'rows', i );
+	};
+
+	setFleetOrganization( n );
+	$( 'equipment-list' ).openPopup( elem, 'after_start', 0, 0 );
+    },
+
     findWindow:function(){
 	return FindWindow( "KanColleTimerMainWindow" );
     },
