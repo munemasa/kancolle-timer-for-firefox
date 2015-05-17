@@ -560,10 +560,9 @@ window.addEventListener("load", function(){
     // スクショ撮るたびにフレームスクリプトをロードするわけにもいかず、
     // 仕方なくグローバルMMに遅延ロードを指定して、
     // すべてのbrowserに1回はキャプチャスクリプトを読ませる方法を取ることにする
-    let globalMM = Cc["@mozilla.org/globalmessagemanager;1"]
-	.getService( Ci.nsIMessageListenerManager );
+    let windowMM = window.messageManager;
     let script = "chrome://kancolletimer/content/framescripts/capture-script.js";
-    globalMM.loadFrameScript( script, true );
+    windowMM.loadFrameScript( script, true );
 }, false);
 
 window.addEventListener("unload", function(){
