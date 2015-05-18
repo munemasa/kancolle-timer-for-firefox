@@ -1799,6 +1799,9 @@ var KanColleDatabase = {
 		this.reqSortieBattle.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_quest\/clearitemget/)) {
 		this.questClearitemget.update(data.api_data);
+	    } else if (url.match(/kcsapi\/api_get_member\/ship_deck/)){
+		// 2015.5.18 update
+		this._memberShip3.update( data.api_data.api_ship_data );
 	    }
 	} else if (mode == 'http-on-modify-request') {
 	    this.save( url + ".post", s );
