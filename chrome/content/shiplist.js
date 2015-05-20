@@ -275,6 +275,7 @@ var ShipList = {
 	    item = FindShipData( ship.api_id );
 	    let listitem = CreateElement( 'listitem' );
 	    listitem.appendChild( CreateListCell( ship._page_no || "" ) );
+	    listitem.appendChild( CreateListCell( "Lv"+ ship.api_lv ) );
 	    listitem.appendChild( CreateListCell( KanColleData.type_name[item.api_stype] ) );
 	    listitem.appendChild( CreateListCell( item.api_name ) );
 
