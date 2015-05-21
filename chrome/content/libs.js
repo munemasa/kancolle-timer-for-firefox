@@ -1553,6 +1553,25 @@ KanColleTimerQuestInfo.__proto__ = __KanColleTimerPanel;
 var KanColleTimerMissionBalanceInfo = {
     _id: 'hourly_balance',
 
+    _createRank: function(){
+	for( let i = 0; i < 4; i++ ){
+	    let array = new Array();
+	    let elems = document.getElementsByClassName( 'balance-column-' + i );
+	    // elems は HTMLCollection で Array ではないので sort するために配列にする
+	    for( let e of elems ){
+		array.push( e );
+	    }
+	    array.sort( function( b, a ){
+		return parseInt( a.value ) - parseInt( b.value );
+	    } );
+	    let styles = ["color:blue; font-weight:bold;", "font-weight:bold;", "font-weight:bold;"];
+	    // 上位３つをハイライト
+	    for( let j = 0; j < 3; j++ ){
+		array[j].setAttribute( "style", styles[j] );
+	    }
+	}
+    },
+
     _fillTable: function(){
 	let rows = $('hourly_balance');
 	for( let i in KanColleData.mission_info ){
@@ -1570,12 +1589,14 @@ var KanColleTimerMissionBalanceInfo = {
 		if( order ){
 		    label.setAttribute( "style", styles[order-1] );
 		}
+		label.setAttribute( 'class', 'balance-column-' + j );
 		row.appendChild( label );
 	    }
 	    row.setAttribute("style","border-bottom: 1px solid gray;");
 	    row.setAttribute("tooltiptext", KanColleData.mission_info[i].help );
 	    rows.appendChild( row );
 	}
+	this._createRank();
     },
 
     _clearTable: function() {
