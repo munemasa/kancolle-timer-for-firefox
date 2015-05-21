@@ -164,7 +164,7 @@ var KanColleData = {
 	},
 	9: {
 	    name: "タンカー護衛任務",
-	    hourly_balance: [79.2, 0, 0, 0],
+	    hourly_balance: [79, 0, 0, 0],
 	    help: "Lv3 4h 軽巡1駆逐2全1"
 	},
 	10: {

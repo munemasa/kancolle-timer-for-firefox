@@ -1585,10 +1585,6 @@ var KanColleTimerMissionBalanceInfo = {
 		let value = balance[j];
 		let order = value * 10 % 10;
 		let label = CreateLabel( parseInt(value) );
-		let styles = ["color:blue; font-weight:bold;", "font-weight:bold;", "font-weight:bold;"];
-		if( order ){
-		    label.setAttribute( "style", styles[order-1] );
-		}
 		label.setAttribute( 'class', 'balance-column-' + j );
 		row.appendChild( label );
 	    }
