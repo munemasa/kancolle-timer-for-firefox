@@ -626,30 +626,6 @@ var KanColleTimer = {
 	}
     },
 
-    createMissionBalanceTable:function(){
-	let balance = KanColleData.mission_hourly_balance;
-	let rows = $('hourly_balance');
-	for( let i in balance ){
-	    let row = CreateElement('row');
-	    let name = KanColleData.mission_name[i];
-	    name = name.substring(0,7);
-	    row.appendChild( CreateLabel( name ) );
-	    for( let j=0; j<4; j++ ){
-		let value = balance[i][j];
-		let order = value * 10 % 10;
-		let label = CreateLabel( parseInt(value) );
-		let styles = ["color:blue; font-weight:bold;", "font-weight:bold;", "font-weight:bold;"];
-		if( order ){
-		    label.setAttribute( "style", styles[order-1] );
-		}
-		row.appendChild( label );
-	    }
-	    row.setAttribute("style","border-bottom: 1px solid gray;");
-	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
-	    rows.appendChild( row );
-	}
-    },
-
     setTitle: function(){
 	switch( $( 'deck' ).selectedIndex ){
 	case '0':
