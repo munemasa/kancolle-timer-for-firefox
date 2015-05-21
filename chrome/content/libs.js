@@ -194,7 +194,7 @@ var KanColleTimerDeckInfo = {
 		    let mission_id = d.api_mission[1]; // 遠征ID
 		    let mission = KanColleDatabase.mission.get(mission_id);
 		    // 遠征名を表示
-		    let mission_name = mission ? mission.api_name : KanColleData.mission_name[mission_id];
+		    let mission_name = (mission && mission.api_name ) || (KanColleData.mission_info[mission_id] && KanColleData.mission_info[mission_id].name);
 		    if (!mission_name)
 			mission_name = 'UNKNOWN_' + mission_id;
 		    KanColleRemainInfo.mission_name[i] = mission_name;
@@ -1554,15 +1554,16 @@ var KanColleTimerMissionBalanceInfo = {
     _id: 'hourly_balance',
 
     _fillTable: function(){
-	let balance = KanColleData.mission_hourly_balance;
 	let rows = $('hourly_balance');
-	for( let i in balance ){
+	for( let i in KanColleData.mission_info ){
 	    let row = CreateElement('row');
-	    let name = KanColleData.mission_name[i];
+	    let name = KanColleData.mission_info[i].name;
+	    let balance = KanColleData.mission_info[i].hourly_balance;
+	    if( !balance ) continue;
 	    name = name.substring(0,7);
 	    row.appendChild( CreateLabel( name ) );
 	    for( let j=0; j<4; j++ ){
-		let value = balance[i][j];
+		let value = balance[j];
 		let order = value * 10 % 10;
 		let label = CreateLabel( parseInt(value) );
 		let styles = ["color:blue; font-weight:bold;", "font-weight:bold;", "font-weight:bold;"];
@@ -1572,7 +1573,7 @@ var KanColleTimerMissionBalanceInfo = {
 		row.appendChild( label );
 	    }
 	    row.setAttribute("style","border-bottom: 1px solid gray;");
-	    row.setAttribute("tooltiptext", KanColleData.mission_help[i] );
+	    row.setAttribute("tooltiptext", KanColleData.mission_info[i].help );
 	    rows.appendChild( row );
 	}
     },
