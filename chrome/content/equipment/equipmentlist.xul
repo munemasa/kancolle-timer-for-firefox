@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/mainwindow.css" type="text/css"?>
+<?xml-stylesheet href="chrome://kancolletimer/content/equipment/equipmentlist.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
+
+<window id="kancolletimer_equipmentlist"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        persist="screenX screenY width height sizemode"
+        width="640" height="480"
+        windowtype="KanColleTimerEquipmentListWindow"
+        title="装備リスト">
+
+  <keyset>
+    <!-- CTRL+W: Close this window -->
+    <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+    <key id="reload" key="r" modifiers="accel" oncommand="OpenEquipmentList();"/>
+  </keyset>
+
+  <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8"/>
+  <script type="application/javascript"
+          src="chrome://kancolletimer/content/libs.js"/>
+  <script type="application/javascript"
+          src="chrome://kancolletimer/content/storage.js"/>
+  <script type="application/javascript"
+          src="chrome://kancolletimer/content/data.js"/>
+  <script type="application/javascript"
+          src="chrome://kancolletimer/content/equipment/equipmentlist.js"/>
+
+  <toolbox>
+    <menubar>
+      <menu label="ツール">
+        <menupopup>
+          <menuitem label="閉じる" oncommand="window.close();"/>
+        </menupopup>
+      </menu>
+      <menuitem label="!リロード" oncommand="OpenEquipmentList();"/>
+    </menubar>
+  </toolbox>
+
+  <vbox flex="1">
+    <tabbox id="tab" flex="1" persist="selectedIndex">
+      <tabs>
+        <tab id="tab-equipment" label="装備アイテム"/>
+      </tabs>
+      <tabpanels flex="1">
+
+        <vbox style="overflow:auto;"><!-- tab 3 -->
+          <grid>
+            <columns>
+              <column/>
+              <column/>
+            </columns>
+            <rows id="equipment-list">
+            </rows>
+          </grid>
+        </vbox>
+
+      </tabpanels>
+    </tabbox>
+  </vbox>
+
+  <panel id="owner-list" position="after_start">
+    <label id="owner-equip-name" style="text-shadow: 1px 1px 0px #bbbbbb;"/>
+    <listbox id="owner-list-box">
+      <listcols>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+        <listcol style="padding-right: 1em;"/>
+      </listcols>
+    </listbox>
+  </panel>
+
+  <popupset>
+    <menupopup id="popup-save-csv" onpopupshowing="return NewShipList.onpopupshowingSaveCvs();">
+      <menuitem id="ship-delete-menu" label="削除" oncommand="NewShipList.deleteShip();"/>
+      <menuseparator/>
+      <menuitem label="艦娘リストをCSVに保存..." oncommand="NewShipList.saveCvs();"/>
+      <menuitem label="選択範囲をCSVに保存..." oncommand="NewShipList.saveCvsSelected();"/>
+      <menuseparator/>
+      <menuitem id="window-stay-on-top" persist="checked"
+                label="常に最前面に表示"
+                type="checkbox" autocheck="true"
+                tooltiptext="Windows/Firefox 17以降でのみ有効"
+                oncommand="WindowOnTop( window, $('window-stay-on-top').hasAttribute('checked') );"/>
+    </menupopup>
+
+    <menupopup id="popup-create-group" onpopupshowing="return NewShipList.onpopupshowing();">
+      <menuitem label="新規グループ作成" oncommand="NewShipList.createGroup();"/>
+      <menuseparator/>
+      <menuitem label="削除" oncommand="NewShipList.deleteGroup();"/>
+    </menupopup>
+  </popupset>
+
+</window>
