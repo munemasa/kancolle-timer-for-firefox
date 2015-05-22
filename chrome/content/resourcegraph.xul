@@ -16,7 +16,7 @@
   <keyset>
     <!-- CTRL+W: Close this window -->
     <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
-    <key id="reload" key="r" modifiers="accel" oncommand="window.location.reload();"/>
+    <key id="reload" key="r" modifiers="accel" oncommand="window.location.reload(true);"/>
   </keyset>
 
   <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8"></script>
@@ -41,7 +41,7 @@
 	  <menuitem label="閉じる" oncommand="window.close();"/>
 	</menupopup>
       </menu>
-      <menuitem label="!リロード" oncommand="OpenResourceGraph();"/>
+      <menuitem label="!リロード" oncommand="window.location.reload(true);"/>
       <menuitem label="!Change Color" oncommand="ResourceGraph.changeColor();"/>
     </menubar>
   </toolbox>
