@@ -3893,7 +3893,6 @@ function SaveUrlToFile( url, file )
  * @param canvas
  * @param format
  * @returns {*}
- * @constructor
  */
 function CanvasToURI( canvas, format ){
     format = format || "image/png";
