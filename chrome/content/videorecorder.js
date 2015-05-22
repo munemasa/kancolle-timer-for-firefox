@@ -157,7 +157,7 @@ var VideoRecorder = {
 	if( KanColleTimerConfig.e10sEnabled() ){
 	    console.log( "enable e10s" );
 	    setTimeout( function(){
-		AlertPrompt( "E10Sが有効になっているため録画はできません", "ビデオレコーダーカッコカリ" );
+		AlertPrompt( "Multi-process(E10S)が有効になっているため録画はできません", "ビデオレコーダーカッコカリ" );
 
 	    }, 1000 );
 	}
