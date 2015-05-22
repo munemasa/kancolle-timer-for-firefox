@@ -1,0 +1,116 @@
+@charset "UTF-8";
+
+#newshiplist-equipment-filter {
+}
+
+#newshiplist-equipment-filter:hover {
+}
+
+#equipment-list *:hover {
+    cursor: pointer;
+    text-shadow: 1px 1px 0px #bbbbbb;
+}
+
+tree#newshiplist-tree treecol {
+    margin-left: 4px;
+}
+
+treechildren::-moz-tree-cell(sally1) {
+    border-left: 4px solid #81bee3;
+}
+
+treechildren::-moz-tree-cell(sally2) {
+    border-left: 4px solid #acdc93;
+}
+
+treechildren::-moz-tree-cell(sally3) {
+    border-left: 4px solid #c79d68;
+}
+
+treechildren::-moz-tree-row(dash-separator) {
+    border-top: 1px dashed gray;
+}
+
+treechildren::-moz-tree-row(high-condition) {
+    background-color: #ffffd0;
+}
+
+treechildren::-moz-tree-row(large-damage) {
+    border-left: solid 10px red;
+}
+
+treechildren::-moz-tree-cell-text(large-damage) {
+    color: red;
+    font-weight: bold;
+}
+
+treechildren::-moz-tree-row(mid-damage) {
+    border-left: solid 10px orange;
+}
+
+treechildren::-moz-tree-cell-text(mid-damage) {
+    color: orange;
+    font-weight: bold;
+}
+
+treechildren::-moz-tree-row(small-damage) {
+    border-left: solid 10px yellow;
+}
+
+treechildren::-moz-tree-cell-text(small-damage) {
+}
+
+#ship-category-tree treechildren::-moz-tree-row(dropAfter) {
+    background-color: #eeeeff;
+    border: 1px solid #0000ff;
+}
+#ship-category-tree treechildren::-moz-tree-row(dropBefore) {
+    background-color: #eeeeff;
+    border: 1px solid #0000ff;
+}
+
+
+splitter {
+    border: 0;
+    -moz-border-end: 1px solid #A9B7C9;
+    min-width: 0;
+    width: 10px;
+    background-color: transparent;
+    -moz-margin-start: -3px;
+    position: relative;
+}
+
+
+/*--- 資源グラフ用 ---*/
+
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover {
+    fill: brown;
+}
+
+.axis {
+    font: 12px sans-serif;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path {
+
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+
+.grid path {
+    stroke-width: 0;
+}
