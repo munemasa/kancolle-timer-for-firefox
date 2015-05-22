@@ -182,30 +182,6 @@ var EquipmentList = {
 		   } );
     },
 
-    /**
-     * 装備アイテムの色を返す
-     * @param d 装備アイテム
-     * @returns 色を返す
-     */
-    getEquipmentColor: function( d ){
-	let color = KanColleData.slotitem_color[ d.api_type[2] ];
-	if( (d.api_type[2] == 1 || d.api_type[2] == 4) && d.api_type[3] == 16 ){
-	    // 主砲・副砲扱いの高角砲たち
-	    color = "#66cc77";
-	}
-	return color;
-    },
-    getEquipmentSubColor: function( d ){
-	let subcolor = {
-	    6:  '#39b74e',	// 制空戦闘機
-	    7:  '#ea6a6a',	// 艦爆
-	    8:  '#65bcff',	// 艦攻
-	    9:  '#ffc000'	// 彩雲
-	};
-	let color = subcolor[ d.api_type[2] ];
-	return color;
-    },
-
     initEquipmentList: function(){
 	// 装備アイテムリスト
 	this.allequipments = KanColleDatabase.slotitem.list().map( function( k ){
