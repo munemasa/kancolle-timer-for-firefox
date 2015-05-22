@@ -402,6 +402,52 @@ var KanColleData = {
     ],
 };
 
+
+/**
+ * 艦娘の所属艦隊番号を返す
+ * @param ship_id
+ */
+function GetFleetNo( ship_id ){
+    let fleet = KanColleDatabase.deck.lookup( ship_id );
+    if( fleet )
+	return fleet.fleet;
+    return 0;
+}
+
+/**
+ * 装備アイテムの色を返す
+ * @param d 装備アイテム
+ * @returns 色を返す
+ */
+function GetEquipmentColor( d ){
+    let color = KanColleData.slotitem_color[ d.api_type[2] ];
+    if( (d.api_type[2] == 1 || d.api_type[2] == 4) && d.api_type[3] == 16 ){
+	// 主砲・副砲扱いの高角砲たち
+	color = "#66cc77";
+    }
+    return color;
+}
+
+/**
+ * 装備アイテムのサブカラーを返す
+ * @param d
+ */
+function GetEquipmentSubColor( d ){
+    let subcolor = {
+	6:  '#39b74e',	// 制空戦闘機
+	7:  '#ea6a6a',	// 艦爆
+	8:  '#65bcff',	// 艦攻
+	9:  '#ffc000'	// 彩雲
+    };
+    let color = subcolor[ d.api_type[2] ];
+    return color;
+}
+
+/**
+ * 建造される予定の艦娘を返す
+ * @param now 現在時刻
+ * @param finishedtime 建造完了時刻
+ */
 function GetConstructionShipName( now, finishedtime ){
     let remain = finishedtime - now;
     for( let k in KanColleData.construction_shipname ){
