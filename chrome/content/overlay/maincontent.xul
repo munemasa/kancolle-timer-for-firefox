@@ -57,21 +57,23 @@
 	</toolbarbutton>
 	<toolbarbutton image="data/tool.png" tooltiptext="ツール" type="menu">
 	  <menupopup>
-	    <menuitem label="保有艦娘リスト" oncommand="OpenShipList();"/>
+	    <menuitem label="艦娘一覧" class="menuitem-iconic" image="chrome://kancolletimer/content/data/ship.png" oncommand="OpenShipList2();"/>
+	    <menuitem label="装備一覧" class="menuitem-iconic" image="chrome://kancolletimer/content/data/slotitem.png" oncommand="OpenEquipmentList();"/>
 	    <menuitem label="建造・ドロップ艦娘一覧" oncommand="OpenDropShipList();"/>
-	    <menuitem label="資源グラフ" oncommand="OpenResourceGraph();"/>
-	    <menuitem label="改修工廠稼働日程" oncommand="OpenChromeWindow('chrome://kancolletimer/content/powerup.xul','KanColleTimerPowerupWindow');"/>
+	    <menuitem label="資源グラフ" class="menuitem-iconic" image="data/graph.png" oncommand="OpenResourceGraph();"/>
+	    <menuitem label="改修工廠稼働日程" class="menuitem-iconic" image="data/calendar.png" oncommand="OpenChromeWindow('chrome://kancolletimer/content/powerup.xul','KanColleTimerPowerupWindow');"/>
+	    <menuitem label="(旧)保有艦娘リスト" oncommand="OpenShipList();"/>
 	    <menuseparator/>
 	    <menuitem id="window-stay-on-top" persist="checked"
 		      label="常に最前面に表示"
 		      type="checkbox" autocheck="true"
 		      tooltiptext="Windows/Firefox 17以降でのみ有効"
 		      oncommand="KanColleTimer.setWindowOnTop();"/>
-	    <menuitem label="設定..." oncommand="OpenSettingsDialog();"/>
+	    <menuitem label="設定..." class="menuitem-iconic" image="data/tool.png" oncommand="OpenSettingsDialog();"/>
 	    <menuseparator/>
-	    <menuitem label="About" oncommand="OpenAboutDialog();"/>
+	    <menuitem label="About" class="menuitem-iconic" image="data/icon.png" oncommand="OpenAboutDialog();"/>
             <menuseparator/>
-            <menuitem label="Android Sync(Experimental)" oncommand="AndroidGCM.sync();"/>
+            <menuitem label="Android Sync(Experimental)" class="menuitem-iconic" image="data/android.png" oncommand="AndroidGCM.sync();"/>
 	  </menupopup>
 	</toolbarbutton>
       </toolbar>

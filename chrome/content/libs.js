@@ -1684,6 +1684,16 @@ function OpenShipList(){
     w.focus();
 }
 
+function OpenShipList2(){
+    OpenChromeWindow( "chrome://kancolletimer/content/shiplist/shiplist.xul",
+	"KanColleTimerShipList2" );
+}
+
+function OpenEquipmentList(){
+    OpenChromeWindow( 'chrome://kancolletimer/content/equipment/equipmentlist.xul',
+	'KanColleTimerEquipmentList' );
+}
+
 function OpenResourceGraph(){
     window.open('chrome://kancolletimer/content/resourcegraph.xul','KanColleTimerResourceGraph','chrome,resizable=yes').focus();
 }
