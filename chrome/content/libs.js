@@ -14,6 +14,12 @@ let FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils;
 
 const _addon_id = "kancolletimer@miku39.jp";
 
+
+const XUL_SHIP_LIST2 = 'chrome://kancolletimer/content/shiplist/shiplist.xul';
+const XUL_EQUIPMENT_LIST = 'chrome://kancolletimer/content/equipment/equipmentlist.xul';
+const XUL_RESOURCE_GRAPH = 'chrome://kancolletimer/content/resourcegraph.xul';
+
+
 /**
  * いろいろと便利関数などを.
  */
@@ -1685,17 +1691,17 @@ function OpenShipList(){
 }
 
 function OpenShipList2(){
-    OpenChromeWindow( "chrome://kancolletimer/content/shiplist/shiplist.xul",
+    OpenChromeWindow( XUL_SHIP_LIST2,
 	"KanColleTimerShipList2" );
 }
 
 function OpenEquipmentList(){
-    OpenChromeWindow( 'chrome://kancolletimer/content/equipment/equipmentlist.xul',
+    OpenChromeWindow( XUL_EQUIPMENT_LIST,
 	'KanColleTimerEquipmentList' );
 }
 
 function OpenResourceGraph(){
-    window.open('chrome://kancolletimer/content/resourcegraph.xul','KanColleTimerResourceGraph','chrome,resizable=yes').focus();
+    window.open( XUL_RESOURCE_GRAPH,'KanColleTimerResourceGraph','chrome,resizable=yes').focus();
 }
 
 function OpenDropShipList(){
