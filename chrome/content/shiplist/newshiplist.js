@@ -1336,6 +1336,89 @@ var NewShipList = {
 	    } );
     },
 
+    createPieChart: function(){
+	let data = new Object();
+	data.content = new Array();
+	data.sortOrder = "value-desc";
+
+	let tmp = new Object();
+	this.allships.forEach( function( d ){
+	    let data = FindShipData( d.api_id );
+	    let k = data.api_stype;
+	    if( k == 9 ) k = 8; // 9=高速戦艦
+	    if( !tmp[k] ){
+		tmp[k] = new Object();
+		tmp[k].label = KanColleData.type_name[k];
+		tmp[k].value = 0;
+	    }
+	    tmp[k].value++;
+	} );
+	for( let o in tmp ){
+	    data.content.push( tmp[o] );
+	}
+
+	let pie = new d3pie( "pieChart", {
+	    "header": {
+		"title": {
+		    "text": "艦娘の艦種別構成比",
+		    "fontSize": 24,
+		    "font": "open sans"
+		}
+	    },
+	    "size": {
+		"canvasWidth": 640,
+		"canvasHeight": 512,
+		"pieOuterRadius": "95%"
+	    },
+	    "data": data,
+	    "tooltips": {
+		enabled: true,
+		type: "placeholder",
+		string: "{label}, {value}隻, {percentage}%"
+	    },
+	    "labels": {
+		"outer": {
+		    "pieDistance": 14
+		},
+		"mainLabel": {
+		    "fontSize": 12
+		},
+		"percentage": {
+		    "color": "#ffffff",
+		    "decimalPlaces": 1
+		},
+		"value": {
+		    "color": "#adadad",
+		    "fontSize": 12
+		},
+		"lines": {
+		    "enabled": true,
+		    "style": "straight"
+		},
+		"truncation": {
+		    "enabled": true
+		}
+	    },
+	    "effects": {
+		"pullOutSegmentOnClick": {
+		    "effect": "linear",
+		    "speed": 400,
+		    "size": 8
+		}
+	    },
+	    "misc": {
+		"gradient": {
+		    "enabled": true,
+		    "percentage": 100
+		},
+		"pieCenterOffset": {
+		    "x": 20,
+		    "y": 7,
+		}
+	    }
+	} );
+    },
+
     initEquipment: function(){
 	this.allequipments = KanColleDatabase.slotitem.list().map( function( k ){
 	    let item = KanColleDatabase.slotitem.get( k );
@@ -1386,6 +1469,8 @@ var NewShipList = {
 	AutoRefreshShipList.start();
 
 	this.createHistogram();
+	this.createPieChart();
+
 	document.title += " " + new Date();
     },
 

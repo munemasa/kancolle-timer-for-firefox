@@ -20,6 +20,7 @@
   </keyset>
 
   <script src="chrome://kancolletimer/content/d3/d3.v3.min.js" charset="utf-8"/>
+  <script src="chrome://kancolletimer/content/d3/d3pie/d3pie.js" charset="utf-8"/>
   <script type="application/javascript"
           src="chrome://kancolletimer/content/libs.js"/>
   <script type="application/javascript"
@@ -58,6 +59,7 @@
       <tabs>
         <tab id="tab-newshiplist" label="艦娘一覧"/>
         <tab id="tab-histogram" label="レベル分布"/>
+        <tab id="tab-piechart" label="構成比"/>
       </tabs>
       <tabpanels flex="1">
         <vbox>
@@ -236,6 +238,10 @@
         </vbox>
 
         <vbox style="overflow:auto;" id="histogram"><!-- tab 2 -->
+        </vbox>
+
+        <vbox style="overflow:auto;"><!-- tab 3 -->
+          <html:div id="pieChart"/>
         </vbox>
 
       </tabpanels>
