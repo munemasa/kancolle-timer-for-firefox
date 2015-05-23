@@ -9,7 +9,7 @@
 
   <!-- ツールメニュー -->
   <menupopup id="menu_ToolsPopup">
-    <menuitem id="kancolletimer-tools-popup-menu" label="艦これタイマー" oncommand="KanColleTimer.Overlay.open();" />
+    <menuitem id="kancolletimer-tools-popup-menu" class="menuitem-iconic" image="chrome://kancolletimer/content/data/icon.png" label="艦これタイマー" oncommand="KanColleTimer.Overlay.open();" />
   </menupopup>
 
   <!-- サイドバーメニュー -->
