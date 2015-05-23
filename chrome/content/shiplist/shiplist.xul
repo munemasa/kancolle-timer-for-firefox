@@ -238,8 +238,8 @@
           </hbox>
         </vbox>
 
-        <vbox style="overflow:auto;" id="histogram"><!-- tab 2 -->
-        </vbox>
+        <hbox style="overflow:auto;" id="histogram"><!-- tab 2 -->
+        </hbox>
 
         <vbox style="overflow:auto;"><!-- tab 3 -->
           <html:div id="pieChart"/>
