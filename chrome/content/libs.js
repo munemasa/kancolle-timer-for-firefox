@@ -3915,7 +3915,7 @@ function SaveUrlToFile( url, file )
  * HTML canvasを nsIURL に変換して返す
  * @param canvas
  * @param format
- * @returns {*}
+ * @returns {nsIURL}
  */
 function CanvasToURI( canvas, format ){
     format = format || "image/png";
@@ -3957,6 +3957,29 @@ function SaveCanvas( canvas, format ){
     file = fp.file;
 
     SaveUrlToFile( newurl, file );
+}
+
+
+function DrawSVGToCanvas( svg ){
+    var canvas = document.createElementNS( "http://www.w3.org/1999/xhtml", "canvas" );
+    canvas.style.display = "inline";
+
+    let rect = svg.getBoundingClientRect();
+    let x = rect.x;
+    let y = rect.y;
+    let w = rect.width;
+    let h = rect.height;
+    canvas.width = w;
+    canvas.height = h;
+
+    let ctx = canvas.getContext( "2d" );
+    ctx.clearRect( 0, 0, canvas.width, canvas.height );
+    ctx.save();
+    ctx.scale( 1.0, 1.0 );
+    // x,y,w,h
+    ctx.drawWindow( window, x, y, w, h, "rgb(255,255,255)" );
+    ctx.restore();
+    return canvas;
 }
 
 /**

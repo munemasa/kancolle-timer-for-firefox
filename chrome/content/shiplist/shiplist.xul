@@ -50,6 +50,7 @@
           <menuitem label="閉じる" oncommand="window.close();"/>
         </menupopup>
       </menu>
+      <menuitem label="!つぶやく" tooltiptext="画像をつぶやきます" oncommand="NewShipList.tweet();"/>
       <menuitem label="!リロード" oncommand="window.location.reload(true);"/>
     </menubar>
   </toolbox>

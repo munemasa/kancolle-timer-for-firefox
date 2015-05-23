@@ -1336,6 +1336,32 @@ var NewShipList = {
 	    } );
     },
 
+    tweetHistogram: function(){
+	let canvas = DrawSVGToCanvas( $( 'svg-histogram' ) );
+	let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
+	let uri = CanvasToURI( canvas, isjpeg ? "image/jpeg" : "image/png" );
+	OpenTweetDialog( true, uri );
+    },
+
+    tweetPieChart: function(){
+	let canvas = DrawSVGToCanvas( $( 'pieChart' ).firstChild );
+	let isjpeg = KanColleTimerConfig.getBool( "screenshot.jpeg" );
+	let uri = CanvasToURI( canvas, isjpeg ? "image/jpeg" : "image/png" );
+	OpenTweetDialog( true, uri );
+    },
+
+    tweet: function(){
+	let n = parseInt( $( 'tab' ).selectedIndex );
+	switch( n ){
+	case 1:
+	    this.tweetHistogram();
+	    break;
+	case 2:
+	    this.tweetPieChart();
+	    break;
+	}
+    },
+
     createPieChart: function(){
 	let data = new Object();
 	data.content = new Array();
