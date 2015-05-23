@@ -386,10 +386,17 @@ KanColleTimer.Overlay = {
     },
 
     openResourceGraph: function(){
-	window.open('chrome://kancolletimer/content/resourcegraph.xul','KanColleTimerResourceGraph','chrome,resizable=yes').focus();
+	this.openChrome( 'chrome://kancolletimer/content/resourcegraph.xul',
+	    'KanColleTimerResourceGraph', 'tab-open.resourcegraph' );
     },
-    openChrome: function( url, name ){
-	window.open( url, name, 'chrome,resizable=yes' ).focus();
+
+    openChrome: function( url, name, prefname ){
+	if( prefname && this.getPref().getBoolPref( prefname ) ){
+	    let tab = gBrowser.addTab( url );
+	    gBrowser.selectedTab = tab;
+	}else{
+	    window.open( url, name, 'chrome,resizable=yes' ).focus();
+	}
 	event.stopPropagation();
     },
 

@@ -64,10 +64,10 @@
 	 <menuseparator/>
 	 <menuitem label="艦娘一覧"
 		   class="menuitem-iconic" image="chrome://kancolletimer/content/data/ship.png"
-		   oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/shiplist/shiplist.xul', 'KanColleTimerShipList2');"/>
+		   oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/shiplist/shiplist.xul', 'KanColleTimerShipList2', 'tab-open.shiplist2');"/>
 	 <menuitem label="装備一覧"
 		   class="menuitem-iconic" image="chrome://kancolletimer/content/data/slotitem.png"
-		   oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/equipment/equipmentlist.xul', 'KanColleTimerEquipmentList');"/>
+		   oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/equipment/equipmentlist.xul', 'KanColleTimerEquipmentList', 'tab-open.equipmentlist');"/>
 	 <menuitem label="建造・ドロップ艦娘一覧"
 		   oncommand="KanColleTimer.Overlay.openDropList(); event.stopPropagation();"/>
 	 <menuitem label="資源グラフ"
@@ -172,10 +172,10 @@
 	  <menupopup>
 	    <menuitem label="艦娘一覧"
 		      class="menuitem-iconic" image="chrome://kancolletimer/content/data/ship.png"
-		      oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/shiplist/shiplist.xul', 'KanColleTimerShipList2');"/>
+		      oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/shiplist/shiplist.xul', 'KanColleTimerShipList2', 'tab-open.shiplist2');"/>
 	    <menuitem label="装備一覧"
 		      class="menuitem-iconic" image="chrome://kancolletimer/content/data/slotitem.png"
-		      oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/equipment/equipmentlist.xul', 'KanColleTimerEquipmentList');"/>
+		      oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/equipment/equipmentlist.xul', 'KanColleTimerEquipmentList', 'tab-open.equipmentlist');"/>
 	    <menuitem label="建造・ドロップ艦娘一覧" oncommand="KanColleTimer.Overlay.openDropList(); event.stopPropagation();"/>
 	    <menuitem label="資源グラフ"
 		      class="menuitem-iconic" image="chrome://kancolletimer/content/data/graph.png"
