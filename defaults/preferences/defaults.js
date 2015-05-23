@@ -45,3 +45,7 @@ pref("extensions.kancolletimer.twitter.screen_name","");
 
 pref("extensions.kancolletimer.key1","");
 pref("extensions.kancolletimer.key2","");
+
+pref("extensions.kancolletimer.tab-open.shiplist2",false);
+pref("extensions.kancolletimer.tab-open.equipmentlist",false);
+pref("extensions.kancolletimer.tab-open.resourcegraph",false);
