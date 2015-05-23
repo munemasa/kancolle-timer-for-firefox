@@ -4,17 +4,17 @@
     <em:id>kancolletimer@miku39.jp</em:id>
     <em:type>2</em:type>
     <em:name>Kancolle Timer</em:name>
-    <em:version>0.57</em:version>
+    <em:version>0.58</em:version>
     <em:unpack>true</em:unpack>
     <em:description>Kantai Collection -Kan Colle- Timer</em:description>
     <em:creator>amano</em:creator>
     <em:contributor>yoshfuji</em:contributor>
     <em:homepageURL>http://miku39.jp/blog/wp/?page_id=1705</em:homepageURL>
     <em:optionsURL>chrome://kancolletimer/content/preferences.xul</em:optionsURL>
-    <em:updateURL>https://miku39.jp/dists/software/kancolle/update.rdf</em:updateURL>
-      <!--
-          <em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/0ThrrGd6VkDncZHF8SY0hg9KmUKTdnhtfhC2D4NkiljAt2IjwoQxrZeKEIbEssVDQKWTqt0MuaYY/S+ehJYOjts8CzogzQR3cEtdO0sWok2wkkJ7Vz5XL8F4GsmfIjvCttwzeKl+8ybNDUSM+9EV73Vve0bOiP6YXUDD0+yJGwIDAQAB</em:updateKey>
-      -->
+    <!--
+        <em:updateURL>https://miku39.jp/dists/software/kancolle/update.rdf</em:updateURL>
+        <em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/0ThrrGd6VkDncZHF8SY0hg9KmUKTdnhtfhC2D4NkiljAt2IjwoQxrZeKEIbEssVDQKWTqt0MuaYY/S+ehJYOjts8CzogzQR3cEtdO0sWok2wkkJ7Vz5XL8F4GsmfIjvCttwzeKl+8ybNDUSM+9EV73Vve0bOiP6YXUDD0+yJGwIDAQAB</em:updateKey>
+    -->
     <em:localized>
       <Description>
 	<em:locale>ja</em:locale>
@@ -29,7 +29,7 @@
       <Description>
 	<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 	<em:minVersion>21.0</em:minVersion>
-	<em:maxVersion>*</em:maxVersion>
+	<em:maxVersion>41.0</em:maxVersion>
       </Description>
     </em:targetApplication>
     <em:targetApplication>
@@ -37,7 +37,7 @@
 	<!-- Windows 8 Modern-style -->
 	<em:id>{99bceaaa-e3c6-48c1-b981-ef9b46b67d60}</em:id>
 	<em:minVersion>21.0</em:minVersion>
-	<em:maxVersion>*</em:maxVersion>
+	<em:maxVersion>41.0</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>
