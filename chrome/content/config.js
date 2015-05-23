@@ -30,9 +30,13 @@ var KanColleTimerConfig = {
 	}
 	return b;
     },
-    setInt:function(path, value){
-	var branch = this.getBranch();
-	branch.setIntPref(path, value);
+    setInt: function( path, value ){
+	try{
+	    var branch = this.getBranch();
+	    branch.setIntPref( path, value );
+	}catch( x ){
+	    console.log( x );
+	}
     },
 
     getBool:function(path){
@@ -45,6 +49,16 @@ var KanColleTimerConfig = {
 	}
 	return b;
     },
+
+    setBool: function( path, value ){
+	try{
+	    var branch = this.getBranch();
+	    branch.setBoolPref( path, value );
+	}catch( x ){
+	    console.log( x );
+	}
+    },
+
     getUnichar:function(path){
 	var branch = this.getBranch();
 	var b;

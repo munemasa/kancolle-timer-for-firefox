@@ -1691,17 +1691,27 @@ function OpenShipList(){
 }
 
 function OpenShipList2(){
-    OpenChromeWindow( XUL_SHIP_LIST2,
-	"KanColleTimerShipList2" );
+    if( KanColleTimerConfig.getBool( "tab-open.shiplist2" ) ){
+	OpenDefaultBrowser( XUL_SHIP_LIST2, true );
+    }else{
+	OpenChromeWindow( XUL_SHIP_LIST2, "KanColleTimerShipList2" );
+    }
 }
 
 function OpenEquipmentList(){
-    OpenChromeWindow( XUL_EQUIPMENT_LIST,
-	'KanColleTimerEquipmentList' );
+    if( KanColleTimerConfig.getBool( 'tab-open.equipmentlist' ) ){
+	OpenDefaultBrowser( XUL_EQUIPMENT_LIST, true );
+    }else{
+	OpenChromeWindow( XUL_EQUIPMENT_LIST, 'KanColleTimerEquipmentList' );
+    }
 }
 
 function OpenResourceGraph(){
-    window.open( XUL_RESOURCE_GRAPH,'KanColleTimerResourceGraph','chrome,resizable=yes').focus();
+    if( KanColleTimerConfig.getBool( 'tab-open.resourcegraph' ) ){
+	OpenDefaultBrowser( XUL_RESOURCE_GRAPH, true );
+    }else{
+	OpenChromeWindow( XUL_RESOURCE_GRAPH, 'KanColleTimerResourceGraph' );
+    }
 }
 
 function OpenDropShipList(){
@@ -3467,6 +3477,13 @@ function ZoomKanCollePage( scale ){
 	}
     }
     return 0;
+}
+
+
+function SaveCheckPreference( elem ){
+    let name = elem.getAttribute("prefname");
+    let checked = elem.hasAttribute('checked');
+    KanColleTimerConfig.setBool( name, checked );
 }
 
 // ここから後ろが汎用的な関数書いているところ

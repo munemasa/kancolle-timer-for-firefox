@@ -27,12 +27,23 @@
   <script type="application/javascript"
           src="chrome://kancolletimer/content/data.js"/>
   <script type="application/javascript"
+          src="chrome://kancolletimer/content/utils/prefutils.js" />
+  <script type="application/javascript"
+          src="chrome://kancolletimer/content/config.js"/>
+
+  <script type="application/javascript"
           src="chrome://kancolletimer/content/equipment/equipmentlist.js"/>
 
   <toolbox>
     <menubar>
       <menu label="ツール">
         <menupopup>
+          <menuitem id="open-browser-tab" persist="checked"
+                    label="次回以降ブラウザタブで表示"
+                    type="checkbox" autocheck="true"
+                    prefname="tab-open.equipmentlist"
+                    oncommand="SaveCheckPreference(this);"/>
+          <menuseparator/>
           <menuitem label="閉じる" oncommand="window.close();"/>
         </menupopup>
       </menu>

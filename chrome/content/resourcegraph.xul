@@ -34,6 +34,12 @@
     <menubar>
       <menu label="ツール">
 	<menupopup>
+          <menuitem id="open-browser-tab" persist="checked"
+                    label="次回以降ブラウザタブで表示"
+                    type="checkbox" autocheck="true"
+                    prefname="tab-open.resourcegraph"
+                    oncommand="SaveCheckPreference(this);"/>
+          <menuseparator/>
 	  <menuitem label="CSVに保存" oncommand="ResourceGraph.saveToFile();"/>
 	  <menuitem label="画像に保存" oncommand="ResourceGraph.takeScreenshot();"/>
 	  <menuitem label="つぶやく" oncommand="ResourceGraph.tweet();"/>
