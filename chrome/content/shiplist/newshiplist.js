@@ -1411,7 +1411,7 @@ var NewShipList = {
 		"title": {
 		    "text": "艦娘の艦種別構成比",
 		    "fontSize": 24,
-		    "font": "open sans"
+		    "font": "ヒラギノ角ゴ Pro"
 		}
 	    },
 	    "size": {
@@ -1431,7 +1431,8 @@ var NewShipList = {
 		    "format": "label-value1"
 		},
 		"mainLabel": {
-		    "fontSize": 12
+		    "fontSize": 12,
+		    "font": "ヒラギノ角ゴ Pro"
 		},
 		"percentage": {
 		    "color": "#ffffff",
