@@ -1427,7 +1427,8 @@ var NewShipList = {
 	    },
 	    "labels": {
 		"outer": {
-		    "pieDistance": 14
+		    "pieDistance": 14,
+		    "format": "label-value1"
 		},
 		"mainLabel": {
 		    "fontSize": 12
