@@ -241,9 +241,16 @@
         <hbox style="overflow:auto;" id="histogram"><!-- tab 2 -->
         </hbox>
 
-        <vbox style="overflow:auto;"><!-- tab 3 -->
-          <html:div id="pieChart"/>
-        </vbox>
+        <hbox style="overflow:auto;"><!-- tab 3 -->
+          <stack>
+            <html:div id="pieChart"/>
+            <vbox mousethrough="always">
+              <hbox align="center">
+                <label value="Lv"/><textbox id="lv-threshold" value="1" type="number" size="3" multiline="false" onchange="NewShipList.changePieChartThreshold();"/><label value="以上"/>
+              </hbox>
+            </vbox>
+          </stack>
+        </hbox>
 
       </tabpanels>
     </tabbox>

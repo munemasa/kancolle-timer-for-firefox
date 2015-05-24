@@ -1362,6 +1362,29 @@ var NewShipList = {
 	}
     },
 
+    changePieChartThreshold: function(){
+	let content = new Array();
+	let tmp = new Object();
+	let threshold = parseInt( $( 'lv-threshold' ).value );
+	this.allships.forEach( function( d ){
+	    if( d.api_lv < threshold ) return;
+	    let data = FindShipData( d.api_id );
+
+	    let k = data.api_stype;
+	    if( k == 9 ) k = 8; // 9=高速戦艦
+	    if( !tmp[k] ){
+		tmp[k] = new Object();
+		tmp[k].label = KanColleData.type_name[k];
+		tmp[k].value = 0;
+	    }
+	    tmp[k].value++;
+	} );
+	for( let o in tmp ){
+	    content.push( tmp[o] );
+	}
+	this._pie.updateProp( "data.content", content );
+    },
+
     createPieChart: function(){
 	let data = new Object();
 	data.content = new Array();
@@ -1383,7 +1406,7 @@ var NewShipList = {
 	    data.content.push( tmp[o] );
 	}
 
-	let pie = new d3pie( "pieChart", {
+	this._pie = new d3pie( "pieChart", {
 	    "header": {
 		"title": {
 		    "text": "艦娘の艦種別構成比",
