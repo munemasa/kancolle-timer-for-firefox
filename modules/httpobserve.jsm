@@ -1753,6 +1753,7 @@ var KanColleDatabase = {
 		this.reqBattleMidnightBattle.update(data.api_data);
 	    } else if (url.match(/kcsapi\/api_req_combined_battle\/battleresult/)) {
 		//this.reqCombinedBattleBattleResult.update(data.api_data);
+		this.reqSortieBattleResult.update(data.api_data);
 		this.recordDroppedShip( data );
 	    } else if (url.match(/kcsapi\/api_req_combined_battle\/battle_water/)) {
 		this.reqCombinedBattleBattle.update(data.api_data, 'water');

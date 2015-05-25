@@ -1207,6 +1207,7 @@ var KanColleTimerFleetInfo = {
 	},
 
 	reqSortieBattleResult: function(){
+	    // 連合艦隊でもここにくると思う(2015.5.25時点未確認)
 	    if( this._maxhps1 && this._nowhps1 ){
 		this._setFleetOrganization( 1, this._maxhps1, this._nowhps1 );
 	    }
@@ -1215,6 +1216,10 @@ var KanColleTimerFleetInfo = {
 	    }
 	    this._nowhps1 = null;
 	    this._nowhps2 = null;
+
+	    //setTimeout( function(){
+		//OpenTweetDialog(true);
+	    //}, 3000 );
 	},
 
 	reqCombinedBattleBattle: function(extradata) {
