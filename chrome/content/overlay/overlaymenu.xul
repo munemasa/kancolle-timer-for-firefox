@@ -64,22 +64,22 @@
 	 <menuseparator/>
 	 <menuitem label="艦娘一覧"
 		   class="menuitem-iconic" image="chrome://kancolletimer/content/data/ship.png"
-		   oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/shiplist/shiplist.xul', 'KanColleTimerShipList2', 'tab-open.shiplist2');"/>
+		   oncommand="	event.stopPropagation(); KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/shiplist/shiplist.xul', 'KanColleTimerShipList2', 'tab-open.shiplist2');"/>
 	 <menuitem label="装備一覧"
 		   class="menuitem-iconic" image="chrome://kancolletimer/content/data/slotitem.png"
-		   oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/equipment/equipmentlist.xul', 'KanColleTimerEquipmentList', 'tab-open.equipmentlist');"/>
+		   oncommand="event.stopPropagation(); KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/equipment/equipmentlist.xul', 'KanColleTimerEquipmentList', 'tab-open.equipmentlist');"/>
 	 <menuitem label="建造・ドロップ艦娘一覧"
-		   oncommand="KanColleTimer.Overlay.openDropList(); event.stopPropagation();"/>
+		   oncommand="event.stopPropagation(); KanColleTimer.Overlay.openDropList();"/>
 	 <menuitem label="資源グラフ"
 		   class="menuitem-iconic" image="chrome://kancolletimer/content/data/graph.png"
-		   oncommand="KanColleTimer.Overlay.openResourceGraph(); event.stopPropagation();"/>
+		   oncommand="event.stopPropagation(); KanColleTimer.Overlay.openResourceGraph();"/>
 	 <menuitem label="改修工廠稼働日程"
 		   class="menuitem-iconic" image="chrome://kancolletimer/content/data/calendar.png"
-		   oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/powerup.xul','KanColleTimerPowerupWindow');"/>
-	 <menuitem label="(旧)保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
+		   oncommand="event.stopPropagation(); KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/powerup.xul','KanColleTimerPowerupWindow');"/>
+	 <menuitem label="(旧)保有艦娘リスト" oncommand="event.stopPropagation(); KanColleTimer.Overlay.openShipList();"/>
 	 <menuseparator/>
-	 <menuitem label="艦これタイマー(ウィンドウ)を開く" oncommand="KanColleTimer.Overlay.open(); event.stopPropagation();"/>
-	 <menuitem label="サイドバーを開く" oncommand="toggleSidebar('viewKanColleTimerSidebar',true); event.stopPropagation();"/>
+	 <menuitem label="艦これタイマー(ウィンドウ)を開く" oncommand="event.stopPropagation(); KanColleTimer.Overlay.open();"/>
+	 <menuitem label="サイドバーを開く" oncommand="event.stopPropagation(); toggleSidebar('viewKanColleTimerSidebar',true);"/>
        </menupopup>
      </toolbarbutton>
    </toolbarpalette>
@@ -176,16 +176,16 @@
 	    <menuitem label="装備一覧"
 		      class="menuitem-iconic" image="chrome://kancolletimer/content/data/slotitem.png"
 		      oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/equipment/equipmentlist.xul', 'KanColleTimerEquipmentList', 'tab-open.equipmentlist');"/>
-	    <menuitem label="建造・ドロップ艦娘一覧" oncommand="KanColleTimer.Overlay.openDropList(); event.stopPropagation();"/>
+	    <menuitem label="建造・ドロップ艦娘一覧" oncommand="KanColleTimer.Overlay.openDropList();"/>
 	    <menuitem label="資源グラフ"
 		      class="menuitem-iconic" image="chrome://kancolletimer/content/data/graph.png"
-		      oncommand="KanColleTimer.Overlay.openResourceGraph(); event.stopPropagation();"/>
+		      oncommand="KanColleTimer.Overlay.openResourceGraph();"/>
 	    <menuitem label="改修工廠稼働日程"
 		      class="menuitem-iconic" image="chrome://kancolletimer/content/data/calendar.png"
 		      oncommand="KanColleTimer.Overlay.openChrome('chrome://kancolletimer/content/powerup.xul','KanColleTimerPowerupWindow');"/>
-	    <menuitem label="(旧)保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList(); event.stopPropagation();"/>
+	    <menuitem label="(旧)保有艦娘リスト" oncommand="KanColleTimer.Overlay.openShipList();"/>
 	    <menuseparator/>
-	    <menuitem label="設定..." oncommand="event.stopPropagation(); KanColleTimer.Overlay.openSettingsDialog();"/>
+	    <menuitem label="設定..." oncommand="KanColleTimer.Overlay.openSettingsDialog();"/>
 	    <menuseparator/>
 	    <menuitem label="About" oncommand="KanColleTimer.Overlay.openAbout();"/>
 	  </menupopup>

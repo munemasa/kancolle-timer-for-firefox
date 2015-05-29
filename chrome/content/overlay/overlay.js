@@ -397,7 +397,6 @@ KanColleTimer.Overlay = {
 	}else{
 	    window.open( url, name, 'chrome,resizable=yes' ).focus();
 	}
-	event.stopPropagation();
     },
 
     getNowDateString: function(){
