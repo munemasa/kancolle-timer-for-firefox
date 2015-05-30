@@ -213,18 +213,9 @@
       <label value="フォント"/>
       <menulist id="select-font" preference="e.n.font"/>
       <label value="サイズ"/>
-      <button id="fontsize" type="menu" preference="e.n.font-size" label="" value="">
-	<menupopup>
-	  <menuitem type="radio" name="fontsize" label="Default" oncommand="KanColleTimerPreference.refFontSize('fontsize','Default','');"/>
-	  <menuitem type="radio" name="fontsize" label="xx-small" oncommand="KanColleTimerPreference.refFontSize('fontsize','xx-small','xx-small');"/>
-	  <menuitem type="radio" name="fontsize" label="x-small" oncommand="KanColleTimerPreference.refFontSize('fontsize','x-small','x-small');"/>
-	  <menuitem type="radio" name="fontsize" label="small" oncommand="KanColleTimerPreference.refFontSize('fontsize','small','small');"/>
-	  <menuitem type="radio" name="fontsize" label="medium" oncommand="KanColleTimerPreference.refFontSize('fontsize','medium','medium');"/>
-	  <menuitem type="radio" name="fontsize" label="large" oncommand="KanColleTimerPreference.refFontSize('fontsize','large','large');"/>
-	  <menuitem type="radio" name="fontsize" label="x-large" oncommand="KanColleTimerPreference.refFontSize('fontsize','x-large','x-large');"/>
-	  <menuitem type="radio" name="fontsize" label="xx-large" oncommand="KanColleTimerPreference.refFontSize('fontsize','xx-large','xx-large');"/>
-	</menupopup>
-      </button>
+      <scale id="window-font-scale" preference="e.n.font-size" value="9" min="5" max="36"
+	     onchange="$('e.n.font-size').value = this.value; $('font-scale-label').value = this.value + 'pt';"/>
+      <label id="font-scale-label" value="9pt"/>
     </hbox>
     <hbox align="center">
       <label value="文字色"/>

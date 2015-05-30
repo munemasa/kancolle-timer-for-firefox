@@ -151,6 +151,8 @@ var KanColleTimerPreference = {
 	$('wallpaper-alpha').value = alpha;
 	this.buildFontList();
 
+	$('window-font-scale').value = $('e.n.font-size').value;
+	$('font-scale-label').value = $('e.n.font-size').value + 'pt';
 	$('audio-playback').method = $('pref-sound-api').value ? 'nsisound' : 'html';
 	try{
 	    let order = JSON.parse( $('pref-dashboard-order').value );

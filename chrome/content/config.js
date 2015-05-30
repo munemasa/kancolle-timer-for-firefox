@@ -139,6 +139,9 @@ var KanColleTimerConfig = {
 	}
 
 	font = this.getUnichar('display.font-size') || "";
+	if( font ){
+	    font += "pt";
+	}
 	try{
 	    $('sbKanColleTimerSidebar').style.fontSize = font;
 	} catch (x) {

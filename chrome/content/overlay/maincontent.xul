@@ -287,7 +287,7 @@
 	  
 	  <!-- 第1艦隊編成 -->
 	  <groupbox id="group-1stfleet">
-	    <caption><checkbox persist="checked" autoCheck="true" id="first-fleet-name" label="第1艦隊" tooltiptext="チェックを入れるとHPゲージを表示するようにします" style="margin:0;"/><label id="refresh-timer" value="00:00:00"/></caption>
+	    <caption><hbox align="center"><checkbox persist="checked" autoCheck="true" id="first-fleet-name" label="第1艦隊" tooltiptext="チェックを入れるとHPゲージを表示するようにします" style="margin:0;"/><label id="refresh-timer" value="00:00:00"/></hbox></caption>
 	    <grid onclick="KanColleTimer.openEquipmentsPopup(this, 1);">
 	      <columns>
 		<column/><column/><column/><column/>
