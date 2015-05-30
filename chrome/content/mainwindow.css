@@ -18,9 +18,21 @@ table{
     border-collapse: collapse;
 }
 
+hbox[little-damage]:after {
+    content: "[小破]";
+}
+
 hbox[warning]:after{
     content: url("chrome://kancolletimer/content/data/alert.png");
 }
+
+hbox[medium-damage]:after {
+    content: "[中破]";
+}
+hbox[large-damage]:after {
+    content: "[大破]";
+}
+
 hbox[repair]:after{
     content: url("chrome://kancolletimer/content/data/cross.png");
 }

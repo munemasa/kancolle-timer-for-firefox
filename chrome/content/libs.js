@@ -810,7 +810,7 @@ var KanColleTimerFleetInfo = {
 	      nowhp = parseInt(data.api_nowhp);
             }
             // debugprint('Fleet maxhp: ' + maxhp + ' nowhp: ' + nowhp);
-	    row.appendChild( CreateListCell( nowhp + "/" + maxhp) );
+	    row.appendChild( CreateLabel( nowhp + "/" + maxhp) );
 	    let hbox = CreateElement('hbox');
 	    let label = CreateLabel(""+data.api_cond);
 	    if( data.api_cond<=19 ){
@@ -833,12 +833,20 @@ var KanColleTimerFleetInfo = {
 		hbox.setAttribute('repair','1');
 	    }
 
-	    if( nowhp <= maxhp*0.25 ){
+	    let percentage =  parseInt( nowhp/maxhp*100 );
+	    if( percentage<=25 ){
+		hbox.setAttribute('large-damage','1');
+	    }else if( percentage<=50 ){
+		hbox.setAttribute('medium-damage','1');
+	    }else if( percentage<=75 ){
+		hbox.setAttribute('little-damage','1');
+	    }
+
+	    if( percentage<=25 ){
 		row.style.backgroundColor = '#ff8080';
 	    }else{
 		if( true && $('first-fleet-name').hasAttribute('checked') ){
 		    // 第1艦隊のみ
-		    let percentage =  nowhp/maxhp*100;
 		    let image;
 		    if(nowhp==maxhp){
 			image = "greenbar.png";
