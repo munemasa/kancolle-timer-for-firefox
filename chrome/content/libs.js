@@ -833,7 +833,9 @@ var KanColleTimerFleetInfo = {
 		hbox.setAttribute('repair','1');
 	    }
 
-	    let percentage =  parseInt( nowhp/maxhp*100 );
+	    // たとえば 8/31 が 25.8% くらいになって切り捨て入ると大破扱いになってしまうので
+	    // parseIntしない方がいいかも。
+	    let percentage =  nowhp/maxhp*100;
 	    if( percentage<=25 ){
 		hbox.setAttribute('large-damage','1');
 	    }else if( percentage<=50 ){
