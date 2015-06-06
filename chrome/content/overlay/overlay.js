@@ -4,7 +4,7 @@ Components.utils.import("resource://kancolletimermodules/httpobserve.jsm");
 var KanColleTimer = KanColleTimer || {};
 
 // libs.jsからコピペなのであとでなんとかする
-var __KanColleTimerPanel = {
+KanColleTimer.__KanColleTimerPanel = {
     update: null,
     _update_bound: null,
 
@@ -144,7 +144,7 @@ KanColleTimer.MaterialLog = {
 	this._update_exit();
     }
 };
-KanColleTimer.MaterialLog.__proto__ = __KanColleTimerPanel;
+KanColleTimer.MaterialLog.__proto__ = KanColleTimer.__KanColleTimerPanel;
 
 
 KanColleTimer.Overlay = {
