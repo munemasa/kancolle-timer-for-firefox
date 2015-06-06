@@ -36,6 +36,11 @@ hbox[repair]:after{
     content: url("chrome://kancolletimer/content/data/cross.png");
 }
 
+row[large-damage] {
+    background-color: #ff655d;
+    text-shadow: 1px 1px 2px white, 1px -1px 2px white, -1px -1px 2px white, -1px 1px 2px white;
+}
+
 #group-damaged-ships hbox[large-damage]{
     background-color: #ff655d;
     text-shadow: 1px 1px 2px white, 1px -1px 2px white, -1px -1px 2px white, -1px 1px 2px white;

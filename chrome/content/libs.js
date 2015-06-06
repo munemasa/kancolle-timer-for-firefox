@@ -844,9 +844,10 @@ var KanColleTimerFleetInfo = {
 		hbox.setAttribute('little-damage','1');
 	    }
 
-	    if( percentage<=25 ){
-		row.style.backgroundColor = '#ff8080';
+	    if( percentage <= 25 ){
+		row.setAttribute( 'large-damage', '1' );
 	    }else{
+		row.removeAttribute( 'large-damage' );
 		if( true && $('first-fleet-name').hasAttribute('checked') ){
 		    // 第1艦隊のみ
 		    let image;
