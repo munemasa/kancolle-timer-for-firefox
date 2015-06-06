@@ -4,7 +4,7 @@
     <em:id>kancolletimer@miku39.jp</em:id>
     <em:type>2</em:type>
     <em:name>Kancolle Timer</em:name>
-    <em:version>0.60</em:version>
+    <em:version>0.61</em:version>
     <em:unpack>true</em:unpack>
     <em:description>Kantai Collection -Kan Colle- Timer</em:description>
     <em:creator>amano</em:creator>
@@ -13,7 +13,6 @@
     <em:optionsURL>chrome://kancolletimer/content/preferences.xul</em:optionsURL>
     <!--
         <em:updateURL>https://miku39.jp/dists/software/kancolle/update.rdf</em:updateURL>
-        <em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/0ThrrGd6VkDncZHF8SY0hg9KmUKTdnhtfhC2D4NkiljAt2IjwoQxrZeKEIbEssVDQKWTqt0MuaYY/S+ehJYOjts8CzogzQR3cEtdO0sWok2wkkJ7Vz5XL8F4GsmfIjvCttwzeKl+8ybNDUSM+9EV73Vve0bOiP6YXUDD0+yJGwIDAQAB</em:updateKey>
     -->
     <em:localized>
       <Description>
