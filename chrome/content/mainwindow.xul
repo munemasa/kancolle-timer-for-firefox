@@ -19,6 +19,7 @@
   <keyset>
     <!-- CTRL+W: Close this window -->
     <key id="closewindow" key="w" modifiers="accel" oncommand="window.close();"/>
+    <key id="reload" key="r" modifiers="accel" oncommand="window.location.reload(true);"/>
     <!-- CTRL+Num: Change the tab -->
     <key id="tab-move-1" key="1" modifiers="accel"
 	 oncommand="$('deck').selectedIndex=0;"/>

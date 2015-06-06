@@ -268,13 +268,7 @@
 	    <button label="疲労回復まで" oncommand="KanColleTimer.setGeneralTimer(-1);"/>
 	    <label id="general-timer" value="00:00:00"/>
 	  </hbox>
-	  
-	  
-	  
-	  
-	  
-	  
-	  
+
 	  <groupbox id="group-info">
 	    <caption>艦隊司令部情報</caption>
 	    <hbox>
@@ -333,7 +327,7 @@
 	      </grid>
 	    </deck>
 	  </groupbox>
-	  
+
 	  <groupbox id="group-condition">
 	    <caption>コンディション</caption>
 	    <grid>
@@ -341,6 +335,17 @@
 		<column/><column/><column/><column/><column/><column/><column/>
 	      </columns>
 	      <rows id="fleet-condition">
+	      </rows>
+	    </grid>
+	  </groupbox>
+
+	  <groupbox id="group-damaged-ships">
+	    <caption>被害艦娘</caption>
+	    <grid>
+	      <columns>
+		<column/><column/><column flex="1"/>
+	      </columns>
+	      <rows id="damaged-ships-list" style="max-height: 8em; overflow:auto;">
 	      </rows>
 	    </grid>
 	  </groupbox>

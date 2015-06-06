@@ -37,6 +37,7 @@
 	  <listitem id="group-fleets" type="checkbox" label="第2〜4艦隊情報" value="group-fleets"/>
 	  <listitem id="group-quest" type="checkbox" label="遂行中任務" value="group-quest"/>
 	  <listitem id="group-condition" type="checkbox" label="コンディション" value="group-condition"/>
+	  <listitem id="group-damaged-ships" type="checkbox" label="被害艦娘" value="group-damaged-ships"/>
 	  <listitem id="log" type="checkbox" label="ログ" value="log"/>
 	</listbox>
 	<vbox>

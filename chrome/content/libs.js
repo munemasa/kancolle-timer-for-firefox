@@ -927,10 +927,57 @@ var KanColleTimerFleetInfo = {
 	}
     },
 
+    _setDamagedShips: function(){
+	let ships = KanColleDatabase.ship.list().map( function( k ){
+	    return KanColleDatabase.ship.get( k );
+	} );
+
+	damaged_ships = ships.filter( function( s ){
+	    if( s.api_ndock_time ) return true;
+	    return false;
+	} );
+	damaged_ships.sort( function(a,b){
+	    return b.api_ndock_time - a.api_ndock_time;
+	});
+
+	let parent_node = $( 'damaged-ships-list' )
+	RemoveChildren( parent_node );
+	for( let ship of damaged_ships ){
+	    let str = new Array();
+	    let spec = FindShipData( ship.api_id );
+
+	    let row = CreateElement('row');
+	    row.appendChild( CreateLabel( KanColleData.type_name[spec.api_stype] ) );
+	    row.appendChild( CreateLabel( spec.api_name ) );
+	    let hbox = CreateElement('hbox');
+	    hbox.appendChild(CreateLabel( GetTimeString( parseInt( ship.api_ndock_time / 1000 ) ) ))
+	    row.appendChild(  hbox);
+
+	    let maxhp = parseInt(ship.api_maxhp);
+	    let nowhp = parseInt(ship.api_nowhp);
+	    let percentage =  nowhp/maxhp*100;
+	    if( percentage<=25 ){
+		hbox.setAttribute('large-damage','1');
+	    }else if( percentage<=50 ){
+		hbox.setAttribute('medium-damage','1');
+	    }else if( percentage<=75 ){
+		hbox.setAttribute('little-damage','1');
+	    }
+
+	    if( this._isRepairing( ship.api_id ) ){
+		hbox.setAttribute('repair','1');
+	    }
+
+	    parent_node.appendChild(row);
+	}
+
+    },
+
     update: {
 	deck: function() {
 	    this._setAllFleetsOrganization();
 	    this._setFleetCond();
+	    this._setDamagedShips();
 
 	    let l = KanColleDatabase.deck.list();
 

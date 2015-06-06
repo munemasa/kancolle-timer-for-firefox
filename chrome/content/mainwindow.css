@@ -1,6 +1,5 @@
 @charset "UTF-8";
 
-
 /* for wallpaper */
 vbox{
 /*    background-image: url("file:///C:/Users/amano/Desktop/KdL.jpg");*/
@@ -35,6 +34,19 @@ hbox[large-damage]:after {
 
 hbox[repair]:after{
     content: url("chrome://kancolletimer/content/data/cross.png");
+}
+
+#group-damaged-ships hbox[large-damage]{
+    background-color: #ff655d;
+    text-shadow: 1px 1px 2px white, 1px -1px 2px white, -1px -1px 2px white, -1px 1px 2px white;
+}
+#group-damaged-ships hbox[medium-damage]{
+    background-color:#ffbc5d;
+    text-shadow: 1px 1px 2px white, 1px -1px 2px white, -1px -1px 2px white, -1px 1px 2px white;
+}
+#group-damaged-ships hbox[little-damage]{
+    background-color:#ffea5d;
+    text-shadow: 1px 1px 2px white, 1px -1px 2px white, -1px -1px 2px white, -1px 1px 2px white;
 }
 
 label[cond='very-low'] {
