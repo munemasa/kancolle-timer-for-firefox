@@ -22,29 +22,29 @@
 
 
 function KanColleGetFrame(){
-    var win = content;
+    let win = content;
 
-    var game_frame = win.window.document.getElementById( "game_frame" );
+    let game_frame = win.window.document.getElementById( "game_frame" );
     if( !game_frame ) return null;
     let rect = game_frame.getBoundingClientRect();
-    var offset_x = rect.x + win.window.pageXOffset;
-    var offset_y = rect.y + win.window.pageYOffset;
-//    var flash = game_frame.contentWindow.document.getElementById( "flashWrap" );
-    var flash = game_frame.contentWindow.document.getElementsByTagName( "embed" )[0];
+    let offset_x = rect.x + win.window.pageXOffset;
+    let offset_y = rect.y + win.window.pageYOffset;
+//    let flash = game_frame.contentWindow.document.getElementById( "flashWrap" );
+    let flash = game_frame.contentWindow.document.getElementsByTagName( "embed" )[0];
     offset_x += flash.offsetLeft;
     offset_y += flash.offsetTop;
 
-    var w = flash.clientWidth;
-    var h = flash.clientHeight;
-    var x = offset_x;
-    var y = offset_y;
+    let w = flash.clientWidth;
+    let h = flash.clientHeight;
+    let x = offset_x;
+    let y = offset_y;
 
-    var canvas = content.document.createElement( "canvas" );
+    let canvas = content.document.createElement( "canvas" );
     canvas.style.display = "inline";
     canvas.width = w;
     canvas.height = h;
 
-    var ctx = canvas.getContext( "2d" );
+    let ctx = canvas.getContext( "2d" );
     // x,y,w,h
     ctx.drawWindow( win, x, y, w, h, "rgb(255,255,255)" );
 
@@ -64,7 +64,7 @@ function KanColleScreenCapture( msg ){
     let route = msg.objects.route;
     let isjpeg = msg.objects.is_jpeg;
 
-    var ctx = canvas.getContext( "2d" );
+    let ctx = canvas.getContext( "2d" );
 
     let mask_admiral_name = msg.objects.do_masking;
     if( mask_admiral_name ){
@@ -72,7 +72,7 @@ function KanColleScreenCapture( msg ){
 	ctx.fillRect( 110, 5, 145, 20 );
     }
 
-    var url;
+    let url;
     if( isjpeg ){
 	url = canvas.toDataURL( "image/jpeg" );
     }else{
