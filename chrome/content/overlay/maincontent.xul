@@ -340,7 +340,7 @@
 	  </groupbox>
 
 	  <groupbox id="group-damaged-ships">
-	    <caption>被害艦娘</caption>
+	    <caption>被害艦娘(<label id="damaged-ships-num" value="0"/>)</caption>
 	    <grid>
 	      <columns>
 		<column/><column/><column flex="1"/>

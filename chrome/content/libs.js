@@ -941,6 +941,8 @@ var KanColleTimerFleetInfo = {
 	    return b.api_ndock_time - a.api_ndock_time;
 	});
 
+	$('damaged-ships-num').value = damaged_ships.length;
+
 	let parent_node = $( 'damaged-ships-list' )
 	RemoveChildren( parent_node );
 	for( let ship of damaged_ships ){
