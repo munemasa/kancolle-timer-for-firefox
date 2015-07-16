@@ -3568,11 +3568,7 @@ function GetGlobalNotificationBox(){
  */
 function OpenDefaultBrowser(url, hasfocus){
     let wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-    let browserEnumerator = wm.getEnumerator("navigator:browser");
-    let browserInstance;
-    while(browserEnumerator.hasMoreElements()) {
-	browserInstance = browserEnumerator.getNext().gBrowser;
-    }
+    let browserInstance = wm.getMostRecentWindow("navigator:browser").gBrowser;
 
     let tab = browserInstance.addTab( url );
     if( hasfocus ){
