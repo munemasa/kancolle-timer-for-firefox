@@ -33,6 +33,7 @@ treechildren::-moz-tree-row(dash-separator) {
 
 treechildren::-moz-tree-row(high-condition) {
     background-color: #ffffd0;
+    color: black;
 }
 
 treechildren::-moz-tree-row(large-damage) {

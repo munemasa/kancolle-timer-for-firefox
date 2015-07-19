@@ -136,7 +136,7 @@
                   <splitter class="tree-splitter"/>
                   <treecol id="id-equip4" flex="1" label="装備4" persist="width hidden ordinal"/>
                 </treecols>
-                <treechildren/>
+                <treechildren id="shiplist-children"/>
               </tree>
               <splitter/>
               <vbox id="ship-spec-group" persist="height" style="overflow: auto;">
