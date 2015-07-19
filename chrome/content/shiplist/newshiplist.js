@@ -71,9 +71,15 @@ ShipCategoryTreeView.prototype = {
 	return str;
     },
     setCellText: function( row, col, value ){
-
 	let n = 2;
 	let newvalue = value;
+	let oldvalue = this._visibleData[row].name;
+	debugprint( oldvalue + "->" + newvalue );
+
+	if( oldvalue == newvalue ){
+	    return;
+	}
+
 	while( 1 ){
 	    let i;
 	    for( i = 0; i < this._data.length; i++ ){
