@@ -5,7 +5,7 @@
     <em:type>2</em:type>
     <em:name>Kancolle Timer #2</em:name>
     <em:version>1.0</em:version>
-    <em:unpack>false</em:unpack>
+    <em:unpack>true</em:unpack>
     <em:description>Kantai Collection -Kan Colle- Timer</em:description>
     <em:creator>amano</em:creator>
     <em:contributor>yoshfuji</em:contributor>
