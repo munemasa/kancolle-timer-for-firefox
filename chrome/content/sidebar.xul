@@ -8,7 +8,7 @@
 
 <!DOCTYPE page SYSTEM "chrome://kancolletimer/locale/kancolletimer.dtd">
 
-<page id="sbKanColleTimerSidebar" title="艦これタイマー"
+<page id="sbKanColleTimerSidebar" title="艦これタイマー#2"
       xmlns:html="http://www.w3.org/1999/xhtml"
       xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" >
 
