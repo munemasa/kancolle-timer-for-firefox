@@ -486,6 +486,7 @@
           <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
           <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
           <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
+	  <listcol style="border-right: dashed 1px gray; padding-right: 1em;"/>
           <listcol style=""/>
 	</listcols>
       </listbox>

@@ -386,6 +386,11 @@ var KanColleTimer = {
 			elem.appendChild( CreateListCell( str ) );
 		    }
 		}
+		if( data.api_slot_ex > 0 ){
+		    let item = KanColleDatabase.slotitem.get( data.api_slot_ex );
+		    item = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+		    elem.appendChild( CreateListCell( item.api_name ) );
+		}
 
 		list.appendChild( elem );
 	    }
