@@ -846,9 +846,17 @@ var NewShipList = {
 		let color2 = GetEquipmentSubColor( masterdata ) || color;
 		str = "border-left:" + color + " 8px solid; padding-left: 4px;";
 		str = "box-shadow: -6px 0 0 0 " + color2 + ", -12px 0 0 0 " + color + "; margin-left: 16px; padding-left: 4px;";
+
 		$( 'api_slot' + i ).setAttribute( 'style', str );
 		let tmp2 = $( 'api_onslot' + i ).value;
 		$( 'api_onslot' + i ).setAttribute( 'value', tmp2 + tmp );
+
+		if( item.api_alv && item.api_alv > 0 ){
+		    str = 'box-shadow: ' + (5 * item.api_alv) + 'px 0 0 0 #9ab5d0;';
+		    $( 'api_onslot' + i ).setAttribute( 'style', str );
+		}else{
+		    $( 'api_onslot' + i ).removeAttribute( 'style' );
+		}
 	    }
 	}
     },
