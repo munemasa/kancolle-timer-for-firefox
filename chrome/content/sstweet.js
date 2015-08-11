@@ -73,7 +73,7 @@ var SSTweet = {
 	ShowNotice( "スクリーンショットを送信しています...", true );
 	setTimeout( function(){
 	    let text = $('text').value;
-	    Twitter.updateStatusWithMedia(text, File(file.path));
+	    Twitter.updateStatusWithMedia(text, new File(file.path));
 	    //Twitter.updateStatus(text);
 	    setTimeout( function(){ $('send-button').disabled = false; }, 5000 );
 	}, 2000 );
