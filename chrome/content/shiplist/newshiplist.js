@@ -826,6 +826,7 @@ var NewShipList = {
 	    if( slot_id == -1 ){
 		$( 'api_slot' + i ).value = "";
 		$( 'api_slot' + i ).removeAttribute( 'style' );
+		$( 'api_onslot' + i ).removeAttribute( 'style' );
 		continue;
 	    }
 	    let item = KanColleDatabase.slotitem.get( slot_id );
