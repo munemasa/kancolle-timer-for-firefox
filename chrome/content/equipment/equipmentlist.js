@@ -217,6 +217,14 @@ var EquipmentList = {
 		    item._owner_ship_name = data.api_name;
 		}
 	    }
+	    if( ship.api_slot_ex && ship.api_slot_ex > 0 ){
+		let item = KanColleDatabase.slotitem.get( ship.api_slot_ex );
+		if( item ){
+		    ship["_page_no"] = 1 + parseInt( j / 10 );
+		    item._owner_ship = ship;
+		    item._owner_ship_name = data.api_name;
+		}
+	    }
 	}
     },
 
@@ -324,18 +332,7 @@ var EquipmentList = {
 		value.push( count[d] );
 		value.push( "総数 " + _count_all[d] );
 
-		let name = {
-		    "api_houg": "火力",
-		    "api_raig": "雷装",
-		    "api_baku": "爆装",
-		    "api_tyku": "対空",
-		    "api_tais": "対潜",
-		    "api_houm": "命中",
-		    "api_houk": "回避",
-		    "api_saku": "索敵",
-		    "api_raim": "雷撃命中", // かな？
-		    "api_souk": "装甲"
-		};
+		let name = EquipmentList.parameter_name;
 		d3.map( data[d] ).keys().forEach( function( k ){
 		    let v = GetSignedValue( data[d][k] );
 		    switch( k ){
@@ -382,7 +379,6 @@ var EquipmentList = {
     },
 
     buildEquipmentTree: function(){
-
 	let current;
 	for( let item of this.allequipments ){
 	    let id = 'id';
@@ -394,13 +390,8 @@ var EquipmentList = {
 	    let owner = item._owner_ship_name || '---';
 
 	    let value = new Array();
-	    if( item.api_alv && item.api_alv > 0 ){
-		let v = GetSignedValue( item.api_alv );
-		value.push( '熟練度' + v );
-	    }
 	    for( let k in item ){
 		let v = GetSignedValue( item[k] );
-
 		switch( k ){
 		case "api_houg": // 火力
 		case "api_raig": // 雷装
@@ -417,11 +408,19 @@ var EquipmentList = {
 		}
 	    }
 	    let spec = value.join( ' ' );
-
 	    if( current != name ){
 		let t = new EquipmentListItem( 'id' + item.api_sortno, TYPE_FOLDER, name + '(' + this._count_all[name] + ')', 'root', false, true, spec, '' );
 		gEquipmentTreeData.push( t );
 		current = name;
+	    }
+	    spec = value.join( ' ' );
+
+	    if( item.api_alv && item.api_alv > 0 ){
+		let str = '';
+		for( let i = 0; i < item.api_alv; i++ ){
+		    str += '|';
+		}
+		name += ' ' + str;
 	    }
 
 	    let tmp = new EquipmentListItem( id, type, name, parent, opened, locked, spec, owner );
