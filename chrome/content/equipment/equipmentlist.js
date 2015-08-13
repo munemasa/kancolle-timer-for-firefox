@@ -415,6 +415,7 @@ var EquipmentList = {
 	    }
 	    spec = value.join( ' ' );
 
+	    name += (item.api_level > 0 ? "★+" + item.api_level : "");
 	    if( item.api_alv && item.api_alv > 0 ){
 		let str = '';
 		for( let i = 0; i < item.api_alv; i++ ){

@@ -79,11 +79,11 @@
                 onselect=""
                 style="" class="plain">
             <treecols>
-              <treecol id="id-name" flex="1" primary="true" label="名前" _persist="width hidden ordinal"/>
+              <treecol id="id-name" flex="1" primary="true" label="名前" persist="width hidden ordinal"/>
               <splitter class="tree-splitter"/>
-              <treecol id="id-owner" flex="1" label="装備艦娘" _persist="width hidden ordinal"/>
+              <treecol id="id-owner" flex="1" label="装備艦娘" persist="width hidden ordinal"/>
               <splitter class="tree-splitter"/>
-              <treecol id="id-spec" flex="1" label="性能" _persist="width hidden ordinal"/>
+              <treecol id="id-spec" flex="1" label="性能" persist="width hidden ordinal"/>
             </treecols>
             <treechildren/>
           </tree>
