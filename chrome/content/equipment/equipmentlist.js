@@ -1,12 +1,190 @@
 Components.utils.import( "resource://kancolletimermodules/httpobserve.jsm" );
 
+
+const TYPE_ITEM = 1;
+const TYPE_FOLDER = 2;
+
+var gEquipmentTreeData = [
+//    new EquipmentListItem( "all", TYPE_FOLDER, "全て", "root", false, true )
+];
+
+function EquipmentListItem( aId, aType, aName, aParent, aOpened, aLocked, aSpec, aOwner ){
+    this.id = aId;
+    this.type = aType;
+    this.name = aName;
+    this.parentId = aParent;
+    this.isOpened = aOpened;
+    this.isLocked = aLocked;
+
+    this.spec = aSpec;
+    this.owner = aOwner;
+
+    this.empty = null;
+    this.level = null;
+}
+
+function EquipmentTreeView( data ){
+    this._data = data;
+}
+
+
+EquipmentTreeView.prototype = {
+    _visibleData: [],
+
+    _buildVisibleData: function(){
+	this._visibleData = [];
+	this._buildTree( "root", 0 );
+    },
+    _buildTree: function( parent, level ){
+	let children = this._getChildren( parent );
+	for( let i = 0; i < children.length; i++ ){
+	    let c = children[i];
+	    //console.log( c.name );
+	    c.level = level;
+	    this._visibleData.push( c );
+	    if( c.isOpened && c.type == TYPE_FOLDER ){
+		this._buildTree( c.id, level + 1 );
+	    }
+	}
+    },
+    _getChildren: function( parent ){
+	let children = this._data.filter( function( d ){
+	    return d.parentId == parent;
+	} );
+	return children;
+    },
+
+    get rowCount(){
+	return this._visibleData.length;
+    },
+    getCellText: function( row, column ){
+	switch( column.index ){
+	case 0:
+	    return this._visibleData[row].name;
+	case 1:
+	    return this._visibleData[row].owner;
+	case 2:
+	    return this._visibleData[row].spec;
+	}
+	return 'undefined';
+    },
+    setCellText: function( row, col, value ){
+    },
+    setTree: function( treebox ){
+	this.treebox = treebox;
+	this._buildVisibleData();
+    },
+    isContainer: function( row ){
+	return this._visibleData[row].type == TYPE_FOLDER;
+    },
+    isContainerOpen: function( index ){
+	return this._visibleData[index].isOpened;
+    },
+    isContainerEmpty: function( idx ){
+	return false;
+    },
+    isSeparator: function( row ){
+	return false;
+    },
+    isSorted: function(){
+	return false;
+    },
+    getLevel: function( idx ){
+	return this._visibleData[idx].level;
+    },
+    getRowProperties: function( idx ){
+    },
+    getCellProperties: function( idx, column ){
+    },
+    getColumnProperties: function( column ){
+    },
+
+    getParentIndex: function( idx ){
+	if( this.isContainer( idx ) ) return -1;
+	for( let t = idx - 1; t >= 0; t-- ){
+	    if( this.isContainer( t ) ) return t;
+	}
+    },
+    toggleOpenState: function( idx ){
+	var lastRowCount = this.rowCount;
+	// change |open| property
+	this._visibleData[idx].isOpened = !this._visibleData[idx].isOpened;
+	this._buildVisibleData();
+	this.treebox.rowCountChanged( idx + 1, this.rowCount - lastRowCount );
+	// need this to update the -/+ sign when called by pressing enter key
+	this.treebox.invalidateRow( idx );
+    },
+    isEditable: function( idx, column ){
+	return false;
+    },
+    hasNextSibling: function( idx, after ){
+	var thisLevel = this.getLevel( idx );
+	for( var t = after + 1; t < this._visibleData.length; t++ ){
+	    var nextLevel = this.getLevel( t );
+	    if( nextLevel == thisLevel ) return true;
+	    if( nextLevel < thisLevel ) break;
+	}
+	return false;
+    },
+
+    getImageSrc: function( idx, column ){
+    },
+    getProgressMode: function( idx, column ){
+    },
+    getCellValue: function( idx, column ){
+    },
+    cycleHeader: function( col, elem ){
+    },
+    selectionChanged: function(){
+    },
+    cycleCell: function( idx, column ){
+    },
+    performAction: function( action ){
+    },
+    performActionOnRow: function( action, row ){
+    },
+    performActionOnCell: function( action, row, col ){
+    },
+
+    canDrop: function( targetIndex, orientation, dataTransfer ){
+	return false;
+    },
+    drop: function( targetIndex, orientation, dataTransfer ){
+    },
+
+    updateData: function( data ){
+	let n = this.rowCount;
+
+	this._data = data;
+	this._buildVisibleData();
+	this.treebox.rowCountChanged( this.rowCount, this.rowCount - n );
+	this.treebox.invalidate();
+    }
+
+};
+
+
 var EquipmentList = {
     allequipments: [],
     equipment_owner: null, // 装備品のオーナー艦娘
 
+    parameter_name: {
+	"api_houg": "火力",
+	"api_raig": "雷装",
+	"api_baku": "爆装",
+	"api_tyku": "対空",
+	"api_tais": "対潜",
+	"api_houm": "命中",
+	"api_houk": "回避",
+	"api_saku": "索敵",
+	"api_raim": "雷撃命中", // かな？
+	"api_souk": "装甲"
+    },
+
     updateOwnerShip: function(){
 	this.allequipments.forEach( function( elem ){
 	    elem._owner_ship = null;
+	    elem._owner_ship_name = '';
 	} );
 
 	let ships = KanColleDatabase.ship.list().map( function( k ){
@@ -34,8 +212,9 @@ var EquipmentList = {
 
 		let item = KanColleDatabase.slotitem.get( slot_id );
 		if( item ){
-		    ship["_page_no"] = 1 + parseInt(j/10);
+		    ship["_page_no"] = 1 + parseInt( j / 10 );
 		    item._owner_ship = ship;
+		    item._owner_ship_name = data.api_name;
 		}
 	    }
 	}
@@ -46,9 +225,9 @@ var EquipmentList = {
 	let listbox = $( 'owner-list-box' );
 	ClearListBox( listbox );
 
-	if( this.equipment_owner[equip].length==0){
-	    $('owner-equip-name').value = "装備している艦娘はいません";
-	    $('owner-list').openPopup( elem, 'after_start', 0, 0 );
+	if( this.equipment_owner[equip].length == 0 ){
+	    $( 'owner-equip-name' ).value = "装備している艦娘はいません";
+	    $( 'owner-list' ).openPopup( elem, 'after_start', 0, 0 );
 	    listbox.style.display = "none";
 	    return;
 	}
@@ -57,7 +236,7 @@ var EquipmentList = {
 	    return i == a.indexOf( itm );
 	} );
 
-	unique.sort( function(a,b){
+	unique.sort( function( a, b ){
 	    a = FindShipData( a.api_id );
 	    b = FindShipData( b.api_id );
 
@@ -68,7 +247,7 @@ var EquipmentList = {
 		tmpb = a.api_sortno;
 	    }
 	    return tmpb - tmpa;
-	});
+	} );
 
 	listbox.style.display = "";
 	$( 'owner-equip-name' ).value = equip;
@@ -77,7 +256,7 @@ var EquipmentList = {
 	    item = FindShipData( ship.api_id );
 	    let listitem = CreateElement( 'listitem' );
 	    listitem.appendChild( CreateListCell( ship._page_no || "" ) );
-	    listitem.appendChild( CreateListCell( "Lv"+ ship.api_lv ) );
+	    listitem.appendChild( CreateListCell( "Lv" + ship.api_lv ) );
 	    listitem.appendChild( CreateListCell( KanColleData.type_name[item.api_stype] ) );
 	    listitem.appendChild( CreateListCell( item.api_name ) );
 
@@ -94,12 +273,12 @@ var EquipmentList = {
 	    listbox.appendChild( listitem );
 	} );
 
-	$('owner-list').openPopup( elem, 'after_start', 0, 0 );
+	$( 'owner-list' ).openPopup( elem, 'after_start', 0, 0 );
     },
 
     createEquipmentList: function(){
 	let count = new Object(); // 未装備数
-	let count_all = new Object(); // 所持総数
+	let _count_all = new Object(); // 所持総数
 	let data = new Object();
 
 	this.equipment_owner = new Object();
@@ -117,9 +296,10 @@ var EquipmentList = {
 	    }
 	    data[k] = d;
 
-	    if( !count_all[d.api_name] ) count_all[d.api_name] = 0;
-	    count_all[d.api_name]++;
+	    if( !_count_all[d.api_name] ) _count_all[d.api_name] = 0;
+	    _count_all[d.api_name]++;
 	} );
+	this._count_all = _count_all;
 
 	let update = d3.select( "#equipment-list" )
 	    .selectAll( "row" )
@@ -139,47 +319,47 @@ var EquipmentList = {
 	    .attr( "onclick", "EquipmentList.popupEquipmentOwner(this);" )
 	    .selectAll( "label" )
 	    .data( function( d ){
-		       let value = new Array();
-		       value.push( d );
-		       value.push( count[d] );
-		       value.push( "総数 " + count_all[d] );
+		let value = new Array();
+		value.push( d );
+		value.push( count[d] );
+		value.push( "総数 " + _count_all[d] );
 
-		       let name = {
-			   "api_houg": "火力",
-			   "api_raig": "雷装",
-			   "api_baku": "爆装",
-			   "api_tyku": "対空",
-			   "api_tais": "対潜",
-			   "api_houm": "命中",
-			   "api_houk": "回避",
-			   "api_saku": "索敵",
-			   "api_raim": "雷撃命中", // かな？
-			   "api_souk": "装甲"
-		       };
-		       d3.map( data[d] ).keys().forEach( function( k ){
-			   let v = GetSignedValue( data[d][k] );
-			   switch( k ){
-			   case "api_houg": // 火力
-			   case "api_raig": // 雷装
-			   case "api_baku": // 爆装
-			   case "api_tyku": // 対空
-			   case "api_tais": // 対潜
-			   case "api_houm": // 命中
-			   case "api_houk": // 回避
-			   case "api_saku": // 索敵
-			   case "api_souk": // 装甲
-			       //case "api_raim": // 雷撃命中
-			       if( v ) value.push( name[k] + v );
-			       break;
-			   }
-		       } );
-		       return value;
-		   } )
+		let name = {
+		    "api_houg": "火力",
+		    "api_raig": "雷装",
+		    "api_baku": "爆装",
+		    "api_tyku": "対空",
+		    "api_tais": "対潜",
+		    "api_houm": "命中",
+		    "api_houk": "回避",
+		    "api_saku": "索敵",
+		    "api_raim": "雷撃命中", // かな？
+		    "api_souk": "装甲"
+		};
+		d3.map( data[d] ).keys().forEach( function( k ){
+		    let v = GetSignedValue( data[d][k] );
+		    switch( k ){
+		    case "api_houg": // 火力
+		    case "api_raig": // 雷装
+		    case "api_baku": // 爆装
+		    case "api_tyku": // 対空
+		    case "api_tais": // 対潜
+		    case "api_houm": // 命中
+		    case "api_houk": // 回避
+		    case "api_saku": // 索敵
+		    case "api_souk": // 装甲
+			//case "api_raim": // 雷撃命中
+			if( v ) value.push( name[k] + v );
+			break;
+		    }
+		} );
+		return value;
+	    } )
 	    .enter()
 	    .append( "label" )
 	    .attr( "value", function( d ){
-		       return d;
-		   } );
+		return d;
+	    } );
     },
 
     initEquipmentList: function(){
@@ -201,10 +381,62 @@ var EquipmentList = {
 	}
     },
 
+    buildEquipmentTree: function(){
+
+	let current;
+	for( let item of this.allequipments ){
+	    let id = 'id';
+	    let name = item.api_name;
+	    let type = TYPE_ITEM;
+	    let parent = 'id' + item.api_sortno;
+	    let opened = true;
+	    let locked = true;
+	    let owner = item._owner_ship_name || '---';
+
+	    let value = new Array();
+	    if( item.api_alv && item.api_alv > 0 ){
+		let v = GetSignedValue( item.api_alv );
+		value.push( '熟練度' + v );
+	    }
+	    for( let k in item ){
+		let v = GetSignedValue( item[k] );
+
+		switch( k ){
+		case "api_houg": // 火力
+		case "api_raig": // 雷装
+		case "api_baku": // 爆装
+		case "api_tyku": // 対空
+		case "api_tais": // 対潜
+		case "api_houm": // 命中
+		case "api_houk": // 回避
+		case "api_saku": // 索敵
+		case "api_souk": // 装甲
+		    //case "api_raim": // 雷撃命中
+		    if( v ) value.push( this.parameter_name[k] + v );
+		    break;
+		}
+	    }
+	    let spec = value.join( ' ' );
+
+	    if( current != name ){
+		let t = new EquipmentListItem( 'id' + item.api_sortno, TYPE_FOLDER, name + '(' + this._count_all[name] + ')', 'root', false, true, spec, '' );
+		gEquipmentTreeData.push( t );
+		current = name;
+	    }
+
+	    let tmp = new EquipmentListItem( id, type, name, parent, opened, locked, spec, owner );
+	    gEquipmentTreeData.push( tmp );
+	}
+
+	this._equipmentTreeView = new EquipmentTreeView( gEquipmentTreeData );
+	$( "equipment-tree" ).view = this._equipmentTreeView;
+    },
+
     init: function(){
 	this.initEquipmentList();
 	this.updateOwnerShip();
 	this.createEquipmentList();
+	this.buildEquipmentTree();
 
 	document.title += " " + new Date();
 

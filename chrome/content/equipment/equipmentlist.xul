@@ -55,10 +55,11 @@
     <tabbox id="tab" flex="1" persist="selectedIndex">
       <tabs>
         <tab id="tab-equipment" label="装備アイテム"/>
+        <tab id="tab-all-equipment" label="全装備一覧"/>
       </tabs>
       <tabpanels flex="1">
 
-        <vbox style="overflow:auto;"><!-- tab 3 -->
+        <vbox style="overflow:auto;"><!-- tab 1 -->
           <grid>
             <columns>
               <column/>
@@ -67,6 +68,25 @@
             <rows id="equipment-list">
             </rows>
           </grid>
+        </vbox>
+
+        <vbox><!-- tab 2 -->
+          <tree id="equipment-tree" seltype="single"
+                flex="1"
+                editable="false"
+                hidecolumnpicker="true"
+                treelines="true"
+                onselect=""
+                style="" class="plain">
+            <treecols>
+              <treecol id="id-name" flex="1" primary="true" label="名前" _persist="width hidden ordinal"/>
+              <splitter class="tree-splitter"/>
+              <treecol id="id-owner" flex="1" label="装備艦娘" _persist="width hidden ordinal"/>
+              <splitter class="tree-splitter"/>
+              <treecol id="id-spec" flex="1" label="性能" _persist="width hidden ordinal"/>
+            </treecols>
+            <treechildren/>
+          </tree>
         </vbox>
 
       </tabpanels>
