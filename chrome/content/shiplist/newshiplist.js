@@ -802,6 +802,14 @@ var NewShipList = {
 
 	$( 'api_exp' ).value = "EXP " + FormatCommas( ship.api_exp[0] ) + " (Next " + FormatCommas( ship.api_exp[1] ) + ")";
 
+	if( ship.api_slot_ex > 0 ){
+	    let item = KanColleDatabase.slotitem.get( ship.api_slot_ex );
+	    item = KanColleDatabase.masterSlotitem.get( item.api_slotitem_id );
+	    $( 'api_slot_ex' ).value = item.api_name;
+	}else{
+	    $( 'api_slot_ex' ).value = '';
+	}
+
 	let name = {
 	    "api_houg": "火力",
 	    "api_raig": "雷装",

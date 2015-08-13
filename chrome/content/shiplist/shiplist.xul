@@ -148,6 +148,7 @@
                       <label id="api_name" value="艦名"/>
                       <label id="api_lv" value=""/>
                       <label id="api_exp" value=""/>
+                      <label id="api_slot_ex" value=""/>
                     </hbox>
                     <grid>
                       <columns>
