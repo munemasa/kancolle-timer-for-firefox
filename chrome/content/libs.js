@@ -12,7 +12,7 @@ Cu.import("resource://kancolletimermodules/httpobserve.jsm");
 
 let FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils;
 
-const _addon_id = "kancolletimer@miku39.jp";
+const _addon_id = "kancolletimer2@miku39.jp";
 
 
 const XUL_SHIP_LIST2 = 'chrome://kancolletimer/content/shiplist/shiplist.xul';

@@ -651,7 +651,22 @@ var KanColleTimer = {
 	}
     },
 
+    checkOldVersion: function(){
+	AddonManager.getAddonByID( "kancolletimer@miku39.jp",
+	    function( addon ){
+		if( addon ){
+		    console.log( "Old KanColleTimer installed." );
+		    AlertPrompt( "艦これタイマーがインストールされています。\n艦これタイマー#2を使用する前にアンインストールしてください。", "艦これタイマー#2" );
+		}else{
+		    console.log( "No old KanColleTimer." );
+		}
+	    } );
+
+    },
+
     init: function(){
+	this.checkOldVersion();
+
 	KanColleTimer.setTitle();
 
 	KanColleDatabase.init();
