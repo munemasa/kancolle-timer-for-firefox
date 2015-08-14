@@ -128,7 +128,7 @@ EquipmentTreeView.prototype = {
     },
 
     getImageSrc: function( idx, column ){
-	if( column.index==0 ){
+	if( column.index == 0 ){
 	    return this._visibleData[idx].icon;
 	}
     },
@@ -406,7 +406,12 @@ var EquipmentList = {
 	    let parent = 'id' + item.api_sortno;
 	    let opened = true;
 	    let locked = true;
-	    let owner = item._owner_ship_name || '---';
+	    let owner;
+	    if( item._owner_ship_name ){
+		owner = item._owner_ship_name + ' (Lv' + item._owner_ship.api_lv + ')';
+	    }else{
+		owner = '---';
+	    }
 
 	    let value = new Array();
 	    for( let k in item ){
