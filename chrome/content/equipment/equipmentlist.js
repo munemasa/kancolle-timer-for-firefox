@@ -128,6 +128,9 @@ EquipmentTreeView.prototype = {
     },
 
     getImageSrc: function( idx, column ){
+	if( column.index==0 ){
+	    return this._visibleData[idx].icon;
+	}
     },
     getProgressMode: function( idx, column ){
     },
@@ -378,8 +381,24 @@ var EquipmentList = {
 	}
     },
 
+    createIcon: function( color1, color2 ){
+	let canvas = document.createElementNS( "http://www.w3.org/1999/xhtml", "canvas" );
+	canvas.style.display = "inline";
+	canvas.width = 18;
+	canvas.height = 16;
+
+	let ctx = canvas.getContext( "2d" );
+	ctx.fillStyle = color1;
+	ctx.fillRect( 0, 0, color2 ? 8 : 16, 16 );
+	if( color2 ){
+	    ctx.fillStyle = color2;
+	    ctx.fillRect( 8, 0, 8, 16 );
+	}
+	return canvas.toDataURL();
+    },
+
     buildEquipmentTree: function(){
-	let current;
+	let current, icon;
 	for( let item of this.allequipments ){
 	    let id = 'id';
 	    let name = item.api_name;
@@ -410,6 +429,8 @@ var EquipmentList = {
 	    let spec = value.join( ' ' );
 	    if( current != name ){
 		let t = new EquipmentListItem( 'id' + item.api_sortno, TYPE_FOLDER, name + '(' + this._count_all[name] + ')', 'root', false, true, spec, '' );
+		icon = this.createIcon( GetEquipmentColor( item ), GetEquipmentSubColor( item ) );
+		t.icon = icon;
 		gEquipmentTreeData.push( t );
 		current = name;
 	    }
@@ -425,6 +446,7 @@ var EquipmentList = {
 	    }
 
 	    let tmp = new EquipmentListItem( id, type, name, parent, opened, locked, spec, owner );
+	    tmp.icon = icon;
 	    gEquipmentTreeData.push( tmp );
 	}
 
@@ -445,6 +467,7 @@ var EquipmentList = {
 	    return !d._owner_ship;
 	} );
 	$( "tab-equipment" ).setAttribute( "label", "未装備品(" + non_equipments.length + ")" );
+	$( "tab-all-equipment" ).setAttribute( "label", "全装備一覧(" + this.allequipments.length + ")" );
     }
 
 };

@@ -94,4 +94,4 @@ addMessageListener( "kancolletimer@miku39.jp:capture", KanColleScreenCapture );
 
 addEventListener( "unload", function(){
     removeMessageListener( "kancolletimer@miku39.jp:capture", KanColleScreenCapture );
-});
+} );
