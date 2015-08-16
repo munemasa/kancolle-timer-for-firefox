@@ -1609,7 +1609,7 @@ var KanColleDatabase = {
 	var os = Components.classes['@mozilla.org/network/file-output-stream;1']
 	    .createInstance( Components.interfaces.nsIFileOutputStream );
 	var flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
-	os.init( profdir, flags, 0664, 0 );
+	os.init( profdir, flags, 0o0664, 0 );
 	var cos = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
 	    .createInstance( Components.interfaces.nsIConverterOutputStream );
 	cos.init( os, "UTF-8", 0, Components.interfaces.nsIConverterOutputStream.DEFAULT_REPLACEMENT_CHARACTER );
