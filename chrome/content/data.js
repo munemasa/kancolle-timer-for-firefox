@@ -3,10 +3,10 @@
 var KanColleData = {
     type_name: function( i ){
 	try{
-	    return KanColleDatabase.masterStype.get( i ).api_name || "Unknown";
+	    return KanColleDatabase.masterStype.get( i ).api_name || ("Unknown" + i);
 	}
 	catch( e ){
-	    return "Unknown";
+	    return "Unknown" + i;
 	}
     },
 
