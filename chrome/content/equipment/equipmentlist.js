@@ -268,7 +268,7 @@ var EquipmentList = {
 	    let listitem = CreateElement( 'listitem' );
 	    listitem.appendChild( CreateListCell( ship._page_no || "" ) );
 	    listitem.appendChild( CreateListCell( "Lv" + ship.api_lv ) );
-	    listitem.appendChild( CreateListCell( KanColleData.type_name[item.api_stype] ) );
+	    listitem.appendChild( CreateListCell( KanColleData.type_name(item.api_stype) ) );
 	    listitem.appendChild( CreateListCell( item.api_name ) );
 
 	    for( let slot_id of ship.api_slot ){

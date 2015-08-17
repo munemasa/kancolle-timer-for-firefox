@@ -1,8 +1,16 @@
 // vim: set ts=8 sw=4 sts=4 ff=dos :
 
 var KanColleData = {
+    type_name: function( i ){
+	try{
+	    return KanColleDatabase.masterStype.get( i ).api_name || "Unknown";
+	}
+	catch( e ){
+	    return "Unknown";
+	}
+    },
 
-
+/*
     type_name:      {
 	0: "",
 	2:  "駆逐艦",
@@ -26,6 +34,7 @@ var KanColleData = {
 	21: "練習巡洋艦",
 	22: "補給艦"
     },
+    */
 
     /*
      主砲 #d15b5b

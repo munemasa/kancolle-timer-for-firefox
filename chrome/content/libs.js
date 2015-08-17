@@ -800,7 +800,7 @@ var KanColleTimerFleetInfo = {
 	    if (!masterdata)
 		continue;
 	    if( n == 1 )sakuteki += data.api_sakuteki[0];
-	    row.appendChild( CreateLabel(KanColleData.type_name[masterdata.api_stype],'') );
+	    row.appendChild( CreateLabel(KanColleData.type_name(masterdata.api_stype),'') );
 	    row.appendChild( CreateLabel(masterdata.api_name) );
             if(battle) {
 	      maxhp = parseInt(maxhps[i+1]);
@@ -950,7 +950,7 @@ var KanColleTimerFleetInfo = {
 	    let spec = FindShipData( ship.api_id );
 
 	    let row = CreateElement('row');
-	    row.appendChild( CreateLabel( KanColleData.type_name[spec.api_stype] ) );
+	    row.appendChild( CreateLabel( KanColleData.type_name(spec.api_stype) ) );
 	    row.appendChild( CreateLabel( spec.api_name ) );
 	    let hbox = CreateElement('hbox');
 	    hbox.appendChild(CreateLabel( GetTimeString( parseInt( ship.api_ndock_time / 1000 ) ) ))
@@ -1169,7 +1169,7 @@ var KanColleTimerFleetInfo = {
 
 		    fleet_text += '\n旗艦Lv' + fleet_flagship_lv + '/' + fleet_lv;
 		    for( let j = 0; j < stypes.length; j++ ){
-			let stypename = KanColleData.type_name[stypes[j]];
+			let stypename = KanColleData.type_name(stypes[j]);
 			if (!stypename)
 			    stypename = 'UNKNOWN_' + stypes[j];
 			fleetinfo.push(' ' + stypename + '(' + fleet_stypes[stypes[j]] + ')');
@@ -2394,7 +2394,7 @@ function KanColleStypeFilterTemplate(){
 	    let spec;
 	    let label = stypegroup[i].types[j].label;
 	    if (!label)
-		label = KanColleData.type_name[stypegroup[i].types[j].id];
+		label = KanColleData.type_name(stypegroup[i].types[j].id);
 	    spec = 'stype' + stypegroup[i].types[j].id;
 	    submenu.menu.push({
 				label: label,
@@ -2937,7 +2937,7 @@ function TreeView(){
 	    let shiptype = KanColleDatabase.masterShip.get(ship.api_ship_id);
 	    if (!shiptype)
 		return -1;
-	    return KanColleData.type_name[shiptype.api_stype];
+	    return KanColleData.type_name(shiptype.api_stype);
 	},
 	name: function(ship) {
 	    return FindShipNameByCatId(ship.api_ship_id);

@@ -237,7 +237,7 @@ ShipListTreeView.prototype = {
 	    return;
 	}
 	let ships = type ? this._data.filter( function( d ){
-	    return KanColleData.type_name[d._spec.api_stype] == type;
+	    return KanColleData.type_name( d._spec.api_stype ) == type;
 	} ) : this._data;
 	let n = this.rowCount;
 	this._buildVisibleData( ships );
@@ -256,7 +256,7 @@ ShipListTreeView.prototype = {
 
 	let typename = this._filterType;
 	let ships = this._filterType ? this._data.filter( function( d ){
-	    return KanColleData.type_name[d._spec.api_stype] == typename;
+	    return KanColleData.type_name( d._spec.api_stype ) == typename;
 	} ) : this._data;
 
 	let n = this.rowCount;
@@ -400,7 +400,7 @@ ShipListTreeView.prototype = {
 	    let row = new Array();
 	    row.push( no );
 	    fleet_no = GetFleetNo( ship.api_id );
-	    row.push( KanColleData.type_name[ship._spec.api_stype] + (fleet_no ? "(" + fleet_no + ")" : "") );
+	    row.push( KanColleData.type_name( ship._spec.api_stype ) + (fleet_no ? "(" + fleet_no + ")" : "") );
 	    row.push( ship._spec.api_name );
 	    row.push( ship.api_lv );
 	    row.push( ship.api_cond );
@@ -442,7 +442,7 @@ ShipListTreeView.prototype = {
 	    let row = new Array();
 	    row.push( no );
 	    let fleet_no = GetFleetNo( ship.api_id );
-	    row.push( KanColleData.type_name[ship._spec.api_stype] + (fleet_no ? "(" + fleet_no + ")" : "") );
+	    row.push( KanColleData.type_name( ship._spec.api_stype ) + (fleet_no ? "(" + fleet_no + ")" : "") );
 	    row.push( ship._spec.api_name );
 	    row.push( ship.api_lv );
 	    row.push( ship.api_cond );
@@ -765,7 +765,7 @@ var NewShipList = {
 	    if( data.id.match( /kind-(\d+)/ ) ){
 		// 艦種別表示
 		let n = parseInt( RegExp.$1 );
-		let target_type = KanColleData.type_name[n];
+		let target_type = KanColleData.type_name( n );
 		this.shipListTreeView.filterByType( target_type );
 		this.shipListTreeView.sort();
 		break;
@@ -784,7 +784,7 @@ var NewShipList = {
 	if( this.shipListTreeView.selection.count == 0 ) return;
 	let ship = this.shipListTreeView._visibleData[n][-1];
 
-	$( 'api_stype' ).value = KanColleData.type_name[ship._spec.api_stype];
+	$( 'api_stype' ).value = KanColleData.type_name( ship._spec.api_stype );
 	$( 'api_name' ).value = ship._spec.api_name;
 	$( 'api_lv' ).value = "Lv " + ship.api_lv;
 	$( 'api_maxhp' ).value = ship.api_maxhp;
@@ -877,7 +877,7 @@ var NewShipList = {
 	    let ship = s[-1];
 
 	    let row = new Array();
-	    row.push( KanColleData.type_name[ship._spec.api_stype] );
+	    row.push( KanColleData.type_name( ship._spec.api_stype ) );
 	    row.push( ship._spec.api_name );
 	    row.push( ship.api_lv );
 	    for( let i in ship.api_slot ){
@@ -924,7 +924,7 @@ var NewShipList = {
 		let s = this.shipListTreeView._visibleData[v];
 		let ship = s[-1];
 		let row = new Array();
-		row.push( KanColleData.type_name[ship._spec.api_stype] );
+		row.push( KanColleData.type_name( ship._spec.api_stype ) );
 		row.push( ship._spec.api_name );
 		row.push( ship.api_lv );
 		for( let i in ship.api_slot ){
@@ -1239,7 +1239,7 @@ var NewShipList = {
 		return a - b;
 	    } )
 	    .forEach( function( d ){
-		let name = KanColleData.type_name[d];
+		let name = KanColleData.type_name( d );
 		let cat = new ShipCategoryListItem( "kind-" + d, TYPE_ITEM, name, "kind", true, true );
 		newlist.splice( 7, 0, cat );
 	    } );
@@ -1397,7 +1397,7 @@ var NewShipList = {
 	    if( k == 9 ) k = 8; // 9=高速戦艦
 	    if( !tmp[k] ){
 		tmp[k] = new Object();
-		tmp[k].label = KanColleData.type_name[k];
+		tmp[k].label = KanColleData.type_name( k );
 		tmp[k].value = 0;
 	    }
 	    tmp[k].value++;
@@ -1420,7 +1420,7 @@ var NewShipList = {
 	    if( k == 9 ) k = 8; // 9=高速戦艦
 	    if( !tmp[k] ){
 		tmp[k] = new Object();
-		tmp[k].label = KanColleData.type_name[k];
+		tmp[k].label = KanColleData.type_name( k );
 		tmp[k].value = 0;
 	    }
 	    tmp[k].value++;

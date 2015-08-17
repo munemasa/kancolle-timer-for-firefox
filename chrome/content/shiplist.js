@@ -37,7 +37,7 @@ var ShipList = {
 
 	    let elem = CreateElement( 'listitem' );
 
-	    elem.appendChild( CreateListCell( KanColleData.type_name[masterdata.api_stype], '' ) );
+	    elem.appendChild( CreateListCell( KanColleData.type_name(masterdata.api_stype), '' ) );
 	    elem.appendChild( CreateListCell( masterdata.api_name ) );
 
 	    let cell = CreateListCell( data.api_lv );
@@ -172,7 +172,7 @@ var ShipList = {
 		let row = CreateElement( 'row' );
 		let data = FindOwnShipData( fleet.api_ship[i] );
 		let masterdata = FindShipData( fleet.api_ship[i] );
-		row.appendChild( CreateLabel( KanColleData.type_name[masterdata.api_stype], '' ) );
+		row.appendChild( CreateLabel( KanColleData.type_name(masterdata.api_stype), '' ) );
 		row.appendChild( CreateLabel( masterdata.api_name ) );
 		row.appendChild( CreateListCell( data.api_nowhp + "/" + data.api_maxhp ) );
 
@@ -276,7 +276,7 @@ var ShipList = {
 	    let listitem = CreateElement( 'listitem' );
 	    listitem.appendChild( CreateListCell( ship._page_no || "" ) );
 	    listitem.appendChild( CreateListCell( "Lv"+ ship.api_lv ) );
-	    listitem.appendChild( CreateListCell( KanColleData.type_name[item.api_stype] ) );
+	    listitem.appendChild( CreateListCell( KanColleData.type_name(item.api_stype) ) );
 	    listitem.appendChild( CreateListCell( item.api_name ) );
 
 	    for( let slot_id of ship.api_slot ){

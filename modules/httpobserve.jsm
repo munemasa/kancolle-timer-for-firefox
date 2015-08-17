@@ -1518,6 +1518,7 @@ var KanColleDatabase = {
     // Database
     masterMission: null,	// master/mission
     masterShip: null,		// master/ship
+    masterStype: null,		// master/stype
     masterSlotitem: null,	// master/slotitem
     masterSlotitemEquiptype: null,	// mst_slotitem_equiptype
     memberBasic: null,		// member/basic
@@ -1672,7 +1673,7 @@ var KanColleDatabase = {
 	d = Math.floor( d.getTime() / 1000 );
 	// なぜか"建造"の文字だと文字化けするので、"Created"にする.
 	let str = "Created,,"
-	    + KanColleDatabase.typeName[ship.api_stype]
+	    + KanColleDatabase.typeName( ship.api_stype )
 	    + ","
 	    + ship.api_name
 	    + ","
@@ -1699,6 +1700,7 @@ var KanColleDatabase = {
 	    if (url.match(/kcsapi\/api_start2/)) {
 		this.masterMission.update(data.api_data.api_mst_mission);
 		this.masterShip.update(data.api_data.api_mst_ship);
+		this.masterStype.update(data.api_data.api_mst_stype);
 		this.masterSlotitem.update(data.api_data.api_mst_slotitem);
 		this.masterSlotitemEquiptype.update(data.api_data.api_mst_slotitem_equiptype);
 	    } else if (url.match(/kcsapi\/api_get_master\/mission/)) {
@@ -1869,7 +1871,8 @@ var KanColleDatabase = {
 		this.masterSlotitem = new KanColleDB();
 	    if (!this.masterSlotitemEquiptype)
 		this.masterSlotitemEquiptype = new KanColleDB();
-
+	    if( !this.masterStype )
+		this.masterStype = new KanColleDB();
 	    this.memberBasic = new KanColleSimpleDB();
 	    this.memberDeck = new KanColleDB();
 	    this._memberKdock = new KanColleDB();
