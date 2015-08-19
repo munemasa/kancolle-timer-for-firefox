@@ -24,7 +24,11 @@ treechildren::-moz-tree-cell(sally2) {
 }
 
 treechildren::-moz-tree-cell(sally3) {
-    border-left: 4px solid #c79d68;
+    border-left: 4px solid #c1dd7b;
+}
+
+treechildren::-moz-tree-cell(sally4){
+    border-left: solid 4px #e4bd7f;
 }
 
 treechildren::-moz-tree-row(dash-separator) {
