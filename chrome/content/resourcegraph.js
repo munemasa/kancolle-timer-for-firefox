@@ -175,7 +175,13 @@ let ResourceGraph = {
     createGraph: function(){
 	RemoveElement( $( 'graph' ) );
 
-	let data = KanColleRemainInfo.gResourceData;
+	let data = KanColleRemainInfo.gResourceData.filter( function(d){
+	    let t = new Date( d.recorded_time * 1000 );
+	    let now = new Date();
+	    let span = $('sel-span').value;
+
+	    return Math.abs( now - t ) / 1000 < span*24*60*60;
+	});
 
 	let margin = {top: 20, right: 80, bottom: 42, left: 50};
 	let width = this.width - margin.left - margin.right;

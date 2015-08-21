@@ -58,6 +58,17 @@
     <checkbox id="steel" checked="true" label="鋼材" oncommand="ResourceGraph.createGraph();"/>
     <checkbox id="bauxite" checked="true" label="ボーキサイト" oncommand="ResourceGraph.createGraph();"/>
     <checkbox id="bucket" checked="true" label="バケツ" oncommand="ResourceGraph.createGraph();"/>
+    <menulist id="sel-span" oncommand="ResourceGraph.createGraph();">
+      <menupopup>
+        <menuitem label="1ヶ月" value="32"/>
+        <menuitem label="3週間" value="21"/>
+        <menuitem label="2週間" value="14"/>
+        <menuitem label="1週間" value="7"/>
+        <menuitem label="3日" value="3"/>
+        <menuitem label="1日" value="1"/>
+      </menupopup>
+    </menulist>
+
     <html:a onclick="ResourceGraph.openSaveFolder();">保存フォルダを開く</html:a>
   </hbox>
   <vbox id="box" flex="1" style="overflow:auto;">
