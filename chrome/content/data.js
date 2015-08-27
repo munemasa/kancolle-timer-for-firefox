@@ -148,27 +148,27 @@ var KanColleData = {
 	},
 	3: {
 	    name: "警備任務",
-	    hourly_balance: [54, 54, 120, 0],
+	    hourly_balance: [54, 63, 120, 0],
 	    help: "Lv3 20m 全3"
 	},
 	4: {
 	    name: "対潜警戒任務",
-	    hourly_balance: [-31, 72, 0, 0],
+	    hourly_balance: [-33, 72, 0, 0],
 	    help: "Lv3 50m 軽巡1駆逐2"
 	},
 	5: {
 	    name: "海上護衛任務",
-	    hourly_balance: [111, 133, 13, 13],
+	    hourly_balance: [110, 133, 13, 13],
 	    help: "Lv3 1h30m 軽巡1駆逐2全1"
 	},
 	6: {
 	    name: "防空射撃演習",
-	    hourly_balance: [-24, -24, 0, 120],
+	    hourly_balance: [-24, -18, 0, 120],
 	    help: "Lv4 40m 全4"
 	},
 	7: {
 	    name: "観艦式予行",
-	    hourly_balance: [-42, 0, 50, 30],
+	    hourly_balance: [-45, 0, 50, 30],
 	    help: "Lv5 1h 全6"
 	},
 	8: {
@@ -178,12 +178,12 @@ var KanColleData = {
 	},
 	9: {
 	    name: "タンカー護衛任務",
-	    hourly_balance: [79, 0, 0, 0],
+	    hourly_balance: [80, 0, 0, 0],
 	    help: "Lv3 4h 軽巡1駆逐2全1"
 	},
 	10: {
 	    name: "強行偵察任務",
-	    hourly_balance: [-12, 33, 0, 20],
+	    hourly_balance: [-13, 33, 0, 20],
 	    help: "Lv3 1h30m 軽巡2全1"
 	},
 	11: {
@@ -193,12 +193,12 @@ var KanColleData = {
 	},
 	12: {
 	    name: "資源輸送任務",
-	    hourly_balance: [2, 31, 25, 6],
+	    hourly_balance: [3, 31, 25, 6],
 	    help: "Lv4 8h 駆逐2全2"
 	},
 	13: {
 	    name: "鼠輸送作戦",
-	    hourly_balance: [48, 62, 0, 0],
+	    hourly_balance: [48, 65, 0, 0],
 	    help: "Lv5 4h 軽巡1駆逐4全1"
 	},
 	14: {
@@ -208,7 +208,7 @@ var KanColleData = {
 	},
 	15: {
 	    name: "囮機動部隊支援作戦",
-	    hourly_balance: [-6, -5, 25, 33],
+	    hourly_balance: [-5, -5, 25, 33],
 	    help: "Lv8 12h 空母(軽母 水母可)2 駆逐2 全2"
 	},
 	16: {
@@ -218,17 +218,17 @@ var KanColleData = {
 	},
 	17: {
 	    name: "敵地偵察作戦",
-	    hourly_balance: [57, 26, 67, 0],
+	    hourly_balance: [53, 27, 67, 0],
 	    help: "Lv20 45m 軽巡1駆逐3全2"
 	},
 	18: {
 	    name: "航空機輸送作戦",
-	    hourly_balance: [-14, -7, 60, 20],
+	    hourly_balance: [-14, -6, 60, 20],
 	    help: "Lv15 5h 空母(軽母 水母可)3 駆逐 2全1"
 	},
 	19: {
 	    name: "北号作戦",
-	    hourly_balance: [46, -19, 8, 5],
+	    hourly_balance: [46, -18, 8, 5],
 	    help: "Lv20 6h 航戦2駆逐2全2"
 	},
 	20: {
@@ -238,22 +238,27 @@ var KanColleData = {
 	},
 	21: {
 	    name: "北方鼠輸送作戦",
-	    hourly_balance: [108, 92, 0, 0],
+	    hourly_balance: [108, 93, 0, 0],
 	    help: "Lv15(合計Lv30以上) 2h20m 軽巡1駆逐4(ドラム缶3隻装備)"
 	},
 	22: {
 	    name: "艦隊演習",
-	    hourly_balance: [0, 3, 0, 0],
+	    hourly_balance: [-33, -36, 0, 0],
 	    help: "Lv30 3h 重巡1軽巡1駆逐2全2"
 	},
 	23: {
 	    name: "航空戦艦運用演習",
-	    hourly_balance: undefined,
-	    help: "undefined"
+	    hourly_balance: [-50, -53, 0, 25],
+	    help: "Lv50 4h 航戦2駆逐2全2"
+	},
+	24: {
+	    name: "北方航路海上護衛",
+	    hourly_balance: [50, -6, 0, 18],
+	    help: "Lv50 8h20m 軽巡1駆逐4"
 	},
 	25: {
 	    name: "通商破壊作戦",
-	    hourly_balance: [16, -3, 7, 0],
+	    hourly_balance: [21, -3, 13, 0],
 	    help: "Lv25 40h 重巡2駆逐2"
 	},
 	26: {
@@ -298,7 +303,7 @@ var KanColleData = {
 	},
 	35: {
 	    name: "ＭＯ作戦",
-	    hourly_balance: [-18, -23, 34, 40],
+	    hourly_balance: [-18, -22, 34, 40],
 	    help: "Lv40 7h 空母(軽母 水母可)2重巡1駆逐2全1"
 	},
 	36: {
@@ -308,22 +313,22 @@ var KanColleData = {
 	},
 	37: {
 	    name: "東京急行",
-	    hourly_balance: [-29, 111, 98, 0],
+	    hourly_balance: [-29, 102, 98, 0],
 	    help: "Lv50(合計Lv200以上) 2h45m 軽巡1駆逐5(ドラム缶3隻4個以上装備)"
 	},
 	38: {
 	    name: "東京急行(弐)",
-	    hourly_balance: [119, -32, 68, 0],
+	    hourly_balance: [119, -32, 69, 0],
 	    help: "Lv65(合計Lv240以上) 2h55m 駆逐5全1(ドラム缶4隻8個以上装備)"
 	},
 	39: {
 	    name: "遠洋潜水艦作戦",
-	    hourly_balance: [4, -2, -2, 10],
+	    hourly_balance: [-2, -3, 10, 0],
 	    help: "Lv3(合計Lv180以上) 30h 潜母1潜4"
 	},
 	40: {
 	    name: "水上機前線輸送",
-	    hourly_balance: [28, 31, 0, 14],
+	    hourly_balance: [28, 31, 0, 15],
 	    help: "Lv25(合計Lv250以上) 6h50m 軽1水母2駆逐2全1"
 	},
 	109: {
