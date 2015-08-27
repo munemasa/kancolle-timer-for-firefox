@@ -51,7 +51,7 @@
 	    <menuseparator/>
 	    <menuitem label="保存先を指定してスクリーンショットを撮影" oncommand="KanColleTimer.takeScreenshot();"/>
 	    <menuitem label="スクリーンショットを撮影(連続撮影)" oncommand="KanColleTimer.takeScreenshotSeriography();"/>
-            <menuitem label="改装画面から艦隊編成を撮影" oncommand="OpenSsOrganization();"/>
+            <menuitem label="編成画面から艦隊編成を撮影" oncommand="OpenSsOrganization();"/>
             <menuseparator/>
             <menuitem label="ビデオレコーダー(仮)" oncommand="OpenVideoRecorder();"/>
 	  </menupopup>
