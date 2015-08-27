@@ -46,7 +46,7 @@ let ResourceGraph = {
 
 	let os = Cc['@mozilla.org/network/file-output-stream;1'].createInstance( Ci.nsIFileOutputStream );
 	let flags = 0x02 | 0x08 | 0x20;// wronly|create|truncate
-	os.init( file, flags, 0644, 0 );
+	os.init( file, flags, 0o0644, 0 );
 	let cos = GetUTF8ConverterOutputStream( os );
 
 	cos.writeString( "時刻,燃料,弾薬,鋼材,ボーキサイト,バケツ\n" );
