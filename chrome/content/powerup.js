@@ -1,5 +1,6 @@
 var Powerup = {
     _file: "chrome://kancolletimer/content/data/powerup.tsv",
+    _url: 'https://docs.google.com/spreadsheets/d/1UOo5VpFZF-Ee_NUZ2T_ECMBajfIaIUkIs9xVYBkPcv4/export?format=tsv&id=1UOo5VpFZF-Ee_NUZ2T_ECMBajfIaIUkIs9xVYBkPcv4&gid=1529761687',
 
     _data: null,
 
@@ -92,7 +93,7 @@ var Powerup = {
 	let req = new XMLHttpRequest();
 	if( !req ) return;
 
-	req.open( 'GET', this._file );
+	req.open( 'GET', this._url );
 	req.responseType = "text";
 
 	req.onreadystatechange = function(){
