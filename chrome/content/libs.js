@@ -1480,6 +1480,7 @@ var KanColleTimerQuestInfo = {
 		    5: "#cab057", // 補給・入渠
 		    6: "#7d4f33", // 工廠
 		    7: "#b599c9", // 改装
+		    8: "#df4f42", // 出撃
 		};
 		let str = 'padding-left: 0.3em; border-left: 5px solid '+category_color[q.data.api_category];
 		cell.setAttribute('style', str);
