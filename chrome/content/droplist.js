@@ -15,8 +15,8 @@ var DropShipList = {
 
     delete: function(){
 	let targets = $('dropship-list' ).selectedItems;
-	for( let t in targets ){
-	    let id = parseInt( targets[t].getAttribute('list_id') );
+	for( let t of targets ){
+	    let id = parseInt( t.getAttribute('list_id') );
 	    this.allships = this.allships.filter( function(d){ return d.date!=id; } );
 	}
 	this.createTable();
