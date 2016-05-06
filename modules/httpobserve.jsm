@@ -1807,6 +1807,10 @@ var KanColleDatabase = {
 		this._memberShip3.update( data.api_data.api_ship_data );
 	    } else if (url.match(/kcsapi\/api_req_hensei\/preset_select/)){
 		// 2015.10.30 update
+	    } else if (url.match(/kcsapi\/api_get_member\/require_info/)){
+		this.memberBasic.update(data.api_data.api_basic);
+		this._memberKdock.update(data.api_data.api_kdock);
+		this._memberSlotitem.update(data.api_data.api_slot_item);
 	    }
 	} else if (mode == 'http-on-modify-request') {
 	    this.save( url + ".post", s );
