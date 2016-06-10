@@ -1488,12 +1488,12 @@ var KanColleTimerQuestInfo = {
 
 		// type
 		switch (q.data.api_type) {
-		case 1: t = '';	    type = 0; break;
-		case 2: t = '[日]'; type = 1; break;
-		case 3: t = '[週]'; type = 2; break;
-		case 4: t = '[日]'; type = 1; break;  //3,7,0の日
-		case 5: t = '[日]'; type = 1; break;  //2,8の日
-		case 6: t = '[月]'; type = 1; break;  //マンスリー任務
+		case 0: t = '';	    type = 0; break;
+		case 1: t = '[日]'; type = 1; break;
+		case 2: t = '[週]'; type = 2; break;
+		case 3: t = '[月]'; type = 1; break;
+		case 4: t = '[単]'; type = 1; break;
+		//case 5: t = '[月]'; type = 1; break;
 		default:
 			t = '[' + q.data.api_type + ']';
 		}
