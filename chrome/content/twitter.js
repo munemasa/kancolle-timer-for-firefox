@@ -32,6 +32,8 @@ var Twitter = {
     updateURL: "https://api.twitter.com/1.1/statuses/update.json",
     updateMediaURL: "https://api.twitter.com/1.1/statuses/update_with_media.json",
 
+    uploadMediaURL: "https://upload.twitter.com/1.1/media/upload.json",
+
     oauth: {},
 
     getScreenName: function(){
@@ -112,7 +114,7 @@ var Twitter = {
 	req.open( 'POST', url );
 	req.setRequestHeader( 'Authorization',
 	    OAuth.getAuthorizationHeader( 'http://miku39.jp/', message.parameters ) );
-	req.send('');
+	req.send( '' );
     },
 
     // Twitterトークンを全削除.
@@ -124,7 +126,7 @@ var Twitter = {
 		this._login.removeLogin( logins[i] );
 	    }
 	}
-	catch(e){
+	catch( e ){
 	}
     },
 
@@ -139,8 +141,8 @@ var Twitter = {
 
 	let host = "chrome://kancolletimer";
 	let nsLoginInfo = new Components.Constructor( "@mozilla.org/login-manager/loginInfo;1",
-						      Components.interfaces.nsILoginInfo,
-						      "init" );
+	    Components.interfaces.nsILoginInfo,
+	    "init" );
 	let loginInfo = new nsLoginInfo( host, null, "twitter token", as_user, as_pass, "", "" );
 	this._login.addLogin( loginInfo );
 
@@ -249,7 +251,7 @@ var Twitter = {
 	let url = this.updateURL;
 	req.open( 'POST', url );
 	req.setRequestHeader( 'Authorization',
-			      OAuth.getAuthorizationHeader( 'http://miku39.jp/', message.parameters ) );
+	    OAuth.getAuthorizationHeader( 'http://miku39.jp/', message.parameters ) );
 	req.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
 	req.send( "status=" + encodeURIComponent( text ) );
     },
@@ -260,7 +262,7 @@ var Twitter = {
      * @param picture 画像データ(nsIFile)
      * @param retry リトライ回数
      */
-    updateStatusWithMedia: function( text, picture, retry ){
+    updateStatusWithMedia_obsoleted: function( text, picture, retry ){
 	if( !this.oauth["oauth_token_secret"] || !this.oauth["oauth_token"] ) return;
 	let accessor = {
 	    consumerSecret: this.consumerSecret,
@@ -299,7 +301,7 @@ var Twitter = {
 		try{
 		    result = JSON.parse( req.responseText );
 		    debugprint( 'Twitter:' + result.error );
-		}catch(e){
+		}catch( e ){
 		}
 		retry = retry || 0;
 		if( retry < 5 ){
@@ -308,7 +310,7 @@ var Twitter = {
 		    let delay = 3000 * retry;
 		    let str = "つぶやきに失敗しました。" + parseInt( delay / 1000 ) + "秒後にリトライします(" + retry + "/5)";
 		    ShowNotice( str );
-		    debugprint( "retry...wait " + delay + "ms");
+		    debugprint( "retry...wait " + delay + "ms" );
 		    setTimeout( function(){
 			Twitter.updateStatusWithMedia( text, picture, retry );
 		    }, delay );
@@ -329,7 +331,128 @@ var Twitter = {
 
 	req.open( 'POST', url );
 	req.setRequestHeader( 'Authorization',
-			      OAuth.getAuthorizationHeader( 'http://miku39.jp/', message.parameters ) );
+	    OAuth.getAuthorizationHeader( 'http://miku39.jp/', message.parameters ) );
+	req.send( form );
+    },
+
+    /**
+     * ステータスを更新する(つぶやく)
+     * @param text テキスト(文字数チェックしていない)
+     * @param picture 画像データ(BASE64)
+     */
+    updateStatusWithMedia: function( text, picture ){
+	if( !this.oauth["oauth_token_secret"] || !this.oauth["oauth_token"] ) return;
+	let accessor = {
+	    consumerSecret: this.consumerSecret,
+	    tokenSecret: this.oauth["oauth_token_secret"]
+	};
+	let message = {
+	    action: this.uploadMediaURL,
+	    method: "POST",
+	    parameters: []
+	};
+	message.parameters.push( ["oauth_consumer_key", this.consumer] );
+	message.parameters.push( ["oauth_nonce", ""] );
+	message.parameters.push( ["oauth_token", this.oauth["oauth_token"]] );
+	message.parameters.push( ["oauth_signature", ""] );
+	message.parameters.push( ["oauth_signature_method", "HMAC-SHA1"] );
+	message.parameters.push( ["oauth_timestamp", ""] );
+	message.parameters.push( ["oauth_version", "1.0"] );
+	//message.parameters.push(["status",text]);
+	//message.parameters.push(["media[]",picture]);
+
+	OAuth.setTimestampAndNonce( message );
+	OAuth.SignatureMethod.sign( message, accessor );
+
+	let req = new XMLHttpRequest();
+	if( !req ) return;
+
+	req.onreadystatechange = function(){
+	    if( req.readyState != 4 ) return;
+	    /*
+	     403 {"request":"/1/statuses/update.json","error":"Status is a duplicate."}
+	     401 {"request":"/1/statuses/update.json","error":"Could not authenticate you."}
+	     */
+	    if( req.status != 200 ){
+		debugprint( "Status=" + req.status );
+		AlertPrompt( "画像のアップロードに失敗しました。", "艦これタイマー" );
+		ShowNotice( "送信に失敗しました" );
+	    }else{
+		// 画像アップロードに成功したら、続いてつぶやく
+		let result;
+		try{
+		    result = JSON.parse( req.responseText );
+		    console.log( result );
+		    Twitter.tweetWithMediaId( text, result );
+		}catch( e ){
+		    ShowNotice( "JSONパースエラー" );
+		}
+	    }
+	};
+
+	/* 画像をアップロード */
+	let url = this.uploadMediaURL;
+	let form = new FormData();
+	form.append( "media_data", picture );
+	req.open( 'POST', url );
+	req.setRequestHeader( 'Authorization',
+	    OAuth.getAuthorizationHeader( 'http://miku39.jp/', message.parameters ) );
+	req.send( form );
+    },
+
+    tweetWithMediaId: function( text, media ){
+	console.log( "Media ID:" + media.media_id );
+	if( !this.oauth["oauth_token_secret"] || !this.oauth["oauth_token"] ) return;
+	let accessor = {
+	    consumerSecret: this.consumerSecret,
+	    tokenSecret: this.oauth["oauth_token_secret"]
+	};
+	let message = {
+	    action: this.updateURL,
+	    method: "POST",
+	    parameters: []
+	};
+	message.parameters.push( ["oauth_consumer_key", this.consumer] );
+	message.parameters.push( ["oauth_nonce", ""] );
+	message.parameters.push( ["oauth_token", this.oauth["oauth_token"]] );
+	message.parameters.push( ["oauth_signature", ""] );
+	message.parameters.push( ["oauth_signature_method", "HMAC-SHA1"] );
+	message.parameters.push( ["oauth_timestamp", ""] );
+	message.parameters.push( ["oauth_version", "1.0"] );
+
+	OAuth.setTimestampAndNonce( message );
+	OAuth.SignatureMethod.sign( message, accessor );
+
+	let req = new XMLHttpRequest();
+	if( !req ) return;
+
+	req.onreadystatechange = function(){
+	    if( req.readyState != 4 ) return;
+	    if( req.status != 200 ){
+		debugprint( "Status=" + req.status );
+		let result;
+		try{
+		    result = JSON.parse( req.responseText );
+		    debugprint( 'Twitter:' + result.error );
+		}catch( e ){
+		}
+		let str = "つぶやきに失敗しました。";
+		ShowNotice( str );
+	    }else{
+		// 成功
+		window.close();
+	    }
+	};
+
+	/* 画像をアップロード */
+	let url = this.updateURL;
+	let form = new FormData();
+	form.append( "status", text );
+	form.append( "media_ids", media.media_id_string );
+	form.append( "possibly_sensitive", "false" );
+	req.open( 'POST', url );
+	req.setRequestHeader( 'Authorization',
+	    OAuth.getAuthorizationHeader( 'http://miku39.jp/', message.parameters ) );
 	req.send( form );
     },
 

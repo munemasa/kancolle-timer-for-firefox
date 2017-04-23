@@ -60,22 +60,18 @@ var SSTweet = {
     send: function(){
 	$('send-button').disabled = true;
 
-	let data = $('ss-image').src;
-
-	let file = this.getTempFile();
-	debugprint(file.path);
-
-	const IO_SERVICE = Cc['@mozilla.org/network/io-service;1']
-	    .getService( Ci.nsIIOService );
-	data = IO_SERVICE.newURI( data, null, null );
-	SaveUrlToFile( data, file );
+	let data = $('ss-image').src; // dataスキーマ data:image/png;base64,...
 
 	ShowNotice( "スクリーンショットを送信しています...", true );
 	setTimeout( function(){
-	    let text = $('text').value;
-	    Twitter.updateStatusWithMedia(text, new File(file.path));
+	    let text = $( 'text' ).value;
+	    let idx = data.indexOf("base64,") + 7;
+	    data = data.substr(idx);
+	    Twitter.updateStatusWithMedia( text, data );
 	    //Twitter.updateStatus(text);
-	    setTimeout( function(){ $('send-button').disabled = false; }, 5000 );
+	    setTimeout( function(){
+		$( 'send-button' ).disabled = false;
+	    }, 5000 );
 	}, 2000 );
     },
 
